@@ -11,15 +11,11 @@
       "role": "Developer"
     }
   ],
-  "extra": {
-    "laminas": {
-      "config-provider": "Mezzio\\Navigation\\LaminasView\\ConfigProvider"
-    }
-  },
   "require": {
     "php": "^7.1.3 || ^8.0.0",
-    "mezzio/mezzio-laminasviewrenderer": "^2.0",
     "laminas/laminas-stdlib": "~3.2.1",
+    "mezzio/mezzio-laminasviewrenderer": "^2.0",
+    "mimmi20/mezzio-navigation": "dev-master",
     "psr/container": "^1.0"
   },
   "require-dev": {
@@ -36,6 +32,18 @@
     "phpstan/phpstan-strict-rules": "~0.12.5",
     "phpunit/phpunit": "~7.5.20 || ~8.5.8 || ~9.3.5"
   },
+  "config": {
+    "platform": {
+      "php": "7.1.3"
+    },
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "extra": {
+    "laminas": {
+      "config-provider": "Mezzio\\Navigation\\LaminasView\\ConfigProvider"
+    }
+  },
   "autoload": {
     "psr-4": {
       "Mezzio\\Navigation\\LaminasView\\": "src/"
@@ -45,13 +53,6 @@
     "psr-4": {
       "MezzioTest\\Navigation\\LaminasView\\": "test/"
     }
-  },
-  "config": {
-    "platform": {
-      "php": "7.1.3"
-    },
-    "preferred-install": "dist",
-    "sort-packages": true
   },
   "support": {
     "issues": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/issues",
