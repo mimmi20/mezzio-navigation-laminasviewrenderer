@@ -1,8 +1,8 @@
 {
-  "name": "mimmi20/template",
+  "name": "mimmi20/mezzio-navigation-laminasviewrenderer",
   "type": "library",
-  "description": "Provides a GitHub repository template for a PHP library, using GitHub actions.",
-  "homepage": "https://github.com/mimmi20/template",
+  "description": "Provides viewhelper for Mezzio Navigation",
+  "homepage": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer",
   "license": "MIT",
   "authors": [
     {
@@ -11,8 +11,16 @@
       "role": "Developer"
     }
   ],
+  "extra": {
+    "laminas": {
+      "config-provider": "Mezzio\\Navigation\\LaminasView\\ConfigProvider"
+    }
+  },
   "require": {
-    "php": "^7.1.3 || ^8.0.0"
+    "php": "^7.1.3 || ^8.0.0",
+    "mezzio/mezzio-laminasviewrenderer": "^2.0",
+    "laminas/laminas-stdlib": "~3.2.1",
+    "psr/container": "^1.0"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "~2.8.0",
@@ -28,6 +36,16 @@
     "phpstan/phpstan-strict-rules": "~0.12.5",
     "phpunit/phpunit": "~7.5.20 || ~8.5.8 || ~9.3.5"
   },
+  "autoload": {
+    "psr-4": {
+      "Mezzio\\Navigation\\LaminasView\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MezzioTest\\Navigation\\LaminasView\\": "test/"
+    }
+  },
   "config": {
     "platform": {
       "php": "7.1.3"
@@ -36,7 +54,7 @@
     "sort-packages": true
   },
   "support": {
-    "issues": "https://github.com/mimmi20/template/issues",
-    "source": "https://github.com/mimmi20/template"
+    "issues": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/issues",
+    "source": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer"
   }
 }

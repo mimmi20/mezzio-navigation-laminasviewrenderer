@@ -1,14 +1,14 @@
-# template
+# Mezzio Navigation ViewHelper
 
-[![Continuous Integration](https://github.com/mimmi20/template/workflows/Continuous Integration/badge.svg?branch=master)](https://github.com/mimmi20/template/actions)
-[![Close stale issues and pull requests](https://github.com/mimmi20/template/workflows/Close stale issues and pull requests/badge.svg?branch=master)](https://github.com/mimmi20/template/actions)
-[![Release](https://github.com/mimmi20/template/workflows/Release/badge.svg?branch=master)](https://github.com/mimmi20/template/actions)
-[![Renew License](https://github.com/mimmi20/template/workflows/Renew License/badge.svg?branch=master)](https://github.com/mimmi20/template/actions)
+[![Continuous Integration](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/workflows/Continuous Integration/badge.svg?branch=master)](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/actions)
+[![Close stale issues and pull requests](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/workflows/Close stale issues and pull requests/badge.svg?branch=master)](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/actions)
+[![Release](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/workflows/Release/badge.svg?branch=master)](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/actions)
+[![Renew License](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/workflows/Renew License/badge.svg?branch=master)](https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/actions)
 
-[![Code Coverage](https://codecov.io/gh/mimmi20/template/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/template)
+[![Code Coverage](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer)
 
-[![Latest Stable Version](https://poser.pugx.org/mimmi20/template/v/stable)](https://packagist.org/packages/mimmi20/template)
-[![Total Downloads](https://poser.pugx.org/mimmi20/template/downloads)](https://packagist.org/packages/mimmi20/template)
+[![Latest Stable Version](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/v/stable)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
+[![Total Downloads](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/downloads)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
 
 ## Installation
 
@@ -17,7 +17,7 @@
 Run
 
 ```
-$ composer require mimmi20/template
+$ composer require mimmi20/mezzio-navigation-laminasviewrenderer
 ```
 
 ## Usage
