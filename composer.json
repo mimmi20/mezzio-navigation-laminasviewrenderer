@@ -15,7 +15,7 @@
     "php": "^7.1.3 || ^8.0.0",
     "laminas/laminas-stdlib": "~3.2.1 || ~3.3.0",
     "mezzio/mezzio-laminasviewrenderer": "^2.2.0",
-    "mimmi20/mezzio-navigation": "dev-master",
+    "mimmi20/mezzio-navigation": "dev-updates",
     "psr/container": "^1.0.0"
   },
   "require-dev": {
