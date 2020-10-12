@@ -9,28 +9,30 @@
  */
 
 declare(strict_types = 1);
-namespace Mezzio\Navigation\LaminasView;
+namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\View\Helper\Navigation as NavigationHelper;
 use ReflectionProperty;
 
-final class NavigationHelperFactory implements FactoryInterface
+final class NavigationFactory implements FactoryInterface
 {
     /**
-     * Create and return a navigation helper instance. (v3)
+     * Create and return a navigation view helper instance.
      *
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
      *
-     * @return NavigationHelper
+     * @return Navigation
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): NavigationHelper
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Navigation
     {
-        $helper = new NavigationHelper();
-        $helper->setServiceLocator($this->getApplicationServicesFromContainer($container));
+        $serviceLocator = $this->getApplicationServicesFromContainer($container);
+
+        $helper = new Navigation();
+        $helper->setServiceLocator($serviceLocator);
+        $helper->setPluginManager(new Navigation\PluginManager($serviceLocator));
 
         return $helper;
     }
