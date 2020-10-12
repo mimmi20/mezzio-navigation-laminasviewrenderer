@@ -14,7 +14,7 @@ use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\SharedEventManager;
 use Mezzio\Navigation;
-use Laminas\Navigation\Page\AbstractPage;
+use Mezzio\Navigation\Page\AbstractPage;
 use Laminas\Permissions\Acl;
 use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\View;
@@ -307,11 +307,13 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      */
     public function accept(AbstractPage $page, $recursive = true)
     {
+        if (! $page->isVisible(false) && ! $this->getRenderInvisible()) {
+            return false;
+        }
+
         $accept = true;
 
-        if (! $page->isVisible(false) && ! $this->getRenderInvisible()) {
-            $accept = false;
-        } elseif ($this->getUseAcl()) {
+        if ($this->getUseAcl()) {
             $acl = $this->getAcl();
             $role = $this->getRole();
             $params = ['acl' => $acl, 'page' => $page, 'role' => $role];
