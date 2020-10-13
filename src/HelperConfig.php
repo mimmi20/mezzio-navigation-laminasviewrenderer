@@ -15,7 +15,8 @@ use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
-use Laminas\View\Helper\Navigation as NavigationHelper;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use ReflectionProperty;
 use Traversable;
 
@@ -32,13 +33,12 @@ final class HelperConfig extends Config
     protected $config = [
         'abstract_factories' => [],
         'aliases' => [
-            'navigation' => NavigationHelper::class,
-            'Navigation' => NavigationHelper::class,
+            'navigation' => Navigation::class,
+            'Navigation' => Navigation::class,
         ],
         'delegators' => [],
         'factories' => [
-            NavigationHelper::class => NavigationHelperFactory::class,
-            'laminasviewhelpernavigation' => NavigationHelperFactory::class,
+            Navigation::class => NavigationFactory::class,
         ],
         'initializers' => [],
         'invokables' => [],

@@ -13,9 +13,9 @@ namespace MezzioTest\Navigation\LaminasView;
 
 use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\ServiceManager;
-use Laminas\View\Helper\Navigation as NavigationHelper;
 use Laminas\View\HelperPluginManager;
 use Mezzio\Navigation\LaminasView\HelperConfig;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Service\DefaultNavigationFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -34,7 +34,7 @@ final class HelperConfigTest extends TestCase
         return [
             ['navigation'],
             ['Navigation'],
-            [NavigationHelper::class],
+            [Navigation::class],
             ['laminasviewhelpernavigation'],
         ];
     }
@@ -48,7 +48,7 @@ final class HelperConfigTest extends TestCase
      */
     public function testConfigureServiceManagerWithConfig(string $navigationHelperServiceName): void
     {
-        $replacedMenuClass = NavigationHelper\Links::class;
+        $replacedMenuClass = Navigation\Links::class;
 
         $serviceManager = new ServiceManager();
         (new Config([

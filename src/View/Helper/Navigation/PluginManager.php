@@ -1,11 +1,14 @@
 <?php
-
 /**
- * @see       https://github.com/laminas/laminas-view for the canonical source repository
- * @copyright https://github.com/laminas/laminas-view/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-view/blob/master/LICENSE.md New BSD License
+ * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
+ *
+ * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
+declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
@@ -19,11 +22,9 @@ use Laminas\View\HelperPluginManager;
  * Navigation\HelperInterface. Additionally, it registers a number of default
  * helpers.
  */
-class PluginManager extends HelperPluginManager
+final class PluginManager extends HelperPluginManager
 {
-    /**
-     * @var string Valid instance types.
-     */
+    /** @var string Valid instance types. */
     protected $instanceOf = AbstractHelper::class;
 
     /**
@@ -33,21 +34,9 @@ class PluginManager extends HelperPluginManager
      */
     protected $aliases = [
         'breadcrumbs' => Breadcrumbs::class,
-        'links'       => Links::class,
-        'menu'        => Menu::class,
-        'sitemap'     => Sitemap::class,
-
-        // Legacy Zend Framework aliases
-        \Zend\View\Helper\Navigation\Breadcrumbs::class => Breadcrumbs::class,
-        \Zend\View\Helper\Navigation\Links::class => Links::class,
-        \Zend\View\Helper\Navigation\Menu::class => Menu::class,
-        \Zend\View\Helper\Navigation\Sitemap::class => Sitemap::class,
-
-        // v2 normalized FQCNs
-        'zendviewhelpernavigationbreadcrumbs' => Breadcrumbs::class,
-        'zendviewhelpernavigationlinks' => Links::class,
-        'zendviewhelpernavigationmenu' => Menu::class,
-        'zendviewhelpernavigationsitemap' => Sitemap::class,
+        'links' => Links::class,
+        'menu' => Menu::class,
+        'sitemap' => Sitemap::class,
     ];
 
     /**
@@ -57,38 +46,31 @@ class PluginManager extends HelperPluginManager
      */
     protected $factories = [
         Breadcrumbs::class => InvokableFactory::class,
-        Links::class       => InvokableFactory::class,
-        Menu::class        => InvokableFactory::class,
-        Sitemap::class     => InvokableFactory::class,
-
-        // v2 canonical FQCNs
-
-        'laminasviewhelpernavigationbreadcrumbs' => InvokableFactory::class,
-        'laminasviewhelpernavigationlinks'       => InvokableFactory::class,
-        'laminasviewhelpernavigationmenu'        => InvokableFactory::class,
-        'laminasviewhelpernavigationsitemap'     => InvokableFactory::class,
+        Links::class => InvokableFactory::class,
+        Menu::class => InvokableFactory::class,
+        Sitemap::class => InvokableFactory::class,
     ];
 
     /**
-     * @param null|ConfigInterface|ContainerInterface $configOrContainerInstance
-     * @param array $v3config If $configOrContainerInstance is a container, this
-     *     value will be passed to the parent constructor.
+     * @param ConfigInterface|ContainerInterface|null $configOrContainerInstance
+     * @param array                                   $v3config                  if $configOrContainerInstance is a container, this
+     *                                                                           value will be passed to the parent constructor
      */
     public function __construct($configOrContainerInstance = null, array $v3config = [])
     {
-        $this->initializers[] = function ($first, $second) {
+        $this->initializers[] = static function ($first, $second): void {
             // v2 vs v3 argument order
             if ($first instanceof ContainerInterface) {
                 // v3
                 $container = $first;
-                $instance = $second;
+                $instance  = $second;
             } else {
                 // v2
                 $container = $second;
-                $instance = $first;
+                $instance  = $first;
             }
 
-            if (! $instance instanceof AbstractHelper) {
+            if (!$instance instanceof AbstractHelper) {
                 return;
             }
 
@@ -97,7 +79,7 @@ class PluginManager extends HelperPluginManager
             // set the service locator to the parent locator.
             //
             // Under v3, the parent locator is what is passed to the method already.
-            if (! method_exists($container, 'configure') && $container->getServiceLocator()) {
+            if (!method_exists($container, 'configure') && $container->getServiceLocator()) {
                 $container = $container->getServiceLocator();
             }
 
