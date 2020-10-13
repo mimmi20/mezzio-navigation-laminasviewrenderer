@@ -11,7 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView;
 
-use Laminas\View\Helper\Navigation as NavigationHelper;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 
 final class ConfigProvider
@@ -25,7 +25,6 @@ final class ConfigProvider
     {
         return [
             'view_helpers' => $this->getViewHelperConfig(),
-            'templates' => $this->getTemplates(),
         ];
     }
 
@@ -43,53 +42,12 @@ final class ConfigProvider
                 ],
             ],
             'aliases' => [
-                'navigation' => NavigationHelper::class,
-                'Navigation' => NavigationHelper::class,
+                'navigation' => Navigation::class,
+                'Navigation' => Navigation::class,
             ],
             'factories' => [
-                NavigationHelper::class => NavigationFactory::class,
-                'laminasviewhelpernavigation' => NavigationFactory::class,
+                Navigation::class => NavigationFactory::class,
             ],
         ];
     }
-
-    /**
-     * Returns the templates configuration
-     *
-     * @return array
-     */
-    public function getTemplates(): array
-    {
-        return [
-            'paths' => [
-                'app' => ['templates/app'],
-                'error' => ['templates/error'],
-                'layout' => ['templates/layout'],
-            ],
-        ];
-    }
-
-    /**
-     * Get view helper configuration
-     *
-     * @return array
-     *
-    public function getViewHelperConfig(): array
-    {
-        return [
-            'aliases' => [
-                'baseUrl' => BaseUrl::class,
-                'revisionHeadLink' => RevisionHeadLink::class,
-                'revisionInlineScript' => RevisionInlineScript::class,
-                'revisionHeadScript' => RevisionHeadScript::class,
-            ],
-            'factories' => [
-                BaseUrl::class => BaseUrlFactory::class,
-                RevisionHeadLink::class => RevisionHeadLinkFactory::class,
-                RevisionInlineScript::class => RevisionInlineScriptFactory::class,
-                RevisionHeadScript::class => RevisionHeadScriptFactory::class,
-            ],
-        ];
-    }
-    /**/
 }
