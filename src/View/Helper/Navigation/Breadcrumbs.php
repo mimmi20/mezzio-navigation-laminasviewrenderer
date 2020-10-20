@@ -12,8 +12,9 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
-use Mezzio\Navigation\AbstractContainer;
-use Mezzio\Navigation\Page\AbstractPage;
+use Laminas\View\Helper\EscapeHtml;
+use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\Page\PageInterface;
 
 /**
  * Helper for printing breadcrumbs.
@@ -25,7 +26,7 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @var bool
      */
-    protected $linkLast = false;
+    private $linkLast = false;
 
     /**
      * The minimum depth a page must have to be included when rendering.
@@ -39,46 +40,31 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @var array|string
      */
-    protected $partial;
+    private $partial;
 
     /**
      * Breadcrumbs separator string.
      *
      * @var string
      */
-    protected $separator = ' &gt; ';
-
-    /**
-     * Helper entry point.
-     *
-     * @param AbstractContainer|string|null $container container to operate on
-     *
-     * @return Breadcrumbs
-     */
-    public function __invoke($container = null)
-    {
-        if (null !== $container) {
-            $this->setContainer($container);
-        }
-
-        return $this;
-    }
+    private $separator = ' &gt; ';
 
     /**
      * Renders helper.
      *
      * Implements {@link HelperInterface::render()}.
      *
-     * @param AbstractContainer|string|null $container [optional] container to render.
-     *                                                 Default is null, which indicates
-     *                                                 that the helper should render
-     *                                                 the container returned by {@link *                                         getContainer()}.
+     * @param ContainerInterface|null $container [optional] container to render.
+     *                                           Default is null, which indicates
+     *                                           that the helper should render
+     *                                           the container returned by {@link *                                         getContainer()}.
      *
      * @return string
      */
-    public function render($container = null): string
+    public function render(?ContainerInterface $container = null): string
     {
         $partial = $this->getPartial();
+
         if ($partial) {
             return $this->renderPartial($container, $partial);
         }
@@ -90,14 +76,14 @@ final class Breadcrumbs extends AbstractHelper
      * Renders breadcrumbs by chaining 'a' elements with the separator
      * registered in the helper.
      *
-     * @param AbstractContainer $container [optional] container to render. Default is
-     *                                     to render the container registered in the helper.
+     * @param ContainerInterface $container [optional] container to render. Default is
+     *                                      to render the container registered in the helper.
      *
      * @return string
      */
     public function renderStraight($container = null): string
     {
-        $this->parseContainer($container);
+        $this->parseNavigation($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -113,8 +99,9 @@ final class Breadcrumbs extends AbstractHelper
         if ($this->getLinkLast()) {
             $html = $this->htmlify($active);
         } else {
-            $escaper = $this->view->plugin('escapeHtml');
-            \assert($escaper instanceof \Laminas\View\Helper\EscapeHtml);
+            $escaper = $this->getView()->plugin('escapeHtml');
+            \assert($escaper instanceof EscapeHtml);
+
             $html = $escaper(
                 $this->translate($active->getLabel(), $active->getTextDomain())
             );
@@ -122,7 +109,7 @@ final class Breadcrumbs extends AbstractHelper
 
         // walk back to root
         while ($parent = $active->getParent()) {
-            if ($parent instanceof AbstractPage) {
+            if ($parent instanceof PageInterface) {
                 // prepend crumb to html
                 $html = $this->htmlify($parent)
                     . $this->getSeparator()
@@ -147,11 +134,11 @@ final class Breadcrumbs extends AbstractHelper
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param AbstractContainer|null $container [optional] container to pass to view
-     *                                          script. Default is to use the container registered in the helper.
-     * @param array|string|null      $partial   [optional] partial view script to use.
-     *                                          Default is to use the partial registered in the helper. If an array
-     *                                          is given, the first value is used for the partial view script.
+     * @param ContainerInterface|null $container [optional] container to pass to view
+     *                                           script. Default is to use the container registered in the helper.
+     * @param array|string|null       $partial   [optional] partial view script to use.
+     *                                           Default is to use the partial registered in the helper. If an array
+     *                                           is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -172,12 +159,12 @@ final class Breadcrumbs extends AbstractHelper
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param AbstractContainer|null $container [optional] container to pass to view
-     *                                          script. Default is to use the container registered in the helper.
-     * @param array|string|null      $partial   [optional] partial view script to use.
-     *                                          Default is to use the partial registered in the helper. If an array
-     *                                          is given, the first value is used for the partial view script.
-     * @param array                  $params
+     * @param ContainerInterface|null $container [optional] container to pass to view
+     *                                           script. Default is to use the container registered in the helper.
+     * @param array|string|null       $partial   [optional] partial view script to use.
+     *                                           Default is to use the partial registered in the helper. If an array
+     *                                           is given, the first value is used for the partial view script.
+     * @param array                   $params
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -269,18 +256,18 @@ final class Breadcrumbs extends AbstractHelper
     /**
      * Render a partial with the given "model".
      *
-     * @param array                  $params
-     * @param AbstractContainer|null $container
-     * @param array|string|null      $partial
+     * @param array                   $params
+     * @param ContainerInterface|null $container
+     * @param array|string|null       $partial
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
      *
      * @return string
      */
-    protected function renderPartialModel(array $params, $container, $partial): string
+    private function renderPartialModel(array $params, $container, $partial): string
     {
-        $this->parseContainer($container);
+        $this->parseNavigation($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -301,7 +288,7 @@ final class Breadcrumbs extends AbstractHelper
             $active           = $active['page'];
             $model['pages'][] = $active;
             while ($parent = $active->getParent()) {
-                if (!$parent instanceof AbstractPage) {
+                if (!$parent instanceof PageInterface) {
                     break;
                 }
 
@@ -317,7 +304,7 @@ final class Breadcrumbs extends AbstractHelper
             $model['pages'] = array_reverse($model['pages']);
         }
 
-        $partialHelper = $this->view->plugin('partial');
+        $partialHelper = $this->getView()->plugin('partial');
         \assert($partialHelper instanceof \Laminas\View\Helper\Partial);
         if (is_array($partial)) {
             if (2 !== count($partial)) {

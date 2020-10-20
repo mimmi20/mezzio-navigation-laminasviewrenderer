@@ -12,41 +12,36 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
-use Laminas\EventManager\EventManager;
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\EventManager\SharedEventManager;
-use Laminas\Permissions\Acl;
-use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\Log\Logger;
 use Laminas\View;
 use Laminas\View\Exception;
 use Laminas\View\Helper\TranslatorAwareTrait;
+use Mezzio\Authorization\AuthorizationInterface;
 use Mezzio\Navigation;
-use Mezzio\Navigation\Page\AbstractPage;
+use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
-use ReflectionClass;
-use ReflectionProperty;
 
 /**
  * Base class for navigational helpers.
  *
  * Duck-types against Laminas\I18n\Translator\TranslatorAwareInterface.
  */
-abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
-    EventManagerAwareInterface,
-    HelperInterface
+abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements HelperInterface
 {
     use TranslatorAwareTrait;
 
-    /** @var EventManagerInterface */
-    protected $events;
-
     /**
-     * AbstractContainer to operate on by default
+     * ContainerInterface to operate on by default
      *
-     * @var \Mezzio\Navigation\AbstractContainer
+     * @var \Mezzio\Navigation\ContainerInterface
      */
     protected $container;
+
+    /** @var string|null */
+    protected $navigation;
+
+    /** @var \Laminas\Log\Logger */
+    protected $logger;
 
     /**
      * The minimum depth a page must have to be included when rendering
@@ -72,9 +67,9 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * ACL to use when iterating pages
      *
-     * @var Acl\AclInterface
+     * @var \Mezzio\Authorization\AuthorizationInterface|null
      */
-    protected $acl;
+    protected $authorization;
 
     /**
      * Whether invisible items should be rendered by this helper
@@ -84,9 +79,9 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     protected $renderInvisible = false;
 
     /**
-     * ACL role to use when iterating pages
+     * Authorization role to use when iterating pages
      *
-     * @var Acl\Role\RoleInterface|string
+     * @var string|null
      */
     protected $role;
 
@@ -98,23 +93,49 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @var bool
      */
-    protected $useAcl = true;
+    protected $useAuthorization = true;
 
     /**
-     * Default ACL to use when iterating pages if not explicitly set in the
-     * instance by calling {@link setAcl()}
-     *
-     * @var Acl\AclInterface
-     */
-    protected static $defaultAcl;
-
-    /**
-     * Default ACL role to use when iterating pages if not explicitly set in the
+     * Default Authorization role to use when iterating pages if not explicitly set in the
      * instance by calling {@link setRole()}
      *
-     * @var Acl\Role\RoleInterface|string
+     * @var string|null
      */
     protected static $defaultRole;
+
+    /** @var AuthorizationInterface|null */
+    protected static $defaultAuthorization;
+
+    /**
+     * @param \Mezzio\Navigation\ContainerInterface $container
+     * @param \Interop\Container\ContainerInterface $serviceLocator
+     * @param Logger                                $logger
+     */
+    public function __construct(
+        Navigation\ContainerInterface $container,
+        ContainerInterface $serviceLocator,
+        Logger $logger
+    ) {
+        $this->container      = $container;
+        $this->serviceLocator = $serviceLocator;
+        $this->logger         = $logger;
+    }
+
+    /**
+     * Helper entry point
+     *
+     * @param string|null $navigation container to operate on
+     *
+     * @return self
+     */
+    final public function __invoke(?string $navigation = null): self
+    {
+        if (null !== $navigation) {
+            $this->setNavigation($navigation);
+        }
+
+        return $this;
+    }
 
     /**
      * Magic overload: Proxy calls to the navigation container
@@ -126,7 +147,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return mixed
      */
-    public function __call($method, array $arguments = [])
+    public function __call(string $method, array $arguments = [])
     {
         return call_user_func_array(
             [$this->getContainer(), $method],
@@ -149,8 +170,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
         try {
             return $this->render();
         } catch (\Throwable $e) {
-            $msg = get_class($e) . ': ' . $e->getMessage();
-            trigger_error($msg, E_USER_ERROR);
+            $this->logger->err($e);
 
             return '';
         }
@@ -159,28 +179,28 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Finds the deepest active page in the given container
      *
-     * @param Navigation\AbstractContainer $container container to search
-     * @param int|null                     $minDepth  [optional] minimum depth
-     *                                                required for page to be
-     *                                                valid. Default is to use
-     *                                                {@link getMinDepth()}. A
-     *                                                null value means no minimum
-     *                                                depth required.
-     * @param int|null                     $maxDepth  [optional] maximum depth
-     *                                                a page can have to be
-     *                                                valid. Default is to use
-     *                                                {@link getMaxDepth()}. A
-     *                                                null value means no maximum
-     *                                                depth required.
+     * @param string|null $navigation navigation to search
+     * @param int|null    $minDepth   [optional] minimum depth
+     *                                required for page to be
+     *                                valid. Default is to use
+     *                                {@link getMinDepth()}. A
+     *                                null value means no minimum
+     *                                depth required.
+     * @param int|null    $maxDepth   [optional] maximum depth
+     *                                a page can have to be
+     *                                valid. Default is to use
+     *                                {@link getMaxDepth()}. A
+     *                                null value means no maximum
+     *                                depth required.
      *
      * @return array an associative array with
      *               the values 'depth' and
      *               'page', or an empty array
      *               if not found
      */
-    final public function findActive($container, $minDepth = null, $maxDepth = -1)
+    final public function findActive(?string $navigation, ?int $minDepth = null, ?int $maxDepth = -1)
     {
-        $this->parseContainer($container);
+        $this->parseNavigation($navigation);
         if (!is_int($minDepth)) {
             $minDepth = $this->getMinDepth();
         }
@@ -197,7 +217,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
         );
 
         foreach ($iterator as $page) {
-            \assert($page instanceof \Laminas\Navigation\Page\AbstractPage);
+            \assert($page instanceof \Mezzio\Navigation\Page\PageInterface);
             $currDepth = $iterator->getDepth();
             if ($currDepth < $minDepth || !$this->accept($page)) {
                 // page is not accepted
@@ -221,7 +241,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
                 }
 
                 $found = $found->getParent();
-                if (!$found instanceof AbstractPage) {
+                if (!$found instanceof PageInterface) {
                     $found = null;
                     break;
                 }
@@ -238,55 +258,18 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Verifies container and eventually fetches it from service locator if it is a string
      *
-     * @param Navigation\AbstractContainer|string|null $container
+     * @param string|null $container
      *
      * @throws Exception\InvalidArgumentException
      */
-    protected function parseContainer(&$container = null): void
+    protected function parseNavigation(?string $container = null): void
     {
         if (null === $container) {
             return;
         }
 
-        if (is_string($container)) {
-            $services = $this->getServiceLocator();
-            if (!$services) {
-                throw new Exception\InvalidArgumentException(sprintf(
-                    'Attempted to set container with alias "%s" but no ServiceLocator was set',
-                    $container
-                ));
-            }
-
-            // Fallback
-            if (in_array($container, ['default', 'navigation'], true)) {
-                // Uses class name
-                if ($services->has(Navigation\Navigation::class)) {
-                    $container = $services->get(Navigation\Navigation::class);
-
-                    return;
-                }
-
-                // Uses old service name
-                if ($services->has('navigation')) {
-                    $container = $services->get('navigation');
-
-                    return;
-                }
-            }
-
-            /**
-             * Load the navigation container from the root service locator
-             */
-            $container = $services->get($container);
-
+        if (!is_string($container)) {
             return;
-        }
-
-        if (!$container instanceof Navigation\AbstractContainer) {
-            throw new Exception\InvalidArgumentException(
-                'Container must be a string alias or an instance of '
-                . 'Laminas\Navigation\AbstractContainer'
-            );
         }
     }
 
@@ -307,15 +290,15 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      * - If page is accepted and $recursive is true, the page
      *   will not be accepted if it is the descendant of a non-accepted page
      *
-     * @param AbstractPage $page      page to check
-     * @param bool         $recursive [optional] if true, page will not be
-     *                                accepted if it is the descendant of
-     *                                a page that is not accepted. Default
-     *                                is true
+     * @param PageInterface $page      page to check
+     * @param bool          $recursive [optional] if true, page will not be
+     *                                 accepted if it is the descendant of
+     *                                 a page that is not accepted. Default
+     *                                 is true
      *
      * @return bool Whether page should be accepted
      */
-    final public function accept(AbstractPage $page, $recursive = true)
+    final public function accept(PageInterface $page, $recursive = true)
     {
         if (!$page->isVisible(false) && !$this->getRenderInvisible()) {
             return false;
@@ -323,37 +306,21 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
 
         $accept = true;
 
-        if ($this->getUseAcl()) {
-            $acl    = $this->getAcl();
-            $role   = $this->getRole();
-            $params = ['acl' => $acl, 'page' => $page, 'role' => $role];
-            $accept = $this->isAllowed($params);
+        if ($this->getUseAuthorization()) {
+            $authorization = $this->getAuthorization();
+            $role          = $this->getRole();
+            $accept        = $authorization->isGranted($role, $page->getResource());
         }
 
         if ($accept && $recursive) {
             $parent = $page->getParent();
 
-            if ($parent instanceof AbstractPage) {
+            if ($parent instanceof PageInterface) {
                 $accept = $this->accept($parent, true);
             }
         }
 
         return $accept;
-    }
-
-    /**
-     * Determines whether a page should be allowed given certain parameters
-     *
-     * @param array $params
-     *
-     * @return bool
-     */
-    protected function isAllowed($params)
-    {
-        $events  = $this->getEventManager() ?: $this->createEventManager();
-        $results = $events->trigger(__FUNCTION__, $this, $params);
-
-        return $results->last();
     }
 
     // Util methods:
@@ -401,11 +368,11 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Returns an HTML string containing an 'a' element for the given page
      *
-     * @param AbstractPage $page page to generate HTML for
+     * @param PageInterface $page page to generate HTML for
      *
      * @return string HTML string (<a href="…">Label</a>)
      */
-    final public function htmlify(AbstractPage $page)
+    public function htmlify(PageInterface $page): string
     {
         $label = $this->translate($page->getLabel(), $page->getTextDomain());
         $title = $this->translate($page->getTitle(), $page->getTextDomain());
@@ -419,7 +386,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
             'target' => $page->getTarget(),
         ];
 
-        $escaper = $this->view->plugin('escapeHtml');
+        $escaper = $this->getView()->plugin('escapeHtml');
         \assert($escaper instanceof \Laminas\View\Helper\EscapeHtml);
         $label = $escaper($label);
 
@@ -429,12 +396,12 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Translate a message (for label, title, …)
      *
-     * @param string $message    ID of the message to translate
-     * @param string $textDomain Text domain (category name for the translations)
+     * @param string      $message    ID of the message to translate
+     * @param string|null $textDomain Text domain (category name for the translations)
      *
      * @return string Translated message
      */
-    protected function translate($message, $textDomain = null)
+    protected function translate(string $message, ?string $textDomain = null): string
     {
         if (!is_string($message) || empty($message)) {
             return $message;
@@ -459,43 +426,42 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return string
      */
-    protected function normalizeId($value)
+    protected function normalizeId($value): string
     {
         $prefix = static::class;
-        $prefix = mb_strtolower(trim(mb_substr($prefix, mb_strrpos($prefix, '\\')), '\\'));
+        $prefix = mb_strtolower(trim(mb_substr($prefix, (int) mb_strrpos($prefix, '\\')), '\\'));
 
         return $prefix . '-' . $value;
     }
 
     /**
-     * Sets ACL to use when iterating pages
+     * Sets AuthorizationInterface to use when iterating pages
+     * Implements {@link HelperInterface::setAuthorization()}.
      *
-     * Implements {@link HelperInterface::setAcl()}.
-     *
-     * @param acl\AclInterface $acl ACL object
+     * @param AuthorizationInterface|null $authorization AuthorizationInterface object
      *
      * @return void
      */
-    final public function setAcl(?Acl\AclInterface $acl = null): void
+    final public function setAuthorization(?AuthorizationInterface $authorization = null): void
     {
-        $this->acl = $acl;
+        $this->authorization = $authorization;
     }
 
     /**
-     * Returns ACL or null if it isn't set using {@link setAcl()} or
-     * {@link setDefaultAcl()}
+     * Returns AuthorizationInterface or null if it isn't set using {@link setAuthorization()} or
+     * {@link setDefaultAuthorization()}
      *
-     * Implements {@link HelperInterface::getAcl()}.
+     * Implements {@link HelperInterface::getAuthorization()}.
      *
-     * @return Acl\AclInterface|null ACL object or null
+     * @return AuthorizationInterface|null AuthorizationInterface object or null
      */
-    final public function getAcl()
+    final public function getAuthorization(): ?AuthorizationInterface
     {
-        if (null === $this->acl && null !== static::$defaultAcl) {
-            return static::$defaultAcl;
+        if (null === $this->authorization && null !== static::$defaultAuthorization) {
+            return static::$defaultAuthorization;
         }
 
-        return $this->acl;
+        return $this->authorization;
     }
 
     /**
@@ -505,61 +471,29 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return bool
      */
-    final public function hasAcl(): bool
+    final public function hasAuthorization(): bool
     {
-        return $this->acl instanceof Acl\Acl
-            || static::$defaultAcl instanceof Acl\Acl;
+        return $this->authorization instanceof AuthorizationInterface
+            || static::$defaultAuthorization instanceof AuthorizationInterface;
     }
 
     /**
-     * Set the event manager.
-     *
-     * @param EventManagerInterface $events
-     *
-     * @return AbstractHelper
+     * @return string|null
      */
-    final public function setEventManager(EventManagerInterface $events)
+    public function getNavigation(): ?string
     {
-        $events->setIdentifiers([
-            self::class,
-            static::class,
-        ]);
-
-        $this->events = $events;
-
-        if ($events->getSharedManager()) {
-            $this->setDefaultListeners();
-        }
-
-        return $this;
+        return $this->navigation;
     }
 
     /**
-     * Get the event manager, if present.
+     * @param string $navigation
      *
-     * Internally, the helper will lazy-load an EM instance the first time it
-     * requires one, but ideally it should be injected during instantiation.
-     *
-     * @return EventManagerInterface|null
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      */
-    final public function getEventManager()
+    public function setNavigation(string $navigation): void
     {
-        return $this->events;
-    }
-
-    /**
-     * Sets navigation container the helper operates on by default
-     *
-     * Implements {@link HelperInterface::setContainer()}.
-     *
-     * @param Navigation\AbstractContainer|string $container default is null, meaning container will be reset
-     *
-     * @return void
-     */
-    final public function setContainer($container = null): void
-    {
-        $this->parseContainer($container);
-        $this->container = $container;
+        $this->parseNavigation($navigation);
+        $this->navigation = $navigation;
     }
 
     /**
@@ -570,14 +504,10 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      * If no container is set, a new container will be instantiated and
      * stored in the helper.
      *
-     * @return Navigation\AbstractContainer navigation container
+     * @return Navigation\ContainerInterface|null navigation container
      */
-    final public function getContainer(): Navigation\AbstractContainer
+    final public function getContainer(): ?Navigation\ContainerInterface
     {
-        if (null === $this->container) {
-            $this->container = new Navigation\Navigation();
-        }
-
         return $this->container;
     }
 
@@ -619,17 +549,13 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Sets the maximum depth a page can have to be included when rendering
      *
-     * @param int|null $maxDepth default is null, which sets no maximum depth
+     * @param int $maxDepth default is null, which sets no maximum depth
      *
      * @return void
      */
-    final public function setMaxDepth(?int $maxDepth = null): void
+    final public function setMaxDepth(int $maxDepth): void
     {
-        if (null === $maxDepth || is_int($maxDepth)) {
-            $this->maxDepth = $maxDepth;
-        } else {
-            $this->maxDepth = (int) $maxDepth;
-        }
+        $this->maxDepth = $maxDepth;
     }
 
     /**
@@ -645,17 +571,13 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Sets the minimum depth a page must have to be included when rendering
      *
-     * @param int|null $minDepth default is null, which sets no minimum depth
+     * @param int $minDepth default is null, which sets no minimum depth
      *
      * @return void
      */
-    final public function setMinDepth(?int $minDepth = null): void
+    final public function setMinDepth(int $minDepth): void
     {
-        if (null === $minDepth || is_int($minDepth)) {
-            $this->minDepth = $minDepth;
-        } else {
-            $this->minDepth = (int) $minDepth;
-        }
+        $this->minDepth = $minDepth;
     }
 
     /**
@@ -699,27 +621,14 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * Implements {@link HelperInterface::setRole()}.
      *
-     * @param mixed $role [optional] role to set. Expects a string, an
-     *                    instance of type {@link Acl\Role\RoleInterface}, or null. Default
-     *                    is null, which will set no role.
+     * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
      *
      * @throws Exception\InvalidArgumentException
      *
      * @return void
      */
-    final public function setRole($role = null): void
+    final public function setRole(string $role): void
     {
-        if (
-            null !== $role && !is_string($role) &&
-            !($role instanceof Acl\Role\RoleInterface)
-        ) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '$role must be a string, null, or an instance of '
-                . 'Laminas\Permissions\Role\RoleInterface; %s given',
-                (is_object($role) ? get_class($role) : gettype($role))
-            ));
-        }
-
         $this->role = $role;
     }
 
@@ -729,9 +638,9 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * Implements {@link HelperInterface::getRole()}.
      *
-     * @return Acl\Role\RoleInterface|string|null
+     * @return string|null
      */
-    final public function getRole()
+    final public function getRole(): ?string
     {
         if (null === $this->role && null !== static::$defaultRole) {
             return static::$defaultRole;
@@ -749,46 +658,21 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      */
     final public function hasRole(): bool
     {
-        return $this->role instanceof Acl\Role\RoleInterface
-            || is_string($this->role)
-            || static::$defaultRole instanceof Acl\Role\RoleInterface
-            || is_string(static::$defaultRole);
+        return null !== $this->role
+            || null !== static::$defaultRole;
     }
 
     /**
      * Set the service locator.
-     *
      * Used internally to pull named navigation containers to render.
      *
-     * @param ContainerInterface $serviceLocator
+     * @param ContainerInterface $container
      *
      * @return AbstractHelper
      */
-    final public function setServiceLocator(ContainerInterface $serviceLocator)
+    final public function setServiceLocator(ContainerInterface $container)
     {
-        // If we are provided a plugin manager, we should pull the parent
-        // context from it.
-        // @todo We should update tests and code to ensure that this situation
-        //       doesn't happen in the future.
-        if (
-            $serviceLocator instanceof AbstractPluginManager
-            && !method_exists($serviceLocator, 'configure')
-            && $serviceLocator->getServiceLocator()
-        ) {
-            $serviceLocator = $serviceLocator->getServiceLocator();
-        }
-
-        // v3 variant; likely won't be needed.
-        if (
-            $serviceLocator instanceof AbstractPluginManager
-            && method_exists($serviceLocator, 'configure')
-        ) {
-            $r = new ReflectionProperty($serviceLocator, 'creationContext');
-            $r->setAccessible(true);
-            $serviceLocator = $r->getValue($serviceLocator);
-        }
-
-        $this->serviceLocator = $serviceLocator;
+        $this->serviceLocator = $container;
 
         return $this;
     }
@@ -800,35 +684,33 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return ContainerInterface
      */
-    final public function getServiceLocator()
+    final public function getServiceLocator(): ContainerInterface
     {
         return $this->serviceLocator;
     }
 
     /**
      * Sets whether ACL should be used
+     * Implements {@link HelperInterface::setUseAuthorization()}.
      *
-     * Implements {@link HelperInterface::setUseAcl()}.
-     *
-     * @param bool $useAcl
+     * @param bool $useAuthorization
      *
      * @return void
      */
-    final public function setUseAcl(bool $useAcl = true): void
+    final public function setUseAuthorization(bool $useAuthorization = true): void
     {
-        $this->useAcl = (bool) $useAcl;
+        $this->useAuthorization = $useAuthorization;
     }
 
     /**
      * Returns whether ACL should be used
-     *
-     * Implements {@link HelperInterface::getUseAcl()}.
+     * Implements {@link HelperInterface::getUseAuthorization()}.
      *
      * @return bool
      */
-    final public function getUseAcl(): bool
+    final public function getUseAuthorization(): bool
     {
-        return $this->useAcl;
+        return $this->useAuthorization;
     }
 
     // Static methods:
@@ -836,86 +718,29 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Sets default ACL to use if another ACL is not explicitly set
      *
-     * @param Acl\AclInterface $acl [optional] ACL object. Default is null, which
-     *                              sets no ACL object.
+     * @param \Mezzio\Authorization\AuthorizationInterface $authorization [optional] ACL object. Default is null, which
+     *                                                                    sets no ACL object.
      *
      * @return void
      */
-    final public static function setDefaultAcl(?Acl\AclInterface $acl = null): void
+    final public static function setDefaultAcl(AuthorizationInterface $authorization): void
     {
-        static::$defaultAcl = $acl;
+        static::$defaultAuthorization = $authorization;
     }
 
     /**
      * Sets default ACL role(s) to use when iterating pages if not explicitly
      * set later with {@link setRole()}
      *
-     * @param mixed $role [optional] role to set. Expects null, string, or an
-     *                    instance of {@link Acl\Role\RoleInterface}. Default is null, which
-     *                    sets no default role.
+     * @param string $role [optional] role to set. Expects null or string. Default is null, which
+     *                     sets no default role.
      *
      * @throws Exception\InvalidArgumentException if role is invalid
      *
      * @return void
      */
-    final public static function setDefaultRole($role = null): void
+    final public static function setDefaultRole(string $role): void
     {
-        if (
-            null !== $role
-            && !is_string($role)
-            && !($role instanceof Acl\Role\RoleInterface)
-        ) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '$role must be null|string|Laminas\Permissions\Role\RoleInterface; received "%s"',
-                (is_object($role) ? get_class($role) : gettype($role))
-            ));
-        }
-
         static::$defaultRole = $role;
-    }
-
-    /**
-     * Attaches default ACL listeners, if ACLs are in use
-     */
-    protected function setDefaultListeners(): void
-    {
-        if (!$this->getUseAcl()) {
-            return;
-        }
-
-        $events = $this->getEventManager() ?: $this->createEventManager();
-
-        if (!$events->getSharedManager()) {
-            return;
-        }
-
-        $events->getSharedManager()->attach(
-            'Mezzio\Navigation\LaminasView\View\Helper\Navigation\AbstractHelper',
-            'isAllowed',
-            ['Laminas\View\Helper\Navigation\Listener\AclListener', 'accept']
-        );
-    }
-
-    /**
-     * Create and return an event manager instance.
-     *
-     * Ensures that the returned event manager has a shared manager
-     * composed.
-     *
-     * @return EventManager
-     */
-    private function createEventManager()
-    {
-        $r = new ReflectionClass(EventManager::class);
-        if ($r->hasMethod('setSharedManager')) {
-            $events = new EventManager();
-            $events->setSharedManager(new SharedEventManager());
-        } else {
-            $events = new EventManager(new SharedEventManager());
-        }
-
-        $this->setEventManager($events);
-
-        return $events;
     }
 }

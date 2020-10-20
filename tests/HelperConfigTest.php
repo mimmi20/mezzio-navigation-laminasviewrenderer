@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 final class HelperConfigTest extends TestCase
 {
     /**
-     * @return \string[][]
+     * @return string[][]
      */
     public function navigationServiceNameProvider(): array
     {
@@ -43,6 +43,10 @@ final class HelperConfigTest extends TestCase
      * @dataProvider navigationServiceNameProvider
      *
      * @param string $navigationHelperServiceName
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return void
      */

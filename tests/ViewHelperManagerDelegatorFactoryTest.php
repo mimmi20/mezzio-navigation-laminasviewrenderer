@@ -20,7 +20,8 @@ use PHPUnit\Framework\TestCase;
 final class ViewHelperManagerDelegatorFactoryTest extends TestCase
 {
     /**
-     * @throws \Interop\Container\Exception\ContainerException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */

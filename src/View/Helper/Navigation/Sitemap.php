@@ -13,8 +13,8 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\View\Exception;
-use Mezzio\Navigation\AbstractContainer;
-use Mezzio\Navigation\Page\AbstractPage;
+use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
 
 /**
@@ -39,88 +39,72 @@ final class Sitemap extends AbstractHelper
      *
      * @var bool
      */
-    protected $formatOutput = false;
+    private $formatOutput = false;
 
     /**
      * Server url
      *
      * @var string
      */
-    protected $serverUrl;
+    private $serverUrl;
 
     /**
      * List of urls in the sitemap
      *
      * @var array
      */
-    protected $urls = [];
+    private $urls = [];
 
     /**
      * Whether sitemap should be validated using Laminas\Validate\Sitemap\*
      *
      * @var bool
      */
-    protected $useSitemapValidators = true;
+    private $useSitemapValidators = true;
 
     /**
      * Whether sitemap should be schema validated when generated
      *
      * @var bool
      */
-    protected $useSchemaValidation = false;
+    private $useSchemaValidation = false;
 
     /**
      * Whether the XML declaration should be included in XML output
      *
      * @var bool
      */
-    protected $useXmlDeclaration = true;
-
-    /**
-     * Helper entry point
-     *
-     * @param AbstractContainer|string|null $container container to operate on
-     *
-     * @return Sitemap
-     */
-    public function __invoke($container = null)
-    {
-        if (null !== $container) {
-            $this->setContainer($container);
-        }
-
-        return $this;
-    }
+    private $useXmlDeclaration = true;
 
     /**
      * Renders helper
      *
      * Implements {@link HelperInterface::render()}.
      *
-     * @param AbstractContainer|string|null $container [optional] container to render.
-     *                                                 Default is null, which indicates
-     *                                                 that the helper should render
-     *                                                 the container returned by {@link *                                         getContainer()}.
+     * @param ContainerInterface|null $container [optional] container to render.
+     *                                           Default is null, which indicates
+     *                                           that the helper should render
+     *                                           the container returned by {@link *                                         getContainer()}.
      *
      * @return string
      */
-    public function render($container = null): string
+    public function render(?ContainerInterface $container = null): string
     {
         $dom = $this->getDomSitemap($container);
         $xml = $this->getUseXmlDeclaration() ?
             $dom->saveXML() :
             $dom->saveXML($dom->documentElement);
 
-        return rtrim($xml, PHP_EOL);
+        return rtrim((string) $xml, PHP_EOL);
     }
 
     /**
      * Returns a DOMDocument containing the Sitemap XML for the given container
      *
-     * @param AbstractContainer $container [optional] container to get
-     *                                     breadcrumbs from, defaults
-     *                                     to what is registered in the
-     *                                     helper
+     * @param ContainerInterface|null $container [optional] container to get
+     *                                           breadcrumbs from, defaults
+     *                                           to what is registered in the
+     *                                           helper
      *
      * @throws Exception\RuntimeException if schema validation is on
      *                                    and the sitemap is invalid
@@ -129,10 +113,10 @@ final class Sitemap extends AbstractHelper
      *                                    validators are used and the
      *                                    loc element fails validation
      *
-     * @return DOMDocument DOM representation of the
-     *                     container
+     * @return \DOMDocument DOM representation of the
+     *                      container
      */
-    public function getDomSitemap(?AbstractContainer $container = null)
+    public function getDomSitemap(?ContainerInterface $container = null): \DOMDocument
     {
         // Reset the urls
         $this->urls = [];
@@ -151,7 +135,7 @@ final class Sitemap extends AbstractHelper
         }
 
         // create document
-        $dom               = new DOMDocument('1.0', 'UTF-8');
+        $dom               = new \DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = $this->getFormatOutput();
 
         // ...and urlset (root) element
@@ -272,11 +256,11 @@ final class Sitemap extends AbstractHelper
     /**
      * Returns an escaped absolute URL for the given page
      *
-     * @param AbstractPage $page
+     * @param PageInterface $page
      *
      * @return string
      */
-    public function url(AbstractPage $page)
+    public function url(PageInterface $page): string
     {
         $href = $page->getHref();
 
@@ -296,9 +280,7 @@ final class Sitemap extends AbstractHelper
             $basePathHelper = $this->getView()->plugin('basepath');
             $curDoc         = $basePathHelper();
             $curDoc         = '/' === $curDoc ? '' : trim($curDoc, '/');
-            $url            = rtrim($this->getServerUrl(), '/') . '/'
-                                                                . $curDoc
-                                                                . (empty($curDoc) ? '' : '/') . $href;
+            $url            = rtrim($this->getServerUrl(), '/') . '/' . $curDoc . (empty($curDoc) ? '' : '/') . $href;
         }
 
         if (!in_array($url, $this->urls, true)) {
@@ -307,7 +289,7 @@ final class Sitemap extends AbstractHelper
             return $this->xmlEscape($url);
         }
 
-        return;
+        return '';
     }
 
     /**
@@ -317,9 +299,9 @@ final class Sitemap extends AbstractHelper
      *
      * @return string
      */
-    protected function xmlEscape($string)
+    private function xmlEscape(string $string): string
     {
-        $escaper = $this->view->plugin('escapeHtml');
+        $escaper = $this->getView()->plugin('escapeHtml');
 
         return $escaper($string);
     }
@@ -329,11 +311,11 @@ final class Sitemap extends AbstractHelper
      *
      * @param bool $formatOutput
      *
-     * @return Sitemap
+     * @return self
      */
-    public function setFormatOutput($formatOutput = true)
+    public function setFormatOutput(bool $formatOutput = true): self
     {
-        $this->formatOutput = (bool) $formatOutput;
+        $this->formatOutput = $formatOutput;
 
         return $this;
     }
@@ -343,7 +325,7 @@ final class Sitemap extends AbstractHelper
      *
      * @return bool
      */
-    public function getFormatOutput()
+    public function getFormatOutput(): bool
     {
         return $this->formatOutput;
     }
@@ -357,9 +339,9 @@ final class Sitemap extends AbstractHelper
      *
      * @throws Exception\InvalidArgumentException
      *
-     * @return Sitemap
+     * @return self
      */
-    public function setServerUrl($serverUrl)
+    public function setServerUrl($serverUrl): self
     {
         $uri = Uri\UriFactory::factory($serverUrl);
         $uri->setFragment('');
@@ -383,7 +365,7 @@ final class Sitemap extends AbstractHelper
      *
      * @return string
      */
-    public function getServerUrl()
+    public function getServerUrl(): string
     {
         if (!isset($this->serverUrl)) {
             $serverUrlHelper = $this->getView()->plugin('serverUrl');
@@ -398,9 +380,9 @@ final class Sitemap extends AbstractHelper
      *
      * @param bool $useSitemapValidators
      *
-     * @return Sitemap
+     * @return self
      */
-    public function setUseSitemapValidators($useSitemapValidators)
+    public function setUseSitemapValidators(bool $useSitemapValidators): self
     {
         $this->useSitemapValidators = (bool) $useSitemapValidators;
 
@@ -412,7 +394,7 @@ final class Sitemap extends AbstractHelper
      *
      * @return bool
      */
-    public function getUseSitemapValidators()
+    public function getUseSitemapValidators(): bool
     {
         return $this->useSitemapValidators;
     }
@@ -422,9 +404,9 @@ final class Sitemap extends AbstractHelper
      *
      * @param bool $schemaValidation
      *
-     * @return Sitemap
+     * @return self
      */
-    public function setUseSchemaValidation($schemaValidation)
+    public function setUseSchemaValidation(bool $schemaValidation): self
     {
         $this->useSchemaValidation = (bool) $schemaValidation;
 
@@ -436,7 +418,7 @@ final class Sitemap extends AbstractHelper
      *
      * @return bool
      */
-    public function getUseSchemaValidation()
+    public function getUseSchemaValidation(): bool
     {
         return $this->useSchemaValidation;
     }
@@ -446,9 +428,9 @@ final class Sitemap extends AbstractHelper
      *
      * @param bool $useXmlDecl
      *
-     * @return Sitemap
+     * @return self
      */
-    public function setUseXmlDeclaration($useXmlDecl)
+    public function setUseXmlDeclaration(bool $useXmlDecl): self
     {
         $this->useXmlDeclaration = (bool) $useXmlDecl;
 
@@ -460,7 +442,7 @@ final class Sitemap extends AbstractHelper
      *
      * @return bool
      */
-    public function getUseXmlDeclaration()
+    public function getUseXmlDeclaration(): bool
     {
         return $this->useXmlDeclaration;
     }

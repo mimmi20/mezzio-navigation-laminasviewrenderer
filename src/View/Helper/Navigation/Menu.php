@@ -12,8 +12,9 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
-use Mezzio\Navigation\AbstractContainer;
-use Mezzio\Navigation\Page\AbstractPage;
+use Laminas\View\Helper\Partial;
+use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
 
 /**
@@ -26,67 +27,49 @@ final class Menu extends AbstractHelper
      *
      * @var bool
      */
-    protected $addClassToListItem = false;
+    private $addClassToListItem = false;
 
     /**
      * Whether labels should be escaped.
      *
      * @var bool
      */
-    protected $escapeLabels = true;
+    private $escapeLabels = true;
 
     /**
      * Whether only active branch should be rendered.
      *
      * @var bool
      */
-    protected $onlyActiveBranch = false;
+    private $onlyActiveBranch = false;
 
     /**
      * Partial view script to use for rendering menu.
      *
      * @var array|string
      */
-    protected $partial;
+    private $partial;
 
     /**
      * Whether parents should be rendered when only rendering active branch.
      *
      * @var bool
      */
-    protected $renderParents = true;
+    private $renderParents = true;
 
     /**
      * CSS class to use for the ul element.
      *
      * @var string
      */
-    protected $ulClass = 'navigation';
+    private $ulClass = 'navigation';
 
     /**
      * CSS class to use for the active li element.
      *
      * @var string
      */
-    protected $liActiveClass = 'active';
-
-    /**
-     * View helper entry point.
-     *
-     * Retrieves helper and optionally sets container to operate on.
-     *
-     * @param AbstractContainer|string|null $container [optional] container to operate on
-     *
-     * @return self
-     */
-    public function __invoke($container = null)
-    {
-        if (null !== $container) {
-            $this->setContainer($container);
-        }
-
-        return $this;
-    }
+    private $liActiveClass = 'active';
 
     /**
      * Renders menu.
@@ -100,16 +83,17 @@ final class Menu extends AbstractHelper
      * @see renderPartial()
      * @see renderMenu()
      *
-     * @param AbstractContainer|string|null $container [optional] container to render.
-     *                                                 Default is null, which indicates
-     *                                                 that the helper should render
-     *                                                 the container returned by {@link *                                         getContainer()}.
+     * @param ContainerInterface|null $container [optional] container to render.
+     *                                           Default is null, which indicates
+     *                                           that the helper should render
+     *                                           the container returned by {@link *                                         getContainer()}.
      *
      * @return string
      */
-    public function render($container = null): string
+    public function render(?ContainerInterface $container = null): string
     {
         $partial = $this->getPartial();
+
         if ($partial) {
             return $this->renderPartial($container, $partial);
         }
@@ -120,28 +104,28 @@ final class Menu extends AbstractHelper
     /**
      * Renders the deepest active menu within [$minDepth, $maxDepth], (called from {@link renderMenu()}).
      *
-     * @param AbstractContainer $container          container to render
-     * @param string            $ulClass            CSS class for first UL
-     * @param string            $indent             initial indentation
-     * @param int|null          $minDepth           minimum depth
-     * @param int|null          $maxDepth           maximum depth
-     * @param bool              $escapeLabels       Whether or not to escape the labels
-     * @param bool              $addClassToListItem Whether or not page class applied to <li> element
-     * @param string            $liActiveClass      CSS class for active LI
+     * @param string|null $navigation         container to render
+     * @param string      $ulClass            CSS class for first UL
+     * @param string      $indent             initial indentation
+     * @param int|null    $minDepth           minimum depth
+     * @param int|null    $maxDepth           maximum depth
+     * @param bool        $escapeLabels       Whether or not to escape the labels
+     * @param bool        $addClassToListItem Whether or not page class applied to <li> element
+     * @param string      $liActiveClass      CSS class for active LI
      *
      * @return string
      */
-    protected function renderDeepestMenu(
-        AbstractContainer $container,
-        $ulClass,
-        $indent,
-        $minDepth,
-        $maxDepth,
-        $escapeLabels,
-        $addClassToListItem,
-        $liActiveClass
-    ) {
-        if (!$active = $this->findActive($container, $minDepth - 1, $maxDepth)) {
+    private function renderDeepestMenu(
+        ?string $navigation,
+        string $ulClass,
+        string $indent,
+        ?int $minDepth,
+        ?int $maxDepth,
+        bool $escapeLabels,
+        bool $addClassToListItem,
+        string $liActiveClass
+    ): string {
+        if (!$active = $this->findActive($navigation, $minDepth - 1, $maxDepth)) {
             return '';
         }
 
@@ -158,7 +142,7 @@ final class Menu extends AbstractHelper
             $active['page'] = $active['page']->getParent();
         }
 
-        $escaper = $this->view->plugin('escapeHtmlAttr');
+        $escaper = $this->getView()->plugin('escapeHtmlAttr');
         \assert($escaper instanceof \Laminas\View\Helper\EscapeHtmlAttr);
         $ulClass = $ulClass ? ' class="' . $escaper($ulClass) . '"' : '';
         $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
@@ -200,20 +184,22 @@ final class Menu extends AbstractHelper
      *
      * Available $options:
      *
-     * @param AbstractContainer $container [optional] container to create menu from.
-     *                                     Default is to use the container retrieved from {@link getContainer()}.
-     * @param array             $options   [optional] options for controlling rendering
+     * @param ContainerInterface|null $container [optional] container to create menu from.
+     *                                           Default is to use the container retrieved from {@link getContainer()}.
+     * @param array                   $options   [optional] options for controlling rendering
      *
      * @return string
      */
-    public function renderMenu($container = null, array $options = [])
+    public function renderMenu(?ContainerInterface $container = null, array $options = []): string
     {
-        $this->parseContainer($container);
+        $this->parseNavigation($container);
+
         if (null === $container) {
             $container = $this->getContainer();
         }
 
         $options = $this->normalizeOptions($options);
+
         if ($options['onlyActiveBranch'] && !$options['renderParents']) {
             return $this->renderDeepestMenu(
                 $container,
@@ -243,35 +229,35 @@ final class Menu extends AbstractHelper
     /**
      * Renders a normal menu (called from {@link renderMenu()}).
      *
-     * @param AbstractContainer $container          container to render
-     * @param string            $ulClass            CSS class for first UL
-     * @param string            $indent             initial indentation
-     * @param int|null          $minDepth           minimum depth
-     * @param int|null          $maxDepth           maximum depth
-     * @param bool              $onlyActive         render only active branch?
-     * @param bool              $escapeLabels       Whether or not to escape the labels
-     * @param bool              $addClassToListItem Whether or not page class applied to <li> element
-     * @param string            $liActiveClass      CSS class for active LI
+     * @param string|null $navigation         container to render
+     * @param string      $ulClass            CSS class for first UL
+     * @param string      $indent             initial indentation
+     * @param int|null    $minDepth           minimum depth
+     * @param int|null    $maxDepth           maximum depth
+     * @param bool        $onlyActive         render only active branch?
+     * @param bool        $escapeLabels       Whether or not to escape the labels
+     * @param bool        $addClassToListItem Whether or not page class applied to <li> element
+     * @param string      $liActiveClass      CSS class for active LI
      *
      * @return string
      */
-    protected function renderNormalMenu(
-        AbstractContainer $container,
-        $ulClass,
-        $indent,
-        $minDepth,
-        $maxDepth,
-        $onlyActive,
-        $escapeLabels,
-        $addClassToListItem,
-        $liActiveClass
-    ) {
+    private function renderNormalMenu(
+        ?string $navigation,
+        string $ulClass,
+        string $indent,
+        ?int $minDepth,
+        ?int $maxDepth,
+        bool $onlyActive,
+        bool $escapeLabels,
+        bool $addClassToListItem,
+        string $liActiveClass
+    ): string {
         $html = '';
 
         // find deepest active
-        $found = $this->findActive($container, $minDepth, $maxDepth);
+        $found = $this->findActive($navigation, $minDepth, $maxDepth);
 
-        $escaper = $this->view->plugin('escapeHtmlAttr');
+        $escaper = $this->getView()->plugin('escapeHtmlAttr');
         \assert($escaper instanceof \Laminas\View\Helper\EscapeHtmlAttr);
 
         if ($found) {
@@ -395,18 +381,18 @@ final class Menu extends AbstractHelper
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param AbstractContainer|null $container [optional] container to pass to view
-     *                                          script. Default is to use the container registered in the helper.
-     * @param array|string|null      $partial   [optional] partial view script to use.
-     *                                          Default is to use the partial registered in the helper. If an array
-     *                                          is given, the first value is used for the partial view script.
+     * @param ContainerInterface|null $container [optional] container to pass to view
+     *                                           script. Default is to use the container registered in the helper.
+     * @param array|string|null       $partial   [optional] partial view script to use.
+     *                                           Default is to use the partial registered in the helper. If an array
+     *                                           is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
      *
      * @return string
      */
-    public function renderPartial($container = null, $partial = null)
+    public function renderPartial(?ContainerInterface $container = null, $partial = null): string
     {
         return $this->renderPartialModel([], $container, $partial);
     }
@@ -420,19 +406,19 @@ final class Menu extends AbstractHelper
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param AbstractContainer|null $container [optional] container to pass to view
-     *                                          script. Default is to use the container registered in the helper.
-     * @param array|string|null      $partial   [optional] partial view script to use.
-     *                                          Default is to use the partial registered in the helper. If an array
-     *                                          is given, the first value is used for the partial view script.
-     * @param array                  $params
+     * @param ContainerInterface|null $container [optional] container to pass to view
+     *                                           script. Default is to use the container registered in the helper.
+     * @param array|string|null       $partial   [optional] partial view script to use.
+     *                                           Default is to use the partial registered in the helper. If an array
+     *                                           is given, the first value is used for the partial view script.
+     * @param array                   $params
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], $container = null, $partial = null)
+    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
     {
         return $this->renderPartialModel($params, $container, $partial);
     }
@@ -453,24 +439,24 @@ final class Menu extends AbstractHelper
      * ));
      * </code>
      *
-     * @param AbstractContainer $container     [optional] container to render.
-     *                                         Default is to render the container registered in the helper.
-     * @param string            $ulClass       [optional] CSS class to use for UL element.
-     *                                         Default is to use the value from {@link getUlClass()}.
-     * @param int|string        $indent        [optional] indentation as a string or number
-     *                                         of spaces. Default is to use the value retrieved from
-     *                                         {@link getIndent()}.
-     * @param string            $liActiveClass [optional] CSS class to use for UL
-     *                                         element. Default is to use the value from {@link getUlClass()}.
+     * @param ContainerInterface|null $container     [optional] container to render.
+     *                                               Default is to render the container registered in the helper.
+     * @param string|null             $ulClass       [optional] CSS class to use for UL element.
+     *                                               Default is to use the value from {@link getUlClass()}.
+     * @param int|string|null         $indent        [optional] indentation as a string or number
+     *                                               of spaces. Default is to use the value retrieved from
+     *                                               {@link getIndent()}.
+     * @param string|null             $liActiveClass [optional] CSS class to use for UL
+     *                                               element. Default is to use the value from {@link getUlClass()}.
      *
      * @return string
      */
     public function renderSubMenu(
-        ?AbstractContainer $container = null,
-        $ulClass = null,
+        ?ContainerInterface $container = null,
+        ?string $ulClass = null,
         $indent = null,
-        $liActiveClass = null
-    ) {
+        ?string $liActiveClass = null
+    ): string {
         return $this->renderMenu($container, [
             'indent' => $indent,
             'ulClass' => $ulClass,
@@ -490,13 +476,13 @@ final class Menu extends AbstractHelper
      *
      * Overrides {@link AbstractHelper::htmlify()}.
      *
-     * @param AbstractPage $page               page to generate HTML for
-     * @param bool         $escapeLabel        Whether or not to escape the label
-     * @param bool         $addClassToListItem Whether or not to add the page class to the list item
+     * @param PageInterface $page               page to generate HTML for
+     * @param bool          $escapeLabel        Whether or not to escape the label
+     * @param bool          $addClassToListItem Whether or not to add the page class to the list item
      *
      * @return string
      */
-    public function htmlify(AbstractPage $page, $escapeLabel = true, $addClassToListItem = false)
+    public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
         // get attribs for element
         $attribs = [
@@ -522,7 +508,7 @@ final class Menu extends AbstractHelper
         $label = $this->translate($page->getLabel(), $page->getTextDomain());
 
         if (true === $escapeLabel) {
-            $escaper = $this->view->plugin('escapeHtml');
+            $escaper = $this->getView()->plugin('escapeHtml');
             \assert($escaper instanceof \Laminas\View\Helper\EscapeHtml);
             $html .= $escaper($label);
         } else {
@@ -541,7 +527,7 @@ final class Menu extends AbstractHelper
      *
      * @return array
      */
-    protected function normalizeOptions(array $options = [])
+    private function normalizeOptions(array $options = []): array
     {
         if (isset($options['indent'])) {
             $options['indent'] = $this->getWhitespace($options['indent']);
@@ -607,9 +593,9 @@ final class Menu extends AbstractHelper
      *
      * @return self
      */
-    public function escapeLabels($flag = true)
+    public function escapeLabels(bool $flag = true): self
     {
-        $this->escapeLabels = (bool) $flag;
+        $this->escapeLabels = $flag;
 
         return $this;
     }
@@ -622,9 +608,9 @@ final class Menu extends AbstractHelper
      *
      * @return self fluent interface, returns self
      */
-    public function setAddClassToListItem($flag = true)
+    public function setAddClassToListItem(bool $flag = true): self
     {
-        $this->addClassToListItem = (bool) $flag;
+        $this->addClassToListItem = $flag;
 
         return $this;
     }
@@ -636,7 +622,7 @@ final class Menu extends AbstractHelper
      *
      * @return bool whether parents should be rendered
      */
-    public function getAddClassToListItem()
+    public function getAddClassToListItem(): bool
     {
         return $this->addClassToListItem;
     }
@@ -648,9 +634,9 @@ final class Menu extends AbstractHelper
      *
      * @return self
      */
-    public function setOnlyActiveBranch($flag = true)
+    public function setOnlyActiveBranch(bool $flag = true): self
     {
-        $this->onlyActiveBranch = (bool) $flag;
+        $this->onlyActiveBranch = $flag;
 
         return $this;
     }
@@ -663,7 +649,7 @@ final class Menu extends AbstractHelper
      *
      * @return bool
      */
-    public function getOnlyActiveBranch()
+    public function getOnlyActiveBranch(): bool
     {
         return $this->onlyActiveBranch;
     }
@@ -676,7 +662,7 @@ final class Menu extends AbstractHelper
      *
      * @return self
      */
-    public function setPartial($partial)
+    public function setPartial($partial): self
     {
         if (null === $partial || is_string($partial) || is_array($partial)) {
             $this->partial = $partial;
@@ -704,9 +690,9 @@ final class Menu extends AbstractHelper
      *
      * @return self
      */
-    public function setRenderParents($flag = true)
+    public function setRenderParents(bool $flag = true): self
     {
-        $this->renderParents = (bool) $flag;
+        $this->renderParents = $flag;
 
         return $this;
     }
@@ -718,7 +704,7 @@ final class Menu extends AbstractHelper
      *
      * @return bool
      */
-    public function getRenderParents()
+    public function getRenderParents(): bool
     {
         return $this->renderParents;
     }
@@ -730,11 +716,9 @@ final class Menu extends AbstractHelper
      *
      * @return self
      */
-    public function setUlClass($ulClass)
+    public function setUlClass(string $ulClass): self
     {
-        if (is_string($ulClass)) {
-            $this->ulClass = $ulClass;
-        }
+        $this->ulClass = $ulClass;
 
         return $this;
     }
@@ -744,7 +728,7 @@ final class Menu extends AbstractHelper
      *
      * @return string
      */
-    public function getUlClass()
+    public function getUlClass(): string
     {
         return $this->ulClass;
     }
@@ -756,11 +740,9 @@ final class Menu extends AbstractHelper
      *
      * @return self
      */
-    public function setLiActiveClass($liActiveClass)
+    public function setLiActiveClass(string $liActiveClass): self
     {
-        if (is_string($liActiveClass)) {
-            $this->liActiveClass = $liActiveClass;
-        }
+        $this->liActiveClass = $liActiveClass;
 
         return $this;
     }
@@ -770,7 +752,7 @@ final class Menu extends AbstractHelper
      *
      * @return string
      */
-    public function getLiActiveClass()
+    public function getLiActiveClass(): string
     {
         return $this->liActiveClass;
     }
@@ -778,18 +760,18 @@ final class Menu extends AbstractHelper
     /**
      * Render a partial with the given "model".
      *
-     * @param array                  $params
-     * @param AbstractContainer|null $container
-     * @param array|string|null      $partial
+     * @param array                   $params
+     * @param ContainerInterface|null $container
+     * @param array|string|null       $partial
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
      *
      * @return string
      */
-    protected function renderPartialModel(array $params, $container, $partial)
+    private function renderPartialModel(array $params, ?ContainerInterface $container, $partial): string
     {
-        $this->parseContainer($container);
+        $this->parseNavigation($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -806,8 +788,9 @@ final class Menu extends AbstractHelper
 
         $model = array_merge($params, ['container' => $container]);
 
-        $partialHelper = $this->view->plugin('partial');
-        \assert($partialHelper instanceof \Laminas\View\Helper\Partial);
+        $partialHelper = $this->getView()->plugin('partial');
+        \assert($partialHelper instanceof Partial);
+
         if (is_array($partial)) {
             if (2 !== count($partial)) {
                 throw new Exception\InvalidArgumentException(
