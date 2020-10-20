@@ -12,8 +12,8 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
+use Laminas\Log\Logger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use ReflectionProperty;
 
 final class NavigationFactory implements FactoryInterface
 {
@@ -24,31 +24,19 @@ final class NavigationFactory implements FactoryInterface
      * @param string             $requestedName
      * @param array|null         $options
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     *
      * @return Navigation
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Navigation
     {
-        $serviceLocator = $this->getApplicationServicesFromContainer($container);
-
-        $helper = new Navigation();
-        $helper->setServiceLocator($serviceLocator);
-        $helper->setPluginManager(new Navigation\PluginManager($serviceLocator));
+        $helper = new Navigation(
+            $container->get(\Mezzio\Navigation\Navigation::class),
+            $container,
+            $container->get(Logger::class)
+        );
+        $helper->setPluginManager(new Navigation\PluginManager($container));
 
         return $helper;
-    }
-
-    /**
-     * Retrieve the application (parent) services from the container, if possible.
-     *
-     * @param ContainerInterface $container
-     *
-     * @return ContainerInterface
-     */
-    private function getApplicationServicesFromContainer(ContainerInterface $container): ContainerInterface
-    {
-        $r = new ReflectionProperty($container, 'creationContext');
-        $r->setAccessible(true);
-
-        return $r->getValue($container) ?: $container;
     }
 }

@@ -28,7 +28,7 @@ final class HelperConfig extends Config
     /**
      * Default configuration to apply.
      *
-     * @var string[][]
+     * @var array
      */
     protected $config = [
         'abstract_factories' => [],

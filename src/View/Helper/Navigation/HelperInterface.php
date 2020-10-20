@@ -11,9 +11,10 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\Permissions\Acl;
 use Laminas\View\Helper\HelperInterface as BaseHelperInterface;
+use Mezzio\Authorization\AuthorizationInterface;
 use Mezzio\Navigation;
+use Mezzio\Navigation\ContainerInterface;
 
 /**
  * Interface for navigational helpers
@@ -30,59 +31,47 @@ interface HelperInterface extends BaseHelperInterface
     /**
      * Renders helper
      *
-     * @param Navigation\AbstractContainer|string|null $container [optional] container to render.
-     *                                                            Default is null, which indicates
-     *                                                            that the helper should render
-     *                                                            the container returned by {@link *                                         getContainer()}.
+     * @param Navigation\ContainerInterface|null $container [optional] container to render.
+     *                                                      Default is null, which indicates
+     *                                                      that the helper should render
+     *                                                      the container returned by {@link *                                         getContainer()}.
      *
      * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return string helper output
      */
-    public function render($container = null): string;
+    public function render(?ContainerInterface $container = null): string;
 
     /**
      * Sets ACL to use when iterating pages
      *
-     * @param Acl\AclInterface|null $acl [optional] ACL instance
+     * @param AuthorizationInterface|null $authorization [optional] AuthorizationInterface instance
      *
      * @return void
      */
-    public function setAcl(?Acl\AclInterface $acl = null): void;
+    public function setAuthorization(?AuthorizationInterface $authorization = null): void;
 
     /**
-     * Returns ACL or null if it isn't set using {@link setAcl()} or
-     * {@link setDefaultAcl()}
+     * Returns ACL or null if it isn't set using {@link setAuthorization()} or
+     * {@link setDefaultAuthorization()}
      *
-     * @return Acl\AclInterface|null
+     * @return AuthorizationInterface|null
      */
-    public function getAcl();
+    public function getAuthorization(): ?AuthorizationInterface;
 
     /**
-     * Checks if the helper has an ACL instance
+     * Checks if the helper has an AuthorizationInterface instance
      *
      * @return bool
      */
-    public function hasAcl(): bool;
-
-    /**
-     * Sets navigation container the helper should operate on by default
-     *
-     * @param Navigation\AbstractContainer|string|null $container [optional] container to operate
-     *                                                            on. Default is null, which
-     *                                                            indicates that the container
-     *                                                            should be reset.
-     *
-     * @return void
-     */
-    public function setContainer($container = null): void;
+    public function hasAuthorization(): bool;
 
     /**
      * Returns the navigation container the helper operates on by default
      *
-     * @return Navigation\AbstractContainer navigation container
+     * @return Navigation\ContainerInterface|null navigation container
      */
-    public function getContainer(): Navigation\AbstractContainer;
+    public function getContainer(): ?Navigation\ContainerInterface;
 
     /**
      * Checks if the helper has a container
@@ -110,22 +99,20 @@ interface HelperInterface extends BaseHelperInterface
     /**
      * Sets ACL role to use when iterating pages
      *
-     * @param mixed $role [optional] role to set.  Expects a string, an
-     *                    instance of type {@link Acl\Role}, or null. Default
-     *                    is null.
+     * @param string $role [optional] role to set.  Expects a string or null. Default is null.
      *
      * @throws \Laminas\View\Exception\ExceptionInterface if $role is invalid
      *
      * @return void
      */
-    public function setRole($role = null): void;
+    public function setRole(string $role): void;
 
     /**
      * Returns ACL role to use when iterating pages, or null if it isn't set
      *
-     * @return Acl\Role\RoleInterface|string|null
+     * @return string|null
      */
-    public function getRole();
+    public function getRole(): ?string;
 
     /**
      * Checks if the helper has an ACL role
@@ -141,12 +128,12 @@ interface HelperInterface extends BaseHelperInterface
      *
      * @return void
      */
-    public function setUseAcl(bool $useAcl = true): void;
+    public function setUseAuthorization(bool $useAcl = true): void;
 
     /**
      * Returns whether ACL should be used
      *
      * @return bool
      */
-    public function getUseAcl(): bool;
+    public function getUseAuthorization(): bool;
 }

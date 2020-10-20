@@ -13,17 +13,21 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\View\Exception;
 use Laminas\View\Renderer\RendererInterface as Renderer;
-use Mezzio\Navigation\AbstractContainer;
+use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\AbstractHelper;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 
 /**
  * Proxy helper for retrieving navigational helpers and forwarding calls
  *
- * @method \Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs breadcrumbs(AbstractContainer|string|null $container = null)
- * @method \Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links       links(AbstractContainer|string|null $container = null)
- * @method \Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu        menu(AbstractContainer|string|null $container = null)
- * @method \Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap     sitemap(AbstractContainer|string|null $container = null)
+ * @method Breadcrumbs breadcrumbs(ContainerInterface|string|null $container = null)
+ * @method Links       links(ContainerInterface|string|null $container = null)
+ * @method Menu        menu(ContainerInterface|string|null $container = null)
+ * @method Sitemap     sitemap(ContainerInterface|string|null $container = null)
  */
 final class Navigation extends AbstractHelper
 {
@@ -46,14 +50,7 @@ final class Navigation extends AbstractHelper
      *
      * @var bool
      */
-    private $injectAcl = true;
-
-    /**
-     * Whether container should be injected when proxying
-     *
-     * @var bool
-     */
-    private $injectContainer = true;
+    private $injectAuthorization = true;
 
     /**
      * Whether translator should be injected when proxying
@@ -62,24 +59,8 @@ final class Navigation extends AbstractHelper
      */
     private $injectTranslator = true;
 
-    /** @var Navigation\PluginManager */
+    /** @var Navigation\PluginManager|null */
     private $plugins;
-
-    /**
-     * Helper entry point
-     *
-     * @param AbstractContainer|string|null $container container to operate on
-     *
-     * @return Navigation
-     */
-    public function __invoke($container = null)
-    {
-        if (null !== $container) {
-            $this->setContainer($container);
-        }
-
-        return $this;
-    }
 
     /**
      * Magic overload: Proxy to other navigation helpers or the container
@@ -107,16 +88,12 @@ final class Navigation extends AbstractHelper
      *
      * @return mixed returns what the proxied call returns
      */
-    public function __call($method, array $arguments = [])
+    public function __call(string $method, array $arguments = [])
     {
         // check if call should proxy to another helper
         $helper = $this->findHelper($method, false);
 
         if ($helper) {
-            if (method_exists($helper, 'setServiceLocator') && $this->getServiceLocator()) {
-                $helper->setServiceLocator($this->getServiceLocator());
-            }
-
             return call_user_func_array($helper, $arguments);
         }
 
@@ -127,13 +104,13 @@ final class Navigation extends AbstractHelper
     /**
      * Renders helper
      *
-     * @param AbstractContainer $container
+     * @param ContainerInterface|null $container
      *
      * @throws Exception\RuntimeException
      *
      * @return string
      */
-    public function render($container = null): string
+    public function render(?ContainerInterface $container = null): string
     {
         return $this->findHelper($this->getDefaultProxy())->render($container);
     }
@@ -173,10 +150,6 @@ final class Navigation extends AbstractHelper
             $helper->setContainer();
             $this->inject($helper);
             $this->injected[$hash] = true;
-        } else {
-            if ($this->getInjectContainer()) {
-                $helper->setContainer($container);
-            }
         }
 
         return $helper;
@@ -192,13 +165,9 @@ final class Navigation extends AbstractHelper
      */
     private function inject(HelperInterface $helper): void
     {
-        if ($this->getInjectContainer() && !$helper->hasContainer()) {
-            $helper->setContainer($this->getContainer());
-        }
-
-        if ($this->getInjectAcl()) {
-            if (!$helper->hasAcl()) {
-                $helper->setAcl($this->getAcl());
+        if ($this->getInjectAuthorization()) {
+            if (!$helper->hasAuthorization()) {
+                $helper->setAuthorization($this->getAuthorization());
             }
 
             if (!$helper->hasRole()) {
@@ -239,47 +208,25 @@ final class Navigation extends AbstractHelper
     }
 
     /**
-     * Sets whether container should be injected when proxying
+     * Sets whether Authorization should be injected when proxying
      *
-     * @param bool $injectContainer
-     *
-     * @return void
-     */
-    public function setInjectContainer(bool $injectContainer = true): void
-    {
-        $this->injectContainer = $injectContainer;
-    }
-
-    /**
-     * Returns whether container should be injected when proxying
-     *
-     * @return bool
-     */
-    public function getInjectContainer(): bool
-    {
-        return $this->injectContainer;
-    }
-
-    /**
-     * Sets whether ACL should be injected when proxying
-     *
-     * @param bool $injectAcl
+     * @param bool $injectAuthorization
      *
      * @return void
      */
-    public function setInjectAcl(bool $injectAcl = true): void
+    public function setInjectAuthorization(bool $injectAuthorization = true): void
     {
-        $this->injectAcl = $injectAcl;
+        $this->injectAuthorization = $injectAuthorization;
     }
 
     /**
-     * Returns whether ACL should be injected when proxying
+     * Returns whether Authorization should be injected when proxying
      *
      * @return bool
      */
-    public function getInjectAcl(): bool
+    public function getInjectAuthorization(): bool
     {
-        return $this->injectAcl;
+        return $this->injectAuthorization;
     }
 
     /**
