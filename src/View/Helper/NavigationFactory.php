@@ -31,7 +31,6 @@ final class NavigationFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Navigation
     {
         $helper = new Navigation(
-            $container->get(\Mezzio\Navigation\Navigation::class),
             $container,
             $container->get(Logger::class)
         );

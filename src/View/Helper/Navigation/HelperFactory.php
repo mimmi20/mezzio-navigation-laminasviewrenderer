@@ -15,8 +15,6 @@ use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Mezzio\Navigation\Navigation;
-use ReflectionProperty;
 
 final class HelperFactory implements FactoryInterface
 {
@@ -34,33 +32,9 @@ final class HelperFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): HelperInterface
     {
-        try {
-            $serviceLocator = $this->getApplicationServicesFromContainer($container);
-        } catch (\ReflectionException $e) {
-            throw new ServiceNotCreatedException('could not detect ServiceLocator', 0, $e);
-        }
-
         return new $requestedName(
-            $serviceLocator->get(Navigation::class),
-            $serviceLocator,
-            $serviceLocator->get(Logger::class)
+            $container,
+            $container->get(Logger::class)
         );
-    }
-
-    /**
-     * Retrieve the application (parent) services from the container, if possible.
-     *
-     * @param ContainerInterface $container
-     *
-     * @throws \ReflectionException
-     *
-     * @return ContainerInterface
-     */
-    private function getApplicationServicesFromContainer(ContainerInterface $container): ContainerInterface
-    {
-        $r = new ReflectionProperty($container, 'creationContext');
-        $r->setAccessible(true);
-
-        return $r->getValue($container) ?: $container;
     }
 }

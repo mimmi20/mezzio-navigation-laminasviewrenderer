@@ -13,6 +13,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtml;
+use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
@@ -38,7 +39,7 @@ final class Breadcrumbs extends AbstractHelper
     /**
      * Partial view script to use for rendering menu.
      *
-     * @var array|string
+     * @var array|string|null
      */
     private $partial;
 
@@ -57,7 +58,11 @@ final class Breadcrumbs extends AbstractHelper
      * @param ContainerInterface|null $container [optional] container to render.
      *                                           Default is null, which indicates
      *                                           that the helper should render
-     *                                           the container returned by {@link *                                         getContainer()}.
+     *                                           the container returned by {@link getContainer()}.
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return string
      */
@@ -76,14 +81,19 @@ final class Breadcrumbs extends AbstractHelper
      * Renders breadcrumbs by chaining 'a' elements with the separator
      * registered in the helper.
      *
-     * @param ContainerInterface $container [optional] container to render. Default is
-     *                                      to render the container registered in the helper.
+     * @param ContainerInterface|null $container [optional] container to render. Default is
+     *                                           to render the container registered in the helper.
+     *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return string
      */
     public function renderStraight($container = null): string
     {
-        $this->parseNavigation($container);
+        $this->parseContainer($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -140,8 +150,9 @@ final class Breadcrumbs extends AbstractHelper
      *                                           Default is to use the partial registered in the helper. If an array
      *                                           is given, the first value is used for the partial view script.
      *
-     * @throws Exception\RuntimeException         if no partial provided
-     * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws Exception\RuntimeException                 if no partial provided
+     * @throws Exception\InvalidArgumentException         if partial is invalid array
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
@@ -166,8 +177,9 @@ final class Breadcrumbs extends AbstractHelper
      *                                           is given, the first value is used for the partial view script.
      * @param array                   $params
      *
-     * @throws Exception\RuntimeException         if no partial provided
-     * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws Exception\RuntimeException                 if no partial provided
+     * @throws Exception\InvalidArgumentException         if partial is invalid array
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
@@ -203,8 +215,8 @@ final class Breadcrumbs extends AbstractHelper
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array|string $partial partial view script or null. If an array is
-     *                              given, the first value is used for the partial view script.
+     * @param array|string|null $partial partial view script or null. If an array is
+     *                                   given, the first value is used for the partial view script.
      *
      * @return Breadcrumbs
      */
@@ -267,7 +279,7 @@ final class Breadcrumbs extends AbstractHelper
      */
     private function renderPartialModel(array $params, $container, $partial): string
     {
-        $this->parseNavigation($container);
+        $this->parseContainer($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -305,7 +317,7 @@ final class Breadcrumbs extends AbstractHelper
         }
 
         $partialHelper = $this->getView()->plugin('partial');
-        \assert($partialHelper instanceof \Laminas\View\Helper\Partial);
+        \assert($partialHelper instanceof Partial);
         if (is_array($partial)) {
             if (2 !== count($partial)) {
                 throw new Exception\InvalidArgumentException(
@@ -314,9 +326,17 @@ final class Breadcrumbs extends AbstractHelper
                 );
             }
 
-            return $partialHelper($partial[0], $model);
+            $partial = $partial[0];
         }
 
-        return $partialHelper($partial, $model);
+        $rendered = $partialHelper($partial, $model);
+
+        if ($rendered instanceof Partial) {
+            throw new Exception\InvalidArgumentException(
+                'Unable to render menu: A view partial was not rendered correctly'
+            );
+        }
+
+        return $rendered;
     }
 }

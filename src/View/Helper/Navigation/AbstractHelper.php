@@ -15,8 +15,9 @@ use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\View;
 use Laminas\View\Exception;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\TranslatorAwareTrait;
-use Mezzio\Authorization\AuthorizationInterface;
+use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
@@ -46,14 +47,14 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * The minimum depth a page must have to be included when rendering
      *
-     * @var int
+     * @var int|null
      */
     protected $minDepth;
 
     /**
      * The maximum depth a page can have to be included when rendering
      *
-     * @var int
+     * @var int|null
      */
     protected $maxDepth;
 
@@ -67,7 +68,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * ACL to use when iterating pages
      *
-     * @var \Mezzio\Authorization\AuthorizationInterface|null
+     * @var \Mezzio\GenericAuthorization\AuthorizationInterface|null
      */
     protected $authorization;
 
@@ -107,16 +108,13 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     protected static $defaultAuthorization;
 
     /**
-     * @param \Mezzio\Navigation\ContainerInterface $container
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
      */
     public function __construct(
-        Navigation\ContainerInterface $container,
         ContainerInterface $serviceLocator,
         Logger $logger
     ) {
-        $this->container      = $container;
         $this->serviceLocator = $serviceLocator;
         $this->logger         = $logger;
     }
@@ -124,17 +122,113 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Helper entry point
      *
-     * @param string|null $navigation container to operate on
+     * @param Navigation\ContainerInterface|string|null $container container to operate on
      *
      * @return self
      */
-    final public function __invoke(?string $navigation = null): self
+    public function __invoke($container = null): self
     {
-        if (null !== $navigation) {
-            $this->setNavigation($navigation);
+        if (null !== $container) {
+            $this->setContainer($container);
         }
 
         return $this;
+    }
+
+    /**
+     * Sets navigation container the helper operates on by default
+     *
+     * Implements {@link HelperInterface::setContainer()}.
+     *
+     * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
+     *
+     * @return AbstractHelper
+     */
+    public function setContainer($container = null)
+    {
+        $this->parseContainer($container);
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Returns the navigation container helper operates on by default
+     *
+     * Implements {@link HelperInterface::getContainer()}.
+     *
+     * If no container is set, a new container will be instantiated and
+     * stored in the helper.
+     *
+     * @return Navigation\ContainerInterface navigation container
+     */
+    public function getContainer(): Navigation\ContainerInterface
+    {
+        if (null === $this->container) {
+            $this->container = new Navigation\Navigation();
+        }
+
+        return $this->container;
+    }
+
+    /**
+     * Verifies container and eventually fetches it from service locator if it is a string
+     *
+     * @param Navigation\ContainerInterface|string|null $container
+     *
+     * @throws Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    protected function parseContainer(&$container = null): void
+    {
+        if (null === $container) {
+            return;
+        }
+
+        if (is_string($container)) {
+            $services = $this->getServiceLocator();
+
+            if (!$services) {
+                throw new Exception\InvalidArgumentException(
+                    sprintf(
+                        'Attempted to set container with alias "%s" but no ServiceLocator was set',
+                        $container
+                    )
+                );
+            }
+
+            // Fallback
+            if (in_array($container, ['default', 'navigation'], true)) {
+                // Uses class name
+                if ($services->has(Navigation\Navigation::class)) {
+                    $container = $services->get(Navigation\Navigation::class);
+
+                    return;
+                }
+
+                // Uses old service name
+                if ($services->has('navigation')) {
+                    $container = $services->get('navigation');
+
+                    return;
+                }
+            }
+
+            /**
+             * Load the navigation container from the root service locator
+             */
+            $container = $services->get($container);
+
+            return;
+        }
+
+        if (!$container instanceof Navigation\ContainerInterface) {
+            throw new Exception\InvalidArgumentException(
+                'Container must be a string alias or an instance of '
+                . 'Laminas\Navigation\AbstractContainer'
+            );
+        }
     }
 
     /**
@@ -169,7 +263,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     {
         try {
             return $this->render();
-        } catch (\Throwable $e) {
+        } catch (ExceptionInterface $e) {
             $this->logger->err($e);
 
             return '';
@@ -179,28 +273,28 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Finds the deepest active page in the given container
      *
-     * @param string|null $navigation navigation to search
-     * @param int|null    $minDepth   [optional] minimum depth
-     *                                required for page to be
-     *                                valid. Default is to use
-     *                                {@link getMinDepth()}. A
-     *                                null value means no minimum
-     *                                depth required.
-     * @param int|null    $maxDepth   [optional] maximum depth
-     *                                a page can have to be
-     *                                valid. Default is to use
-     *                                {@link getMaxDepth()}. A
-     *                                null value means no maximum
-     *                                depth required.
+     * @param Navigation\ContainerInterface|string|null $container to search
+     * @param int|null                                  $minDepth  [optional] minimum depth
+     *                                                             required for page to be
+     *                                                             valid. Default is to use
+     *                                                             {@link getMinDepth()}. A
+     *                                                             null value means no minimum
+     *                                                             depth required.
+     * @param int|null                                  $maxDepth  [optional] maximum depth
+     *                                                             a page can have to be
+     *                                                             valid. Default is to use
+     *                                                             {@link getMaxDepth()}. A
+     *                                                             null value means no maximum
+     *                                                             depth required.
      *
      * @return array an associative array with
      *               the values 'depth' and
      *               'page', or an empty array
      *               if not found
      */
-    final public function findActive(?string $navigation, ?int $minDepth = null, ?int $maxDepth = -1)
+    final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1)
     {
-        $this->parseNavigation($navigation);
+        $this->parseContainer($container);
         if (!is_int($minDepth)) {
             $minDepth = $this->getMinDepth();
         }
@@ -240,6 +334,10 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
                     break;
                 }
 
+                if (null === $found) {
+                    break;
+                }
+
                 $found = $found->getParent();
                 if (!$found instanceof PageInterface) {
                     $found = null;
@@ -253,24 +351,6 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
         }
 
         return [];
-    }
-
-    /**
-     * Verifies container and eventually fetches it from service locator if it is a string
-     *
-     * @param string|null $container
-     *
-     * @throws Exception\InvalidArgumentException
-     */
-    protected function parseNavigation(?string $container = null): void
-    {
-        if (null === $container) {
-            return;
-        }
-
-        if (!is_string($container)) {
-            return;
-        }
     }
 
     // Iterator filter methods:
@@ -308,8 +388,12 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
 
         if ($this->getUseAuthorization()) {
             $authorization = $this->getAuthorization();
-            $role          = $this->getRole();
-            $accept        = $authorization->isGranted($role, $page->getResource());
+            $role   = $this->getRole();
+            $resource = $page->getResource();
+
+            if (null !== $authorization && null !== $role && null !== $resource) {
+                $accept = $authorization->isGranted($role, $resource, $page->getPrivilege());
+            }
         }
 
         if ($accept && $recursive) {
@@ -374,8 +458,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      */
     public function htmlify(PageInterface $page): string
     {
-        $label = $this->translate($page->getLabel(), $page->getTextDomain());
-        $title = $this->translate($page->getTitle(), $page->getTextDomain());
+        $label = $this->translate((string) $page->getLabel(), $page->getTextDomain());
+        $title = $this->translate((string) $page->getTitle(), $page->getTextDomain());
 
         // get attribs for anchor element
         $attribs = [
@@ -412,6 +496,11 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
         }
 
         $translator = $this->getTranslator();
+
+        if (null === $translator) {
+            return $message;
+        }
+
         $textDomain = $textDomain ?: $this->getTranslatorTextDomain();
 
         return $translator->translate($message, $textDomain);
@@ -475,40 +564,6 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     {
         return $this->authorization instanceof AuthorizationInterface
             || static::$defaultAuthorization instanceof AuthorizationInterface;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNavigation(): ?string
-    {
-        return $this->navigation;
-    }
-
-    /**
-     * @param string $navigation
-     *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     */
-    public function setNavigation(string $navigation): void
-    {
-        $this->parseNavigation($navigation);
-        $this->navigation = $navigation;
-    }
-
-    /**
-     * Returns the navigation container helper operates on by default
-     *
-     * Implements {@link HelperInterface::getContainer()}.
-     *
-     * If no container is set, a new container will be instantiated and
-     * stored in the helper.
-     *
-     * @return Navigation\ContainerInterface|null navigation container
-     */
-    final public function getContainer(): ?Navigation\ContainerInterface
-    {
-        return $this->container;
     }
 
     /**
@@ -682,9 +737,9 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * Used internally to pull named navigation containers to render.
      *
-     * @return ContainerInterface
+     * @return ContainerInterface|null
      */
-    final public function getServiceLocator(): ContainerInterface
+    final public function getServiceLocator(): ?ContainerInterface
     {
         return $this->serviceLocator;
     }
@@ -718,8 +773,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Sets default ACL to use if another ACL is not explicitly set
      *
-     * @param \Mezzio\Authorization\AuthorizationInterface $authorization [optional] ACL object. Default is null, which
-     *                                                                    sets no ACL object.
+     * @param \Mezzio\GenericAuthorization\AuthorizationInterface $authorization [optional] ACL object. Default is null, which
+     *                                                                           sets no ACL object.
      *
      * @return void
      */

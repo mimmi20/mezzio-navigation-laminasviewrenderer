@@ -11,8 +11,9 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\I18n\Translator\TranslatorInterface as Translator;
 use Laminas\View\Helper\HelperInterface as BaseHelperInterface;
-use Mezzio\Authorization\AuthorizationInterface;
+use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\ContainerInterface;
 
@@ -34,7 +35,7 @@ interface HelperInterface extends BaseHelperInterface
      * @param Navigation\ContainerInterface|null $container [optional] container to render.
      *                                                      Default is null, which indicates
      *                                                      that the helper should render
-     *                                                      the container returned by {@link *                                         getContainer()}.
+     *                                                      the container returned by {@link getContainer()}.
      *
      * @throws \Laminas\View\Exception\ExceptionInterface
      *
@@ -65,6 +66,15 @@ interface HelperInterface extends BaseHelperInterface
      * @return bool
      */
     public function hasAuthorization(): bool;
+
+    /**
+     * Sets navigation container the helper operates on by default
+     *
+     * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
+     *
+     * @return AbstractHelper
+     */
+    public function setContainer($container = null);
 
     /**
      * Returns the navigation container the helper operates on by default
@@ -136,4 +146,29 @@ interface HelperInterface extends BaseHelperInterface
      * @return bool
      */
     public function getUseAuthorization(): bool;
+
+    /**
+     * Sets translator to use in helper
+     *
+     * @param  Translator|null $translator  [optional] translator.
+     *                                 Default is null, which sets no translator.
+     * @param  string|null     $textDomain  [optional] text domain
+     *                                 Default is null, which skips setTranslatorTextDomain
+     * @return self
+     */
+    public function setTranslator(Translator $translator = null, $textDomain = null);
+
+    /**
+     * Returns translator used in helper
+     *
+     * @return Translator|null
+     */
+    public function getTranslator();
+
+    /**
+     * Checks if the helper has a translator
+     *
+     * @return bool
+     */
+    public function hasTranslator();
 }

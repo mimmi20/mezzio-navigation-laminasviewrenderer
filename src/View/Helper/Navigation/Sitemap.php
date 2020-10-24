@@ -12,6 +12,14 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\Stdlib\ErrorHandler;
+use Laminas\Uri;
+use Laminas\Uri\Exception\InvalidArgumentException;
+use Laminas\Uri\Exception\InvalidUriException;
+use Laminas\Uri\Exception\InvalidUriPartException;
+use Laminas\Validator\Sitemap\Changefreq;
+use Laminas\Validator\Sitemap\Lastmod;
+use Laminas\Validator\Sitemap\Loc;
+use Laminas\Validator\Sitemap\Priority;
 use Laminas\View\Exception;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
@@ -84,7 +92,7 @@ final class Sitemap extends AbstractHelper
      * @param ContainerInterface|null $container [optional] container to render.
      *                                           Default is null, which indicates
      *                                           that the helper should render
-     *                                           the container returned by {@link *                                         getContainer()}.
+     *                                           the container returned by {@link getContainer()}.
      *
      * @return string
      */
@@ -113,8 +121,7 @@ final class Sitemap extends AbstractHelper
      *                                    validators are used and the
      *                                    loc element fails validation
      *
-     * @return \DOMDocument DOM representation of the
-     *                      container
+     * @return \DOMDocument DOM representation of the container
      */
     public function getDomSitemap(?ContainerInterface $container = null): \DOMDocument
     {
@@ -123,15 +130,6 @@ final class Sitemap extends AbstractHelper
 
         if (null === $container) {
             $container = $this->getContainer();
-        }
-
-        // check if we should validate using our own validators
-        if ($this->getUseSitemapValidators()) {
-            // create validators
-            $locValidator        = new \Laminas\Validator\Sitemap\Loc();
-            $lastmodValidator    = new \Laminas\Validator\Sitemap\Lastmod();
-            $changefreqValidator = new \Laminas\Validator\Sitemap\Changefreq();
-            $priorityValidator   = new \Laminas\Validator\Sitemap\Priority();
         }
 
         // create document
@@ -173,14 +171,17 @@ final class Sitemap extends AbstractHelper
             $urlNode = $dom->createElementNS(self::SITEMAP_NS, 'url');
             $urlSet->appendChild($urlNode);
 
-            if (
-                $this->getUseSitemapValidators()
-                && !$locValidator->isValid($url)
-            ) {
-                throw new Exception\RuntimeException(sprintf(
-                    'Encountered an invalid URL for Sitemap XML: "%s"',
-                    $url
-                ));
+            if ($this->getUseSitemapValidators()) {
+                $locValidator = new Loc();
+
+                if (!$locValidator->isValid($url)) {
+                    throw new Exception\RuntimeException(
+                        sprintf(
+                            'Encountered an invalid URL for Sitemap XML: "%s"',
+                            $url
+                        )
+                    );
+                }
             }
 
             // put url in 'loc' element
@@ -195,9 +196,11 @@ final class Sitemap extends AbstractHelper
                     $lastmod = date('c', $lastmod);
                 }
 
+                $lastmodValidator = new Lastmod();
+
                 if (
                     !$this->getUseSitemapValidators()
-                    || $lastmodValidator->isValid($lastmod)
+                    || (false !== $lastmod && $lastmodValidator->isValid($lastmod))
                 ) {
                     // Cast $lastmod to string in case no validation was used
                     $urlNode->appendChild(
@@ -208,7 +211,9 @@ final class Sitemap extends AbstractHelper
 
             // add 'changefreq' element if a valid changefreq is set in page
             if (isset($page->changefreq)) {
-                $changefreq = $page->changefreq;
+                $changefreq          = $page->changefreq;
+                $changefreqValidator = new Changefreq();
+
                 if (
                     !$this->getUseSitemapValidators() ||
                     $changefreqValidator->isValid($changefreq)
@@ -225,11 +230,13 @@ final class Sitemap extends AbstractHelper
             }
 
             $priority = $page->priority;
-            if (
-                $this->getUseSitemapValidators() &&
-                !$priorityValidator->isValid($priority)
-            ) {
-                continue;
+
+            if ($this->getUseSitemapValidators()) {
+                $priorityValidator = new Priority();
+
+                if (!$priorityValidator->isValid($priority)) {
+                    continue;
+                }
             }
 
             $urlNode->appendChild(
@@ -240,13 +247,20 @@ final class Sitemap extends AbstractHelper
         // validate using schema if specified
         if ($this->getUseSchemaValidation()) {
             ErrorHandler::start();
-            $test  = $dom->schemaValidate(self::SITEMAP_XSD);
-            $error = ErrorHandler::stop();
-            if (!$test) {
-                throw new Exception\RuntimeException(sprintf(
-                    'Sitemap is invalid according to XML Schema at "%s"',
-                    self::SITEMAP_XSD
-                ), 0, $error);
+
+            $dom->schemaValidate(self::SITEMAP_XSD);
+
+            try {
+                ErrorHandler::stop(true);
+            } catch (\ErrorException $e) {
+                throw new Exception\RuntimeException(
+                    sprintf(
+                        'Sitemap is invalid according to XML Schema at "%s"',
+                        self::SITEMAP_XSD
+                    ),
+                    0,
+                    $e
+                );
             }
         }
 
@@ -341,21 +355,58 @@ final class Sitemap extends AbstractHelper
      *
      * @return self
      */
-    public function setServerUrl($serverUrl): self
+    public function setServerUrl(string $serverUrl): self
     {
-        $uri = Uri\UriFactory::factory($serverUrl);
-        $uri->setFragment('');
+        try {
+            $uri = Uri\UriFactory::factory($serverUrl);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException(
+                sprintf(
+                    'Invalid server URL: "%s"',
+                    $serverUrl
+                ),
+                0,
+                $e
+            );
+        }
+
+        try {
+            $uri->setFragment('');
+        } catch (InvalidUriPartException $e) {
+            throw new Exception\InvalidArgumentException(
+                sprintf(
+                    'Invalid server URL: "%s"',
+                    $serverUrl
+                ),
+                0,
+                $e
+            );
+        }
+
         $uri->setPath('');
         $uri->setQuery('');
 
         if (!$uri->isValid()) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Invalid server URL: "%s"',
-                $serverUrl
-            ));
+            throw new Exception\InvalidArgumentException(
+                sprintf(
+                    'Invalid server URL: "%s"',
+                    $serverUrl
+                )
+            );
         }
 
-        $this->serverUrl = $uri->toString();
+        try {
+            $this->serverUrl = $uri->toString();
+        } catch (InvalidUriException $e) {
+            throw new Exception\InvalidArgumentException(
+                sprintf(
+                    'Invalid server URL: "%s"',
+                    $serverUrl
+                ),
+                0,
+                $e
+            );
+        }
 
         return $this;
     }
