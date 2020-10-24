@@ -36,11 +36,6 @@ final class ConfigProvider
     public function getViewHelperConfig()
     {
         return [
-            'delegators' => [
-                'ViewHelperManager' => [
-                    ViewHelperManagerDelegatorFactory::class,
-                ],
-            ],
             'aliases' => [
                 'navigation' => Navigation::class,
                 'Navigation' => Navigation::class,

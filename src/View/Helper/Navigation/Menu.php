@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
@@ -46,7 +47,7 @@ final class Menu extends AbstractHelper
     /**
      * Partial view script to use for rendering menu.
      *
-     * @var array|string
+     * @var array|string|null
      */
     private $partial;
 
@@ -86,7 +87,11 @@ final class Menu extends AbstractHelper
      * @param ContainerInterface|null $container [optional] container to render.
      *                                           Default is null, which indicates
      *                                           that the helper should render
-     *                                           the container returned by {@link *                                         getContainer()}.
+     *                                           the container returned by {@link getContainer()}.
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return string
      */
@@ -104,19 +109,22 @@ final class Menu extends AbstractHelper
     /**
      * Renders the deepest active menu within [$minDepth, $maxDepth], (called from {@link renderMenu()}).
      *
-     * @param string|null $navigation         container to render
-     * @param string      $ulClass            CSS class for first UL
-     * @param string      $indent             initial indentation
-     * @param int|null    $minDepth           minimum depth
-     * @param int|null    $maxDepth           maximum depth
-     * @param bool        $escapeLabels       Whether or not to escape the labels
-     * @param bool        $addClassToListItem Whether or not page class applied to <li> element
-     * @param string      $liActiveClass      CSS class for active LI
+     * @param ContainerInterface $container          container to render
+     * @param string             $ulClass            CSS class for first UL
+     * @param string             $indent             initial indentation
+     * @param int|null           $minDepth           minimum depth
+     * @param int|null           $maxDepth           maximum depth
+     * @param bool               $escapeLabels       Whether or not to escape the labels
+     * @param bool               $addClassToListItem Whether or not page class applied to <li> element
+     * @param string             $liActiveClass      CSS class for active LI
+     *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
     private function renderDeepestMenu(
-        ?string $navigation,
+        ContainerInterface $container,
         string $ulClass,
         string $indent,
         ?int $minDepth,
@@ -125,7 +133,7 @@ final class Menu extends AbstractHelper
         bool $addClassToListItem,
         string $liActiveClass
     ): string {
-        if (!$active = $this->findActive($navigation, $minDepth - 1, $maxDepth)) {
+        if (!$active = $this->findActive($container, $minDepth - 1, $maxDepth)) {
             return '';
         }
 
@@ -143,7 +151,7 @@ final class Menu extends AbstractHelper
         }
 
         $escaper = $this->getView()->plugin('escapeHtmlAttr');
-        \assert($escaper instanceof \Laminas\View\Helper\EscapeHtmlAttr);
+        \assert($escaper instanceof EscapeHtmlAttr);
         $ulClass = $ulClass ? ' class="' . $escaper($ulClass) . '"' : '';
         $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
 
@@ -188,11 +196,16 @@ final class Menu extends AbstractHelper
      *                                           Default is to use the container retrieved from {@link getContainer()}.
      * @param array                   $options   [optional] options for controlling rendering
      *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     *
      * @return string
      */
     public function renderMenu(?ContainerInterface $container = null, array $options = []): string
     {
-        $this->parseNavigation($container);
+        $this->parseContainer($container);
 
         if (null === $container) {
             $container = $this->getContainer();
@@ -229,20 +242,23 @@ final class Menu extends AbstractHelper
     /**
      * Renders a normal menu (called from {@link renderMenu()}).
      *
-     * @param string|null $navigation         container to render
-     * @param string      $ulClass            CSS class for first UL
-     * @param string      $indent             initial indentation
-     * @param int|null    $minDepth           minimum depth
-     * @param int|null    $maxDepth           maximum depth
-     * @param bool        $onlyActive         render only active branch?
-     * @param bool        $escapeLabels       Whether or not to escape the labels
-     * @param bool        $addClassToListItem Whether or not page class applied to <li> element
-     * @param string      $liActiveClass      CSS class for active LI
+     * @param ContainerInterface $container          container to render
+     * @param string             $ulClass            CSS class for first UL
+     * @param string             $indent             initial indentation
+     * @param int|null           $minDepth           minimum depth
+     * @param int|null           $maxDepth           maximum depth
+     * @param bool               $onlyActive         render only active branch?
+     * @param bool               $escapeLabels       Whether or not to escape the labels
+     * @param bool               $addClassToListItem Whether or not page class applied to <li> element
+     * @param string             $liActiveClass      CSS class for active LI
+     *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
     private function renderNormalMenu(
-        ?string $navigation,
+        ContainerInterface $container,
         string $ulClass,
         string $indent,
         ?int $minDepth,
@@ -255,16 +271,17 @@ final class Menu extends AbstractHelper
         $html = '';
 
         // find deepest active
-        $found = $this->findActive($navigation, $minDepth, $maxDepth);
+        $found = $this->findActive($container, $minDepth, $maxDepth);
 
         $escaper = $this->getView()->plugin('escapeHtmlAttr');
-        \assert($escaper instanceof \Laminas\View\Helper\EscapeHtmlAttr);
+        \assert($escaper instanceof EscapeHtmlAttr);
 
         if ($found) {
             $foundPage  = $found['page'];
             $foundDepth = $found['depth'];
         } else {
-            $foundPage = null;
+            $foundPage  = null;
+            $foundDepth = 0;
         }
 
         // create iterator
@@ -387,8 +404,9 @@ final class Menu extends AbstractHelper
      *                                           Default is to use the partial registered in the helper. If an array
      *                                           is given, the first value is used for the partial view script.
      *
-     * @throws Exception\RuntimeException         if no partial provided
-     * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws Exception\RuntimeException                 if no partial provided
+     * @throws Exception\InvalidArgumentException         if partial is invalid array
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
@@ -413,8 +431,9 @@ final class Menu extends AbstractHelper
      *                                           is given, the first value is used for the partial view script.
      * @param array                   $params
      *
-     * @throws Exception\RuntimeException         if no partial provided
-     * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws Exception\RuntimeException                 if no partial provided
+     * @throws Exception\InvalidArgumentException         if partial is invalid array
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
@@ -448,6 +467,9 @@ final class Menu extends AbstractHelper
      *                                               {@link getIndent()}.
      * @param string|null             $liActiveClass [optional] CSS class to use for UL
      *                                               element. Default is to use the value from {@link getUlClass()}.
+     *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
@@ -487,7 +509,7 @@ final class Menu extends AbstractHelper
         // get attribs for element
         $attribs = [
             'id' => $page->getId(),
-            'title' => $this->translate($page->getTitle(), $page->getTextDomain()),
+            'title' => $this->translate((string) $page->getTitle(), $page->getTextDomain()),
         ];
 
         if (false === $addClassToListItem) {
@@ -505,7 +527,7 @@ final class Menu extends AbstractHelper
         }
 
         $html  = '<' . $element . $this->htmlAttribs($attribs) . '>';
-        $label = $this->translate($page->getLabel(), $page->getTextDomain());
+        $label = $this->translate((string) $page->getLabel(), $page->getTextDomain());
 
         if (true === $escapeLabel) {
             $escaper = $this->getView()->plugin('escapeHtml');
@@ -657,8 +679,8 @@ final class Menu extends AbstractHelper
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array|string $partial partial view script or null. If an array
-     *                              is given, the first value is used for the partial view script.
+     * @param array|string|null $partial partial view script or null. If an array
+     *                                   is given, the first value is used for the partial view script.
      *
      * @return self
      */
@@ -764,14 +786,17 @@ final class Menu extends AbstractHelper
      * @param ContainerInterface|null $container
      * @param array|string|null       $partial
      *
-     * @throws Exception\RuntimeException         if no partial provided
-     * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws Exception\RuntimeException                            if no partial provided
+     * @throws Exception\InvalidArgumentException                    if partial is invalid array
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return string
      */
     private function renderPartialModel(array $params, ?ContainerInterface $container, $partial): string
     {
-        $this->parseNavigation($container);
+        $this->parseContainer($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -799,9 +824,17 @@ final class Menu extends AbstractHelper
                 );
             }
 
-            return $partialHelper($partial[0], $model);
+            $partial = $partial[0];
         }
 
-        return $partialHelper($partial, $model);
+        $rendered = $partialHelper($partial, $model);
+
+        if ($rendered instanceof Partial) {
+            throw new Exception\InvalidArgumentException(
+                'Unable to render menu: A view partial was not rendered correctly'
+            );
+        }
+
+        return $rendered;
     }
 }

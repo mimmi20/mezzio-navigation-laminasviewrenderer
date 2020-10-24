@@ -21,4 +21,7 @@ parameters:
   ignoreErrors:
     - '~is not subtype of Throwable~'
     - '~Useless \@throws~'
-    - '~PHPDoc tag @throws with type .*Interface is not compatible with parent .*Exception~'
+    - '~PHPDoc tag @throws with type .*(Exception|Interface) is not compatible with parent .*(Exception|Interface)~'
+    - '~Cannot call method plugin\(\) on Laminas\\View\\Renderer\\RendererInterface~'
+    - '~Parameter #1 \$message of method Laminas\\Log\\Logger::.* expects string, .* given~'
+    - '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, array\(.*\) given~'

@@ -87,7 +87,7 @@ final class Links extends AbstractHelper
      *
      * @see _findRoot()
      *
-     * @var ContainerInterface
+     * @var ContainerInterface|null
      */
     private $root;
 
@@ -106,6 +106,9 @@ final class Links extends AbstractHelper
      * @param array  $arguments
      *
      * @throws Exception\ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \ErrorException
      *
      * @return mixed
      */
@@ -129,13 +132,19 @@ final class Links extends AbstractHelper
      * @param ContainerInterface|null $container [optional] container to render.
      *                                           Default is null, which indicates
      *                                           that the helper should render
-     *                                           the container returned by {@link *                                         getContainer()}.
+     *                                           the container returned by {@link getContainer()}.
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */
     public function render(?ContainerInterface $container = null): string
     {
-        $this->parseNavigation($container);
+        $this->parseContainer($container);
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -240,6 +249,10 @@ final class Links extends AbstractHelper
      * @param PageInterface $page page to find links for
      * @param int|null      $flag
      *
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
      * @return array
      */
     public function findAllRelations(PageInterface $page, ?int $flag = null): array
@@ -260,7 +273,7 @@ final class Links extends AbstractHelper
                     $relFlag = self::RENDER_CUSTOM;
                 }
 
-                if (!($flag & $relFlag)) {
+                if (!((int) $flag & (int) $relFlag)) {
                     continue;
                 }
 
@@ -290,7 +303,9 @@ final class Links extends AbstractHelper
      * @param string        $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @throws Exception\DomainException if $rel is not "rel" or "rev"
+     * @throws Exception\DomainException                             if $rel is not "rel" or "rev"
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return array|PageInterface|null
      */
@@ -317,6 +332,9 @@ final class Links extends AbstractHelper
      * @param PageInterface $page page to find relations for
      * @param string        $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
+     *
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return array|PageInterface|null
      */
@@ -477,6 +495,10 @@ final class Links extends AbstractHelper
      * Refers to a document serving as a chapter in a collection of documents.
      *
      * @param PageInterface $page
+     *
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return array|PageInterface|null
      */
@@ -694,6 +716,9 @@ final class Links extends AbstractHelper
      * @param ContainerInterface|PageInterface|string|Traversable $mixed     mixed value to get page(s) from
      * @param bool                                                $recursive whether $value should be looped if it is an array or a config
      *
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
      * @return array|PageInterface|null
      */
     private function convertToPages($mixed, bool $recursive = true)
@@ -747,7 +772,7 @@ final class Links extends AbstractHelper
         }
 
         // nothing found
-        return;
+        return null;
     }
 
     /**
