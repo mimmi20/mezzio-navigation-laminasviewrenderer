@@ -138,7 +138,6 @@ final class Links extends AbstractHelper
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return string
      */

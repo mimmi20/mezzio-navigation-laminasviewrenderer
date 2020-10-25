@@ -150,13 +150,14 @@ interface HelperInterface extends BaseHelperInterface
     /**
      * Sets translator to use in helper
      *
-     * @param  Translator|null $translator  [optional] translator.
-     *                                 Default is null, which sets no translator.
-     * @param  string|null     $textDomain  [optional] text domain
-     *                                 Default is null, which skips setTranslatorTextDomain
+     * @param Translator|null $translator [optional] translator.
+     *                                    Default is null, which sets no translator.
+     * @param string|null     $textDomain [optional] text domain
+     *                                    Default is null, which skips setTranslatorTextDomain
+     *
      * @return self
      */
-    public function setTranslator(Translator $translator = null, $textDomain = null);
+    public function setTranslator(?Translator $translator = null, $textDomain = null);
 
     /**
      * Returns translator used in helper

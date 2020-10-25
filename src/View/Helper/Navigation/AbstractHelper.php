@@ -20,6 +20,7 @@ use Laminas\View\Helper\TranslatorAwareTrait;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
+use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 
 /**
@@ -124,6 +125,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @param Navigation\ContainerInterface|string|null $container container to operate on
      *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
      * @return self
      */
     public function __invoke($container = null): self
@@ -142,6 +145,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
      * @return AbstractHelper
      */
     public function setContainer($container = null)
@@ -159,6 +164,9 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * If no container is set, a new container will be instantiated and
      * stored in the helper.
+     *
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return Navigation\ContainerInterface navigation container
      */
@@ -202,31 +210,54 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
             if (in_array($container, ['default', 'navigation'], true)) {
                 // Uses class name
                 if ($services->has(Navigation\Navigation::class)) {
-                    $container = $services->get(Navigation\Navigation::class);
+                    try {
+                        $container = $services->get(Navigation\Navigation::class);
+                    } catch (ContainerExceptionInterface $e) {
+                        throw new Exception\InvalidArgumentException(
+                            sprintf('Could not load Container "%s"', Navigation\Navigation::class),
+                            0,
+                            $e
+                        );
+                    }
 
                     return;
                 }
 
                 // Uses old service name
                 if ($services->has('navigation')) {
-                    $container = $services->get('navigation');
+                    try {
+                        $container = $services->get('navigation');
+                    } catch (ContainerExceptionInterface $e) {
+                        throw new Exception\InvalidArgumentException(
+                            'Could not load Container "navigation"',
+                            0,
+                            $e
+                        );
+                    }
 
                     return;
                 }
             }
 
-            /**
+            /*
              * Load the navigation container from the root service locator
              */
-            $container = $services->get($container);
+            try {
+                $container = $services->get($container);
+            } catch (ContainerExceptionInterface $e) {
+                throw new Exception\InvalidArgumentException(
+                    sprintf('Could not load Container "%s"', $container),
+                    0,
+                    $e
+                );
+            }
 
             return;
         }
 
         if (!$container instanceof Navigation\ContainerInterface) {
             throw new Exception\InvalidArgumentException(
-                'Container must be a string alias or an instance of '
-                . 'Laminas\Navigation\AbstractContainer'
+                'Container must be a string alias or an instance of Laminas\Navigation\AbstractContainer'
             );
         }
     }
@@ -238,6 +269,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      * @param array  $arguments rguments to pass
      *
      * @throws Navigation\Exception\ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return mixed
      */
@@ -286,6 +319,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *                                                             {@link getMaxDepth()}. A
      *                                                             null value means no maximum
      *                                                             depth required.
+     *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return array an associative array with
      *               the values 'depth' and
@@ -388,8 +423,8 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
 
         if ($this->getUseAuthorization()) {
             $authorization = $this->getAuthorization();
-            $role   = $this->getRole();
-            $resource = $page->getResource();
+            $role          = $this->getRole();
+            $resource      = $page->getResource();
 
             if (null !== $authorization && null !== $role && null !== $resource) {
                 $accept = $authorization->isGranted($role, $resource, $page->getPrivilege());

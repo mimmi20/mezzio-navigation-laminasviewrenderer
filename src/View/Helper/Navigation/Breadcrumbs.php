@@ -60,9 +60,10 @@ final class Breadcrumbs extends AbstractHelper
      *                                           that the helper should render
      *                                           the container returned by {@link getContainer()}.
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -85,7 +86,6 @@ final class Breadcrumbs extends AbstractHelper
      *                                           to render the container registered in the helper.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
@@ -150,9 +150,10 @@ final class Breadcrumbs extends AbstractHelper
      *                                           Default is to use the partial registered in the helper. If an array
      *                                           is given, the first value is used for the partial view script.
      *
-     * @throws Exception\RuntimeException                 if no partial provided
-     * @throws Exception\InvalidArgumentException         if partial is invalid array
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception\RuntimeException                            if no partial provided
+     * @throws Exception\InvalidArgumentException                    if partial is invalid array
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -177,9 +178,10 @@ final class Breadcrumbs extends AbstractHelper
      *                                           is given, the first value is used for the partial view script.
      * @param array                   $params
      *
-     * @throws Exception\RuntimeException                 if no partial provided
-     * @throws Exception\InvalidArgumentException         if partial is invalid array
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception\RuntimeException                            if no partial provided
+     * @throws Exception\InvalidArgumentException                    if partial is invalid array
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -272,8 +274,10 @@ final class Breadcrumbs extends AbstractHelper
      * @param ContainerInterface|null $container
      * @param array|string|null       $partial
      *
-     * @throws Exception\RuntimeException         if no partial provided
-     * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws Exception\RuntimeException                            if no partial provided
+     * @throws Exception\InvalidArgumentException                    if partial is invalid array
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return string
      */
