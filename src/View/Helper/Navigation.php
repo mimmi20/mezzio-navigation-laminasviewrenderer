@@ -11,6 +11,8 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper;
 
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
@@ -80,11 +82,12 @@ final class Navigation extends AbstractHelper
      * @param string $method    helper name or method name in container
      * @param array  $arguments [optional] arguments to pass
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface      if proxying to a helper, and the
-     *                                                         helper is not an instance of the
-     *                                                         interface specified in
-     *                                                         {@link findHelper()}
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface if method does not exist in container
+     * @throws \Laminas\View\Exception\ExceptionInterface         if proxying to a helper, and the
+     *                                                            helper is not an instance of the
+     *                                                            interface specified in
+     *                                                            {@link findHelper()}
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface    if method does not exist in container
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return mixed returns what the proxied call returns
      */
@@ -107,12 +110,21 @@ final class Navigation extends AbstractHelper
      * @param ContainerInterface|null $container
      *
      * @throws Exception\RuntimeException
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return string
      */
     public function render(?ContainerInterface $container = null): string
     {
-        return $this->findHelper($this->getDefaultProxy())->render($container);
+        $helper = $this->findHelper($this->getDefaultProxy());
+
+        if (null === $helper) {
+            return '';
+        }
+
+        return $helper->render($container);
     }
 
     /**
@@ -126,13 +138,16 @@ final class Navigation extends AbstractHelper
      *                       thrown if something goes
      *                       wrong. Default is true.
      *
-     * @throws Exception\RuntimeException if $strict is true and helper cannot be found
+     * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return HelperInterface|null helper instance
      */
     public function findHelper(string $proxy, bool $strict = true): ?HelperInterface
     {
-        if (!$this->plugins->has($proxy)) {
+        if (null === $this->plugins || !$this->plugins->has($proxy)) {
             if ($strict) {
                 throw new Exception\RuntimeException(
                     sprintf('Failed to find plugin for %s', $proxy)
@@ -142,7 +157,18 @@ final class Navigation extends AbstractHelper
             return null;
         }
 
-        $helper    = $this->plugins->get($proxy);
+        try {
+            $helper = $this->plugins->get($proxy);
+        } catch (ServiceNotFoundException | InvalidServiceException $e) {
+            if ($strict) {
+                throw new Exception\RuntimeException(
+                    sprintf('Failed to load plugin for %s', $proxy)
+                );
+            }
+
+            return null;
+        }
+
         $container = $this->getContainer();
         $hash      = spl_object_hash($container) . spl_object_hash($helper);
 
@@ -161,6 +187,8 @@ final class Navigation extends AbstractHelper
      *
      * @param HelperInterface $helper helper instance
      *
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     *
      * @return void
      */
     private function inject(HelperInterface $helper): void
@@ -170,8 +198,10 @@ final class Navigation extends AbstractHelper
                 $helper->setAuthorization($this->getAuthorization());
             }
 
-            if (!$helper->hasRole()) {
-                $helper->setRole($this->getRole());
+            $role = $this->getRole();
+
+            if (!$helper->hasRole() && null !== $role) {
+                $helper->setRole($role);
             }
         }
 
@@ -280,7 +310,7 @@ final class Navigation extends AbstractHelper
     {
         parent::setView($view);
 
-        if ($view && $this->plugins) {
+        if ($this->plugins) {
             $this->plugins->setRenderer($view);
         }
 

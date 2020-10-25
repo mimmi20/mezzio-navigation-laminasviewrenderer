@@ -94,6 +94,11 @@ final class Sitemap extends AbstractHelper
      *                                           that the helper should render
      *                                           the container returned by {@link getContainer()}.
      *
+     * @throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
      * @return string
      */
     public function render(?ContainerInterface $container = null): string
@@ -114,12 +119,15 @@ final class Sitemap extends AbstractHelper
      *                                           to what is registered in the
      *                                           helper
      *
-     * @throws Exception\RuntimeException if schema validation is on
-     *                                    and the sitemap is invalid
-     *                                    according to the sitemap
-     *                                    schema, or if sitemap
-     *                                    validators are used and the
-     *                                    loc element fails validation
+     * @throws Exception\RuntimeException                            if schema validation is on
+     *                                                               and the sitemap is invalid
+     *                                                               according to the sitemap
+     *                                                               schema, or if sitemap
+     *                                                               validators are used and the
+     *                                                               loc element fails validation
+     * @throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return \DOMDocument DOM representation of the container
      */
