@@ -173,7 +173,7 @@ final class Navigation extends AbstractHelper
         $hash      = spl_object_hash($container) . spl_object_hash($helper);
 
         if (!isset($this->injected[$hash])) {
-            $helper->setContainer();
+            $helper->setContainer($container);
             $this->inject($helper);
             $this->injected[$hash] = true;
         }
