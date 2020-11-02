@@ -60,7 +60,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "MezzioTest\\Navigation\\LaminasView\\": "test/"
+      "MezzioTest\\Navigation\\LaminasView\\": "tests/"
     }
   },
   "support": {
