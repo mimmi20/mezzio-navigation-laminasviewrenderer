@@ -20,7 +20,6 @@
     "psr/container": "^1.0.0"
   },
   "require-dev": {
-    "ergebnis/composer-normalize": "~2.8.0",
     "infection/infection": "~0.13.6 || ~0.18",
     "laminas/laminas-i18n": "^2.10.3",
     "laminas/laminas-uri": "^2.7.1",
