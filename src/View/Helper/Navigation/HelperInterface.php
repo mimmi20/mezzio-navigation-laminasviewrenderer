@@ -25,6 +25,10 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
     /**
      * Magic overload: Should proxy to {@link render()}.
      *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
      * @return string
      */
     public function __toString(): string;
@@ -83,7 +87,7 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
      *
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
-     * @return AbstractHelper
+     * @return self
      */
     public function setContainer($container = null);
 

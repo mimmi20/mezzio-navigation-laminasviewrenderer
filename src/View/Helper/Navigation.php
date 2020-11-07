@@ -14,12 +14,13 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception;
+use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\AbstractHelper;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
@@ -32,8 +33,12 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
  * @method Menu        menu(ContainerInterface|string|null $container = null)
  * @method Sitemap     sitemap(ContainerInterface|string|null $container = null)
  */
-final class Navigation extends AbstractHelper
+final class Navigation extends AbstractHtmlElement implements HelperInterface
 {
+    use HelperTrait {
+        __call as parentCall;
+    }
+
     /**
      * Default proxy to use in {@link render()}
      *
@@ -102,7 +107,7 @@ final class Navigation extends AbstractHelper
         }
 
         // default behaviour: proxy call to container
-        return parent::__call($method, $arguments);
+        return $this->parentCall($method, $arguments);
     }
 
     /**

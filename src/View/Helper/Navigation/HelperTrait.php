@@ -13,7 +13,6 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\View;
 use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\TranslatorAwareTrait;
@@ -28,7 +27,7 @@ use RecursiveIteratorIterator;
  *
  * Duck-types against Laminas\I18n\Translator\TranslatorAwareInterface.
  */
-abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements HelperInterface
+trait HelperTrait
 {
     use TranslatorAwareTrait;
 
@@ -37,65 +36,65 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @var \Mezzio\Navigation\ContainerInterface
      */
-    protected $container;
+    private $container;
 
     /** @var string|null */
-    protected $navigation;
+    private $navigation;
 
     /** @var \Laminas\Log\Logger */
-    protected $logger;
+    private $logger;
 
     /**
      * The minimum depth a page must have to be included when rendering
      *
      * @var int|null
      */
-    protected $minDepth;
+    private $minDepth;
 
     /**
      * The maximum depth a page can have to be included when rendering
      *
      * @var int|null
      */
-    protected $maxDepth;
+    private $maxDepth;
 
     /**
      * Indentation string
      *
      * @var string
      */
-    protected $indent = '';
+    private $indent = '';
 
     /**
      * Authorization to use when iterating pages
      *
      * @var \Mezzio\GenericAuthorization\AuthorizationInterface|null
      */
-    protected $authorization;
+    private $authorization;
 
     /**
      * Whether invisible items should be rendered by this helper
      *
      * @var bool
      */
-    protected $renderInvisible = false;
+    private $renderInvisible = false;
 
     /**
      * Authorization role to use when iterating pages
      *
      * @var string|null
      */
-    protected $role;
+    private $role;
 
     /** @var ContainerInterface */
-    protected $serviceLocator;
+    private $serviceLocator;
 
     /**
      * Whether Authorization should be used for filtering out pages
      *
      * @var bool
      */
-    protected $useAuthorization = true;
+    private $useAuthorization = true;
 
     /**
      * Default Authorization role to use when iterating pages if not explicitly set in the
@@ -103,10 +102,10 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @var string|null
      */
-    protected static $defaultRole;
+    private static $defaultRole;
 
     /** @var AuthorizationInterface|null */
-    protected static $defaultAuthorization;
+    private static $defaultAuthorization;
 
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
@@ -147,7 +146,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
-     * @return AbstractHelper
+     * @return self
      */
     public function setContainer($container = null)
     {
@@ -188,7 +187,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return void
      */
-    protected function parseContainer(&$container = null): void
+    private function parseContainer(&$container = null): void
     {
         if (null === $container) {
             return;
@@ -289,6 +288,10 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      * an exception to be thrown.
      *
      * Implements {@link HelperInterface::__toString()}.
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -447,7 +450,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return string
      */
-    protected function getWhitespace($indent): string
+    private function getWhitespace($indent): string
     {
         if (is_int($indent)) {
             $indent = str_repeat(' ', $indent);
@@ -516,7 +519,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return string Translated message
      */
-    protected function translate(string $message, ?string $textDomain = null): string
+    private function translate(string $message, ?string $textDomain = null): string
     {
         if (!is_string($message) || empty($message)) {
             return $message;
@@ -754,7 +757,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @param ContainerInterface $container
      *
-     * @return AbstractHelper
+     * @return self
      */
     final public function setServiceLocator(ContainerInterface $container)
     {
@@ -820,8 +823,6 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @param string $role [optional] role to set. Expects null or string. Default is null, which
      *                     sets no default role.
-     *
-     * @throws Exception\InvalidArgumentException if role is invalid
      *
      * @return void
      */

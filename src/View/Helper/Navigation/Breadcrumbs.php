@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
@@ -20,21 +21,16 @@ use Mezzio\Navigation\Page\PageInterface;
 /**
  * Helper for printing breadcrumbs.
  */
-final class Breadcrumbs extends AbstractHelper implements BreadcrumbsInterface
+final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterface
 {
+    use HelperTrait;
+
     /**
      * Whether last page in breadcrumb should be hyperlinked.
      *
      * @var bool
      */
     private $linkLast = false;
-
-    /**
-     * The minimum depth a page must have to be included when rendering.
-     *
-     * @var int
-     */
-    protected $minDepth = 1;
 
     /**
      * Partial view script to use for rendering menu.
@@ -342,5 +338,19 @@ final class Breadcrumbs extends AbstractHelper implements BreadcrumbsInterface
         }
 
         return $rendered;
+    }
+
+    /**
+     * Returns minimum depth a page must have to be included when rendering
+     *
+     * @return int|null
+     */
+    public function getMinDepth(): ?int
+    {
+        if (!is_int($this->minDepth) || 1 > $this->minDepth) {
+            return 1;
+        }
+
+        return $this->minDepth;
     }
 }
