@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
@@ -21,8 +22,10 @@ use RecursiveIteratorIterator;
 /**
  * Helper for rendering menus from navigation containers.
  */
-final class Menu extends AbstractHelper implements MenuInterface
+final class Menu extends AbstractHtmlElement implements MenuInterface
 {
+    use HelperTrait;
+
     /**
      * Whether page class should be applied to <li> element.
      *

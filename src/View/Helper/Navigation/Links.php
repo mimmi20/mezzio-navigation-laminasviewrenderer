@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\View\Exception;
+use Laminas\View\Helper\AbstractHtmlElement;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\Page\PageFactory;
@@ -24,8 +25,12 @@ use Traversable;
 /**
  * Helper for printing <link> elements
  */
-final class Links extends AbstractHelper implements LinksInterface
+final class Links extends AbstractHtmlElement implements LinksInterface
 {
+    use HelperTrait {
+        __call as parentCall;
+    }
+
     /**
      * Maps render constants to W3C link types
      *
@@ -101,7 +106,7 @@ final class Links extends AbstractHelper implements LinksInterface
             return $this->findRelation($arguments[0], mb_strtolower($match[1]), mb_strtolower($match[2]));
         }
 
-        return parent::__call($method, $arguments);
+        return $this->parentCall($method, $arguments);
     }
 
     /**

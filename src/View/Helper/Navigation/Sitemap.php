@@ -21,6 +21,7 @@ use Laminas\Validator\Sitemap\Lastmod;
 use Laminas\Validator\Sitemap\Loc;
 use Laminas\Validator\Sitemap\Priority;
 use Laminas\View\Exception;
+use Laminas\View\Helper\AbstractHtmlElement;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
@@ -30,8 +31,10 @@ use RecursiveIteratorIterator;
  *
  * @see http://www.sitemaps.org/protocol.php
  */
-final class Sitemap extends AbstractHelper implements SitemapInterface
+final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 {
+    use HelperTrait;
+
     /**
      * Whether XML output should be formatted
      *
