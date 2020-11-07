@@ -67,7 +67,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     protected $indent = '';
 
     /**
-     * ACL to use when iterating pages
+     * Authorization to use when iterating pages
      *
      * @var \Mezzio\GenericAuthorization\AuthorizationInterface|null
      */
@@ -91,7 +91,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     protected $serviceLocator;
 
     /**
-     * Whether ACL should be used for filtering out pages
+     * Whether Authorization should be used for filtering out pages
      *
      * @var bool
      */
@@ -292,7 +292,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -327,7 +327,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *               'page', or an empty array
      *               if not found
      */
-    final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1)
+    final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
     {
         $this->parseContainer($container);
         if (!is_int($minDepth)) {
@@ -393,15 +393,11 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     /**
      * Determines whether a page should be accepted when iterating
      *
-     * Default listener may be 'overridden' by attaching listener to 'isAllowed'
-     * method. Listener must be 'short circuited' if overriding default ACL
-     * listener.
-     *
      * Rules:
      * - If a page is not visible it is not accepted, unless RenderInvisible has
      *   been set to true
-     * - If $useAcl is true (default is true):
-     *      - Page is accepted if listener returns true, otherwise false
+     * - If $useAuthorization is true (default is true):
+     *      - Page is accepted if Authorization returns true, otherwise false
      * - If page is accepted and $recursive is true, the page
      *   will not be accepted if it is the descendant of a non-accepted page
      *
@@ -413,7 +409,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return bool Whether page should be accepted
      */
-    final public function accept(PageInterface $page, $recursive = true)
+    final public function accept(PageInterface $page, bool $recursive = true): bool
     {
         if (!$page->isVisible(false) && !$this->getRenderInvisible()) {
             return false;
@@ -470,7 +466,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      *
      * @return string
      */
-    protected function htmlAttribs($attribs)
+    protected function htmlAttribs($attribs): string
     {
         // filter out null values and empty string values
         foreach ($attribs as $key => $value) {
@@ -589,9 +585,9 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     }
 
     /**
-     * Checks if the helper has an ACL instance
+     * Checks if the helper has an Authorization instance
      *
-     * Implements {@link HelperInterface::hasAcl()}.
+     * Implements {@link HelperInterface::hasAuthorization()}.
      *
      * @return bool
      */
@@ -693,7 +689,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
      */
     final public function setRenderInvisible(bool $renderInvisible = true): void
     {
-        $this->renderInvisible = (bool) $renderInvisible;
+        $this->renderInvisible = $renderInvisible;
     }
 
     /**
@@ -707,7 +703,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     }
 
     /**
-     * Sets ACL role(s) to use when iterating pages
+     * Sets Authorization role(s) to use when iterating pages
      *
      * Implements {@link HelperInterface::setRole()}.
      *
@@ -723,7 +719,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     }
 
     /**
-     * Returns ACL role to use when iterating pages, or null if it isn't set
+     * Returns Authorization role to use when iterating pages, or null if it isn't set
      * using {@link setRole()} or {@link setDefaultRole()}
      *
      * Implements {@link HelperInterface::getRole()}.
@@ -740,7 +736,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     }
 
     /**
-     * Checks if the helper has an ACL role
+     * Checks if the helper has an Authorization role
      *
      * Implements {@link HelperInterface::hasRole()}.
      *
@@ -780,7 +776,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     }
 
     /**
-     * Sets whether ACL should be used
+     * Sets whether Authorization should be used
      * Implements {@link HelperInterface::setUseAuthorization()}.
      *
      * @param bool $useAuthorization
@@ -793,7 +789,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     }
 
     /**
-     * Returns whether ACL should be used
+     * Returns whether Authorization should be used
      * Implements {@link HelperInterface::getUseAuthorization()}.
      *
      * @return bool
@@ -806,20 +802,20 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
     // Static methods:
 
     /**
-     * Sets default ACL to use if another ACL is not explicitly set
+     * Sets default Authorization to use if another Authorization is not explicitly set
      *
-     * @param \Mezzio\GenericAuthorization\AuthorizationInterface $authorization [optional] ACL object. Default is null, which
-     *                                                                           sets no ACL object.
+     * @param \Mezzio\GenericAuthorization\AuthorizationInterface $authorization [optional] Authorization object. Default is null, which
+     *                                                                           sets no Authorization object.
      *
      * @return void
      */
-    final public static function setDefaultAcl(AuthorizationInterface $authorization): void
+    final public static function setDefaultAuthorization(AuthorizationInterface $authorization): void
     {
         static::$defaultAuthorization = $authorization;
     }
 
     /**
-     * Sets default ACL role(s) to use when iterating pages if not explicitly
+     * Sets default Authorization role(s) to use when iterating pages if not explicitly
      * set later with {@link setRole()}
      *
      * @param string $role [optional] role to set. Expects null or string. Default is null, which

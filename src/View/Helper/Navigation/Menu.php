@@ -119,6 +119,7 @@ final class Menu extends AbstractHelper implements MenuInterface
      *
      * @param ContainerInterface $container          container to render
      * @param string             $ulClass            CSS class for first UL
+     * @param string             $liCssClass         CSS class for all LI
      * @param string             $indent             initial indentation
      * @param int|null           $minDepth           minimum depth
      * @param int|null           $maxDepth           maximum depth
@@ -133,6 +134,7 @@ final class Menu extends AbstractHelper implements MenuInterface
     private function renderDeepestMenu(
         ContainerInterface $container,
         string $ulClass,
+        string $liCssClass,
         string $indent,
         ?int $minDepth,
         ?int $maxDepth,
@@ -173,6 +175,10 @@ final class Menu extends AbstractHelper implements MenuInterface
             // Is page active?
             if ($subPage->isActive(true)) {
                 $liClasses[] = $liActiveClass;
+            }
+
+            if ($liCssClass) {
+                $liClasses[] = $liCssClass;
             }
 
             // Add CSS class from page to <li>
@@ -223,6 +229,7 @@ final class Menu extends AbstractHelper implements MenuInterface
             return $this->renderDeepestMenu(
                 $container,
                 $options['ulClass'],
+                $options['liClass'],
                 $options['indent'],
                 $options['minDepth'],
                 $options['maxDepth'],
@@ -235,6 +242,7 @@ final class Menu extends AbstractHelper implements MenuInterface
         return $this->renderNormalMenu(
             $container,
             $options['ulClass'],
+            $options['liClass'],
             $options['indent'],
             $options['minDepth'],
             $options['maxDepth'],
@@ -250,6 +258,7 @@ final class Menu extends AbstractHelper implements MenuInterface
      *
      * @param ContainerInterface $container          container to render
      * @param string             $ulClass            CSS class for first UL
+     * @param string             $liCssClass         CSS class for all LI
      * @param string             $indent             initial indentation
      * @param int|null           $minDepth           minimum depth
      * @param int|null           $maxDepth           maximum depth
@@ -265,6 +274,7 @@ final class Menu extends AbstractHelper implements MenuInterface
     private function renderNormalMenu(
         ContainerInterface $container,
         string $ulClass,
+        string $liCssClass,
         string $indent,
         ?int $minDepth,
         ?int $maxDepth,
@@ -369,6 +379,10 @@ final class Menu extends AbstractHelper implements MenuInterface
                 $liClasses[] = $liActiveClass;
             }
 
+            if ($liCssClass) {
+                $liClasses[] = $liCssClass;
+            }
+
             // Add CSS class from page to <li>
             if ($addClassToListItem && $page->getClass()) {
                 $liClasses[] = $page->getClass();
@@ -457,6 +471,7 @@ final class Menu extends AbstractHelper implements MenuInterface
      * renderMenu($container, array(
      *     'indent'           => $indent,
      *     'ulClass'          => $ulClass,
+     *     'liClass'          => $liClass,
      *     'minDepth'         => null,
      *     'maxDepth'         => null,
      *     'onlyActiveBranch' => true,
@@ -469,6 +484,8 @@ final class Menu extends AbstractHelper implements MenuInterface
      *                                               Default is to render the container registered in the helper.
      * @param string|null             $ulClass       [optional] CSS class to use for UL element.
      *                                               Default is to use the value from {@link getUlClass()}.
+     * @param string|null             $liClass       [optional] CSS class to use for LI elements.
+     *                                               Default is to use the value from {@link getLiClass()}.
      * @param int|string|null         $indent        [optional] indentation as a string or number
      *                                               of spaces. Default is to use the value retrieved from
      *                                               {@link getIndent()}.
@@ -484,12 +501,14 @@ final class Menu extends AbstractHelper implements MenuInterface
     public function renderSubMenu(
         ?ContainerInterface $container = null,
         ?string $ulClass = null,
+        ?string $liClass = null,
         $indent = null,
         ?string $liActiveClass = null
     ): string {
         return $this->renderMenu($container, [
             'indent' => $indent,
             'ulClass' => $ulClass,
+            'liClass' => $liClass,
             'minDepth' => null,
             'maxDepth' => null,
             'onlyActiveBranch' => true,
@@ -569,6 +588,12 @@ final class Menu extends AbstractHelper implements MenuInterface
             $options['ulClass'] = (string) $options['ulClass'];
         } else {
             $options['ulClass'] = $this->getUlClass();
+        }
+
+        if (isset($options['liClass']) && null !== $options['liClass']) {
+            $options['liClass'] = (string) $options['liClass'];
+        } else {
+            $options['liClass'] = $this->getLiClass();
         }
 
         if (array_key_exists('minDepth', $options)) {

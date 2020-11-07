@@ -104,6 +104,8 @@ interface MenuInterface extends HelperInterface
      *                                               Default is to render the container registered in the helper.
      * @param string|null             $ulClass       [optional] CSS class to use for UL element.
      *                                               Default is to use the value from {@link getUlClass()}.
+     * @param string|null             $liClass       [optional] CSS class to use for LI elements.
+     *                                               Default is to use the value from {@link getLiClass()}.
      * @param int|string|null         $indent        [optional] indentation as a string or number
      *                                               of spaces. Default is to use the value retrieved from
      *                                               {@link getIndent()}.
@@ -119,6 +121,7 @@ interface MenuInterface extends HelperInterface
     public function renderSubMenu(
         ?ContainerInterface $container = null,
         ?string $ulClass = null,
+        ?string $liClass = null,
         $indent = null,
         ?string $liActiveClass = null
     ): string;
