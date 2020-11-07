@@ -308,6 +308,69 @@ final class NavigationTest extends TestCase
      *
      * @return void
      */
+    public function testFindHelperWithRule(): void
+    {
+        $role           = 'test';
+        $proxy          = 'menu';
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Navigation($serviceLocator, $logger);
+
+        $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $menu->expects(self::once())
+            ->method('setContainer')
+            ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
+        $menu->expects(self::once())
+            ->method('hasAuthorization')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('setAuthorization')
+            ->with(false);
+        $menu->expects(self::once())
+            ->method('hasRole')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('setRole')
+            ->with($role);
+        $menu->expects(self::never())
+            ->method('hasTranslator');
+
+        $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pluginManager->expects(self::exactly(2))
+            ->method('has')
+            ->with($proxy)
+            ->willReturn(true);
+        $pluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->with($proxy)
+            ->willReturn($menu);
+
+        /* @var Navigation\PluginManager $pluginManager */
+        $helper->setPluginManager($pluginManager);
+        $helper->setRole($role);
+        $helper->setInjectTranslator(false);
+
+        self::assertSame($menu, $helper->findHelper($proxy, false));
+        self::assertSame($menu, $helper->findHelper($proxy, true));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
     public function testRenderExceptionInPluginManager(): void
     {
         $proxy          = 'menu';
@@ -613,30 +676,6 @@ final class NavigationTest extends TestCase
      *
      * @return void
      */
-    public function testSetServiceLocator(): void
-    {
-        $logger          = $this->createMock(Logger::class);
-        $serviceLocator1 = $this->createMock(ContainerInterface::class);
-        $serviceLocator2 = $this->createMock(ContainerInterface::class);
-
-        /** @var ContainerInterface $serviceLocator1 */
-        /** @var Logger $logger */
-        $helper = new Navigation($serviceLocator1, $logger);
-
-        self::assertSame($serviceLocator1, $helper->getServiceLocator());
-
-        /* @var ContainerInterface $serviceLocator2 */
-        $helper->setServiceLocator($serviceLocator2);
-
-        self::assertSame($serviceLocator2, $helper->getServiceLocator());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
-     */
     public function testSetUseAuthorization(): void
     {
         $logger         = $this->createMock(Logger::class);
@@ -684,5 +723,41 @@ final class NavigationTest extends TestCase
 
         self::assertSame($auth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainer(): void
+    {
+        $container      = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Navigation($serviceLocator, $logger);
+
+        $container1 = $helper->getContainer();
+
+        self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container1);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setContainer();
+
+        $container2 = $helper->getContainer();
+
+        self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container2);
+        self::assertNotSame($container1, $container2);
+
+        $helper->setContainer($container);
+
+        self::assertSame($container, $helper->getContainer());
     }
 }

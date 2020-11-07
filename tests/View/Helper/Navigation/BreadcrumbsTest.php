@@ -125,30 +125,6 @@ final class BreadcrumbsTest extends TestCase
      *
      * @return void
      */
-    public function testSetServiceLocator(): void
-    {
-        $logger          = $this->createMock(Logger::class);
-        $serviceLocator1 = $this->createMock(ContainerInterface::class);
-        $serviceLocator2 = $this->createMock(ContainerInterface::class);
-
-        /** @var ContainerInterface $serviceLocator1 */
-        /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator1, $logger);
-
-        self::assertSame($serviceLocator1, $helper->getServiceLocator());
-
-        /* @var ContainerInterface $serviceLocator2 */
-        $helper->setServiceLocator($serviceLocator2);
-
-        self::assertSame($serviceLocator2, $helper->getServiceLocator());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
-     */
     public function testSetUseAuthorization(): void
     {
         $logger         = $this->createMock(Logger::class);
@@ -196,5 +172,41 @@ final class BreadcrumbsTest extends TestCase
 
         self::assertSame($auth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainer(): void
+    {
+        $container      = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Breadcrumbs($serviceLocator, $logger);
+
+        $container1 = $helper->getContainer();
+
+        self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container1);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setContainer();
+
+        $container2 = $helper->getContainer();
+
+        self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container2);
+        self::assertNotSame($container1, $container2);
+
+        $helper->setContainer($container);
+
+        self::assertSame($container, $helper->getContainer());
     }
 }
