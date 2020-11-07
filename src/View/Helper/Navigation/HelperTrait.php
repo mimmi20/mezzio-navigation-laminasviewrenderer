@@ -148,7 +148,7 @@ trait HelperTrait
      *
      * @return self
      */
-    public function setContainer($container = null)
+    public function setContainer($container = null): self
     {
         $this->parseContainer($container);
         $this->container = $container;
@@ -189,28 +189,17 @@ trait HelperTrait
      */
     private function parseContainer(&$container = null): void
     {
-        if (null === $container) {
+        if (null === $container || $container instanceof Navigation\ContainerInterface) {
             return;
         }
 
         if (is_string($container)) {
-            $services = $this->getServiceLocator();
-
-            if (!$services) {
-                throw new Exception\InvalidArgumentException(
-                    sprintf(
-                        'Attempted to set container with alias "%s" but no ServiceLocator was set',
-                        $container
-                    )
-                );
-            }
-
             // Fallback
             if (in_array($container, ['default', 'navigation'], true)) {
                 // Uses class name
-                if ($services->has(Navigation\Navigation::class)) {
+                if ($this->serviceLocator->has(Navigation\Navigation::class)) {
                     try {
-                        $container = $services->get(Navigation\Navigation::class);
+                        $container = $this->serviceLocator->get(Navigation\Navigation::class);
                     } catch (ContainerExceptionInterface $e) {
                         throw new Exception\InvalidArgumentException(
                             sprintf('Could not load Container "%s"', Navigation\Navigation::class),
@@ -223,9 +212,9 @@ trait HelperTrait
                 }
 
                 // Uses old service name
-                if ($services->has('navigation')) {
+                if ($this->serviceLocator->has('navigation')) {
                     try {
-                        $container = $services->get('navigation');
+                        $container = $this->serviceLocator->get('navigation');
                     } catch (ContainerExceptionInterface $e) {
                         throw new Exception\InvalidArgumentException(
                             'Could not load Container "navigation"',
@@ -242,7 +231,7 @@ trait HelperTrait
              * Load the navigation container from the root service locator
              */
             try {
-                $container = $services->get($container);
+                $container = $this->serviceLocator->get($container);
             } catch (ContainerExceptionInterface $e) {
                 throw new Exception\InvalidArgumentException(
                     sprintf('Could not load Container "%s"', $container),
@@ -254,11 +243,9 @@ trait HelperTrait
             return;
         }
 
-        if (!$container instanceof Navigation\ContainerInterface) {
-            throw new Exception\InvalidArgumentException(
-                'Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface'
-            );
-        }
+        throw new Exception\InvalidArgumentException(
+            'Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface'
+        );
     }
 
     /**
@@ -749,33 +736,6 @@ trait HelperTrait
     {
         return null !== $this->role
             || null !== static::$defaultRole;
-    }
-
-    /**
-     * Set the service locator.
-     * Used internally to pull named navigation containers to render.
-     *
-     * @param ContainerInterface $container
-     *
-     * @return self
-     */
-    final public function setServiceLocator(ContainerInterface $container)
-    {
-        $this->serviceLocator = $container;
-
-        return $this;
-    }
-
-    /**
-     * Get the service locator.
-     *
-     * Used internally to pull named navigation containers to render.
-     *
-     * @return ContainerInterface|null
-     */
-    final public function getServiceLocator(): ?ContainerInterface
-    {
-        return $this->serviceLocator;
     }
 
     /**

@@ -131,9 +131,11 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
             return '';
         }
 
+        /* @codingStandardsIgnoreStart */
         if (null === $helper) {
             return '';
         }
+        /* @codingStandardsIgnoreEnd */
 
         return $helper->render($container);
     }
