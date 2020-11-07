@@ -13,22 +13,19 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Factory\FactoryInterface;
 
-final class NavigationFactory implements FactoryInterface
+final class NavigationFactory
 {
     /**
      * Create and return a navigation view helper instance.
      *
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param array|null         $options
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return Navigation
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Navigation
+    public function __invoke(ContainerInterface $container): Navigation
     {
         $helper = new Navigation(
             $container,

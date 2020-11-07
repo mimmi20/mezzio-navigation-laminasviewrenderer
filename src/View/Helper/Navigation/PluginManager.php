@@ -11,7 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
+use Interop\Container\ContainerInterface as InteropContainerInterface;
 use Laminas\View\HelperPluginManager;
 
 /**
@@ -21,7 +21,7 @@ use Laminas\View\HelperPluginManager;
  * Navigation\HelperInterface. Additionally, it registers a number of default
  * helpers.
  */
-final class PluginManager extends HelperPluginManager
+final class PluginManager extends HelperPluginManager implements InteropContainerInterface
 {
     /** @var string Valid instance types. */
     protected $instanceOf = AbstractHelper::class;
@@ -49,22 +49,4 @@ final class PluginManager extends HelperPluginManager
         Menu::class => HelperFactory::class,
         Sitemap::class => HelperFactory::class,
     ];
-
-    /**
-     * @param ContainerInterface|null $configOrContainerInstance
-     * @param array                   $config                    if $configOrContainerInstance is a container, this
-     *                                                           value will be passed to the parent constructor
-     */
-    public function __construct($configOrContainerInstance = null, array $config = [])
-    {
-        $this->initializers[] = static function (ContainerInterface $container, $instance): void {
-            if (!$instance instanceof AbstractHelper) {
-                return;
-            }
-
-            $instance->setServiceLocator($container);
-        };
-
-        parent::__construct($configOrContainerInstance, $config);
-    }
 }

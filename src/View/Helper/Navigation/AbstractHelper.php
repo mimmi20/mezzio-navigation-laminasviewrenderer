@@ -257,7 +257,7 @@ abstract class AbstractHelper extends View\Helper\AbstractHtmlElement implements
 
         if (!$container instanceof Navigation\ContainerInterface) {
             throw new Exception\InvalidArgumentException(
-                'Container must be a string alias or an instance of Laminas\Navigation\AbstractContainer'
+                'Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface'
             );
         }
     }
