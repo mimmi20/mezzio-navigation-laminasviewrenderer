@@ -27,7 +27,7 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
      *
      * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * Helper entry point
@@ -55,7 +55,7 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
     public function render(?ContainerInterface $container = null): string;
 
     /**
-     * Sets ACL to use when iterating pages
+     * Sets Authorization to use when iterating pages
      *
      * @param AuthorizationInterface|null $authorization [optional] AuthorizationInterface instance
      *
@@ -64,7 +64,7 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
     public function setAuthorization(?AuthorizationInterface $authorization = null): void;
 
     /**
-     * Returns ACL or null if it isn't set using {@link setAuthorization()} or
+     * Returns Authorization or null if it isn't set using {@link setAuthorization()} or
      * {@link setDefaultAuthorization()}
      *
      * @return AuthorizationInterface|null
@@ -118,7 +118,7 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
     public function getRenderInvisible(): bool;
 
     /**
-     * Sets ACL role to use when iterating pages
+     * Sets Authorization role to use when iterating pages
      *
      * @param string $role [optional] role to set.  Expects a string or null. Default is null.
      *
@@ -129,30 +129,30 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
     public function setRole(string $role): void;
 
     /**
-     * Returns ACL role to use when iterating pages, or null if it isn't set
+     * Returns Authorization role to use when iterating pages, or null if it isn't set
      *
      * @return string|null
      */
     public function getRole(): ?string;
 
     /**
-     * Checks if the helper has an ACL role
+     * Checks if the helper has an Authorization role
      *
      * @return bool
      */
     public function hasRole(): bool;
 
     /**
-     * Sets whether ACL should be used
+     * Sets whether Authorization should be used
      *
-     * @param bool $useAcl [optional] whether ACL should be used. Default is true.
+     * @param bool $useAuthorization [optional] whether Authorization should be used. Default is true.
      *
      * @return void
      */
-    public function setUseAuthorization(bool $useAcl = true): void;
+    public function setUseAuthorization(bool $useAuthorization = true): void;
 
     /**
-     * Returns whether ACL should be used
+     * Returns whether Authorization should be used
      *
      * @return bool
      */
