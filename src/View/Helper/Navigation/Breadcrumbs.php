@@ -20,7 +20,7 @@ use Mezzio\Navigation\Page\PageInterface;
 /**
  * Helper for printing breadcrumbs.
  */
-final class Breadcrumbs extends AbstractHelper
+final class Breadcrumbs extends AbstractHelper implements BreadcrumbsInterface
 {
     /**
      * Whether last page in breadcrumb should be hyperlinked.
@@ -91,7 +91,7 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @return string
      */
-    public function renderStraight($container = null): string
+    public function renderStraight(?ContainerInterface $container = null): string
     {
         $this->parseContainer($container);
         if (null === $container) {
@@ -157,7 +157,7 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @return string
      */
-    public function renderPartial($container = null, $partial = null)
+    public function renderPartial(?ContainerInterface $container = null, $partial = null): string
     {
         return $this->renderPartialModel([], $container, $partial);
     }
@@ -185,7 +185,7 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], $container = null, $partial = null)
+    public function renderPartialWithParams(array $params = [], ?ContainerInterface $container = null, $partial = null): string
     {
         return $this->renderPartialModel($params, $container, $partial);
     }
@@ -195,9 +195,9 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @param bool $linkLast whether last page should be hyperlinked
      *
-     * @return Breadcrumbs
+     * @return self
      */
-    public function setLinkLast($linkLast)
+    public function setLinkLast(bool $linkLast): self
     {
         $this->linkLast = (bool) $linkLast;
 
@@ -209,7 +209,7 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @return bool
      */
-    public function getLinkLast()
+    public function getLinkLast(): bool
     {
         return $this->linkLast;
     }
@@ -220,9 +220,9 @@ final class Breadcrumbs extends AbstractHelper
      * @param array|string|null $partial partial view script or null. If an array is
      *                                   given, the first value is used for the partial view script.
      *
-     * @return Breadcrumbs
+     * @return self
      */
-    public function setPartial($partial)
+    public function setPartial($partial): self
     {
         if (null === $partial || is_string($partial) || is_array($partial)) {
             $this->partial = $partial;
@@ -246,9 +246,9 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @param string $separator separator string
      *
-     * @return Breadcrumbs
+     * @return self
      */
-    public function setSeparator($separator)
+    public function setSeparator(string $separator): self
     {
         if (is_string($separator)) {
             $this->separator = $separator;
@@ -281,7 +281,7 @@ final class Breadcrumbs extends AbstractHelper
      *
      * @return string
      */
-    private function renderPartialModel(array $params, $container, $partial): string
+    private function renderPartialModel(array $params, ?ContainerInterface $container, $partial): string
     {
         $this->parseContainer($container);
         if (null === $container) {

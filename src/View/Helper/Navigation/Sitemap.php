@@ -30,18 +30,8 @@ use RecursiveIteratorIterator;
  *
  * @see http://www.sitemaps.org/protocol.php
  */
-final class Sitemap extends AbstractHelper
+final class Sitemap extends AbstractHelper implements SitemapInterface
 {
-    /**
-     * Namespace for the <urlset> tag
-     */
-    public const SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
-
-    /**
-     * Schema URL
-     */
-    public const SITEMAP_XSD = 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
-
     /**
      * Whether XML output should be formatted
      *
@@ -145,7 +135,7 @@ final class Sitemap extends AbstractHelper
         $dom->formatOutput = $this->getFormatOutput();
 
         // ...and urlset (root) element
-        $urlSet = $dom->createElementNS(self::SITEMAP_NS, 'urlset');
+        $urlSet = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'urlset');
         $dom->appendChild($urlSet);
 
         // create iterator
@@ -176,7 +166,7 @@ final class Sitemap extends AbstractHelper
             }
 
             // create url node for this page
-            $urlNode = $dom->createElementNS(self::SITEMAP_NS, 'url');
+            $urlNode = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'url');
             $urlSet->appendChild($urlNode);
 
             if ($this->getUseSitemapValidators()) {
@@ -193,7 +183,7 @@ final class Sitemap extends AbstractHelper
             }
 
             // put url in 'loc' element
-            $urlNode->appendChild($dom->createElementNS(self::SITEMAP_NS, 'loc', $url));
+            $urlNode->appendChild($dom->createElementNS(SitemapInterface::SITEMAP_NS, 'loc', $url));
 
             // add 'lastmod' element if a valid lastmod is set in page
             if (isset($page->lastmod)) {
@@ -212,7 +202,7 @@ final class Sitemap extends AbstractHelper
                 ) {
                     // Cast $lastmod to string in case no validation was used
                     $urlNode->appendChild(
-                        $dom->createElementNS(self::SITEMAP_NS, 'lastmod', (string) $lastmod)
+                        $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'lastmod', (string) $lastmod)
                     );
                 }
             }
@@ -227,7 +217,7 @@ final class Sitemap extends AbstractHelper
                     $changefreqValidator->isValid($changefreq)
                 ) {
                     $urlNode->appendChild(
-                        $dom->createElementNS(self::SITEMAP_NS, 'changefreq', $changefreq)
+                        $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq)
                     );
                 }
             }
@@ -248,7 +238,7 @@ final class Sitemap extends AbstractHelper
             }
 
             $urlNode->appendChild(
-                $dom->createElementNS(self::SITEMAP_NS, 'priority', $priority)
+                $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'priority', $priority)
             );
         }
 
@@ -256,7 +246,7 @@ final class Sitemap extends AbstractHelper
         if ($this->getUseSchemaValidation()) {
             ErrorHandler::start();
 
-            $dom->schemaValidate(self::SITEMAP_XSD);
+            $dom->schemaValidate(SitemapInterface::SITEMAP_XSD);
 
             try {
                 ErrorHandler::stop(true);
@@ -264,7 +254,7 @@ final class Sitemap extends AbstractHelper
                 throw new Exception\RuntimeException(
                     sprintf(
                         'Sitemap is invalid according to XML Schema at "%s"',
-                        self::SITEMAP_XSD
+                        SitemapInterface::SITEMAP_XSD
                     ),
                     0,
                     $e

@@ -21,7 +21,7 @@ use RecursiveIteratorIterator;
 /**
  * Helper for rendering menus from navigation containers.
  */
-final class Menu extends AbstractHelper
+final class Menu extends AbstractHelper implements MenuInterface
 {
     /**
      * Whether page class should be applied to <li> element.
@@ -64,6 +64,13 @@ final class Menu extends AbstractHelper
      * @var string
      */
     private $ulClass = 'navigation';
+
+    /**
+     * CSS class to use for the li elements.
+     *
+     * @var string
+     */
+    private $liClass = '';
 
     /**
      * CSS class to use for the active li element.
@@ -437,7 +444,7 @@ final class Menu extends AbstractHelper
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
+    public function renderPartialWithParams(array $params = [], ?ContainerInterface $container = null, $partial = null): string
     {
         return $this->renderPartialModel($params, $container, $partial);
     }
@@ -754,6 +761,30 @@ final class Menu extends AbstractHelper
     public function getUlClass(): string
     {
         return $this->ulClass;
+    }
+
+    /**
+     * Sets CSS class to use for the 'li' elements when rendering.
+     *
+     * @param string $liClass CSS class to set
+     *
+     * @return self
+     */
+    public function setLiClass(string $liClass): self
+    {
+        $this->liClass = $liClass;
+
+        return $this;
+    }
+
+    /**
+     * Returns CSS class to use for the 'li' elements when rendering.
+     *
+     * @return string
+     */
+    public function getLiClass(): string
+    {
+        return $this->liClass;
     }
 
     /**

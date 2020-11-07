@@ -15,6 +15,7 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\View\Exception;
 use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
@@ -23,50 +24,29 @@ use Traversable;
 /**
  * Helper for printing <link> elements
  */
-final class Links extends AbstractHelper
+final class Links extends AbstractHelper implements LinksInterface
 {
-    /**
-     * Constants used for specifying which link types to find and render
-     */
-    public const RENDER_ALTERNATE  = 0x0001;
-    public const RENDER_STYLESHEET = 0x0002;
-    public const RENDER_START      = 0x0004;
-    public const RENDER_NEXT       = 0x0008;
-    public const RENDER_PREV       = 0x0010;
-    public const RENDER_CONTENTS   = 0x0020;
-    public const RENDER_INDEX      = 0x0040;
-    public const RENDER_GLOSSARY   = 0x0080;
-    public const RENDER_COPYRIGHT  = 0x0100;
-    public const RENDER_CHAPTER    = 0x0200;
-    public const RENDER_SECTION    = 0x0400;
-    public const RENDER_SUBSECTION = 0x0800;
-    public const RENDER_APPENDIX   = 0x1000;
-    public const RENDER_HELP       = 0x2000;
-    public const RENDER_BOOKMARK   = 0x4000;
-    public const RENDER_CUSTOM     = 0x8000;
-    public const RENDER_ALL        = 0xffff;
-
     /**
      * Maps render constants to W3C link types
      *
      * @var array
      */
     private static $RELATIONS = [
-        self::RENDER_ALTERNATE => 'alternate',
-        self::RENDER_STYLESHEET => 'stylesheet',
-        self::RENDER_START => 'start',
-        self::RENDER_NEXT => 'next',
-        self::RENDER_PREV => 'prev',
-        self::RENDER_CONTENTS => 'contents',
-        self::RENDER_INDEX => 'index',
-        self::RENDER_GLOSSARY => 'glossary',
-        self::RENDER_COPYRIGHT => 'copyright',
-        self::RENDER_CHAPTER => 'chapter',
-        self::RENDER_SECTION => 'section',
-        self::RENDER_SUBSECTION => 'subsection',
-        self::RENDER_APPENDIX => 'appendix',
-        self::RENDER_HELP => 'help',
-        self::RENDER_BOOKMARK => 'bookmark',
+        LinksInterface::RENDER_ALTERNATE => 'alternate',
+        LinksInterface::RENDER_STYLESHEET => 'stylesheet',
+        LinksInterface::RENDER_START => 'start',
+        LinksInterface::RENDER_NEXT => 'next',
+        LinksInterface::RENDER_PREV => 'prev',
+        LinksInterface::RENDER_CONTENTS => 'contents',
+        LinksInterface::RENDER_INDEX => 'index',
+        LinksInterface::RENDER_GLOSSARY => 'glossary',
+        LinksInterface::RENDER_COPYRIGHT => 'copyright',
+        LinksInterface::RENDER_CHAPTER => 'chapter',
+        LinksInterface::RENDER_SECTION => 'section',
+        LinksInterface::RENDER_SUBSECTION => 'subsection',
+        LinksInterface::RENDER_APPENDIX => 'appendix',
+        LinksInterface::RENDER_HELP => 'help',
+        LinksInterface::RENDER_BOOKMARK => 'bookmark',
     ];
 
     /**
@@ -230,7 +210,7 @@ final class Links extends AbstractHelper
      *
      * The form of the returned array:
      * <code>
-     * // $page denotes an instance of Laminas\Navigation\Page\PageInterface
+     * // $page denotes an instance of Mezzio\Navigation\Page\PageInterface
      * $returned = array(
      *     'rel' => array(
      *         'alternate' => array($page, $page, $page),
@@ -741,7 +721,7 @@ final class Links extends AbstractHelper
             $mixed = ArrayUtils::iteratorToArray($mixed);
         } elseif (is_string($mixed)) {
             // value is a string; make a URI page
-            return PageFactory::factory([
+            return (new PageFactory())->factory([
                 'type' => 'uri',
                 'uri' => $mixed,
             ]);
@@ -765,8 +745,8 @@ final class Links extends AbstractHelper
 
             // pass array to factory directly
             try {
-                return PageFactory::factory($mixed);
-            } catch (\Throwable $e) {
+                return (new PageFactory())->factory($mixed);
+            } catch (InvalidArgumentException $e) {
             }
         }
 

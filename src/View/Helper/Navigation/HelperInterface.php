@@ -11,7 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\I18n\Translator\TranslatorInterface as Translator;
+use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\View\Helper\HelperInterface as BaseHelperInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
@@ -20,7 +20,7 @@ use Mezzio\Navigation\ContainerInterface;
 /**
  * Interface for navigational helpers
  */
-interface HelperInterface extends BaseHelperInterface
+interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
 {
     /**
      * Magic overload: Should proxy to {@link render()}.
@@ -28,6 +28,17 @@ interface HelperInterface extends BaseHelperInterface
      * @return string
      */
     public function __toString();
+
+    /**
+     * Helper entry point
+     *
+     * @param Navigation\ContainerInterface|string|null $container container to operate on
+     *
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return self
+     */
+    public function __invoke($container = null);
 
     /**
      * Renders helper
@@ -146,30 +157,4 @@ interface HelperInterface extends BaseHelperInterface
      * @return bool
      */
     public function getUseAuthorization(): bool;
-
-    /**
-     * Sets translator to use in helper
-     *
-     * @param Translator|null $translator [optional] translator.
-     *                                    Default is null, which sets no translator.
-     * @param string|null     $textDomain [optional] text domain
-     *                                    Default is null, which skips setTranslatorTextDomain
-     *
-     * @return self
-     */
-    public function setTranslator(?Translator $translator = null, $textDomain = null);
-
-    /**
-     * Returns translator used in helper
-     *
-     * @return Translator|null
-     */
-    public function getTranslator();
-
-    /**
-     * Checks if the helper has a translator
-     *
-     * @return bool
-     */
-    public function hasTranslator();
 }

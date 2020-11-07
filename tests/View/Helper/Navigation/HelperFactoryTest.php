@@ -9,17 +9,17 @@
  */
 
 declare(strict_types = 1);
-namespace MezzioTest\Navigation\LaminasView\View\Helper;
+namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
-use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperFactory;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use PHPUnit\Framework\TestCase;
 
-final class NavigationFactoryTest extends TestCase
+final class HelperFactoryTest extends TestCase
 {
-    /** @var NavigationFactory */
+    /** @var HelperFactory */
     private $factory;
 
     /**
@@ -27,7 +27,7 @@ final class NavigationFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->factory = new NavigationFactory();
+        $this->factory = new HelperFactory();
     }
 
     /**
@@ -50,8 +50,8 @@ final class NavigationFactoryTest extends TestCase
             ->willReturn($logger);
 
         /** @var ContainerInterface $container */
-        $navigation = ($this->factory)($container);
+        $navigation = ($this->factory)($container, Menu::class);
 
-        self::assertInstanceOf(Navigation::class, $navigation);
+        self::assertInstanceOf(Menu::class, $navigation);
     }
 }

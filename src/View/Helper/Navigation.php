@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception;
+use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\AbstractHelper;
@@ -61,8 +62,8 @@ final class Navigation extends AbstractHelper
      */
     private $injectTranslator = true;
 
-    /** @var Navigation\PluginManager|null */
-    private $plugins;
+    /** @var HelperPluginManager|null */
+    private $pluginManager;
 
     /**
      * Magic overload: Proxy to other navigation helpers or the container
@@ -109,7 +110,6 @@ final class Navigation extends AbstractHelper
      *
      * @param ContainerInterface|null $container
      *
-     * @throws Exception\RuntimeException
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
@@ -118,7 +118,13 @@ final class Navigation extends AbstractHelper
      */
     public function render(?ContainerInterface $container = null): string
     {
-        $helper = $this->findHelper($this->getDefaultProxy());
+        try {
+            $helper = $this->findHelper($this->getDefaultProxy());
+        } catch (Exception\RuntimeException $e) {
+            $this->logger->err($e);
+
+            return '';
+        }
 
         if (null === $helper) {
             return '';
@@ -147,7 +153,17 @@ final class Navigation extends AbstractHelper
      */
     public function findHelper(string $proxy, bool $strict = true): ?HelperInterface
     {
-        if (null === $this->plugins || !$this->plugins->has($proxy)) {
+        if (null === $this->pluginManager) {
+            if ($strict) {
+                throw new Exception\RuntimeException(
+                    sprintf('Failed to find plugin for %s, no PluginManager set', $proxy)
+                );
+            }
+
+            return null;
+        }
+
+        if (!$this->pluginManager->has($proxy)) {
             if ($strict) {
                 throw new Exception\RuntimeException(
                     sprintf('Failed to find plugin for %s', $proxy)
@@ -158,7 +174,7 @@ final class Navigation extends AbstractHelper
         }
 
         try {
-            $helper = $this->plugins->get($proxy);
+            $helper = $this->pluginManager->get($proxy);
         } catch (ServiceNotFoundException | InvalidServiceException $e) {
             if ($strict) {
                 throw new Exception\RuntimeException(
@@ -284,19 +300,19 @@ final class Navigation extends AbstractHelper
     /**
      * Set manager for retrieving navigation helpers
      *
-     * @param Navigation\PluginManager $plugins
+     * @param HelperPluginManager $pluginManager
      *
      * @return void
      */
-    public function setPluginManager(Navigation\PluginManager $plugins): void
+    public function setPluginManager(HelperPluginManager $pluginManager): void
     {
         $renderer = $this->getView();
 
         if ($renderer) {
-            $plugins->setRenderer($renderer);
+            $pluginManager->setRenderer($renderer);
         }
 
-        $this->plugins = $plugins;
+        $this->pluginManager = $pluginManager;
     }
 
     /**
@@ -310,8 +326,8 @@ final class Navigation extends AbstractHelper
     {
         parent::setView($view);
 
-        if ($this->plugins) {
-            $this->plugins->setRenderer($view);
+        if ($this->pluginManager) {
+            $this->pluginManager->setRenderer($view);
         }
 
         return $this;
