@@ -13,6 +13,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
+use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
@@ -561,7 +562,14 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
         if (true === $escapeLabel) {
             $escaper = $this->getView()->plugin('escapeHtml');
-            \assert($escaper instanceof \Laminas\View\Helper\EscapeHtml);
+            \assert(
+                $escaper instanceof EscapeHtml,
+                sprintf(
+                    '$escaper should be an Instance of %s, but was %s',
+                    EscapeHtml::class,
+                    get_class($escaper)
+                )
+            );
             $html .= $escaper($label);
         } else {
             $html .= $label;
