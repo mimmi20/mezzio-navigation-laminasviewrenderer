@@ -16,6 +16,7 @@ use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mezzio\Navigation\Page\PageInterface;
 use PHPUnit\Framework\TestCase;
 
 final class MenuTest extends TestCase
@@ -400,5 +401,240 @@ final class MenuTest extends TestCase
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
 
         $helper->setContainer($name);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithStringFound(): void
+    {
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $name      = 'Mezzio\\Navigation\\Top';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $helper->setContainer($name);
+
+        self::assertSame($container, $helper->getContainer());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testDoNotAcceptInvisiblePages(): void
+    {
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $name      = 'Mezzio\\Navigation\\Top';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $helper->setContainer($name);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+
+        /* @var PageInterface $page */
+        self::assertFalse($helper->accept($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testDoNotAcceptByAuthorization(): void
+    {
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $name      = 'Mezzio\\Navigation\\Top';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $helper->setContainer($name);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::once())
+            ->method('isGranted')
+            ->with($role, $resource, $privilege)
+            ->willReturn(false);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(true);
+        $page->expects(self::once())
+            ->method('getResource')
+            ->willReturn($resource);
+        $page->expects(self::once())
+            ->method('getPrivilege')
+            ->willReturn($privilege);
+
+        /* @var PageInterface $page */
+        self::assertFalse($helper->accept($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testDoNotAcceptByAuthorizationWithParent(): void
+    {
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $name      = 'Mezzio\\Navigation\\Top';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $helper->setContainer($name);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::once())
+            ->method('isGranted')
+            ->with($role, $resource, $privilege)
+            ->willReturn(true);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $parentPage = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $parentPage->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(false);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(true);
+        $page->expects(self::once())
+            ->method('getResource')
+            ->willReturn($resource);
+        $page->expects(self::once())
+            ->method('getPrivilege')
+            ->willReturn($privilege);
+        $page->expects(self::once())
+            ->method('getParent')
+            ->willReturn($parentPage);
+
+        /* @var PageInterface $page */
+        self::assertFalse($helper->accept($page));
     }
 }
