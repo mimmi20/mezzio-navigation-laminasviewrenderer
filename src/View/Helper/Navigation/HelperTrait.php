@@ -15,6 +15,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\TranslatorAwareTrait;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
@@ -492,7 +493,7 @@ trait HelperTrait
         ];
 
         $escaper = $this->getView()->plugin('escapeHtml');
-        \assert($escaper instanceof \Laminas\View\Helper\EscapeHtml);
+        \assert($escaper instanceof EscapeHtml);
         $label = $escaper($label);
 
         return '<a' . $this->htmlAttribs($attribs) . '>' . $label . '</a>';
@@ -530,7 +531,7 @@ trait HelperTrait
     /**
      * Normalize an ID
      *
-     * Overrides {@link View\Helper\AbstractHtmlElement::normalizeId()}.
+     * Overrides {@link \Laminas\View\Helper\AbstractHtmlElement::normalizeId()}.
      *
      * @param string $value
      *
