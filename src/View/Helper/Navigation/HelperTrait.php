@@ -313,14 +313,17 @@ trait HelperTrait
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
-     * @return array an associative array with
-     *               the values 'depth' and
-     *               'page', or an empty array
-     *               if not found
+     * @return array an associative array with the values 'depth' and 'page',
+     *               or an empty array if not found
      */
     final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
     {
-        $this->parseContainer($container);
+        $this->setContainer($container);
+
+        if (!$this->container instanceof Navigation\ContainerInterface) {
+            return [];
+        }
+
         if (!is_int($minDepth)) {
             $minDepth = $this->getMinDepth();
         }
@@ -332,13 +335,14 @@ trait HelperTrait
         $found      = null;
         $foundDepth = -1;
         $iterator   = new RecursiveIteratorIterator(
-            $container,
+            $this->container,
             RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($iterator as $page) {
-            \assert($page instanceof \Mezzio\Navigation\Page\PageInterface);
+            \assert($page instanceof PageInterface);
             $currDepth = $iterator->getDepth();
+
             if ($currDepth < $minDepth || !$this->accept($page)) {
                 // page is not accepted
                 continue;
