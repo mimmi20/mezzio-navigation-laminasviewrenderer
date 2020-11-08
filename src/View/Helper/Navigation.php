@@ -237,6 +237,8 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
             $this->getTranslator(),
             $this->getTranslatorTextDomain()
         );
+
+        $helper->setTranslatorEnabled($this->isTranslatorEnabled());
     }
 
     /**
