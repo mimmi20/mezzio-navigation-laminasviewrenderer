@@ -808,6 +808,7 @@ final class NavigationTest extends TestCase
         $container1 = $helper->getContainer();
 
         self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container1);
+        self::assertTrue($helper->hasContainer());
 
         /* @var AuthorizationInterface $auth */
         $helper->setContainer();
@@ -816,10 +817,12 @@ final class NavigationTest extends TestCase
 
         self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container2);
         self::assertNotSame($container1, $container2);
+        self::assertTrue($helper->hasContainer());
 
         $helper->setContainer($container);
 
         self::assertSame($container, $helper->getContainer());
+        self::assertTrue($helper->hasContainer());
     }
 
     /**
@@ -1260,7 +1263,7 @@ final class NavigationTest extends TestCase
      */
     public function testHtmlify(): void
     {
-        $expected  = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
+        $expected  = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
         $logger    = $this->createMock(Logger::class);
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
@@ -1290,7 +1293,7 @@ final class NavigationTest extends TestCase
         $id                     = 'testId';
         $class                  = 'test-class';
         $href                   = '#';
-        $target                 = '_blank';
+        $target                 = null;
 
         $translator = $this->getMockBuilder(TranslatorInterface::class)
             ->disableOriginalConstructor()
@@ -1306,43 +1309,39 @@ final class NavigationTest extends TestCase
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapeHtml->expects(self::exactly(6))
+        $escapeHtml->expects(self::exactly(5))
             ->method('__invoke')
             ->withConsecutive(
                 [$tranalatedLabel],
                 ['id'],
                 ['title'],
                 ['class'],
-                ['href'],
-                ['target']
+                ['href']
             )
             ->willReturnOnConsecutiveCalls(
                 $escapedTranalatedLabel,
                 'idEscaped',
                 'titleEscaped',
                 'classEscaped',
-                'hrefEscaped',
-                'targetEscaped'
+                'hrefEscaped'
             );
 
         $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(5))
+        $escapeHtmlAttr->expects(self::exactly(4))
             ->method('__invoke')
             ->withConsecutive(
                 ['testId'],
                 [$tranalatedTitle],
                 ['test-class'],
-                ['#'],
-                ['_blank']
+                ['#']
             )
             ->willReturnOnConsecutiveCalls(
                 'testIdEscaped',
                 'testTitleTranslatedAndEscaped',
                 'testClassEscaped',
-                '#Escaped',
-                '_blankEscaped'
+                '#Escaped'
             );
 
         $view = $this->getMockBuilder(PhpRenderer::class)
@@ -1391,5 +1390,157 @@ final class NavigationTest extends TestCase
 
         /* @var PageInterface $page */
         self::assertSame($expected, $helper->htmlify($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testHtmlifyWithoutTranslator(): void
+    {
+        $expected  = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $name      = 'Mezzio\\Navigation\\Top';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Navigation($serviceLocator, $logger);
+
+        $helper->setContainer($name);
+
+        $label                  = 'testLabel';
+        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
+        $title                  = 'testTitle';
+        $textDomain             = 'testDomain';
+        $id                     = 'testId';
+        $class                  = 'test-class';
+        $href                   = '#';
+        $target                 = null;
+
+        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtml->expects(self::exactly(5))
+            ->method('__invoke')
+            ->withConsecutive(
+                [$label],
+                ['id'],
+                ['title'],
+                ['class'],
+                ['href']
+            )
+            ->willReturnOnConsecutiveCalls(
+                $escapedTranalatedLabel,
+                'idEscaped',
+                'titleEscaped',
+                'classEscaped',
+                'hrefEscaped'
+            );
+
+        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtmlAttr->expects(self::exactly(4))
+            ->method('__invoke')
+            ->withConsecutive(
+                ['testId'],
+                [$title],
+                ['test-class'],
+                ['#']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'testIdEscaped',
+                'testTitleTranslatedAndEscaped',
+                'testClassEscaped',
+                '#Escaped'
+            );
+
+        $view = $this->getMockBuilder(PhpRenderer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $view->expects(self::exactly(3))
+            ->method('plugin')
+            ->withConsecutive(['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtml, $escapeHtmlAttr);
+
+        /* @var PhpRenderer $view */
+        $helper->setView($view);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('getLabel')
+            ->willReturn($label);
+        $page->expects(self::once())
+            ->method('getTitle')
+            ->willReturn($title);
+        $page->expects(self::exactly(2))
+            ->method('getTextDomain')
+            ->willReturn($textDomain);
+        $page->expects(self::once())
+            ->method('getId')
+            ->willReturn($id);
+        $page->expects(self::once())
+            ->method('getClass')
+            ->willReturn($class);
+        $page->expects(self::once())
+            ->method('getHref')
+            ->willReturn($href);
+        $page->expects(self::once())
+            ->method('getTarget')
+            ->willReturn($target);
+
+        /* @var PageInterface $page */
+        self::assertSame($expected, $helper->htmlify($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetIndent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Navigation($serviceLocator, $logger);
+
+        self::assertSame('', $helper->getIndent());
+
+        $helper->setIndent(1);
+
+        self::assertSame(' ', $helper->getIndent());
+
+        $helper->setIndent('    ');
+
+        self::assertSame('    ', $helper->getIndent());
     }
 }

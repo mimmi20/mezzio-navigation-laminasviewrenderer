@@ -509,17 +509,12 @@ trait HelperTrait
      */
     private function translate(string $message, ?string $textDomain = null): string
     {
-        if (!is_string($message) || empty($message)) {
-            return $message;
-        }
-
-        if (!$this->isTranslatorEnabled() || !$this->hasTranslator()) {
-            return $message;
-        }
-
-        $translator = $this->getTranslator();
-
-        if (null === $translator) {
+        if (
+            empty($message)
+            || !$this->isTranslatorEnabled()
+            || !$this->hasTranslator()
+            || null === ($translator = $this->getTranslator())
+        ) {
             return $message;
         }
 
