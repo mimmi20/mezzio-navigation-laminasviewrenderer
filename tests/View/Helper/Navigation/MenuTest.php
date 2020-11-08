@@ -13,6 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use PHPUnit\Framework\TestCase;
@@ -208,5 +209,196 @@ final class MenuTest extends TestCase
         $helper->setContainer($container);
 
         self::assertSame($container, $helper->getContainer());
+    }
+
+    /**
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithNumber(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface');
+
+        $helper->setContainer(1);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithStringDefaultNotFound(): void
+    {
+        $logger = $this->createMock(Logger::class);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::once())
+            ->method('has')
+            ->with(\Mezzio\Navigation\Navigation::class)
+            ->willReturn(true);
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(\Mezzio\Navigation\Navigation::class)
+            ->willThrowException(new ServiceNotFoundException('test'));
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not load Container "%s"', \Mezzio\Navigation\Navigation::class));
+
+        $helper->setContainer('default');
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithStringDefaultFound(): void
+    {
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::once())
+            ->method('has')
+            ->with(\Mezzio\Navigation\Navigation::class)
+            ->willReturn(true);
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(\Mezzio\Navigation\Navigation::class)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $helper->setContainer('default');
+
+        self::assertSame($container, $helper->getContainer());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithStringNavigationNotFound(): void
+    {
+        $logger = $this->createMock(Logger::class);
+        $name   = 'navigation';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::exactly(2))
+            ->method('has')
+            ->withConsecutive([\Mezzio\Navigation\Navigation::class], [$name])
+            ->willReturnOnConsecutiveCalls(false, true);
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willThrowException(new ServiceNotFoundException('test'));
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
+
+        $helper->setContainer($name);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithStringNavigationFound(): void
+    {
+        $logger    = $this->createMock(Logger::class);
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $name      = 'navigation';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::exactly(2))
+            ->method('has')
+            ->withConsecutive([\Mezzio\Navigation\Navigation::class], [$name])
+            ->willReturnOnConsecutiveCalls(false, true);
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $helper->setContainer($name);
+
+        self::assertSame($container, $helper->getContainer());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
+    {
+        $logger = $this->createMock(Logger::class);
+        $name   = 'default';
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::exactly(2))
+            ->method('has')
+            ->withConsecutive([\Mezzio\Navigation\Navigation::class], ['navigation'])
+            ->willReturnOnConsecutiveCalls(false, false);
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willThrowException(new ServiceNotFoundException('test'));
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Menu($serviceLocator, $logger);
+
+        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
+
+        $helper->setContainer($name);
     }
 }
