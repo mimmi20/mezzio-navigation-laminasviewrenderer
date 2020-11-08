@@ -1553,10 +1553,13 @@ final class NavigationTest extends TestCase
      *
      * @return void
      */
-    public function testFindActive(): void
+    public function testFindActiveNoActivePages(): void
     {
         $logger = $this->createMock(Logger::class);
         $name   = 'Mezzio\\Navigation\\Top';
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1565,9 +1568,19 @@ final class NavigationTest extends TestCase
             ->method('isVisible')
             ->with(false)
             ->willReturn(true);
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
+        $parentPage->expects(self::once())
+            ->method('getResource')
+            ->willReturn($resource);
+        $parentPage->expects(self::once())
+            ->method('getPrivilege')
+            ->willReturn($privilege);
+        $parentPage->expects(self::once())
+            ->method('getParent')
+            ->willReturn(null);
+        $parentPage->expects(self::never())
+            ->method('isActive')
+            ->with(false)
+            ->willReturn(false);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1585,6 +1598,10 @@ final class NavigationTest extends TestCase
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
+        $page->expects(self::once())
+            ->method('isActive')
+            ->with(false)
+            ->willReturn(false);
 
         $container = new \Mezzio\Navigation\Navigation();
         $container->addPage($page);
@@ -1610,7 +1627,7 @@ final class NavigationTest extends TestCase
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $auth->expects(self::once())
+        $auth->expects(self::exactly(2))
             ->method('isGranted')
             ->with($role, $resource, $privilege)
             ->willReturn(true);
@@ -1619,5 +1636,104 @@ final class NavigationTest extends TestCase
         $helper->setAuthorization($auth);
 
         self::assertSame([], $helper->findActive($name, 0, 42));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testFindActiveOneActivePage(): void
+    {
+        $logger = $this->createMock(Logger::class);
+        $name   = 'Mezzio\\Navigation\\Top';
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $parentPage->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(true);
+        $parentPage->expects(self::once())
+            ->method('getResource')
+            ->willReturn($resource);
+        $parentPage->expects(self::once())
+            ->method('getPrivilege')
+            ->willReturn($privilege);
+        $parentPage->expects(self::once())
+            ->method('getParent')
+            ->willReturn(null);
+        $parentPage->expects(self::never())
+            ->method('isActive')
+            ->with(false)
+            ->willReturn(true);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(true);
+        $page->expects(self::once())
+            ->method('getResource')
+            ->willReturn($resource);
+        $page->expects(self::once())
+            ->method('getPrivilege')
+            ->willReturn($privilege);
+        $page->expects(self::once())
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::once())
+            ->method('isActive')
+            ->with(false)
+            ->willReturn(true);
+
+        $container = new \Mezzio\Navigation\Navigation();
+        $container->addPage($page);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($container);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Navigation($serviceLocator, $logger);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::exactly(2))
+            ->method('isGranted')
+            ->with($role, $resource, $privilege)
+            ->willReturn(true);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $expected = [
+            'page' => $page,
+            'depth' => 0,
+        ];
+
+        self::assertSame($expected, $helper->findActive($name, 0, 42));
     }
 }
