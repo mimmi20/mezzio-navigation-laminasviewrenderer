@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
 
 interface BreadcrumbsInterface extends HelperInterface
@@ -38,11 +39,11 @@ interface BreadcrumbsInterface extends HelperInterface
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
+     * @param ContainerInterface|string|null   $container [optional] container to pass to view
+     *                                                    script. Default is to use the container registered in the helper.
+     * @param array|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                    Default is to use the partial registered in the helper. If an array
+     *                                                    is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -51,7 +52,7 @@ interface BreadcrumbsInterface extends HelperInterface
      *
      * @return string
      */
-    public function renderPartial(?ContainerInterface $container = null, $partial = null): string;
+    public function renderPartial($container = null, $partial = null): string;
 
     /**
      * Renders the given $container by invoking the partial view helper with the given parameters as the model.
@@ -62,12 +63,12 @@ interface BreadcrumbsInterface extends HelperInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
-     * @param array                   $params
+     * @param ContainerInterface|string|null   $container [optional] container to pass to view
+     *                                                    script. Default is to use the container registered in the helper.
+     * @param array|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                    Default is to use the partial registered in the helper. If an array
+     *                                                    is given, the first value is used for the partial view script.
+     * @param array                            $params
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -76,7 +77,7 @@ interface BreadcrumbsInterface extends HelperInterface
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], ?ContainerInterface $container = null, $partial = null): string;
+    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string;
 
     /**
      * Sets whether last page in breadcrumbs should be hyperlinked.
@@ -97,8 +98,8 @@ interface BreadcrumbsInterface extends HelperInterface
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array|string|null $partial partial view script or null. If an array is
-     *                                   given, the first value is used for the partial view script.
+     * @param array|ModelInterface|string|null $partial partial view script or null. If an array is
+     *                                                  given, the first value is used for the partial view script.
      *
      * @return self
      */
@@ -107,7 +108,7 @@ interface BreadcrumbsInterface extends HelperInterface
     /**
      * Returns partial view script to use for rendering menu.
      *
-     * @return array|string|null
+     * @return array|ModelInterface|string|null
      */
     public function getPartial();
 

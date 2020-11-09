@@ -15,6 +15,7 @@ use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
+use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
@@ -35,7 +36,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     /**
      * Partial view script to use for rendering menu.
      *
-     * @var array|string|null
+     * @var array|ModelInterface|string|null
      */
     private $partial;
 
@@ -140,11 +141,11 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
+     * @param ContainerInterface|string|null   $container [optional] container to pass to view
+     *                                                    script. Default is to use the container registered in the helper.
+     * @param array|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                    Default is to use the partial registered in the helper. If an array
+     *                                                    is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -153,7 +154,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * @return string
      */
-    public function renderPartial(?ContainerInterface $container = null, $partial = null): string
+    public function renderPartial($container = null, $partial = null): string
     {
         return $this->renderPartialModel([], $container, $partial);
     }
@@ -167,12 +168,12 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
-     * @param array                   $params
+     * @param ContainerInterface|string|null   $container [optional] container to pass to view
+     *                                                    script. Default is to use the container registered in the helper.
+     * @param array|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                    Default is to use the partial registered in the helper. If an array
+     *                                                    is given, the first value is used for the partial view script.
+     * @param array                            $params
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -181,7 +182,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], ?ContainerInterface $container = null, $partial = null): string
+    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
     {
         return $this->renderPartialModel($params, $container, $partial);
     }
@@ -195,7 +196,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      */
     public function setLinkLast(bool $linkLast): self
     {
-        $this->linkLast = (bool) $linkLast;
+        $this->linkLast = $linkLast;
 
         return $this;
     }
@@ -213,14 +214,14 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array|string|null $partial partial view script or null. If an array is
-     *                                   given, the first value is used for the partial view script.
+     * @param array|ModelInterface|string|null $partial partial view script or null. If an array is
+     *                                                  given, the first value is used for the partial view script.
      *
      * @return self
      */
     public function setPartial($partial): self
     {
-        if (null === $partial || is_string($partial) || is_array($partial)) {
+        if (null === $partial || is_string($partial) || is_array($partial) || $partial instanceof ModelInterface) {
             $this->partial = $partial;
         }
 
@@ -230,7 +231,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     /**
      * Returns partial view script to use for rendering menu.
      *
-     * @return array|string|null
+     * @return array|ModelInterface|string|null
      */
     public function getPartial()
     {
@@ -246,9 +247,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      */
     public function setSeparator(string $separator): self
     {
-        if (is_string($separator)) {
-            $this->separator = $separator;
-        }
+        $this->separator = $separator;
 
         return $this;
     }
@@ -266,9 +265,9 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     /**
      * Render a partial with the given "model".
      *
-     * @param array                   $params
-     * @param ContainerInterface|null $container
-     * @param array|string|null       $partial
+     * @param array                            $params
+     * @param ContainerInterface|string|null   $container
+     * @param array|ModelInterface|string|null $partial
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -277,13 +276,8 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * @return string
      */
-    private function renderPartialModel(array $params, ?ContainerInterface $container, $partial): string
+    private function renderPartialModel(array $params, $container, $partial): string
     {
-        $this->parseContainer($container);
-        if (null === $container) {
-            $container = $this->getContainer();
-        }
-
         if (null === $partial) {
             $partial = $this->getPartial();
         }
@@ -294,17 +288,36 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
             );
         }
 
+        if (is_array($partial)) {
+            if (2 !== count($partial)) {
+                throw new Exception\InvalidArgumentException(
+                    'Unable to render breadcrumbs: A view partial supplied as '
+                    . 'an array must contain one value: the partial view script'
+                );
+            }
+
+            $partial = $partial[0];
+        }
+
+        $this->parseContainer($container);
+        if (null === $container) {
+            $container = $this->getContainer();
+        }
+
         $model  = array_merge($params, ['pages' => []], ['separator' => $this->getSeparator()]);
         $active = $this->findActive($container);
+
         if ($active) {
             $active           = $active['page'];
             $model['pages'][] = $active;
+
             while ($parent = $active->getParent()) {
                 if (!$parent instanceof PageInterface) {
                     break;
                 }
 
                 $model['pages'][] = $parent;
+
                 if ($parent === $container) {
                     // break if at the root of the given container
                     break;
@@ -318,22 +331,12 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
 
         $partialHelper = $this->getView()->plugin('partial');
         \assert($partialHelper instanceof Partial);
-        if (is_array($partial)) {
-            if (2 !== count($partial)) {
-                throw new Exception\InvalidArgumentException(
-                    'Unable to render breadcrumbs: A view partial supplied as '
-                    . 'an array must contain one value: the partial view script'
-                );
-            }
-
-            $partial = $partial[0];
-        }
 
         $rendered = $partialHelper($partial, $model);
 
         if ($rendered instanceof Partial) {
             throw new Exception\InvalidArgumentException(
-                'Unable to render menu: A view partial was not rendered correctly'
+                'Unable to render breadcrumbs: A view partial was not rendered correctly'
             );
         }
 
