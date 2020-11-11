@@ -185,6 +185,10 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $liClasses[] = $liCssClass;
             }
 
+            if ($subPage->getLiClass()) {
+                $liClasses[] = $subPage->getLiClass();
+            }
+
             // Add CSS class from page to <li>
             if ($addClassToListItem && $subPage->getClass()) {
                 $liClasses[] = $subPage->getClass();
@@ -385,6 +389,10 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
             if ($liCssClass) {
                 $liClasses[] = $liCssClass;
+            }
+
+            if ($page->getLiClass()) {
+                $liClasses[] = $page->getLiClass();
             }
 
             // Add CSS class from page to <li>
