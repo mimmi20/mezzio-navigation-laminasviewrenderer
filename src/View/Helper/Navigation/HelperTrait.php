@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
+use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
@@ -454,7 +455,7 @@ trait HelperTrait
     /**
      * Converts an associative array to a string of tag attributes.
      *
-     * Overloads {@link View\Helper\AbstractHtmlElement::htmlAttribs()}.
+     * Overloads {@link \Laminas\View\Helper\AbstractHtmlElement::htmlAttribs()}.
      *
      * @param array $attribs an array where each key-value pair is converted
      *                       to an attribute name and value
@@ -484,8 +485,23 @@ trait HelperTrait
      */
     public function htmlify(PageInterface $page): string
     {
-        $label = $this->translate((string) $page->getLabel(), $page->getTextDomain());
-        $title = $this->translate((string) $page->getTitle(), $page->getTextDomain());
+        $label = (string) $page->getLabel();
+        $title = (string) $page->getTitle();
+
+        if ($this->hasTranslator()) {
+            $translator = $this->getView()->plugin('translate');
+            \assert(
+                $translator instanceof Translate,
+                sprintf(
+                    '$translator should be an Instance of %s, but was %s',
+                    Translate::class,
+                    get_class($translator)
+                )
+            );
+
+            $label = $translator($label, $page->getTextDomain());
+            $title = $translator($title, $page->getTextDomain());
+        }
 
         // get attribs for anchor element
         $attribs = [
@@ -497,34 +513,18 @@ trait HelperTrait
         ];
 
         $escaper = $this->getView()->plugin('escapeHtml');
-        \assert($escaper instanceof EscapeHtml);
+        \assert(
+            $escaper instanceof EscapeHtml,
+            sprintf(
+                '$escaper should be an Instance of %s, but was %s',
+                EscapeHtml::class,
+                get_class($escaper)
+            )
+        );
+
         $label = $escaper($label);
 
         return '<a' . $this->htmlAttribs($attribs) . '>' . $label . '</a>';
-    }
-
-    /**
-     * Translate a message (for label, title, …)
-     *
-     * @param string      $message    ID of the message to translate
-     * @param string|null $textDomain Text domain (category name for the translations)
-     *
-     * @return string Translated message
-     */
-    private function translate(string $message, ?string $textDomain = null): string
-    {
-        if (
-            empty($message)
-            || !$this->isTranslatorEnabled()
-            || !$this->hasTranslator()
-            || null === ($translator = $this->getTranslator())
-        ) {
-            return $message;
-        }
-
-        $textDomain = $textDomain ?: $this->getTranslatorTextDomain();
-
-        return $translator->translate($message, $textDomain);
     }
 
     /**

@@ -36,7 +36,7 @@
   },
   "suggest": {
     "ext-dom": "required to use the Sitemap ViewHelper",
-    "laminas/laminas-i18n": "^2.10.3, required to use the Menu ViewHelper",
+    "laminas/laminas-i18n": "^2.10.3, required to use the Menu ViewHelper or the Breadcrumbs ViewHelper",
     "laminas/laminas-uri": "^2.7.1, required to use the Sitemap ViewHelper",
     "laminas/laminas-validator": "^2.13.4, required to use the Sitemap ViewHelper"
   },

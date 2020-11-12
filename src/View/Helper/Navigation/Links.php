@@ -114,10 +114,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * Implements {@link HelperInterface::render()}.
      *
-     * @param ContainerInterface|null $container [optional] container to render.
-     *                                           Default is null, which indicates
-     *                                           that the helper should render
-     *                                           the container returned by {@link getContainer()}.
+     * @param ContainerInterface|string|null $container [optional] container to render.
+     *                                                  Default is null, which indicates
+     *                                                  that the helper should render
+     *                                                  the container returned by {@link getContainer()}.
      *
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
@@ -126,7 +126,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @return string
      */
-    public function render(?ContainerInterface $container = null): string
+    public function render($container = null): string
     {
         $this->parseContainer($container);
         if (null === $container) {

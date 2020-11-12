@@ -21,8 +21,8 @@ interface BreadcrumbsInterface extends HelperInterface
      * Renders breadcrumbs by chaining 'a' elements with the separator
      * registered in the helper.
      *
-     * @param ContainerInterface|null $container [optional] container to render. Default is
-     *                                           to render the container registered in the helper.
+     * @param ContainerInterface|string|null $container [optional] container to render. Default is
+     *                                                  to render the container registered in the helper.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
@@ -30,7 +30,7 @@ interface BreadcrumbsInterface extends HelperInterface
      *
      * @return string
      */
-    public function renderStraight(?ContainerInterface $container = null): string;
+    public function renderStraight($container = null): string;
 
     /**
      * Renders the given $container by invoking the partial view helper.

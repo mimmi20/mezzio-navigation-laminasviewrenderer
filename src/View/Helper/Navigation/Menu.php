@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\I18n\View\Helper\Translate;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtml;
@@ -95,10 +96,10 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @see renderPartial()
      * @see renderMenu()
      *
-     * @param ContainerInterface|null $container [optional] container to render.
-     *                                           Default is null, which indicates
-     *                                           that the helper should render
-     *                                           the container returned by {@link getContainer()}.
+     * @param ContainerInterface|string|null $container [optional] container to render.
+     *                                                  Default is null, which indicates
+     *                                                  that the helper should render
+     *                                                  the container returned by {@link getContainer()}.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
@@ -107,7 +108,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * @return string
      */
-    public function render(?ContainerInterface $container = null): string
+    public function render($container = null): string
     {
         $partial = $this->getPartial();
 
@@ -213,9 +214,9 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * Available $options:
      *
-     * @param ContainerInterface|null $container [optional] container to create menu from.
-     *                                           Default is to use the container retrieved from {@link getContainer()}.
-     * @param array                   $options   [optional] options for controlling rendering
+     * @param ContainerInterface|string|null $container [optional] container to create menu from.
+     *                                                  Default is to use the container retrieved from {@link getContainer()}.
+     * @param array                          $options   [optional] options for controlling rendering
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
@@ -223,7 +224,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * @return string
      */
-    public function renderMenu(?ContainerInterface $container = null, array $options = []): string
+    public function renderMenu($container = null, array $options = []): string
     {
         $this->parseContainer($container);
 
@@ -429,11 +430,11 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
+     * @param ContainerInterface|string|null $container [optional] container to pass to view
+     *                                                  script. Default is to use the container registered in the helper.
+     * @param array|string|null              $partial   [optional] partial view script to use.
+     *                                                  Default is to use the partial registered in the helper. If an array
+     *                                                  is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -442,7 +443,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * @return string
      */
-    public function renderPartial(?ContainerInterface $container = null, $partial = null): string
+    public function renderPartial($container = null, $partial = null): string
     {
         return $this->renderPartialModel([], $container, $partial);
     }
@@ -545,10 +546,28 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      */
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
+        $label = (string) $page->getLabel();
+        $title = (string) $page->getTitle();
+
+        if ($this->hasTranslator()) {
+            $translator = $this->getView()->plugin('translate');
+            \assert(
+                $translator instanceof Translate,
+                sprintf(
+                    '$translator should be an Instance of %s, but was %s',
+                    Translate::class,
+                    get_class($translator)
+                )
+            );
+
+            $label = $translator($label, $page->getTextDomain());
+            $title = $translator($title, $page->getTextDomain());
+        }
+
         // get attribs for element
         $attribs = [
             'id' => $page->getId(),
-            'title' => $this->translate((string) $page->getTitle(), $page->getTextDomain()),
+            'title' => $title,
         ];
 
         if (false === $addClassToListItem) {
@@ -565,8 +584,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             $element = 'span';
         }
 
-        $html  = '<' . $element . $this->htmlAttribs($attribs) . '>';
-        $label = $this->translate((string) $page->getLabel(), $page->getTextDomain());
+        $html = '<' . $element . $this->htmlAttribs($attribs) . '>';
 
         if (true === $escapeLabel) {
             $escaper = $this->getView()->plugin('escapeHtml');
@@ -578,6 +596,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                     get_class($escaper)
                 )
             );
+
             $html .= $escaper($label);
         } else {
             $html .= $label;

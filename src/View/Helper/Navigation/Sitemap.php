@@ -82,10 +82,10 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * Implements {@link HelperInterface::render()}.
      *
-     * @param ContainerInterface|null $container [optional] container to render.
-     *                                           Default is null, which indicates
-     *                                           that the helper should render
-     *                                           the container returned by {@link getContainer()}.
+     * @param ContainerInterface|string|null $container [optional] container to render.
+     *                                                  Default is null, which indicates
+     *                                                  that the helper should render
+     *                                                  the container returned by {@link getContainer()}.
      *
      * @throws \Laminas\Validator\Exception\RuntimeException
      * @throws \Laminas\View\Exception\RuntimeException
@@ -94,7 +94,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @return string
      */
-    public function render(?ContainerInterface $container = null): string
+    public function render($container = null): string
     {
         $dom = $this->getDomSitemap($container);
         $xml = $this->getUseXmlDeclaration() ?
