@@ -113,7 +113,7 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
     /**
      * Renders helper
      *
-     * @param ContainerInterface|null $container
+     * @param ContainerInterface|string|null $container
      *
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -121,7 +121,7 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      *
      * @return string
      */
-    public function render(?ContainerInterface $container = null): string
+    public function render($container = null): string
     {
         try {
             $helper = $this->findHelper($this->getDefaultProxy());

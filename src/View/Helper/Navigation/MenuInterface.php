@@ -25,9 +25,9 @@ interface MenuInterface extends HelperInterface
      *
      * Available $options:
      *
-     * @param ContainerInterface|null $container [optional] container to create menu from.
-     *                                           Default is to use the container retrieved from {@link getContainer()}.
-     * @param array                   $options   [optional] options for controlling rendering
+     * @param ContainerInterface|string|null $container [optional] container to create menu from.
+     *                                                  Default is to use the container retrieved from {@link getContainer()}.
+     * @param array                          $options   [optional] options for controlling rendering
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
@@ -35,7 +35,7 @@ interface MenuInterface extends HelperInterface
      *
      * @return string
      */
-    public function renderMenu(?ContainerInterface $container = null, array $options = []): string;
+    public function renderMenu($container = null, array $options = []): string;
 
     /**
      * Renders the given $container by invoking the partial view helper.
@@ -44,11 +44,11 @@ interface MenuInterface extends HelperInterface
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
+     * @param ContainerInterface|string|null $container [optional] container to pass to view
+     *                                                  script. Default is to use the container registered in the helper.
+     * @param array|string|null              $partial   [optional] partial view script to use.
+     *                                                  Default is to use the partial registered in the helper. If an array
+     *                                                  is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -57,7 +57,7 @@ interface MenuInterface extends HelperInterface
      *
      * @return string
      */
-    public function renderPartial(?ContainerInterface $container = null, $partial = null): string;
+    public function renderPartial($container = null, $partial = null): string;
 
     /**
      * Renders the given $container by invoking the partial view helper with the given parameters as the model.

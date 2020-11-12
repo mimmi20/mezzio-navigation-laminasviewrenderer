@@ -13,6 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\I18n\Translator\TranslatorInterface;
+use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Helper\EscapeHtml;
@@ -748,13 +749,19 @@ final class SitemapTest extends TestCase
         $translator = $this->getMockBuilder(TranslatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translator->expects(self::exactly(2))
-            ->method('translate')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle);
+        $translator->expects(self::never())
+            ->method('translate');
 
         /* @var TranslatorInterface $translator */
         $helper->setTranslator($translator);
+
+        $translatePlugin = $this->getMockBuilder(Translate::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $translatePlugin->expects(self::exactly(2))
+            ->method('__invoke')
+            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
+            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle);
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -801,10 +808,10 @@ final class SitemapTest extends TestCase
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(3))
+        $view->expects(self::exactly(4))
             ->method('plugin')
-            ->withConsecutive(['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtml, $escapeHtmlAttr);
+            ->withConsecutive(['translate'], ['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $escapeHtml, $escapeHtmlAttr);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -880,7 +887,6 @@ final class SitemapTest extends TestCase
         $label                  = 'testLabel';
         $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
         $title                  = 'testTitle';
-        $textDomain             = 'testDomain';
         $id                     = 'testId';
         $class                  = 'test-class';
         $href                   = '#';
@@ -952,9 +958,8 @@ final class SitemapTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
-        $page->expects(self::exactly(2))
-            ->method('getTextDomain')
-            ->willReturn($textDomain);
+        $page->expects(self::never())
+            ->method('getTextDomain');
         $page->expects(self::once())
             ->method('getId')
             ->willReturn($id);

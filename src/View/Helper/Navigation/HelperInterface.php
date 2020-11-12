@@ -15,7 +15,6 @@ use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\View\Helper\HelperInterface as BaseHelperInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
-use Mezzio\Navigation\ContainerInterface;
 
 /**
  * Interface for navigational helpers
@@ -47,16 +46,16 @@ interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
     /**
      * Renders helper
      *
-     * @param Navigation\ContainerInterface|null $container [optional] container to render.
-     *                                                      Default is null, which indicates
-     *                                                      that the helper should render
-     *                                                      the container returned by {@link getContainer()}.
+     * @param Navigation\ContainerInterface|string|null $container [optional] container to render.
+     *                                                             Default is null, which indicates
+     *                                                             that the helper should render
+     *                                                             the container returned by {@link getContainer()}.
      *
      * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return string helper output
      */
-    public function render(?ContainerInterface $container = null): string;
+    public function render($container = null): string;
 
     /**
      * Sets Authorization to use when iterating pages

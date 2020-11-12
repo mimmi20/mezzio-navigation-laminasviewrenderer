@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\I18n\View\Helper\Translate;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtml;
@@ -52,10 +53,10 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * Implements {@link HelperInterface::render()}.
      *
-     * @param ContainerInterface|null $container [optional] container to render.
-     *                                           Default is null, which indicates
-     *                                           that the helper should render
-     *                                           the container returned by {@link getContainer()}.
+     * @param ContainerInterface|string|null $container [optional] container to render.
+     *                                                  Default is null, which indicates
+     *                                                  that the helper should render
+     *                                                  the container returned by {@link getContainer()}.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
@@ -64,7 +65,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * @return string
      */
-    public function render(?ContainerInterface $container = null): string
+    public function render($container = null): string
     {
         $partial = $this->getPartial();
 
@@ -79,8 +80,8 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      * Renders breadcrumbs by chaining 'a' elements with the separator
      * registered in the helper.
      *
-     * @param ContainerInterface|null $container [optional] container to render. Default is
-     *                                           to render the container registered in the helper.
+     * @param ContainerInterface|string|null $container [optional] container to render. Default is
+     *                                                  to render the container registered in the helper.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
@@ -88,7 +89,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      *
      * @return string
      */
-    public function renderStraight(?ContainerInterface $container = null): string
+    public function renderStraight($container = null): string
     {
         $this->parseContainer($container);
         if (null === $container) {
@@ -106,12 +107,33 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         if ($this->getLinkLast()) {
             $html = $this->htmlify($active);
         } else {
-            $escaper = $this->getView()->plugin('escapeHtml');
-            \assert($escaper instanceof EscapeHtml);
+            $label = (string) $active->getLabel();
 
-            $html = $escaper(
-                $this->translate($active->getLabel(), $active->getTextDomain())
+            if ($this->hasTranslator()) {
+                $translator = $this->getView()->plugin('translate');
+                \assert(
+                    $translator instanceof Translate,
+                    sprintf(
+                        '$translator should be an Instance of %s, but was %s',
+                        Translate::class,
+                        get_class($translator)
+                    )
+                );
+
+                $label = $translator($label, $active->getTextDomain());
+            }
+
+            $escaper = $this->getView()->plugin('escapeHtml');
+            \assert(
+                $escaper instanceof EscapeHtml,
+                sprintf(
+                    '$escaper should be an Instance of %s, but was %s',
+                    EscapeHtml::class,
+                    get_class($escaper)
+                )
             );
+
+            $html = $escaper($label);
         }
 
         // walk back to root
