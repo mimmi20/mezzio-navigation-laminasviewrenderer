@@ -164,7 +164,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             $active['page'] = $active['page']->getParent();
         }
 
-        $escaper = $this->getView()->plugin('escapeHtmlAttr');
+        $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtmlAttr');
         \assert($escaper instanceof EscapeHtmlAttr);
         $ulClass = $ulClass ? ' class="' . $escaper($ulClass) . '"' : '';
         $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
@@ -297,7 +297,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         // find deepest active
         $found = $this->findActive($container, $minDepth, $maxDepth);
 
-        $escaper = $this->getView()->plugin('escapeHtmlAttr');
+        $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtmlAttr');
         \assert($escaper instanceof EscapeHtmlAttr);
 
         if ($found) {
@@ -549,8 +549,10 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         $label = (string) $page->getLabel();
         $title = (string) $page->getTitle();
 
-        if ($this->hasTranslator()) {
-            $translator = $this->getView()->plugin('translate');
+        $plugin = $this->getView()->getHelperPluginManager();
+
+        if ($plugin->has('translate')) {
+            $translator = $plugin->get('translate');
             \assert(
                 $translator instanceof Translate,
                 sprintf(
@@ -587,7 +589,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         $html = '<' . $element . $this->htmlAttribs($attribs) . '>';
 
         if (true === $escapeLabel) {
-            $escaper = $this->getView()->plugin('escapeHtml');
+            $escaper = $plugin->get('escapeHtml');
             \assert(
                 $escaper instanceof EscapeHtml,
                 sprintf(
@@ -907,7 +909,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
         $model = array_merge($params, ['container' => $container]);
 
-        $partialHelper = $this->getView()->plugin('partial');
+        $partialHelper = $this->getView()->getHelperPluginManager()->get('partial');
         \assert($partialHelper instanceof Partial);
 
         if (is_array($partial)) {

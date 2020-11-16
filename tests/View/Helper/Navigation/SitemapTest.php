@@ -18,6 +18,7 @@ use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\EscapeHtmlAttr;
+use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -805,13 +806,28 @@ final class SitemapTest extends TestCase
                 '_blankEscaped'
             );
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('has')
+            ->with('translate')
+            ->willReturn(true);
+        $viewPluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive(['translate'], ['escapeHtml'])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(4))
+        $view->expects(self::exactly(2))
             ->method('plugin')
-            ->withConsecutive(['translate'], ['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $escapeHtml, $escapeHtmlAttr);
+            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -930,13 +946,28 @@ final class SitemapTest extends TestCase
                 '#Escaped'
             );
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('has')
+            ->with('translate')
+            ->willReturn(false);
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('escapeHtml')
+            ->willReturn($escapeHtml);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(3))
+        $view->expects(self::exactly(2))
             ->method('plugin')
-            ->withConsecutive(['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtml, $escapeHtmlAttr);
+            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);

@@ -21,6 +21,7 @@ use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
+use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -809,13 +810,28 @@ final class BreadcrumbsTest extends TestCase
                 '_blankEscaped'
             );
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('has')
+            ->with('translate')
+            ->willReturn(true);
+        $viewPluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive(['translate'], ['escapeHtml'])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(4))
+        $view->expects(self::exactly(2))
             ->method('plugin')
-            ->withConsecutive(['translate'], ['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $escapeHtml, $escapeHtmlAttr);
+            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -934,13 +950,28 @@ final class BreadcrumbsTest extends TestCase
                 '#Escaped'
             );
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('has')
+            ->with('translate')
+            ->willReturn(false);
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('escapeHtml')
+            ->willReturn($escapeHtml);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(3))
+        $view->expects(self::exactly(2))
             ->method('plugin')
-            ->withConsecutive(['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtml, $escapeHtmlAttr);
+            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -1041,9 +1072,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('getParent')
             ->willReturn(null);
         $parentPage->expects(self::never())
-            ->method('isActive')
-            ->with(false)
-            ->willReturn(false);
+            ->method('isActive');
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1135,9 +1164,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('getParent')
             ->willReturn(null);
         $parentPage->expects(self::never())
-            ->method('isActive')
-            ->with(false)
-            ->willReturn(true);
+            ->method('isActive');
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1742,13 +1769,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['abc' => 'test', 'pages' => [$parentPage, $page], 'separator' => $seperator])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -1848,13 +1886,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $page], 'separator' => $seperator, 'abc' => 'test'])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -1960,13 +2009,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $subPage], 'separator' => $seperator, 'abc' => 'test'])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2070,13 +2130,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $subPage], 'separator' => $seperator, 'abc' => 'test'])
             ->willReturnSelf();
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2163,13 +2234,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [], 'separator' => $seperator, 'abc' => 'test'])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2388,13 +2470,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $page], 'separator' => $seperator])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2478,13 +2571,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [], 'separator' => $seperator])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2584,13 +2688,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $page], 'separator' => $seperator])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2696,13 +2811,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $subPage], 'separator' => $seperator])
             ->willReturn($expected);
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2806,13 +2932,24 @@ final class BreadcrumbsTest extends TestCase
             ->with($partial, ['pages' => [$parentPage, $subPage], 'separator' => $seperator])
             ->willReturnSelf();
 
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::never())
+            ->method('has');
+        $viewPluginManager->expects(self::exactly(1))
+            ->method('get')
+            ->with('partial')
+            ->willReturn($partialHelper);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::once())
-            ->method('plugin')
-            ->with('partial')
-            ->willReturn($partialHelper);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::exactly(1))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -2837,9 +2974,6 @@ final class BreadcrumbsTest extends TestCase
     {
         $logger = $this->createMock(Logger::class);
         $name   = 'Mezzio\\Navigation\\Top';
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2923,8 +3057,10 @@ final class BreadcrumbsTest extends TestCase
         $resource               = 'testResource';
         $privilege              = 'testPrivilege';
         $label                  = 'testLabel';
+        $tranalatedLabel        = 'testLabelTranslated';
         $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
         $title                  = 'testTitle';
+        $tranalatedTitle        = 'testTitleTranslated';
         $textDomain             = 'testDomain';
         $id                     = 'testId';
         $class                  = 'test-class';
@@ -2966,8 +3102,9 @@ final class BreadcrumbsTest extends TestCase
         $page->expects(self::once())
             ->method('getLabel')
             ->willReturn($label);
-        $page->expects(self::never())
-            ->method('getTextDomain');
+        $page->expects(self::exactly(2))
+            ->method('getTextDomain')
+            ->willReturn($textDomain);
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
@@ -3019,12 +3156,10 @@ final class BreadcrumbsTest extends TestCase
         $helper->setAuthorization($auth);
 
         $expected  = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>/<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
-        $partial   = 'testPartial';
         $seperator = '/';
 
         $helper->setSeparator($seperator);
         $helper->setLinkLast(true);
-        $helper->setPartial($partial);
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -3032,12 +3167,12 @@ final class BreadcrumbsTest extends TestCase
         $escapeHtml->expects(self::exactly(11))
             ->method('__invoke')
             ->withConsecutive(
-                [$label],
+                [$tranalatedLabel],
                 ['id'],
                 ['title'],
                 ['class'],
                 ['href'],
-                ['parent-label'],
+                ['translated-parent-label'],
                 ['id'],
                 ['title'],
                 ['class'],
@@ -3065,11 +3200,11 @@ final class BreadcrumbsTest extends TestCase
             ->method('__invoke')
             ->withConsecutive(
                 [$id],
-                [$title],
+                [$tranalatedTitle],
                 [$class],
                 [$href],
                 ['parent-id'],
-                ['parent-title'],
+                ['translated-parent-title'],
                 ['parent-class'],
                 ['##'],
                 ['self']
@@ -3086,17 +3221,246 @@ final class BreadcrumbsTest extends TestCase
                 'self-escaped'
             );
 
+        $translatePlugin = $this->getMockBuilder(Translate::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $translatePlugin->expects(self::exactly(4))
+            ->method('__invoke')
+            ->withConsecutive([$label, $textDomain], [$title, $textDomain], ['parent-label', 'parent-text-domain'], ['parent-title', 'parent-text-domain'])
+            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle, 'translated-parent-label', 'translated-parent-title');
+
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::exactly(2))
+            ->method('has')
+            ->with('translate')
+            ->willReturn(true);
+        $viewPluginManager->expects(self::exactly(4))
+            ->method('get')
+            ->withConsecutive(['translate'], ['escapeHtml'], ['translate'], ['escapeHtml'])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $translatePlugin, $escapeHtml);
+
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(6))
+        $view->expects(self::exactly(4))
             ->method('plugin')
-            ->withConsecutive(['escapeHtml'], ['escapehtml'], ['escapehtmlattr'], ['escapeHtml'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtml, $escapeHtmlAttr, $escapeHtml, $escapeHtml, $escapeHtmlAttr);
+            ->withConsecutive(['escapehtml'], ['escapehtmlattr'], ['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr, $escapeHtml, $escapeHtmlAttr);
+        $view->expects(self::exactly(2))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderStraight($name));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testRenderStraightWithoutLinkAtEnd(): void
+    {
+        $logger = $this->createMock(Logger::class);
+        $name   = 'Mezzio\\Navigation\\Top';
+
+        $resource               = 'testResource';
+        $privilege              = 'testPrivilege';
+        $label                  = 'testLabel';
+        $tranalatedLabel        = 'testLabelTranslated';
+        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
+        $title                  = 'testTitle';
+        $tranalatedTitle        = 'testTitleTranslated';
+        $textDomain             = 'testDomain';
+        $id                     = 'testId';
+        $class                  = 'test-class';
+        $href                   = '#';
+        $target                 = null;
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('isVisible')
+            ->with(false)
+            ->willReturn(true);
+        $page->expects(self::once())
+            ->method('getResource')
+            ->willReturn($resource);
+        $page->expects(self::once())
+            ->method('getPrivilege')
+            ->willReturn($privilege);
+        $page->expects(self::exactly(2))
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::once())
+            ->method('isActive')
+            ->with(false)
+            ->willReturn(true);
+        $page->expects(self::once())
+            ->method('getLabel')
+            ->willReturn($label);
+        $page->expects(self::once())
+            ->method('getTextDomain')
+            ->willReturn($textDomain);
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Breadcrumbs($serviceLocator, $logger);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+        $helper->setContainer($container);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::exactly(2))
+            ->method('isGranted')
+            ->with($role, $resource, $privilege)
+            ->willReturn(true);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $expected  = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>/testLabelTranslatedAndEscaped';
+        $seperator = '/';
+
+        $helper->setSeparator($seperator);
+        $helper->setLinkLast(false);
+
+        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtml->expects(self::exactly(7))
+            ->method('__invoke')
+            ->withConsecutive(
+                [$tranalatedLabel],
+                ['translated-parent-label'],
+                ['id'],
+                ['title'],
+                ['class'],
+                ['href'],
+                ['target']
+            )
+            ->willReturnOnConsecutiveCalls(
+                $escapedTranalatedLabel,
+                'parent-label-escaped',
+                'parent-id-escaped',
+                'parent-title-escaped',
+                'parent-class-escaped',
+                'parent-href-escaped',
+                'parent-target-escaped'
+            );
+
+        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtmlAttr->expects(self::exactly(5))
+            ->method('__invoke')
+            ->withConsecutive(
+                ['parent-id'],
+                ['translated-parent-title'],
+                ['parent-class'],
+                ['##'],
+                ['self']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'parent-id-escaped',
+                'parent-title-escaped',
+                'parent-class-escaped',
+                '##-escaped',
+                'self-escaped'
+            );
+
+        $translator = $this->getMockBuilder(TranslatorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $translator->expects(self::never())
+            ->method('translate');
+
+        /* @var TranslatorInterface $translator */
+        $helper->setTranslator($translator);
+
+        $translatePlugin = $this->getMockBuilder(Translate::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $translatePlugin->expects(self::exactly(3))
+            ->method('__invoke')
+            ->withConsecutive([$label, $textDomain], ['parent-label', 'parent-text-domain'], ['parent-title', 'parent-text-domain'])
+            ->willReturnOnConsecutiveCalls($tranalatedLabel, 'translated-parent-label', 'translated-parent-title');
+
+        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewPluginManager->expects(self::exactly(2))
+            ->method('has')
+            ->with('translate')
+            ->willReturn(true);
+        $viewPluginManager->expects(self::exactly(4))
+            ->method('get')
+            ->withConsecutive(['translate'], ['escapeHtml'], ['translate'], ['escapeHtml'])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $translatePlugin, $escapeHtml);
+
+        $view = $this->getMockBuilder(PhpRenderer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $view->expects(self::exactly(2))
+            ->method('plugin')
+            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
+            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
+        $view->expects(self::exactly(2))
+            ->method('getHelperPluginManager')
+            ->willReturn($viewPluginManager);
+
+        /* @var PhpRenderer $view */
+        $helper->setView($view);
+
+        self::assertSame($expected, $helper->renderStraight());
     }
 }

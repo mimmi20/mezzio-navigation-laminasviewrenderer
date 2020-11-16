@@ -292,7 +292,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             $url = (string) $href;
         } else {
             // href is relative to current document; use url helpers
-            $basePathHelper = $this->getView()->plugin('basepath');
+            $basePathHelper = $this->getView()->getHelperPluginManager()->get('basepath');
             $curDoc         = $basePathHelper();
             $curDoc         = '/' === $curDoc ? '' : trim($curDoc, '/');
             $url            = rtrim($this->getServerUrl(), '/') . '/' . $curDoc . (empty($curDoc) ? '' : '/') . $href;
@@ -316,7 +316,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     private function xmlEscape(string $string): string
     {
-        $escaper = $this->getView()->plugin('escapeHtml');
+        $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtml');
 
         return $escaper($string);
     }
@@ -420,7 +420,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     public function getServerUrl(): string
     {
         if (!isset($this->serverUrl)) {
-            $serverUrlHelper = $this->getView()->plugin('serverUrl');
+            $serverUrlHelper = $this->getView()->getHelperPluginManager()->get('serverUrl');
             $this->serverUrl = $serverUrlHelper();
         }
 
