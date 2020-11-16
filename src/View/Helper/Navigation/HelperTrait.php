@@ -488,8 +488,10 @@ trait HelperTrait
         $label = (string) $page->getLabel();
         $title = (string) $page->getTitle();
 
-        if ($this->hasTranslator()) {
-            $translator = $this->getView()->plugin('translate');
+        $plugin = $this->getView()->getHelperPluginManager();
+
+        if ($plugin->has('translate')) {
+            $translator = $plugin->get('translate');
             \assert(
                 $translator instanceof Translate,
                 sprintf(
@@ -512,7 +514,7 @@ trait HelperTrait
             'target' => $page->getTarget(),
         ];
 
-        $escaper = $this->getView()->plugin('escapeHtml');
+        $escaper = $plugin->get('escapeHtml');
         \assert(
             $escaper instanceof EscapeHtml,
             sprintf(

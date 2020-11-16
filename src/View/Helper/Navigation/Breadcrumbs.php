@@ -109,8 +109,10 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         } else {
             $label = (string) $active->getLabel();
 
-            if ($this->hasTranslator()) {
-                $translator = $this->getView()->plugin('translate');
+            $plugins = $this->getView()->getHelperPluginManager();
+
+            if ($plugins->has('translate')) {
+                $translator = $plugins->get('translate');
                 \assert(
                     $translator instanceof Translate,
                     sprintf(
@@ -123,7 +125,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
                 $label = $translator($label, $active->getTextDomain());
             }
 
-            $escaper = $this->getView()->plugin('escapeHtml');
+            $escaper = $plugins->get('escapeHtml');
             \assert(
                 $escaper instanceof EscapeHtml,
                 sprintf(
@@ -351,7 +353,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
             $model['pages'] = array_reverse($model['pages']);
         }
 
-        $partialHelper = $this->getView()->plugin('partial');
+        $partialHelper = $this->getView()->getHelperPluginManager()->get('partial');
         \assert($partialHelper instanceof Partial);
 
         $rendered = $partialHelper($partial, $model);
