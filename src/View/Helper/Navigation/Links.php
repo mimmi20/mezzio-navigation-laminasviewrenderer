@@ -15,6 +15,7 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
+use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\Page\PageFactory;
@@ -62,7 +63,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @var int
      */
-    private $renderFlag = self::RENDER_ALL;
+    private $renderFlag = LinksInterface::RENDER_ALL;
 
     /**
      * Root container
@@ -203,9 +204,19 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             'title' => $page->getLabel(),
         ];
 
-        return '<link' .
-            $this->htmlAttribs($attribs) .
-            $this->getClosingBracket();
+        $plugins = $this->getView()->getHelperPluginManager();
+
+        $headLink = $plugins->get('headLink');
+        \assert(
+            $headLink instanceof HeadLink,
+            sprintf(
+                '$headLink should be an Instance of %s, but was %s',
+                HeadLink::class,
+                get_class($headLink)
+            )
+        );
+
+        return $headLink->itemToString((object) $attribs);
     }
 
     // Finder methods:
@@ -296,10 +307,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     public function findRelation(PageInterface $page, string $rel, string $type)
     {
         if (!in_array($rel, ['rel', 'rev'], true)) {
-            throw new Exception\DomainException(sprintf(
-                'Invalid argument: $rel must be "rel" or "rev"; "%s" given',
-                $rel
-            ));
+            throw new Exception\DomainException(
+                sprintf(
+                    'Invalid argument: $rel must be "rel" or "rev"; "%s" given',
+                    $rel
+                )
+            );
         }
 
         if (!$result = $this->findFromProperty($page, $rel, $type)) {
@@ -327,23 +340,26 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         $method = 'get' . ucfirst($rel);
         $result = $page->{$method}($type);
 
+        if (!$result) {
+            return null;
+        }
+
+        $result = $this->convertToPages($result);
+
         if ($result) {
-            $result = $this->convertToPages($result);
-            if ($result) {
-                if (!is_array($result)) {
-                    $result = [$result];
-                }
-
-                foreach ($result as $key => $page) {
-                    if ($this->accept($page)) {
-                        continue;
-                    }
-
-                    unset($result[$key]);
-                }
-
-                return 1 === count($result) ? $result[0] : $result;
+            if (!is_array($result)) {
+                $result = [$result];
             }
+
+            foreach ($result as $key => $page) {
+                if ($this->accept($page)) {
+                    continue;
+                }
+
+                unset($result[$key]);
+            }
+
+            return 1 === count($result) ? $result[0] : $result;
         }
 
         return null;
@@ -357,13 +373,14 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next', etc
      *
-     * @return array|null
+     * @return array|PageInterface|null
      */
-    private function findFromSearch(PageInterface $page, string $rel, string $type): ?array
+    private function findFromSearch(PageInterface $page, string $rel, string $type)
     {
         $found = null;
 
         $method = 'search' . ucfirst($rel) . ucfirst($type);
+
         if (method_exists($this, $method)) {
             $found = $this->{$method}($page);
         }
@@ -389,6 +406,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     public function searchRelStart(PageInterface $page): ?PageInterface
     {
         $found = $this->findRoot($page);
+
         if (!$found instanceof PageInterface) {
             $found->rewind();
             $found = $found->current();
@@ -455,6 +473,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             $this->findRoot($page),
             RecursiveIteratorIterator::SELF_FIRST
         );
+
         foreach ($iterator as $intermediate) {
             if (!$this->accept($intermediate)) {
                 continue;
@@ -495,6 +514,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         // find start page(s)
         $start = $this->findRelation($page, 'rel', 'start');
+
         if (!is_array($start)) {
             $start = [$start];
         }
@@ -535,10 +555,15 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function searchRelSection(PageInterface $page)
     {
+        if (!$page->hasPages()) {
+            return null;
+        }
+
+        $root  = $this->findRoot($page);
         $found = [];
 
         // check if given page has pages and is a chapter page
-        if ($page->hasPages() && $this->findRoot($page)->hasPage($page)) {
+        if ($root->hasPage($page)) {
             foreach ($page as $section) {
                 if (!$this->accept($section)) {
                     continue;
@@ -572,23 +597,26 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function searchRelSubsection(PageInterface $page)
     {
+        if (!$page->hasPages()) {
+            return null;
+        }
+
+        $root  = $this->findRoot($page);
         $found = [];
 
-        if ($page->hasPages()) {
-            // given page has child pages, loop chapters
-            foreach ($this->findRoot($page) as $chapter) {
-                // is page a section?
-                if (!$chapter->hasPage($page)) {
+        // given page has child pages, loop chapters
+        foreach ($root as $chapter) {
+            // is page a section?
+            if (!$chapter->hasPage($page)) {
+                continue;
+            }
+
+            foreach ($page as $subsection) {
+                if (!$this->accept($subsection)) {
                     continue;
                 }
 
-                foreach ($page as $subsection) {
-                    if (!$this->accept($subsection)) {
-                        continue;
-                    }
-
-                    $found[] = $subsection;
-                }
+                $found[] = $subsection;
             }
         }
 
@@ -615,15 +643,17 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function searchRevSection(PageInterface $page): ?PageInterface
     {
-        $found  = null;
         $parent = $page->getParent();
-        if ($parent) {
-            if (
-                $parent instanceof PageInterface &&
-                $this->findRoot($page)->hasPage($parent)
-            ) {
-                $found = $parent;
-            }
+
+        if (!$parent instanceof PageInterface) {
+            return null;
+        }
+
+        $root  = $this->findRoot($page);
+        $found = null;
+
+        if ($root->hasPage($parent)) {
+            $found = $parent;
         }
 
         return $found;
@@ -643,17 +673,19 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function searchRevSubsection(PageInterface $page): ?PageInterface
     {
-        $found  = null;
         $parent = $page->getParent();
-        if ($parent) {
-            if ($parent instanceof PageInterface) {
-                $root = $this->findRoot($page);
-                foreach ($root as $chapter) {
-                    if ($chapter->hasPage($parent)) {
-                        $found = $parent;
-                        break;
-                    }
-                }
+
+        if (!$parent instanceof PageInterface) {
+            return null;
+        }
+
+        $root  = $this->findRoot($page);
+        $found = null;
+
+        foreach ($root as $chapter) {
+            if ($chapter->hasPage($parent)) {
+                $found = $parent;
+                break;
             }
         }
 
@@ -684,6 +716,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         while ($parent = $page->getParent()) {
             $root = $parent;
+
             if (!($parent instanceof PageInterface)) {
                 break;
             }
@@ -790,7 +823,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function setRenderFlag(int $renderFlag): self
     {
-        $this->renderFlag = (int) $renderFlag;
+        $this->renderFlag = $renderFlag;
 
         return $this;
     }

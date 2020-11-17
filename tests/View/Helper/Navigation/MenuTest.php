@@ -809,7 +809,7 @@ final class MenuTest extends TestCase
         $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewPluginManager->expects(self::exactly(1))
+        $viewPluginManager->expects(self::once())
             ->method('has')
             ->with('translate')
             ->willReturn(true);
@@ -825,7 +825,7 @@ final class MenuTest extends TestCase
             ->method('plugin')
             ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
             ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(1))
+        $view->expects(self::once())
             ->method('getHelperPluginManager')
             ->willReturn($viewPluginManager);
 
@@ -949,11 +949,11 @@ final class MenuTest extends TestCase
         $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewPluginManager->expects(self::exactly(1))
+        $viewPluginManager->expects(self::once())
             ->method('has')
             ->with('translate')
             ->willReturn(false);
-        $viewPluginManager->expects(self::exactly(1))
+        $viewPluginManager->expects(self::once())
             ->method('get')
             ->with('escapeHtml')
             ->willReturn($escapeHtml);
@@ -965,7 +965,7 @@ final class MenuTest extends TestCase
             ->method('plugin')
             ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
             ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(1))
+        $view->expects(self::once())
             ->method('getHelperPluginManager')
             ->willReturn($viewPluginManager);
 
