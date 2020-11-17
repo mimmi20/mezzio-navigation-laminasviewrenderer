@@ -23,7 +23,9 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mezzio\Navigation\Page\PageInterface;
+use Mezzio\Navigation\Page\Route;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\TestCase;
 
@@ -809,7 +811,7 @@ final class LinksTest extends TestCase
         $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewPluginManager->expects(self::exactly(1))
+        $viewPluginManager->expects(self::once())
             ->method('has')
             ->with('translate')
             ->willReturn(true);
@@ -825,7 +827,7 @@ final class LinksTest extends TestCase
             ->method('plugin')
             ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
             ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(1))
+        $view->expects(self::once())
             ->method('getHelperPluginManager')
             ->willReturn($viewPluginManager);
 
@@ -949,11 +951,11 @@ final class LinksTest extends TestCase
         $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewPluginManager->expects(self::exactly(1))
+        $viewPluginManager->expects(self::once())
             ->method('has')
             ->with('translate')
             ->willReturn(false);
-        $viewPluginManager->expects(self::exactly(1))
+        $viewPluginManager->expects(self::once())
             ->method('get')
             ->with('escapeHtml')
             ->willReturn($escapeHtml);
@@ -965,7 +967,7 @@ final class LinksTest extends TestCase
             ->method('plugin')
             ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
             ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(1))
+        $view->expects(self::once())
             ->method('getHelperPluginManager')
             ->willReturn($viewPluginManager);
 
@@ -1516,5 +1518,601 @@ final class LinksTest extends TestCase
         ];
 
         self::assertSame($expected, $helper->findActive($name, 0, 0));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetRenderFlag(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
+
+        $helper->setRenderFlag(LinksInterface::RENDER_ALTERNATE);
+
+        self::assertSame(LinksInterface::RENDER_ALTERNATE, $helper->getRenderFlag());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRevSubsectionWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('getParent')
+            ->willReturn(null);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRevSubsection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRevSubsectionWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::exactly(2))
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::once())
+            ->method('hasPage')
+            ->with($parentPage)
+            ->willReturn(false);
+
+        $parentPage->addPage($page);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRevSubsection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRevSubsectionWithDeepParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage             = new Route();
+        $parentParentPage       = new Route();
+        $parentParentParentPage = new Route();
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::exactly(2))
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::never())
+            ->method('hasPage');
+
+        $parentPage->addPage($page);
+        $parentParentPage->addPage($parentPage);
+        $parentParentParentPage->addPage($parentParentPage);
+
+        /* @var PageInterface $page */
+        self::assertSame($parentPage, $helper->searchRevSubsection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRevSectionWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('getParent')
+            ->willReturn(null);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRevSection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRevSectionWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::exactly(2))
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::never())
+            ->method('hasPage');
+
+        $parentPage->addPage($page);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRevSection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRevSectionWithDeepParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage       = new Route();
+        $parentParentPage = new Route();
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::exactly(2))
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::never())
+            ->method('hasPage');
+
+        $parentPage->addPage($page);
+        $parentParentPage->addPage($parentPage);
+
+        /* @var PageInterface $page */
+        self::assertSame($parentPage, $helper->searchRevSection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelSubsectionWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('hasPages')
+            ->willReturn(false);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRelSubsection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelSubsectionWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+        $page       = new Route();
+
+        $parentPage->addPage($page);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRelSubsection($parentPage));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelSubsectionWithDeepParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page                   = new Route();
+        $parentPage             = new Route();
+        $parentParentPage       = new Route();
+        $parentParentParentPage = new Route();
+
+        $parentPage->addPage($page);
+        $parentParentPage->addPage($parentPage);
+        $parentParentParentPage->addPage($parentParentPage);
+
+        self::assertSame($page, $helper->searchRelSubsection($parentPage));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelSectionWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::once())
+            ->method('hasPages')
+            ->willReturn(false);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRelSection($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelSectionWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+        $page       = new Route();
+
+        $parentPage->addPage($page);
+
+        /* @var PageInterface $page */
+        self::assertNull($helper->searchRelSection($parentPage));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelSectionWithDeepParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page             = new Route();
+        $parentPage       = new Route();
+        $parentParentPage = new Route();
+
+        $parentPage->addPage($page);
+        $parentParentPage->addPage($parentPage);
+
+        self::assertSame($page, $helper->searchRelSection($parentPage));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelChapterWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+        $page   = new Route();
+
+        self::assertNull($helper->searchRelChapter($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelChapterWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+        $page       = new Route();
+
+        $parentPage->addPage($page);
+
+        /* @var PageInterface $page */
+        self::assertSame($page, $helper->searchRelChapter($parentPage));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelChapterWithDeepParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $page             = new Route();
+        $parentPage       = new Route();
+        $parentParentPage = new Route();
+
+        $parentPage->addPage($page);
+        $parentParentPage->addPage($parentPage);
+
+        self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelPrevWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+        $page   = new Route();
+
+        self::assertNull($helper->searchRelPrev($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelPrevWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+        $page1      = new Route();
+        $page2      = new Route();
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        self::assertNull($helper->searchRelPrev($page1));
+        self::assertSame($page1, $helper->searchRelPrev($page2));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelNextWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+        $page   = new Route();
+
+        self::assertNull($helper->searchRelNext($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelNextWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+        $page1      = new Route();
+        $page2      = new Route();
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        self::assertNull($helper->searchRelNext($page2));
+        self::assertSame($page2, $helper->searchRelNext($page1));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelStartWithoutParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+        $page   = new Route();
+
+        self::assertNull($helper->searchRelStart($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSearchRelStartWithParent(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        $helper = new Links($serviceLocator, $logger);
+
+        $parentPage = new Route();
+        $page1      = new Route();
+        $page2      = new Route();
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        self::assertSame($parentPage, $helper->searchRelStart($page1));
+        self::assertSame($parentPage, $helper->searchRelStart($page2));
     }
 }
