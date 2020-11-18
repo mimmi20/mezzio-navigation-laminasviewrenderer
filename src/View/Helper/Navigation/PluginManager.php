@@ -45,7 +45,7 @@ final class PluginManager extends HelperPluginManager implements InteropContaine
      */
     protected $factories = [
         Breadcrumbs::class => HelperFactory::class,
-        Links::class => HelperFactory::class,
+        Links::class => LinksFactory::class,
         Menu::class => HelperFactory::class,
         Sitemap::class => HelperFactory::class,
     ];

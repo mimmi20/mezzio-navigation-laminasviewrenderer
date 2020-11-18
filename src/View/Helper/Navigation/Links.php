@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\Log\Logger;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\View\Exception;
@@ -18,6 +19,7 @@ use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
+use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
@@ -66,16 +68,26 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     private $renderFlag = LinksInterface::RENDER_ALL;
 
     /**
-     * Root container
+     * FindRoot helper
      *
-     * Used for preventing methods to traverse above the container given to
-     * the {@link render()} method.
-     *
-     * @see _findRoot()
-     *
-     * @var ContainerInterface|null
+     * @var FindRootInterface
      */
-    private $root;
+    private $rootFinder;
+
+    /**
+     * @param \Interop\Container\ContainerInterface $serviceLocator
+     * @param Logger                                $logger
+     * @param FindRootInterface                     $rootFinder
+     */
+    public function __construct(
+        \Interop\Container\ContainerInterface $serviceLocator,
+        Logger $logger,
+        FindRootInterface $rootFinder
+    ) {
+        $this->serviceLocator = $serviceLocator;
+        $this->logger         = $logger;
+        $this->rootFinder     = $rootFinder;
+    }
 
     /**
      * Magic overload: Proxy calls to {@link findRelation()} or container
@@ -142,9 +154,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         $active = $active['page'];
 
-        $output     = '';
-        $indent     = $this->getIndent();
-        $this->root = $container;
+        $output = '';
+        $indent = $this->getIndent();
+
+        $this->rootFinder->setRoot($container);
 
         $result = $this->findAllRelations($active, $this->getRenderFlag());
         foreach ($result as $attrib => $types) {
@@ -160,7 +173,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             }
         }
 
-        $this->root = null;
+        $this->rootFinder->setRoot(null);
 
         // return output (trim last newline by spec)
         return mb_strlen($output) ? rtrim($output, PHP_EOL) : '';
@@ -405,7 +418,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function searchRelStart(PageInterface $page): ?PageInterface
     {
-        $found = $this->findRoot($page);
+        $found = $this->rootFinder->find($page);
 
         if (!$found instanceof PageInterface) {
             $found->rewind();
@@ -436,7 +449,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     {
         $found    = null;
         $break    = false;
-        $iterator = new RecursiveIteratorIterator($this->findRoot($page), RecursiveIteratorIterator::SELF_FIRST);
+        $iterator = new RecursiveIteratorIterator($this->rootFinder->find($page), RecursiveIteratorIterator::SELF_FIRST);
         foreach ($iterator as $intermediate) {
             if ($intermediate === $page) {
                 // current page; break at next accepted page
@@ -470,7 +483,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         $found    = null;
         $prev     = null;
         $iterator = new RecursiveIteratorIterator(
-            $this->findRoot($page),
+            $this->rootFinder->find($page),
             RecursiveIteratorIterator::SELF_FIRST
         );
 
@@ -510,7 +523,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         $found = [];
 
         // find first level of pages
-        $root = $this->findRoot($page);
+        $root = $this->rootFinder->find($page);
 
         // find start page(s)
         $start = $this->findRelation($page, 'rel', 'start');
@@ -559,7 +572,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return null;
         }
 
-        $root  = $this->findRoot($page);
+        $root  = $this->rootFinder->find($page);
         $found = [];
 
         // check if given page has pages and is a chapter page
@@ -601,7 +614,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return null;
         }
 
-        $root  = $this->findRoot($page);
+        $root  = $this->rootFinder->find($page);
         $found = [];
 
         // given page has child pages, loop chapters
@@ -649,7 +662,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return null;
         }
 
-        $root  = $this->findRoot($page);
+        $root  = $this->rootFinder->find($page);
         $found = null;
 
         if ($root->hasPage($parent)) {
@@ -679,7 +692,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return null;
         }
 
-        $root  = $this->findRoot($page);
+        $root  = $this->rootFinder->find($page);
         $found = null;
 
         foreach ($root as $chapter) {
@@ -693,39 +706,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     }
 
     // Util methods:
-
-    /**
-     * Returns the root container of the given page
-     *
-     * When rendering a container, the render method still store the given
-     * container as the root container, and unset it when done rendering. This
-     * makes sure finder methods will not traverse above the container given
-     * to the render method.
-     *
-     * @param PageInterface $page
-     *
-     * @return ContainerInterface
-     */
-    private function findRoot(PageInterface $page): ContainerInterface
-    {
-        if ($this->root) {
-            return $this->root;
-        }
-
-        $root = $page;
-
-        while ($parent = $page->getParent()) {
-            $root = $parent;
-
-            if (!($parent instanceof PageInterface)) {
-                break;
-            }
-
-            $page = $parent;
-        }
-
-        return $root;
-    }
 
     /**
      * Converts a $mixed value to an array of pages

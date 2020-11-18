@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView;
 
 use Mezzio\Navigation\LaminasView\ConfigProvider;
+use Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use PHPUnit\Framework\TestCase;
 
@@ -57,12 +58,30 @@ final class ConfigProviderTest extends TestCase
      *
      * @return void
      */
+    public function testProviderDefinesDepencyConfig(): void
+    {
+        $dependencyConfig = $this->provider->getDependencyConfig();
+        self::assertIsArray($dependencyConfig);
+
+        self::assertArrayHasKey('factories', $dependencyConfig);
+        $factories = $dependencyConfig['factories'];
+        self::assertIsArray($factories);
+        self::assertArrayHasKey(FindRoot::class, $factories);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
     public function testInvocationReturnsArrayWithDependencies(): void
     {
         $config = ($this->provider)();
 
         self::assertIsArray($config);
         self::assertArrayHasKey('view_helpers', $config);
+        self::assertArrayHasKey('dependencies', $config);
 
         $viewHelperConfig = $config['view_helpers'];
         self::assertIsArray($viewHelperConfig);
@@ -77,5 +96,13 @@ final class ConfigProviderTest extends TestCase
         self::assertIsArray($aliases);
         self::assertArrayHasKey('Navigation', $aliases);
         self::assertArrayHasKey('navigation', $aliases);
+
+        $dependencyConfig = $config['dependencies'];
+        self::assertIsArray($dependencyConfig);
+
+        self::assertArrayHasKey('factories', $dependencyConfig);
+        $factories = $dependencyConfig['factories'];
+        self::assertIsArray($factories);
+        self::assertArrayHasKey(FindRoot::class, $factories);
     }
 }

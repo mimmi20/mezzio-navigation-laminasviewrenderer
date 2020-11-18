@@ -22,6 +22,7 @@ use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mezzio\Navigation\Page\PageInterface;
@@ -33,6 +34,7 @@ final class LinksTest extends TestCase
 {
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -43,9 +45,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -56,6 +67,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -66,9 +78,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -79,6 +100,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -88,9 +110,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -101,6 +132,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -113,9 +145,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -133,6 +174,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -142,9 +184,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -155,6 +206,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -166,9 +218,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -188,6 +249,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -199,9 +261,18 @@ final class LinksTest extends TestCase
         $serviceLocator = $this->createMock(ContainerInterface::class);
         $textDomain     = 'test';
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertTrue($helper->isTranslatorEnabled());
         self::assertNull($helper->getTranslator());
@@ -223,6 +294,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -233,9 +305,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->getView());
 
@@ -247,6 +328,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
@@ -260,9 +342,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $container1 = $helper->getContainer();
 
@@ -283,6 +374,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      *
      * @return void
      */
@@ -291,9 +383,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface');
@@ -302,6 +403,7 @@ final class LinksTest extends TestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -323,9 +425,18 @@ final class LinksTest extends TestCase
             ->with(\Mezzio\Navigation\Navigation::class)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', \Mezzio\Navigation\Navigation::class));
@@ -360,9 +471,18 @@ final class LinksTest extends TestCase
             ->with(\Mezzio\Navigation\Navigation::class)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer('default');
 
@@ -370,6 +490,7 @@ final class LinksTest extends TestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -392,9 +513,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
@@ -430,9 +560,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -440,6 +579,7 @@ final class LinksTest extends TestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -462,9 +602,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
@@ -498,9 +647,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -531,9 +689,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -588,9 +755,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -654,9 +830,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -732,9 +917,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -896,9 +1090,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $helper->setContainer($name);
 
@@ -1012,6 +1215,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -1021,9 +1225,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertSame('', $helper->getIndent());
 
@@ -1108,9 +1321,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $role = 'testRole';
 
@@ -1202,9 +1424,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $role = 'testRole';
 
@@ -1250,9 +1481,18 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $role = 'testRole';
 
@@ -1342,9 +1582,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $role = 'testRole';
 
@@ -1413,9 +1662,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $role = 'testRole';
 
@@ -1493,9 +1751,18 @@ final class LinksTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $role = 'testRole';
 
@@ -1522,6 +1789,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -1531,9 +1799,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
 
@@ -1554,9 +1831,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1582,16 +1868,12 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
         $page->expects(self::once())
@@ -1599,9 +1881,24 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn(false);
 
+        /* @var PageInterface $page */
         $parentPage->addPage($page);
 
-        /* @var PageInterface $page */
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertNull($helper->searchRevSubsection($page));
     }
 
@@ -1618,10 +1915,6 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage             = new Route();
         $parentParentPage       = new Route();
         $parentParentParentPage = new Route();
@@ -1629,17 +1922,32 @@ final class LinksTest extends TestCase
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
         $page->expects(self::never())
             ->method('hasPage');
 
+        /* @var PageInterface $page */
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
         $parentParentParentPage->addPage($parentParentPage);
 
-        /* @var PageInterface $page */
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($parentParentParentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertSame($parentPage, $helper->searchRevSubsection($page));
     }
 
@@ -1655,9 +1963,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1683,24 +2000,35 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
         $page->expects(self::never())
             ->method('hasPage');
 
+        /* @var PageInterface $page */
         $parentPage->addPage($page);
 
-        /* @var PageInterface $page */
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertNull($helper->searchRevSection($page));
     }
 
@@ -1717,26 +2045,37 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage       = new Route();
         $parentParentPage = new Route();
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
         $page->expects(self::never())
             ->method('hasPage');
 
+        /* @var PageInterface $page */
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
 
-        /* @var PageInterface $page */
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($parentParentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertSame($parentPage, $helper->searchRevSection($page));
     }
 
@@ -1752,9 +2091,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1769,6 +2117,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -1779,14 +2128,25 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
         $page       = new Route();
 
         $parentPage->addPage($page);
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($parentPage)
+            ->willReturn($parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         /* @var PageInterface $page */
         self::assertNull($helper->searchRelSubsection($parentPage));
@@ -1794,6 +2154,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -1804,10 +2165,6 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $page                   = new Route();
         $parentPage             = new Route();
         $parentParentPage       = new Route();
@@ -1816,6 +2173,21 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
         $parentParentParentPage->addPage($parentParentPage);
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($parentPage)
+            ->willReturn($parentParentParentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertSame($page, $helper->searchRelSubsection($parentPage));
     }
@@ -1832,9 +2204,18 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1849,6 +2230,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -1859,21 +2241,32 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
         $page       = new Route();
 
         $parentPage->addPage($page);
 
-        /* @var PageInterface $page */
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($parentPage)
+            ->willReturn($parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertNull($helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -1884,10 +2277,6 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $page             = new Route();
         $parentPage       = new Route();
         $parentParentPage = new Route();
@@ -1895,11 +2284,27 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($parentPage)
+            ->willReturn($parentParentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertSame($page, $helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
@@ -1912,16 +2317,29 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $page = new Route();
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(2))
+            ->method('find')
+            ->withConsecutive([$page], [$page])
+            ->willReturnOnConsecutiveCalls($page, $page);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-        $page   = new Route();
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->searchRelChapter($page));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
@@ -1934,21 +2352,32 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
         $page       = new Route();
 
         $parentPage->addPage($page);
 
-        /* @var PageInterface $page */
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(2))
+            ->method('find')
+            ->withConsecutive([$parentPage], [$parentPage])
+            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertSame($page, $helper->searchRelChapter($parentPage));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
@@ -1961,10 +2390,6 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $page             = new Route();
         $parentPage       = new Route();
         $parentParentPage = new Route();
@@ -1972,11 +2397,27 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(2))
+            ->method('find')
+            ->withConsecutive([$parentParentPage], [$parentParentPage])
+            ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -1987,16 +2428,29 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $page = new Route();
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($page);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-        $page   = new Route();
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->searchRelPrev($page));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -2007,10 +2461,6 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
@@ -2018,12 +2468,28 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(2))
+            ->method('find')
+            ->withConsecutive([$page1], [$page2])
+            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertNull($helper->searchRelPrev($page1));
         self::assertSame($page1, $helper->searchRelPrev($page2));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -2034,16 +2500,29 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $page = new Route();
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($page);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-        $page   = new Route();
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->searchRelNext($page));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -2054,10 +2533,6 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
@@ -2065,12 +2540,28 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
 
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(2))
+            ->method('find')
+            ->withConsecutive([$page2], [$page1])
+            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
+
         self::assertNull($helper->searchRelNext($page2));
         self::assertSame($page2, $helper->searchRelNext($page1));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -2081,16 +2572,29 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $page = new Route();
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::once())
+            ->method('find')
+            ->with($page)
+            ->willReturn($page);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-        $page   = new Route();
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertNull($helper->searchRelStart($page));
     }
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
@@ -2101,16 +2605,27 @@ final class LinksTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Links($serviceLocator, $logger);
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
 
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(2))
+            ->method('find')
+            ->withConsecutive([$page1], [$page2])
+            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var FindRootInterface $rootFinder */
+        $helper = new Links($serviceLocator, $logger, $rootFinder);
 
         self::assertSame($parentPage, $helper->searchRelStart($page1));
         self::assertSame($parentPage, $helper->searchRelStart($page2));
