@@ -113,10 +113,8 @@ trait HelperTrait
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
      */
-    public function __construct(
-        ContainerInterface $serviceLocator,
-        Logger $logger
-    ) {
+    public function __construct(ContainerInterface $serviceLocator, Logger $logger)
+    {
         $this->serviceLocator = $serviceLocator;
         $this->logger         = $logger;
     }

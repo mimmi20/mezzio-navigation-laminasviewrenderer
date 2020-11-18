@@ -13,13 +13,15 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperFactory;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mezzio\Navigation\LaminasView\Helper\FindRoot;
+use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksFactory;
 use PHPUnit\Framework\TestCase;
 
-final class HelperFactoryTest extends TestCase
+final class LinksFactoryTest extends TestCase
 {
-    /** @var HelperFactory */
+    /** @var LinksFactory */
     private $factory;
 
     /**
@@ -27,7 +29,7 @@ final class HelperFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->factory = new HelperFactory();
+        $this->factory = new LinksFactory();
     }
 
     /**
@@ -39,19 +41,20 @@ final class HelperFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $logger = $this->createMock(Logger::class);
+        $logger     = $this->createMock(Logger::class);
+        $rootFinder = $this->createMock(FindRootInterface::class);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::once())
+        $container->expects(self::exactly(2))
             ->method('get')
-            ->with(Logger::class)
-            ->willReturn($logger);
+            ->withConsecutive([Logger::class], [FindRoot::class])
+            ->willReturnOnConsecutiveCalls($logger, $rootFinder);
 
         /** @var ContainerInterface $container */
-        $helper = ($this->factory)($container, Menu::class);
+        $helper = ($this->factory)($container);
 
-        self::assertInstanceOf(Menu::class, $helper);
+        self::assertInstanceOf(Links::class, $helper);
     }
 }

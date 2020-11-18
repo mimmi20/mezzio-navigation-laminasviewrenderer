@@ -11,6 +11,8 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView;
 
+use Laminas\ServiceManager\Factory\InvokableFactory;
+use Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 
@@ -25,6 +27,7 @@ final class ConfigProvider
     {
         return [
             'view_helpers' => $this->getViewHelperConfig(),
+            'dependencies' => $this->getDependencyConfig(),
         ];
     }
 
@@ -42,6 +45,20 @@ final class ConfigProvider
             ],
             'factories' => [
                 Navigation::class => NavigationFactory::class,
+            ],
+        ];
+    }
+
+    /**
+     * Return application-level dependency configuration.
+     *
+     * @return array
+     */
+    public function getDependencyConfig()
+    {
+        return [
+            'factories' => [
+                FindRoot::class => InvokableFactory::class,
             ],
         ];
     }
