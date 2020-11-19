@@ -19,12 +19,12 @@ use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtml;
-use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
@@ -35,6 +35,7 @@ final class BreadcrumbsTest extends TestCase
 {
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -45,9 +46,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -58,6 +66,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -68,9 +77,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertSame(1, $helper->getMinDepth());
 
@@ -81,6 +97,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -90,9 +107,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -103,6 +127,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -115,9 +140,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -135,6 +167,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -144,9 +177,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -157,6 +197,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -168,9 +209,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -190,6 +238,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -201,9 +250,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator = $this->createMock(ContainerInterface::class);
         $textDomain     = 'test';
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertTrue($helper->isTranslatorEnabled());
         self::assertNull($helper->getTranslator());
@@ -225,6 +281,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -235,9 +292,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getView());
 
@@ -249,6 +313,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
@@ -262,9 +327,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $container1 = $helper->getContainer();
 
@@ -284,6 +356,7 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
@@ -293,9 +366,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface');
@@ -325,9 +405,16 @@ final class BreadcrumbsTest extends TestCase
             ->with(Navigation::class)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', Navigation::class));
@@ -362,9 +449,16 @@ final class BreadcrumbsTest extends TestCase
             ->with(Navigation::class)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer('default');
 
@@ -394,9 +488,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
@@ -432,9 +533,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -464,9 +572,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
@@ -500,9 +615,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -533,9 +655,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -590,9 +719,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -656,9 +792,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -734,22 +877,46 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Breadcrumbs::class, $page)
+            ->willReturn($expected);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
-
-        $label                  = 'testLabel';
-        $tranalatedLabel        = 'testLabelTranslated';
-        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
-        $title                  = 'testTitle';
-        $tranalatedTitle        = 'testTitleTranslated';
-        $textDomain             = 'testDomain';
-        $id                     = 'testId';
-        $class                  = 'test-class';
-        $href                   = '#';
-        $target                 = '_blank';
 
         $translator = $this->getMockBuilder(TranslatorInterface::class)
             ->disableOriginalConstructor()
@@ -760,114 +927,16 @@ final class BreadcrumbsTest extends TestCase
         /* @var TranslatorInterface $translator */
         $helper->setTranslator($translator);
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translatePlugin->expects(self::exactly(2))
-            ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle);
-
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtml->expects(self::exactly(6))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$tranalatedLabel],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['target']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'idEscaped',
-                'titleEscaped',
-                'classEscaped',
-                'hrefEscaped',
-                'targetEscaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(5))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$id],
-                [$tranalatedTitle],
-                [$class],
-                [$href],
-                [$target]
-            )
-            ->willReturnOnConsecutiveCalls(
-                'testIdEscaped',
-                'testTitleTranslatedAndEscaped',
-                'testClassEscaped',
-                '#Escaped',
-                '_blankEscaped'
-            );
-
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::once())
-            ->method('has')
-            ->with('translate')
-            ->willReturn(true);
-        $viewPluginManager->expects(self::exactly(2))
-            ->method('get')
-            ->withConsecutive(['translate'], ['escapeHtml'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml);
-
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(2))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::once())
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
-
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $page->expects(self::never())
-            ->method('isVisible');
-        $page->expects(self::never())
-            ->method('getResource');
-        $page->expects(self::never())
-            ->method('getPrivilege');
-        $page->expects(self::never())
-            ->method('getParent');
-        $page->expects(self::once())
-            ->method('getLabel')
-            ->willReturn($label);
-        $page->expects(self::once())
-            ->method('getTitle')
-            ->willReturn($title);
-        $page->expects(self::exactly(2))
-            ->method('getTextDomain')
-            ->willReturn($textDomain);
-        $page->expects(self::once())
-            ->method('getId')
-            ->willReturn($id);
-        $page->expects(self::once())
-            ->method('getClass')
-            ->willReturn($class);
-        $page->expects(self::once())
-            ->method('getHref')
-            ->willReturn($href);
-        $page->expects(self::once())
-            ->method('getTarget')
-            ->willReturn($target);
 
         /* @var PageInterface $page */
         self::assertSame($expected, $helper->htmlify($page));
@@ -877,144 +946,6 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testHtmlifyWithoutTranslator(): void
-    {
-        $expected  = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
-        $logger    = $this->createMock(Logger::class);
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-        $name      = 'Mezzio\\Navigation\\Top';
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
-
-        $helper->setContainer($name);
-
-        $label                  = 'testLabel';
-        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
-        $title                  = 'testTitle';
-        $id                     = 'testId';
-        $class                  = 'test-class';
-        $href                   = '#';
-        $target                 = null;
-
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtml->expects(self::exactly(5))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$label],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'idEscaped',
-                'titleEscaped',
-                'classEscaped',
-                'hrefEscaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(4))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$id],
-                [$title],
-                [$class],
-                [$href]
-            )
-            ->willReturnOnConsecutiveCalls(
-                'testIdEscaped',
-                'testTitleTranslatedAndEscaped',
-                'testClassEscaped',
-                '#Escaped'
-            );
-
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::once())
-            ->method('has')
-            ->with('translate')
-            ->willReturn(false);
-        $viewPluginManager->expects(self::once())
-            ->method('get')
-            ->with('escapeHtml')
-            ->willReturn($escapeHtml);
-
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $view->expects(self::exactly(2))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::once())
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
-
-        /* @var PhpRenderer $view */
-        $helper->setView($view);
-
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $page->expects(self::never())
-            ->method('isVisible');
-        $page->expects(self::never())
-            ->method('getResource');
-        $page->expects(self::never())
-            ->method('getPrivilege');
-        $page->expects(self::never())
-            ->method('getParent');
-        $page->expects(self::once())
-            ->method('getLabel')
-            ->willReturn($label);
-        $page->expects(self::once())
-            ->method('getTitle')
-            ->willReturn($title);
-        $page->expects(self::never())
-            ->method('getTextDomain');
-        $page->expects(self::once())
-            ->method('getId')
-            ->willReturn($id);
-        $page->expects(self::once())
-            ->method('getClass')
-            ->willReturn($class);
-        $page->expects(self::once())
-            ->method('getHref')
-            ->willReturn($href);
-        $page->expects(self::once())
-            ->method('getTarget')
-            ->willReturn($target);
-
-        /* @var PageInterface $page */
-        self::assertSame($expected, $helper->htmlify($page));
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
      */
@@ -1023,9 +954,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertSame('', $helper->getIndent());
 
@@ -1108,9 +1046,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1200,9 +1145,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1248,9 +1200,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1311,9 +1270,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1377,9 +1343,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1457,9 +1430,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1486,6 +1466,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -1495,9 +1476,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getPartial());
 
@@ -1512,6 +1500,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -1521,9 +1510,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertFalse($helper->getLinkLast());
 
@@ -1538,6 +1534,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -1547,9 +1544,16 @@ final class BreadcrumbsTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         self::assertSame(' &gt; ', $helper->getSeparator());
 
@@ -1580,9 +1584,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1637,9 +1648,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1734,9 +1752,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1851,9 +1876,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1974,9 +2006,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2095,9 +2134,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2201,9 +2247,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2281,9 +2334,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2338,9 +2398,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2435,9 +2502,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2538,9 +2612,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2653,9 +2734,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2776,9 +2864,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -2897,9 +2992,16 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -3002,9 +3104,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -3054,18 +3163,8 @@ final class BreadcrumbsTest extends TestCase
         $logger = $this->createMock(Logger::class);
         $name   = 'Mezzio\\Navigation\\Top';
 
-        $resource               = 'testResource';
-        $privilege              = 'testPrivilege';
-        $label                  = 'testLabel';
-        $tranalatedLabel        = 'testLabelTranslated';
-        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
-        $title                  = 'testTitle';
-        $tranalatedTitle        = 'testTitleTranslated';
-        $textDomain             = 'testDomain';
-        $id                     = 'testId';
-        $class                  = 'test-class';
-        $href                   = '#';
-        $target                 = null;
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
 
         $parentPage = new Uri();
         $parentPage->setVisible(true);
@@ -3099,27 +3198,20 @@ final class BreadcrumbsTest extends TestCase
             ->method('isActive')
             ->with(false)
             ->willReturn(true);
-        $page->expects(self::once())
-            ->method('getLabel')
-            ->willReturn($label);
-        $page->expects(self::exactly(2))
-            ->method('getTextDomain')
-            ->willReturn($textDomain);
-        $page->expects(self::once())
-            ->method('getTitle')
-            ->willReturn($title);
-        $page->expects(self::once())
-            ->method('getId')
-            ->willReturn($id);
-        $page->expects(self::once())
-            ->method('getClass')
-            ->willReturn($class);
-        $page->expects(self::once())
-            ->method('getHref')
-            ->willReturn($href);
-        $page->expects(self::once())
-            ->method('getTarget')
-            ->willReturn($target);
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
 
         $parentPage->addPage($page);
 
@@ -3136,9 +3228,21 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
+        $expected2 = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::exactly(2))
+            ->method('toHtml')
+            ->withConsecutive([Breadcrumbs::class, $page], [Breadcrumbs::class, $parentPage])
+            ->willReturnOnConsecutiveCalls($expected2, $expected1);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -3161,96 +3265,13 @@ final class BreadcrumbsTest extends TestCase
         $helper->setSeparator($seperator);
         $helper->setLinkLast(true);
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtml->expects(self::exactly(11))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$tranalatedLabel],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['translated-parent-label'],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['target']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'idEscaped',
-                'titleEscaped',
-                'classEscaped',
-                'hrefEscaped',
-                'parent-label-escaped',
-                'parent-id-escaped',
-                'parent-title-escaped',
-                'parent-class-escaped',
-                'parent-href-escaped',
-                'parent-target-escaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(9))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$id],
-                [$tranalatedTitle],
-                [$class],
-                [$href],
-                ['parent-id'],
-                ['translated-parent-title'],
-                ['parent-class'],
-                ['##'],
-                ['self']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'testIdEscaped',
-                'testTitleTranslatedAndEscaped',
-                'testClassEscaped',
-                '#Escaped',
-                'parent-id-escaped',
-                'parent-title-escaped',
-                'parent-class-escaped',
-                '##-escaped',
-                'self-escaped'
-            );
-
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translatePlugin->expects(self::exactly(4))
-            ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain], ['parent-label', 'parent-text-domain'], ['parent-title', 'parent-text-domain'])
-            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle, 'translated-parent-label', 'translated-parent-title');
-
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::exactly(2))
-            ->method('has')
-            ->with('translate')
-            ->willReturn(true);
-        $viewPluginManager->expects(self::exactly(4))
-            ->method('get')
-            ->withConsecutive(['translate'], ['escapeHtml'], ['translate'], ['escapeHtml'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $translatePlugin, $escapeHtml);
-
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(4))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr, $escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(2))
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -3271,20 +3292,13 @@ final class BreadcrumbsTest extends TestCase
     public function testRenderStraightWithoutLinkAtEnd(): void
     {
         $logger = $this->createMock(Logger::class);
-        $name   = 'Mezzio\\Navigation\\Top';
 
         $resource               = 'testResource';
         $privilege              = 'testPrivilege';
         $label                  = 'testLabel';
         $tranalatedLabel        = 'testLabelTranslated';
         $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
-        $title                  = 'testTitle';
-        $tranalatedTitle        = 'testTitleTranslated';
         $textDomain             = 'testDomain';
-        $id                     = 'testId';
-        $class                  = 'test-class';
-        $href                   = '#';
-        $target                 = null;
 
         $parentPage = new Uri();
         $parentPage->setVisible(true);
@@ -3348,9 +3362,20 @@ final class BreadcrumbsTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Breadcrumbs::class, $parentPage)
+            ->willReturn($expected1);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -3377,46 +3402,10 @@ final class BreadcrumbsTest extends TestCase
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapeHtml->expects(self::exactly(7))
+        $escapeHtml->expects(self::once())
             ->method('__invoke')
-            ->withConsecutive(
-                [$tranalatedLabel],
-                ['translated-parent-label'],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['target']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'parent-label-escaped',
-                'parent-id-escaped',
-                'parent-title-escaped',
-                'parent-class-escaped',
-                'parent-href-escaped',
-                'parent-target-escaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(5))
-            ->method('__invoke')
-            ->withConsecutive(
-                ['parent-id'],
-                ['translated-parent-title'],
-                ['parent-class'],
-                ['##'],
-                ['self']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'parent-id-escaped',
-                'parent-title-escaped',
-                'parent-class-escaped',
-                '##-escaped',
-                'self-escaped'
-            );
+            ->with($tranalatedLabel)
+            ->willReturn($escapedTranalatedLabel);
 
         $translator = $this->getMockBuilder(TranslatorInterface::class)
             ->disableOriginalConstructor()
@@ -3430,31 +3419,29 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translatePlugin->expects(self::exactly(3))
+        $translatePlugin->expects(self::once())
             ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], ['parent-label', 'parent-text-domain'], ['parent-title', 'parent-text-domain'])
-            ->willReturnOnConsecutiveCalls($tranalatedLabel, 'translated-parent-label', 'translated-parent-title');
+            ->with($label, $textDomain)
+            ->willReturn($tranalatedLabel);
 
         $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewPluginManager->expects(self::exactly(2))
+        $viewPluginManager->expects(self::once())
             ->method('has')
             ->with('translate')
             ->willReturn(true);
-        $viewPluginManager->expects(self::exactly(4))
+        $viewPluginManager->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive(['translate'], ['escapeHtml'], ['translate'], ['escapeHtml'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $translatePlugin, $escapeHtml);
+            ->withConsecutive(['translate'], ['escapeHtml'])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(2))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(2))
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::once())
             ->method('getHelperPluginManager')
             ->willReturn($viewPluginManager);
 
@@ -3477,21 +3464,10 @@ final class BreadcrumbsTest extends TestCase
      */
     public function testRenderWithoutPartial(): void
     {
-        $logger = $this->createMock(Logger::class);
-        $name   = 'Mezzio\\Navigation\\Top';
-
-        $resource               = 'testResource';
-        $privilege              = 'testPrivilege';
-        $label                  = 'testLabel';
-        $tranalatedLabel        = 'testLabelTranslated';
-        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
-        $title                  = 'testTitle';
-        $tranalatedTitle        = 'testTitleTranslated';
-        $textDomain             = 'testDomain';
-        $id                     = 'testId';
-        $class                  = 'test-class';
-        $href                   = '#';
-        $target                 = null;
+        $logger    = $this->createMock(Logger::class);
+        $name      = 'Mezzio\\Navigation\\Top';
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
 
         $parentPage = new Uri();
         $parentPage->setVisible(true);
@@ -3525,27 +3501,20 @@ final class BreadcrumbsTest extends TestCase
             ->method('isActive')
             ->with(false)
             ->willReturn(true);
-        $page->expects(self::once())
-            ->method('getLabel')
-            ->willReturn($label);
-        $page->expects(self::exactly(2))
-            ->method('getTextDomain')
-            ->willReturn($textDomain);
-        $page->expects(self::once())
-            ->method('getTitle')
-            ->willReturn($title);
-        $page->expects(self::once())
-            ->method('getId')
-            ->willReturn($id);
-        $page->expects(self::once())
-            ->method('getClass')
-            ->willReturn($class);
-        $page->expects(self::once())
-            ->method('getHref')
-            ->willReturn($href);
-        $page->expects(self::once())
-            ->method('getTarget')
-            ->willReturn($target);
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
 
         $parentPage->addPage($page);
 
@@ -3562,9 +3531,21 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
+        $expected2 = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::exactly(2))
+            ->method('toHtml')
+            ->withConsecutive([Breadcrumbs::class, $page], [Breadcrumbs::class, $parentPage])
+            ->willReturnOnConsecutiveCalls($expected2, $expected1);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -3587,96 +3568,13 @@ final class BreadcrumbsTest extends TestCase
         $helper->setSeparator($seperator);
         $helper->setLinkLast(true);
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtml->expects(self::exactly(11))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$tranalatedLabel],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['translated-parent-label'],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['target']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'idEscaped',
-                'titleEscaped',
-                'classEscaped',
-                'hrefEscaped',
-                'parent-label-escaped',
-                'parent-id-escaped',
-                'parent-title-escaped',
-                'parent-class-escaped',
-                'parent-href-escaped',
-                'parent-target-escaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(9))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$id],
-                [$tranalatedTitle],
-                [$class],
-                [$href],
-                ['parent-id'],
-                ['translated-parent-title'],
-                ['parent-class'],
-                ['##'],
-                ['self']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'testIdEscaped',
-                'testTitleTranslatedAndEscaped',
-                'testClassEscaped',
-                '#Escaped',
-                'parent-id-escaped',
-                'parent-title-escaped',
-                'parent-class-escaped',
-                '##-escaped',
-                'self-escaped'
-            );
-
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translatePlugin->expects(self::exactly(4))
-            ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain], ['parent-label', 'parent-text-domain'], ['parent-title', 'parent-text-domain'])
-            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle, 'translated-parent-label', 'translated-parent-title');
-
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::exactly(2))
-            ->method('has')
-            ->with('translate')
-            ->willReturn(true);
-        $viewPluginManager->expects(self::exactly(4))
-            ->method('get')
-            ->withConsecutive(['translate'], ['escapeHtml'], ['translate'], ['escapeHtml'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml, $translatePlugin, $escapeHtml);
-
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $view->expects(self::exactly(4))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'], ['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr, $escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::exactly(2))
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
 
         /* @var PhpRenderer $view */
         $helper->setView($view);
@@ -3727,9 +3625,16 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Breadcrumbs($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 

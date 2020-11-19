@@ -11,10 +11,8 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\I18n\View\Helper\Translate;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
-use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
@@ -165,7 +163,15 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         }
 
         $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtmlAttr');
-        \assert($escaper instanceof EscapeHtmlAttr);
+        \assert(
+            $escaper instanceof EscapeHtmlAttr,
+            sprintf(
+                '$escaper should be an Instance of %s, but was %s',
+                EscapeHtmlAttr::class,
+                get_class($escaper)
+            )
+        );
+
         $ulClass = $ulClass ? ' class="' . $escaper($ulClass) . '"' : '';
         $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
 
@@ -197,7 +203,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
             $liClass = empty($liClasses) ? '' : ' class="' . $escaper(implode(' ', $liClasses)) . '"';
             $html .= $indent . '    <li' . $liClass . '>' . PHP_EOL;
-            $html .= $indent . '        ' . $this->htmlify($subPage, $escapeLabels, $addClassToListItem) . PHP_EOL;
+            $html .= $indent . '        ' . $this->htmlify->toHtml(self::class, $subPage, $escapeLabels, $addClassToListItem) . PHP_EOL;
             $html .= $indent . '    </li>' . PHP_EOL;
         }
 
@@ -298,7 +304,14 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         $found = $this->findActive($container, $minDepth, $maxDepth);
 
         $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtmlAttr');
-        \assert($escaper instanceof EscapeHtmlAttr);
+        \assert(
+            $escaper instanceof EscapeHtmlAttr,
+            sprintf(
+                '$escaper should be an Instance of %s, but was %s',
+                EscapeHtmlAttr::class,
+                get_class($escaper)
+            )
+        );
 
         if ($found) {
             $foundPage  = $found['page'];
@@ -403,7 +416,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
             $liClass = empty($liClasses) ? '' : ' class="' . $escaper(implode(' ', $liClasses)) . '"';
             $html .= $myIndent . '    <li' . $liClass . '>' . PHP_EOL
-                . $myIndent . '        ' . $this->htmlify($page, $escapeLabels, $addClassToListItem) . PHP_EOL;
+                . $myIndent . '        ' . $this->htmlify->toHtml(self::class, $page, $escapeLabels, $addClassToListItem) . PHP_EOL;
 
             // store as previous depth for next iteration
             $prevDepth = $depth;
@@ -546,67 +559,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      */
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
-        $label = (string) $page->getLabel();
-        $title = (string) $page->getTitle();
-
-        $plugin = $this->getView()->getHelperPluginManager();
-
-        if ($plugin->has('translate')) {
-            $translator = $plugin->get('translate');
-            \assert(
-                $translator instanceof Translate,
-                sprintf(
-                    '$translator should be an Instance of %s, but was %s',
-                    Translate::class,
-                    get_class($translator)
-                )
-            );
-
-            $label = $translator($label, $page->getTextDomain());
-            $title = $translator($title, $page->getTextDomain());
-        }
-
-        // get attribs for element
-        $attribs = [
-            'id' => $page->getId(),
-            'title' => $title,
-        ];
-
-        if (false === $addClassToListItem) {
-            $attribs['class'] = $page->getClass();
-        }
-
-        // does page have a href?
-        $href = $page->getHref();
-        if ($href) {
-            $element           = 'a';
-            $attribs['href']   = $href;
-            $attribs['target'] = $page->getTarget();
-        } else {
-            $element = 'span';
-        }
-
-        $html = '<' . $element . $this->htmlAttribs($attribs) . '>';
-
-        if (true === $escapeLabel) {
-            $escaper = $plugin->get('escapeHtml');
-            \assert(
-                $escaper instanceof EscapeHtml,
-                sprintf(
-                    '$escaper should be an Instance of %s, but was %s',
-                    EscapeHtml::class,
-                    get_class($escaper)
-                )
-            );
-
-            $html .= $escaper($label);
-        } else {
-            $html .= $label;
-        }
-
-        $html .= '</' . $element . '>';
-
-        return $html;
+        return $this->htmlify->toHtml(self::class, $page, $escapeLabel, $addClassToListItem);
     }
 
     /**
@@ -910,7 +863,14 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         $model = array_merge($params, ['container' => $container]);
 
         $partialHelper = $this->getView()->getHelperPluginManager()->get('partial');
-        \assert($partialHelper instanceof Partial);
+        \assert(
+            $partialHelper instanceof Partial,
+            sprintf(
+                '$partialHelper should be an Instance of %s, but was %s',
+                Partial::class,
+                get_class($partialHelper)
+            )
+        );
 
         if (is_array($partial)) {
             if (2 !== count($partial)) {

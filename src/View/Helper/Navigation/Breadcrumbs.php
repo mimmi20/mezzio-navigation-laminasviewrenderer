@@ -105,7 +105,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
 
         // put the deepest active page last in breadcrumbs
         if ($this->getLinkLast()) {
-            $html = $this->htmlify($active);
+            $html = $this->htmlify->toHtml(self::class, $active);
         } else {
             $label = (string) $active->getLabel();
 
@@ -142,7 +142,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         while ($parent = $active->getParent()) {
             if ($parent instanceof PageInterface) {
                 // prepend crumb to html
-                $html = $this->htmlify($parent)
+                $html = $this->htmlify->toHtml(self::class, $parent)
                     . $this->getSeparator()
                     . $html;
             }
@@ -354,7 +354,14 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         }
 
         $partialHelper = $this->getView()->getHelperPluginManager()->get('partial');
-        \assert($partialHelper instanceof Partial);
+        \assert(
+            $partialHelper instanceof Partial,
+            sprintf(
+                '$partialHelper should be an Instance of %s, but was %s',
+                Partial::class,
+                get_class($partialHelper)
+            )
+        );
 
         $rendered = $partialHelper($partial, $model);
 

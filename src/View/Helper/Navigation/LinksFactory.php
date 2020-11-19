@@ -14,7 +14,8 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
-use Mezzio\Navigation\LaminasView\Helper\FindRoot;
+use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 
 final class LinksFactory
 {
@@ -33,7 +34,8 @@ final class LinksFactory
         return new Links(
             $container,
             $container->get(Logger::class),
-            $container->get(FindRoot::class)
+            $container->get(HtmlifyInterface::class),
+            $container->get(FindRootInterface::class)
         );
     }
 }

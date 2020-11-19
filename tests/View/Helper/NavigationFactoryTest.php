@@ -13,6 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use PHPUnit\Framework\TestCase;
@@ -39,15 +40,16 @@ final class NavigationFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $logger = $this->createMock(Logger::class);
+        $logger  = $this->createMock(Logger::class);
+        $htmlify = $this->createMock(HtmlifyInterface::class);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::once())
+        $container->expects(self::exactly(2))
             ->method('get')
-            ->with(Logger::class)
-            ->willReturn($logger);
+            ->withConsecutive([Logger::class], [HtmlifyInterface::class])
+            ->willReturnOnConsecutiveCalls($logger, $htmlify);
 
         /** @var ContainerInterface $container */
         $navigation = ($this->factory)($container);

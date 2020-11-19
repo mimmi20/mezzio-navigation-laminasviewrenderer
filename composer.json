@@ -22,6 +22,7 @@
   "require-dev": {
     "infection/infection": "~0.13.6 || ~0.18",
     "laminas/laminas-i18n": "^2.10.3",
+    "laminas/laminas-json": "^3.1.2",
     "laminas/laminas-uri": "^2.7.1",
     "laminas/laminas-validator": "^2.13.4",
     "mezzio/mezzio-router": "^3.1.3",

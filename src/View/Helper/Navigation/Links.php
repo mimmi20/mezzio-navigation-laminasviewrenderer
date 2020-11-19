@@ -20,6 +20,7 @@ use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
@@ -77,15 +78,18 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
+     * @param HtmlifyInterface                      $htmlify
      * @param FindRootInterface                     $rootFinder
      */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
+        HtmlifyInterface $htmlify,
         FindRootInterface $rootFinder
     ) {
         $this->serviceLocator = $serviceLocator;
         $this->logger         = $logger;
+        $this->htmlify        = $htmlify;
         $this->rootFinder     = $rootFinder;
     }
 
