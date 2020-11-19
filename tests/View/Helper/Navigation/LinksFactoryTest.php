@@ -13,8 +13,8 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksFactory;
 use PHPUnit\Framework\TestCase;
@@ -42,15 +42,16 @@ final class LinksFactoryTest extends TestCase
     public function testInvocation(): void
     {
         $logger     = $this->createMock(Logger::class);
+        $htmlify    = $this->createMock(HtmlifyInterface::class);
         $rootFinder = $this->createMock(FindRootInterface::class);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $container->expects(self::exactly(3))
             ->method('get')
-            ->withConsecutive([Logger::class], [FindRoot::class])
-            ->willReturnOnConsecutiveCalls($logger, $rootFinder);
+            ->withConsecutive([Logger::class], [HtmlifyInterface::class], [FindRootInterface::class])
+            ->willReturnOnConsecutiveCalls($logger, $htmlify, $rootFinder);
 
         /** @var ContainerInterface $container */
         $helper = ($this->factory)($container);

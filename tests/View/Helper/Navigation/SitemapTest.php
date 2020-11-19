@@ -13,15 +13,12 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\I18n\Translator\TranslatorInterface;
-use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\View\Helper\EscapeHtml;
-use Laminas\View\Helper\EscapeHtmlAttr;
-use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
@@ -31,6 +28,7 @@ final class SitemapTest extends TestCase
 {
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -41,9 +39,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -54,6 +59,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -64,9 +70,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -77,6 +90,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -86,9 +100,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -99,6 +120,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -111,9 +133,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -131,6 +160,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -140,9 +170,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -153,6 +190,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -164,9 +202,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -186,6 +231,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -197,9 +243,16 @@ final class SitemapTest extends TestCase
         $serviceLocator = $this->createMock(ContainerInterface::class);
         $textDomain     = 'test';
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertTrue($helper->isTranslatorEnabled());
         self::assertNull($helper->getTranslator());
@@ -221,6 +274,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -231,9 +285,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertNull($helper->getView());
 
@@ -245,6 +306,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
@@ -258,9 +320,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $container1 = $helper->getContainer();
 
@@ -280,6 +349,7 @@ final class SitemapTest extends TestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
@@ -289,9 +359,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface');
@@ -321,9 +398,16 @@ final class SitemapTest extends TestCase
             ->with(\Mezzio\Navigation\Navigation::class)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', \Mezzio\Navigation\Navigation::class));
@@ -358,9 +442,16 @@ final class SitemapTest extends TestCase
             ->with(\Mezzio\Navigation\Navigation::class)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer('default');
 
@@ -390,9 +481,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
@@ -428,9 +526,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -460,9 +565,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
@@ -496,9 +608,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -529,9 +648,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -586,9 +712,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -652,9 +785,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
 
@@ -720,22 +860,6 @@ final class SitemapTest extends TestCase
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
-
-        $helper->setContainer($name);
-
         $label                  = 'testLabel';
         $tranalatedLabel        = 'testLabelTranslated';
         $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
@@ -747,143 +871,6 @@ final class SitemapTest extends TestCase
         $href                   = '#';
         $target                 = '_blank';
 
-        $translator = $this->getMockBuilder(TranslatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translator->expects(self::never())
-            ->method('translate');
-
-        /* @var TranslatorInterface $translator */
-        $helper->setTranslator($translator);
-
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translatePlugin->expects(self::exactly(2))
-            ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($tranalatedLabel, $tranalatedTitle);
-
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtml->expects(self::exactly(6))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$tranalatedLabel],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href'],
-                ['target']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'idEscaped',
-                'titleEscaped',
-                'classEscaped',
-                'hrefEscaped',
-                'targetEscaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(5))
-            ->method('__invoke')
-            ->withConsecutive(
-                ['testId'],
-                [$tranalatedTitle],
-                ['test-class'],
-                ['#'],
-                ['_blank']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'testIdEscaped',
-                'testTitleTranslatedAndEscaped',
-                'testClassEscaped',
-                '#Escaped',
-                '_blankEscaped'
-            );
-
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::once())
-            ->method('has')
-            ->with('translate')
-            ->willReturn(true);
-        $viewPluginManager->expects(self::exactly(2))
-            ->method('get')
-            ->withConsecutive(['translate'], ['escapeHtml'])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml);
-
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $view->expects(self::exactly(2))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::once())
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
-
-        /* @var PhpRenderer $view */
-        $helper->setView($view);
-
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $page->expects(self::never())
-            ->method('isVisible');
-        $page->expects(self::never())
-            ->method('getResource');
-        $page->expects(self::never())
-            ->method('getPrivilege');
-        $page->expects(self::never())
-            ->method('getParent');
-        $page->expects(self::once())
-            ->method('getLabel')
-            ->willReturn($label);
-        $page->expects(self::once())
-            ->method('getTitle')
-            ->willReturn($title);
-        $page->expects(self::exactly(2))
-            ->method('getTextDomain')
-            ->willReturn($textDomain);
-        $page->expects(self::once())
-            ->method('getId')
-            ->willReturn($id);
-        $page->expects(self::once())
-            ->method('getClass')
-            ->willReturn($class);
-        $page->expects(self::once())
-            ->method('getHref')
-            ->willReturn($href);
-        $page->expects(self::once())
-            ->method('getTarget')
-            ->willReturn($target);
-
-        /* @var PageInterface $page */
-        self::assertSame($expected, $helper->htmlify($page));
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testHtmlifyWithoutTranslator(): void
-    {
-        $expected  = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
-        $logger    = $this->createMock(Logger::class);
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-        $name      = 'Mezzio\\Navigation\\Top';
-
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -894,84 +881,6 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
-
-        $helper->setContainer($name);
-
-        $label                  = 'testLabel';
-        $escapedTranalatedLabel = 'testLabelTranslatedAndEscaped';
-        $title                  = 'testTitle';
-        $id                     = 'testId';
-        $class                  = 'test-class';
-        $href                   = '#';
-        $target                 = null;
-
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtml->expects(self::exactly(5))
-            ->method('__invoke')
-            ->withConsecutive(
-                [$label],
-                ['id'],
-                ['title'],
-                ['class'],
-                ['href']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $escapedTranalatedLabel,
-                'idEscaped',
-                'titleEscaped',
-                'classEscaped',
-                'hrefEscaped'
-            );
-
-        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escapeHtmlAttr->expects(self::exactly(4))
-            ->method('__invoke')
-            ->withConsecutive(
-                ['testId'],
-                [$title],
-                ['test-class'],
-                ['#']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'testIdEscaped',
-                'testTitleTranslatedAndEscaped',
-                'testClassEscaped',
-                '#Escaped'
-            );
-
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::once())
-            ->method('has')
-            ->with('translate')
-            ->willReturn(false);
-        $viewPluginManager->expects(self::once())
-            ->method('get')
-            ->with('escapeHtml')
-            ->willReturn($escapeHtml);
-
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $view->expects(self::exactly(2))
-            ->method('plugin')
-            ->withConsecutive(['escapehtml'], ['escapehtmlattr'])
-            ->willReturnOnConsecutiveCalls($escapeHtml, $escapeHtmlAttr);
-        $view->expects(self::once())
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
-
-        /* @var PhpRenderer $view */
-        $helper->setView($view);
-
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -983,26 +892,55 @@ final class SitemapTest extends TestCase
             ->method('getPrivilege');
         $page->expects(self::never())
             ->method('getParent');
-        $page->expects(self::once())
-            ->method('getLabel')
-            ->willReturn($label);
-        $page->expects(self::once())
-            ->method('getTitle')
-            ->willReturn($title);
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTitle');
         $page->expects(self::never())
             ->method('getTextDomain');
-        $page->expects(self::once())
-            ->method('getId')
-            ->willReturn($id);
-        $page->expects(self::once())
-            ->method('getClass')
-            ->willReturn($class);
-        $page->expects(self::once())
-            ->method('getHref')
-            ->willReturn($href);
-        $page->expects(self::once())
-            ->method('getTarget')
-            ->willReturn($target);
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Sitemap::class, $page)
+            ->willReturn($expected);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
+
+        $helper->setContainer($name);
+
+        $translator = $this->getMockBuilder(TranslatorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $translator->expects(self::never())
+            ->method('translate');
+
+        /* @var TranslatorInterface $translator */
+        $helper->setTranslator($translator);
+
+        $view = $this->getMockBuilder(PhpRenderer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        /* @var PhpRenderer $view */
+        $helper->setView($view);
 
         /* @var PageInterface $page */
         self::assertSame($expected, $helper->htmlify($page));
@@ -1010,6 +948,7 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -1019,9 +958,16 @@ final class SitemapTest extends TestCase
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         self::assertSame('', $helper->getIndent());
 
@@ -1106,9 +1052,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1200,9 +1153,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1248,9 +1208,16 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1340,9 +1307,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1411,9 +1385,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 
@@ -1491,9 +1472,16 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
-        $helper = new Sitemap($serviceLocator, $logger);
+        /** @var HtmlifyInterface $htmlify */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify);
 
         $role = 'testRole';
 

@@ -12,14 +12,13 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
-use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
-use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\TranslatorAwareTrait;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
@@ -45,6 +44,9 @@ trait HelperTrait
 
     /** @var \Laminas\Log\Logger */
     private $logger;
+
+    /** @var HtmlifyInterface */
+    private $htmlify;
 
     /**
      * The minimum depth a page must have to be included when rendering
@@ -112,11 +114,13 @@ trait HelperTrait
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
+     * @param HtmlifyInterface                      $htmlify
      */
-    public function __construct(ContainerInterface $serviceLocator, Logger $logger)
+    public function __construct(ContainerInterface $serviceLocator, Logger $logger, HtmlifyInterface $htmlify)
     {
         $this->serviceLocator = $serviceLocator;
         $this->logger         = $logger;
+        $this->htmlify        = $htmlify;
     }
 
     /**
@@ -339,7 +343,15 @@ trait HelperTrait
         );
 
         foreach ($iterator as $page) {
-            \assert($page instanceof PageInterface);
+            \assert(
+                $page instanceof PageInterface,
+                sprintf(
+                    '$page should be an Instance of %s, but was %s',
+                    PageInterface::class,
+                    get_class($page)
+                )
+            );
+
             $currDepth = $iterator->getDepth();
 
             if ($currDepth < $minDepth || !$this->accept($page)) {
@@ -483,48 +495,7 @@ trait HelperTrait
      */
     public function htmlify(PageInterface $page): string
     {
-        $label = (string) $page->getLabel();
-        $title = (string) $page->getTitle();
-
-        $plugin = $this->getView()->getHelperPluginManager();
-
-        if ($plugin->has('translate')) {
-            $translator = $plugin->get('translate');
-            \assert(
-                $translator instanceof Translate,
-                sprintf(
-                    '$translator should be an Instance of %s, but was %s',
-                    Translate::class,
-                    get_class($translator)
-                )
-            );
-
-            $label = $translator($label, $page->getTextDomain());
-            $title = $translator($title, $page->getTextDomain());
-        }
-
-        // get attribs for anchor element
-        $attribs = [
-            'id' => $page->getId(),
-            'title' => $title,
-            'class' => $page->getClass(),
-            'href' => $page->getHref(),
-            'target' => $page->getTarget(),
-        ];
-
-        $escaper = $plugin->get('escapeHtml');
-        \assert(
-            $escaper instanceof EscapeHtml,
-            sprintf(
-                '$escaper should be an Instance of %s, but was %s',
-                EscapeHtml::class,
-                get_class($escaper)
-            )
-        );
-
-        $label = $escaper($label);
-
-        return '<a' . $this->htmlAttribs($attribs) . '>' . $label . '</a>';
+        return $this->htmlify->toHtml(static::class, $page);
     }
 
     /**

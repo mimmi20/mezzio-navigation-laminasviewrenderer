@@ -12,7 +12,9 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use Mezzio\Navigation\LaminasView\Helper\FindRoot;
+use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyFactory;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 
@@ -58,7 +60,8 @@ final class ConfigProvider
     {
         return [
             'factories' => [
-                FindRoot::class => InvokableFactory::class,
+                FindRootInterface::class => InvokableFactory::class,
+                HtmlifyInterface::class => HtmlifyFactory::class,
             ],
         ];
     }

@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 
 final class HelperFactory
 {
@@ -32,7 +33,8 @@ final class HelperFactory
     {
         return new $requestedName(
             $container,
-            $container->get(Logger::class)
+            $container->get(Logger::class),
+            $container->get(HtmlifyInterface::class)
         );
     }
 }
