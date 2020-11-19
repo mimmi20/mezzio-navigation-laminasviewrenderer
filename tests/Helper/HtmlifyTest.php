@@ -125,6 +125,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTarget')
             ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -223,6 +226,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTarget')
             ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -333,6 +339,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTarget')
             ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -428,6 +437,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTarget')
             ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -535,6 +547,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTarget')
             ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -627,6 +642,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTarget')
             ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -729,6 +747,9 @@ final class HtmlifyTest extends TestCase
             ->willReturn('');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
@@ -820,10 +841,138 @@ final class HtmlifyTest extends TestCase
             ->willReturn('');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn([]);
 
         /** @var EscapeHtml $escapeHtml */
         /** @var EscapeHtmlAttr $escapeHtmlAttr */
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr);
+
+        /* @var PageInterface $page */
+        self::assertSame($expected, $helper->toHtml(Breadcrumbs::class, $page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testHtmlifyWithArrayOfClasses(): void
+    {
+        $expected = '<a id="breadcrumbs-testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped" onClick=\'{"a":"b"}\' data-test="test-class1 test-class2">testLabelTranslatedAndEscaped</a>';
+
+        $label                  = 'testLabel';
+        $translatedLabel        = 'testLabelTranslated';
+        $escapedTranslatedLabel = 'testLabelTranslatedAndEscaped';
+        $title                  = 'testTitle';
+        $tranalatedTitle        = 'testTitleTranslated';
+        $textDomain             = 'testDomain';
+        $id                     = 'testId';
+        $class                  = 'test-class';
+        $href                   = '#';
+        $target                 = '_blank';
+
+        $translatePlugin = $this->getMockBuilder(Translate::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $translatePlugin->expects(self::exactly(2))
+            ->method('__invoke')
+            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
+            ->willReturnOnConsecutiveCalls($translatedLabel, $tranalatedTitle);
+
+        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtml->expects(self::exactly(8))
+            ->method('__invoke')
+            ->withConsecutive(
+                ['id'],
+                ['title'],
+                ['class'],
+                ['href'],
+                ['target'],
+                ['onClick'],
+                ['data-test'],
+                [$translatedLabel]
+            )
+            ->willReturnOnConsecutiveCalls(
+                'id',
+                'titleEscaped',
+                'classEscaped',
+                'hrefEscaped',
+                'targetEscaped',
+                'onClick',
+                'data-test',
+                $escapedTranslatedLabel
+            );
+
+        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtmlAttr->expects(self::exactly(7))
+            ->method('__invoke')
+            ->withConsecutive(
+                [$id],
+                [$tranalatedTitle],
+                [$class],
+                [$href],
+                [$target],
+                ['{"a":"b"}'],
+                ['test-class1 test-class2']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'testIdEscaped',
+                'testTitleTranslatedAndEscaped',
+                'testClassEscaped',
+                '#Escaped',
+                '_blankEscaped',
+                '{"a":"b"}',
+                'test-class1 test-class2'
+            );
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('getLabel')
+            ->willReturn($label);
+        $page->expects(self::once())
+            ->method('getTitle')
+            ->willReturn($title);
+        $page->expects(self::exactly(2))
+            ->method('getTextDomain')
+            ->willReturn($textDomain);
+        $page->expects(self::once())
+            ->method('getId')
+            ->willReturn($id);
+        $page->expects(self::once())
+            ->method('getClass')
+            ->willReturn($class);
+        $page->expects(self::once())
+            ->method('getHref')
+            ->willReturn($href);
+        $page->expects(self::once())
+            ->method('getTarget')
+            ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn(['onClick' => (object) ['a' => 'b'], 'data-test' => ['test-class1', 'test-class2']]);
+
+        /** @var EscapeHtml $escapeHtml */
+        /** @var EscapeHtmlAttr $escapeHtmlAttr */
+        /** @var Translate $translatePlugin */
+        $helper = new Htmlify($escapeHtml, $escapeHtmlAttr, $translatePlugin);
 
         /* @var PageInterface $page */
         self::assertSame($expected, $helper->toHtml(Breadcrumbs::class, $page));
