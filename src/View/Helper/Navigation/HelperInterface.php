@@ -11,7 +11,6 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\View\Helper\HelperInterface as BaseHelperInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
@@ -19,7 +18,7 @@ use Mezzio\Navigation;
 /**
  * Interface for navigational helpers
  */
-interface HelperInterface extends BaseHelperInterface, TranslatorAwareInterface
+interface HelperInterface extends BaseHelperInterface
 {
     /**
      * Magic overload: Should proxy to {@link render()}.

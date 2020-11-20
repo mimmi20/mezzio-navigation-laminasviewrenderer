@@ -15,7 +15,6 @@ use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
-use Laminas\View\Helper\TranslatorAwareTrait;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -30,8 +29,6 @@ use RecursiveIteratorIterator;
  */
 trait HelperTrait
 {
-    use TranslatorAwareTrait;
-
     /**
      * ContainerInterface to operate on by default
      *
