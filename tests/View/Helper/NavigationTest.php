@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
-use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception\RuntimeException;
@@ -72,36 +71,6 @@ final class NavigationTest extends TestCase
         $helper->setPluginManager($pluginManager);
 
         self::assertSame($view, $helper->getView());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetInjectTranslator(): void
-    {
-        $logger         = $this->createMock(Logger::class);
-        $serviceLocator = $this->createMock(ContainerInterface::class);
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Navigation($serviceLocator, $logger, $htmlify);
-
-        self::assertTrue($helper->getInjectTranslator());
-
-        $helper->setInjectTranslator(false);
-
-        self::assertFalse($helper->getInjectTranslator());
     }
 
     /**
@@ -337,9 +306,6 @@ final class NavigationTest extends TestCase
         $menu->expects(self::once())
             ->method('hasRole')
             ->willReturn(false);
-        $menu->expects(self::once())
-            ->method('hasTranslator')
-            ->willReturn(false);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
@@ -406,8 +372,6 @@ final class NavigationTest extends TestCase
         $menu->expects(self::once())
             ->method('setRole')
             ->with($role);
-        $menu->expects(self::never())
-            ->method('hasTranslator');
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
@@ -424,7 +388,6 @@ final class NavigationTest extends TestCase
         /* @var Navigation\PluginManager $pluginManager */
         $helper->setPluginManager($pluginManager);
         $helper->setRole($role);
-        $helper->setInjectTranslator(false);
 
         self::assertSame($menu, $helper->findHelper($proxy, false));
         self::assertSame($menu, $helper->findHelper($proxy, true));
@@ -524,9 +487,6 @@ final class NavigationTest extends TestCase
             ->with(false);
         $menu->expects(self::once())
             ->method('hasRole')
-            ->willReturn(false);
-        $menu->expects(self::once())
-            ->method('hasTranslator')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('render')
@@ -640,9 +600,6 @@ final class NavigationTest extends TestCase
             ->with(false);
         $menu->expects(self::once())
             ->method('hasRole')
-            ->willReturn(false);
-        $menu->expects(self::once())
-            ->method('hasTranslator')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('__invoke')
@@ -868,49 +825,6 @@ final class NavigationTest extends TestCase
 
         self::assertSame($auth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetTranslator(): void
-    {
-        $translator     = $this->createMock(TranslatorInterface::class);
-        $logger         = $this->createMock(Logger::class);
-        $serviceLocator = $this->createMock(ContainerInterface::class);
-        $textDomain     = 'test';
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Navigation($serviceLocator, $logger, $htmlify);
-
-        self::assertTrue($helper->isTranslatorEnabled());
-        self::assertNull($helper->getTranslator());
-        self::assertFalse($helper->hasTranslator());
-        self::assertSame('default', $helper->getTranslatorTextDomain());
-
-        /* @var TranslatorInterface $translator */
-        $helper->setTranslator($translator);
-        $helper->setTranslatorTextDomain($textDomain);
-
-        self::assertSame($translator, $helper->getTranslator());
-        self::assertSame($textDomain, $helper->getTranslatorTextDomain());
-        self::assertTrue($helper->hasTranslator());
-
-        $helper->setTranslatorEnabled(false);
-
-        self::assertNull($helper->getTranslator());
     }
 
     /**
@@ -1556,15 +1470,6 @@ final class NavigationTest extends TestCase
         $helper = new Navigation($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
-
-        $translator = $this->getMockBuilder(TranslatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translator->expects(self::never())
-            ->method('translate');
-
-        /* @var TranslatorInterface $translator */
-        $helper->setTranslator($translator);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()

@@ -12,12 +12,14 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\View\Helper\Translate;
+use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
 use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
 /**
@@ -47,6 +49,39 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      * @var string
      */
     private $separator = ' &gt; ';
+
+    /** @var Translate|null */
+    private $translator;
+
+    /** @var EscapeHtml */
+    private $escaper;
+
+    /** @var Partial */
+    private $partialPlugin;
+
+    /**
+     * @param \Interop\Container\ContainerInterface    $serviceLocator
+     * @param Logger                                   $logger
+     * @param HtmlifyInterface                         $htmlify
+     * @param EscapeHtml                               $escaper
+     * @param Partial                                  $partialPlugin
+     * @param \Laminas\I18n\View\Helper\Translate|null $translator
+     */
+    public function __construct(
+        \Interop\Container\ContainerInterface $serviceLocator,
+        Logger $logger,
+        HtmlifyInterface $htmlify,
+        EscapeHtml $escaper,
+        Partial $partialPlugin,
+        ?Translate $translator = null
+    ) {
+        $this->serviceLocator = $serviceLocator;
+        $this->logger         = $logger;
+        $this->htmlify        = $htmlify;
+        $this->translator     = $translator;
+        $this->escaper        = $escaper;
+        $this->partialPlugin  = $partialPlugin;
+    }
 
     /**
      * Renders helper.
@@ -111,31 +146,11 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
 
             $plugins = $this->getView()->getHelperPluginManager();
 
-            if ($plugins->has('translate')) {
-                $translator = $plugins->get('translate');
-                \assert(
-                    $translator instanceof Translate,
-                    sprintf(
-                        '$translator should be an Instance of %s, but was %s',
-                        Translate::class,
-                        get_class($translator)
-                    )
-                );
-
-                $label = $translator($label, $active->getTextDomain());
+            if (null !== $this->translator) {
+                $label = ($this->translator)($label, $active->getTextDomain());
             }
 
-            $escaper = $plugins->get('escapeHtml');
-            \assert(
-                $escaper instanceof EscapeHtml,
-                sprintf(
-                    '$escaper should be an Instance of %s, but was %s',
-                    EscapeHtml::class,
-                    get_class($escaper)
-                )
-            );
-
-            $html = $escaper($label);
+            $html = ($this->escaper)($label);
         }
 
         // walk back to root
@@ -353,17 +368,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
             $model['pages'] = array_reverse($model['pages']);
         }
 
-        $partialHelper = $this->getView()->getHelperPluginManager()->get('partial');
-        \assert(
-            $partialHelper instanceof Partial,
-            sprintf(
-                '$partialHelper should be an Instance of %s, but was %s',
-                Partial::class,
-                get_class($partialHelper)
-            )
-        );
-
-        $rendered = $partialHelper($partial, $model);
+        $rendered = ($this->partialPlugin)($partial, $model);
 
         if ($rendered instanceof Partial) {
             throw new Exception\InvalidArgumentException(

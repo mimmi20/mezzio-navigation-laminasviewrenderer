@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
-use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Renderer\PhpRenderer;
@@ -227,49 +226,6 @@ final class MenuTest extends TestCase
 
         self::assertSame($auth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetTranslator(): void
-    {
-        $translator     = $this->createMock(TranslatorInterface::class);
-        $logger         = $this->createMock(Logger::class);
-        $serviceLocator = $this->createMock(ContainerInterface::class);
-        $textDomain     = 'test';
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
-
-        self::assertTrue($helper->isTranslatorEnabled());
-        self::assertNull($helper->getTranslator());
-        self::assertFalse($helper->hasTranslator());
-        self::assertSame('default', $helper->getTranslatorTextDomain());
-
-        /* @var TranslatorInterface $translator */
-        $helper->setTranslator($translator);
-        $helper->setTranslatorTextDomain($textDomain);
-
-        self::assertSame($translator, $helper->getTranslator());
-        self::assertSame($textDomain, $helper->getTranslatorTextDomain());
-        self::assertTrue($helper->hasTranslator());
-
-        $helper->setTranslatorEnabled(false);
-
-        self::assertNull($helper->getTranslator());
     }
 
     /**
@@ -910,15 +866,6 @@ final class MenuTest extends TestCase
         $helper = new Menu($serviceLocator, $logger, $htmlify);
 
         $helper->setContainer($name);
-
-        $translator = $this->getMockBuilder(TranslatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $translator->expects(self::never())
-            ->method('translate');
-
-        /* @var TranslatorInterface $translator */
-        $helper->setTranslator($translator);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()

@@ -60,13 +60,6 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      */
     private $injectAuthorization = true;
 
-    /**
-     * Whether translator should be injected when proxying
-     *
-     * @var bool
-     */
-    private $injectTranslator = true;
-
     /** @var HelperPluginManager|null */
     private $pluginManager;
 
@@ -214,28 +207,21 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      */
     private function inject(HelperInterface $helper): void
     {
-        if ($this->getInjectAuthorization()) {
-            if (!$helper->hasAuthorization()) {
-                $helper->setAuthorization($this->getAuthorization());
-            }
-
-            $role = $this->getRole();
-
-            if (!$helper->hasRole() && null !== $role) {
-                $helper->setRole($role);
-            }
-        }
-
-        if (!$this->getInjectTranslator() || $helper->hasTranslator()) {
+        if (!$this->getInjectAuthorization()) {
             return;
         }
 
-        $helper->setTranslator(
-            $this->getTranslator(),
-            $this->getTranslatorTextDomain()
-        );
+        if (!$helper->hasAuthorization()) {
+            $helper->setAuthorization($this->getAuthorization());
+        }
 
-        $helper->setTranslatorEnabled($this->isTranslatorEnabled());
+        $role = $this->getRole();
+
+        if ($helper->hasRole() || null === $role) {
+            return;
+        }
+
+        $helper->setRole($role);
     }
 
     /**
@@ -280,28 +266,6 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
     public function getInjectAuthorization(): bool
     {
         return $this->injectAuthorization;
-    }
-
-    /**
-     * Sets whether translator should be injected when proxying
-     *
-     * @param bool $injectTranslator
-     *
-     * @return void
-     */
-    public function setInjectTranslator(bool $injectTranslator = true): void
-    {
-        $this->injectTranslator = $injectTranslator;
-    }
-
-    /**
-     * Returns whether translator should be injected when proxying
-     *
-     * @return bool
-     */
-    public function getInjectTranslator(): bool
-    {
-        return $this->injectTranslator;
     }
 
     /**
