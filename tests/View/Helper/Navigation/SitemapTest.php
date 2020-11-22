@@ -13,6 +13,9 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Laminas\Uri\Exception\InvalidUriException;
+use Laminas\Uri\Exception\InvalidUriPartException;
+use Laminas\Uri\UriInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
@@ -1406,7 +1409,6 @@ final class SitemapTest extends TestCase
      */
     public function testSetUseXmlDeclaration(): void
     {
-        $view           = $this->createMock(RendererInterface::class);
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
@@ -1444,7 +1446,6 @@ final class SitemapTest extends TestCase
      */
     public function testSetUseSchemaValidation(): void
     {
-        $view           = $this->createMock(RendererInterface::class);
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
@@ -1482,7 +1483,6 @@ final class SitemapTest extends TestCase
      */
     public function testSetUseSitemapValidators(): void
     {
-        $view           = $this->createMock(RendererInterface::class);
         $logger         = $this->createMock(Logger::class);
         $serviceLocator = $this->createMock(ContainerInterface::class);
 
@@ -1509,5 +1509,333 @@ final class SitemapTest extends TestCase
         $helper->setUseSitemapValidators(false);
 
         self::assertFalse($helper->getUseSitemapValidators());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetInvalidServerUrl(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $uri = 'ftp://test.org';
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid server URL');
+
+        $helper->setServerUrl($uri);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetInvalidTypeOfServerUrl(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('$serverUrl should be aa string or an Instance of %s', UriInterface::class));
+
+        $helper->setServerUrl([]);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetServerUrlWithInvalidFragment(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $uri = $this->getMockBuilder(UriInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uri->expects(self::once())
+            ->method('setFragment')
+            ->with('')
+            ->willThrowException(new InvalidUriPartException('test'));
+        $uri->expects(self::never())
+            ->method('toString');
+        $uri->expects(self::never())
+            ->method('setPath');
+        $uri->expects(self::never())
+            ->method('setQuery');
+        $uri->expects(self::never())
+            ->method('isValid');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid server URL');
+
+        /* @var UriInterface $uri */
+        $helper->setServerUrl($uri);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetServerUrlWithInvalidUri(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $uri = $this->getMockBuilder(UriInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uri->expects(self::once())
+            ->method('setFragment')
+            ->with('');
+        $uri->expects(self::never())
+            ->method('toString');
+        $uri->expects(self::once())
+            ->method('setPath')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('setQuery')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('isValid')
+            ->willReturn(false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid server URL');
+
+        /* @var UriInterface $uri */
+        $helper->setServerUrl($uri);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetServerUrlWithError(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $uri = $this->getMockBuilder(UriInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uri->expects(self::once())
+            ->method('setFragment')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('toString')
+            ->willThrowException(new InvalidUriException('test'));
+        $uri->expects(self::once())
+            ->method('setPath')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('setQuery')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('isValid')
+            ->willReturn(true);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid server URL');
+
+        /* @var UriInterface $uri */
+        $helper->setServerUrl($uri);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetServerUrl(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $serverUrl = 'ftp://test.org';
+
+        $uri = $this->getMockBuilder(UriInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uri->expects(self::once())
+            ->method('setFragment')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('toString')
+            ->willReturn($serverUrl);
+        $uri->expects(self::once())
+            ->method('setPath')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('setQuery')
+            ->with('');
+        $uri->expects(self::once())
+            ->method('isValid')
+            ->willReturn(true);
+
+        /* @var UriInterface $uri */
+        $helper->setServerUrl($uri);
+
+        self::assertSame($serverUrl, $helper->getServerUrl());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetFormatOutput(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser);
+
+        self::assertFalse($helper->getFormatOutput());
+
+        $helper->setFormatOutput(true);
+
+        self::assertTrue($helper->getFormatOutput());
     }
 }

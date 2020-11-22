@@ -16,6 +16,7 @@ use Laminas\Uri;
 use Laminas\Uri\Exception\InvalidArgumentException;
 use Laminas\Uri\Exception\InvalidUriException;
 use Laminas\Uri\Exception\InvalidUriPartException;
+use Laminas\Uri\UriInterface;
 use Laminas\Validator\Sitemap\Changefreq;
 use Laminas\Validator\Sitemap\Lastmod;
 use Laminas\Validator\Sitemap\Loc;
@@ -279,12 +280,12 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     {
         $href = $page->getHref();
 
-        if (!isset($href[0])) {
+        if ('' === $href) {
             // no href
             return '';
         }
 
-        if ('/' === $href[0]) {
+        if ('/' === mb_substr($href, 0, 1)) {
             // href is relative to root; use serverUrl helper
             $url = $this->getServerUrl() . $href;
         } elseif (preg_match('/^[a-z]+:/im', (string) $href)) {
@@ -350,24 +351,32 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * E.g. http://www.example.com
      *
-     * @param string $serverUrl
+     * @param string|UriInterface $uri
      *
      * @throws Exception\InvalidArgumentException
      *
      * @return self
      */
-    public function setServerUrl(string $serverUrl): self
+    public function setServerUrl($uri): self
     {
-        try {
-            $uri = Uri\UriFactory::factory($serverUrl);
-        } catch (InvalidArgumentException $e) {
+        if (is_string($uri)) {
+            try {
+                $uri = Uri\UriFactory::factory($uri);
+            } catch (InvalidArgumentException $e) {
+                throw new Exception\InvalidArgumentException(
+                    'Invalid server URL',
+                    0,
+                    $e
+                );
+            }
+        }
+
+        if (!$uri instanceof UriInterface) {
             throw new Exception\InvalidArgumentException(
                 sprintf(
-                    'Invalid server URL: "%s"',
-                    $serverUrl
-                ),
-                0,
-                $e
+                    '$serverUrl should be aa string or an Instance of %s',
+                    UriInterface::class
+                )
             );
         }
 
@@ -375,10 +384,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             $uri->setFragment('');
         } catch (InvalidUriPartException $e) {
             throw new Exception\InvalidArgumentException(
-                sprintf(
-                    'Invalid server URL: "%s"',
-                    $serverUrl
-                ),
+                'Invalid server URL',
                 0,
                 $e
             );
@@ -389,10 +395,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
         if (!$uri->isValid()) {
             throw new Exception\InvalidArgumentException(
-                sprintf(
-                    'Invalid server URL: "%s"',
-                    $serverUrl
-                )
+                'Invalid server URL'
             );
         }
 
@@ -400,10 +403,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             $this->serverUrl = $uri->toString();
         } catch (InvalidUriException $e) {
             throw new Exception\InvalidArgumentException(
-                sprintf(
-                    'Invalid server URL: "%s"',
-                    $serverUrl
-                ),
+                'Invalid server URL',
                 0,
                 $e
             );
