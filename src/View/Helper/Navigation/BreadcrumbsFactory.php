@@ -17,8 +17,10 @@ use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
-use Laminas\View\HelperPluginManager;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 
 final class BreadcrumbsFactory
 {
@@ -34,8 +36,9 @@ final class BreadcrumbsFactory
      */
     public function __invoke(ContainerInterface $container): Breadcrumbs
     {
-        $plugin     = $container->get(HelperPluginManager::class);
-        $translator = null;
+        $helperPluginManager = $container->get(HelperPluginManager::class);
+        $plugin              = $container->get(ViewHelperPluginManager::class);
+        $translator          = null;
 
         if ($plugin->has(Translate::class)) {
             $translator = $plugin->get(Translate::class);
@@ -44,7 +47,8 @@ final class BreadcrumbsFactory
         return new Breadcrumbs(
             $container,
             $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
+            $helperPluginManager->get(HtmlifyInterface::class),
+            $helperPluginManager->get(ContainerParserInterface::class),
             $plugin->get(EscapeHtml::class),
             $plugin->get(Partial::class),
             $translator

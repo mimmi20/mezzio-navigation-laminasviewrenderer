@@ -13,8 +13,10 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksFactory;
 use PHPUnit\Framework\TestCase;
@@ -41,17 +43,26 @@ final class LinksFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $logger     = $this->createMock(Logger::class);
-        $htmlify    = $this->createMock(HtmlifyInterface::class);
-        $rootFinder = $this->createMock(FindRootInterface::class);
+        $logger          = $this->createMock(Logger::class);
+        $htmlify         = $this->createMock(HtmlifyInterface::class);
+        $rootFinder      = $this->createMock(FindRootInterface::class);
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+
+        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(3))
+            ->method('get')
+            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class], [FindRootInterface::class])
+            ->willReturnOnConsecutiveCalls($htmlify, $containerParser, $rootFinder);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(3))
+        $container->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive([Logger::class], [HtmlifyInterface::class], [FindRootInterface::class])
-            ->willReturnOnConsecutiveCalls($logger, $htmlify, $rootFinder);
+            ->withConsecutive([HelperPluginManager::class], [Logger::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $logger);
 
         /** @var ContainerInterface $container */
         $helper = ($this->factory)($container);

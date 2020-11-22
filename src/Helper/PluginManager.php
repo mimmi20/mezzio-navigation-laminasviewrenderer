@@ -9,10 +9,11 @@
  */
 
 declare(strict_types = 1);
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mezzio\Navigation\LaminasView\Helper;
 
 use Interop\Container\ContainerInterface as InteropContainerInterface;
-use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 /**
  * Plugin manager implementation for navigation helpers
@@ -21,22 +22,10 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
  * Navigation\HelperInterface. Additionally, it registers a number of default
  * helpers.
  */
-final class PluginManager extends ViewHelperPluginManager implements InteropContainerInterface
+final class PluginManager extends AbstractPluginManager implements InteropContainerInterface
 {
     /** @var string Valid instance types. */
     protected $instanceOf = HelperInterface::class;
-
-    /**
-     * Default aliases
-     *
-     * @var string[]
-     */
-    protected $aliases = [
-        'breadcrumbs' => Breadcrumbs::class,
-        'links' => Links::class,
-        'menu' => Menu::class,
-        'sitemap' => Sitemap::class,
-    ];
 
     /**
      * Default factories
@@ -44,9 +33,8 @@ final class PluginManager extends ViewHelperPluginManager implements InteropCont
      * @var string[]
      */
     protected $factories = [
-        Breadcrumbs::class => BreadcrumbsFactory::class,
-        Links::class => LinksFactory::class,
-        Menu::class => HelperFactory::class,
-        Sitemap::class => HelperFactory::class,
+        ContainerParserInterface::class => ContainerParserFactory::class,
+        FindRootInterface::class => InvokableFactory::class,
+        HtmlifyInterface::class => HtmlifyFactory::class,
     ];
 }

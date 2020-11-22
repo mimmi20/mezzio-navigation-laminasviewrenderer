@@ -13,7 +13,9 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use PHPUnit\Framework\TestCase;
@@ -40,16 +42,25 @@ final class HelperFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $logger  = $this->createMock(Logger::class);
-        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $logger          = $this->createMock(Logger::class);
+        $htmlify         = $this->createMock(HtmlifyInterface::class);
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+
+        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class])
+            ->willReturn($htmlify, $containerParser);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $container->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive([Logger::class], [HtmlifyInterface::class])
-            ->willReturnOnConsecutiveCalls($logger, $htmlify);
+            ->withConsecutive([HelperPluginManager::class], [Logger::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $logger);
 
         /** @var ContainerInterface $container */
         $helper = ($this->factory)($container, Menu::class);

@@ -12,8 +12,7 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView;
 
 use Mezzio\Navigation\LaminasView\ConfigProvider;
-use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use PHPUnit\Framework\TestCase;
 
@@ -67,8 +66,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('factories', $dependencyConfig);
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
-        self::assertArrayHasKey(FindRootInterface::class, $factories);
-        self::assertArrayHasKey(HtmlifyInterface::class, $factories);
+        self::assertArrayHasKey(PluginManager::class, $factories);
     }
 
     /**
@@ -105,7 +103,6 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('factories', $dependencyConfig);
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
-        self::assertArrayHasKey(FindRootInterface::class, $factories);
-        self::assertArrayHasKey(HtmlifyInterface::class, $factories);
+        self::assertArrayHasKey(PluginManager::class, $factories);
     }
 }

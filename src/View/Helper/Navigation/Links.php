@@ -19,6 +19,7 @@ use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageFactory;
@@ -79,18 +80,21 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
      * @param HtmlifyInterface                      $htmlify
+     * @param ContainerParserInterface              $containerParser
      * @param FindRootInterface                     $rootFinder
      */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
+        ContainerParserInterface $containerParser,
         FindRootInterface $rootFinder
     ) {
-        $this->serviceLocator = $serviceLocator;
-        $this->logger         = $logger;
-        $this->htmlify        = $htmlify;
-        $this->rootFinder     = $rootFinder;
+        $this->serviceLocator  = $serviceLocator;
+        $this->logger          = $logger;
+        $this->htmlify         = $htmlify;
+        $this->containerParser = $containerParser;
+        $this->rootFinder      = $rootFinder;
     }
 
     /**
@@ -145,7 +149,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function render($container = null): string
     {
-        $this->parseContainer($container);
+        $container = $this->containerParser->parseContainer($container);
+
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -576,18 +581,21 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return null;
         }
 
-        $root  = $this->rootFinder->find($page);
-        $found = [];
+        $root = $this->rootFinder->find($page);
 
         // check if given page has pages and is a chapter page
-        if ($root->hasPage($page)) {
-            foreach ($page as $section) {
-                if (!$this->accept($section)) {
-                    continue;
-                }
+        if (!$root->hasPage($page)) {
+            return null;
+        }
 
-                $found[] = $section;
+        $found = [];
+
+        foreach ($page as $section) {
+            if (!$this->accept($section)) {
+                continue;
             }
+
+            $found[] = $section;
         }
 
         switch (count($found)) {

@@ -17,9 +17,9 @@ use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
-use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 
 /**
@@ -32,7 +32,7 @@ trait HelperTrait
     /**
      * ContainerInterface to operate on by default
      *
-     * @var \Mezzio\Navigation\ContainerInterface
+     * @var \Mezzio\Navigation\ContainerInterface|null
      */
     private $container;
 
@@ -44,6 +44,9 @@ trait HelperTrait
 
     /** @var HtmlifyInterface */
     private $htmlify;
+
+    /** @var ContainerParserInterface */
+    private $containerParser;
 
     /**
      * The minimum depth a page must have to be included when rendering
@@ -112,12 +115,18 @@ trait HelperTrait
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
      * @param HtmlifyInterface                      $htmlify
+     * @param ContainerParserInterface              $containerParser
      */
-    public function __construct(ContainerInterface $serviceLocator, Logger $logger, HtmlifyInterface $htmlify)
-    {
-        $this->serviceLocator = $serviceLocator;
-        $this->logger         = $logger;
-        $this->htmlify        = $htmlify;
+    public function __construct(
+        ContainerInterface $serviceLocator,
+        Logger $logger,
+        HtmlifyInterface $htmlify,
+        ContainerParserInterface $containerParser
+    ) {
+        $this->serviceLocator  = $serviceLocator;
+        $this->logger          = $logger;
+        $this->htmlify         = $htmlify;
+        $this->containerParser = $containerParser;
     }
 
     /**
@@ -151,7 +160,8 @@ trait HelperTrait
      */
     public function setContainer($container = null): self
     {
-        $this->parseContainer($container);
+        $container = $this->containerParser->parseContainer($container);
+
         $this->container = $container;
 
         return $this;
@@ -177,76 +187,6 @@ trait HelperTrait
         }
 
         return $this->container;
-    }
-
-    /**
-     * Verifies container and eventually fetches it from service locator if it is a string
-     *
-     * @param Navigation\ContainerInterface|string|null $container
-     *
-     * @throws Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    private function parseContainer(&$container = null): void
-    {
-        if (null === $container || $container instanceof Navigation\ContainerInterface) {
-            return;
-        }
-
-        if (is_string($container)) {
-            // Fallback
-            if (in_array($container, ['default', 'navigation'], true)) {
-                // Uses class name
-                if ($this->serviceLocator->has(Navigation\Navigation::class)) {
-                    try {
-                        $container = $this->serviceLocator->get(Navigation\Navigation::class);
-                    } catch (ContainerExceptionInterface $e) {
-                        throw new Exception\InvalidArgumentException(
-                            sprintf('Could not load Container "%s"', Navigation\Navigation::class),
-                            0,
-                            $e
-                        );
-                    }
-
-                    return;
-                }
-
-                // Uses old service name
-                if ($this->serviceLocator->has('navigation')) {
-                    try {
-                        $container = $this->serviceLocator->get('navigation');
-                    } catch (ContainerExceptionInterface $e) {
-                        throw new Exception\InvalidArgumentException(
-                            'Could not load Container "navigation"',
-                            0,
-                            $e
-                        );
-                    }
-
-                    return;
-                }
-            }
-
-            /*
-             * Load the navigation container from the root service locator
-             */
-            try {
-                $container = $this->serviceLocator->get($container);
-            } catch (ContainerExceptionInterface $e) {
-                throw new Exception\InvalidArgumentException(
-                    sprintf('Could not load Container "%s"', $container),
-                    0,
-                    $e
-                );
-            }
-
-            return;
-        }
-
-        throw new Exception\InvalidArgumentException(
-            'Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface'
-        );
     }
 
     /**

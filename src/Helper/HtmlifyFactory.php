@@ -15,7 +15,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\EscapeHtmlAttr;
-use Laminas\View\HelperPluginManager;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 
 final class HtmlifyFactory
 {
@@ -31,7 +31,7 @@ final class HtmlifyFactory
      */
     public function __invoke(ContainerInterface $container): Htmlify
     {
-        $plugin     = $container->get(HelperPluginManager::class);
+        $plugin     = $container->get(ViewHelperPluginManager::class);
         $translator = null;
 
         if ($plugin->has(Translate::class)) {
