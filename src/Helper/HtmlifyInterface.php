@@ -13,7 +13,7 @@ namespace Mezzio\Navigation\LaminasView\Helper;
 
 use Mezzio\Navigation\Page\PageInterface;
 
-interface HtmlifyInterface
+interface HtmlifyInterface extends HelperInterface
 {
     /**
      * Returns an HTML string containing an 'a' element for the given page

@@ -232,7 +232,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      */
     public function renderMenu($container = null, array $options = []): string
     {
-        $this->parseContainer($container);
+        $container = $this->containerParser->parseContainer($container);
 
         if (null === $container) {
             $container = $this->getContainer();
@@ -845,7 +845,8 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      */
     private function renderPartialModel(array $params, ?ContainerInterface $container, $partial): string
     {
-        $this->parseContainer($container);
+        $container = $this->containerParser->parseContainer($container);
+
         if (null === $container) {
             $container = $this->getContainer();
         }

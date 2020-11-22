@@ -16,8 +16,10 @@ use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
-use Laminas\View\HelperPluginManager;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\BreadcrumbsFactory;
 use PHPUnit\Framework\TestCase;
@@ -46,18 +48,27 @@ final class BreadcrumbsFactoryTest extends TestCase
     {
         $logger          = $this->createMock(Logger::class);
         $htmlify         = $this->createMock(HtmlifyInterface::class);
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $translatePlugin = $this->createMock(Translate::class);
         $escapePlugin    = $this->createMock(EscapeHtml::class);
         $partialPlugin   = $this->createMock(Partial::class);
 
-        $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $helperPluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class])
+            ->willReturn($htmlify, $containerParser);
+
+        $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewHelperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
             ->willReturn(true);
-        $helperPluginManager->expects(self::exactly(3))
+        $viewHelperPluginManager->expects(self::exactly(3))
             ->method('get')
             ->withConsecutive([Translate::class], [EscapeHtml::class], [Partial::class])
             ->willReturnOnConsecutiveCalls($translatePlugin, $escapePlugin, $partialPlugin);
@@ -67,8 +78,8 @@ final class BreadcrumbsFactoryTest extends TestCase
             ->getMock();
         $container->expects(self::exactly(3))
             ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [Logger::class], [HtmlifyInterface::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $logger, $htmlify);
+            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
 
         /** @var ContainerInterface $container */
         $helper = ($this->factory)($container);
@@ -85,19 +96,28 @@ final class BreadcrumbsFactoryTest extends TestCase
      */
     public function testInvocationWithoutTranslator(): void
     {
-        $logger        = $this->createMock(Logger::class);
-        $htmlify       = $this->createMock(HtmlifyInterface::class);
-        $escapePlugin  = $this->createMock(EscapeHtml::class);
-        $partialPlugin = $this->createMock(Partial::class);
+        $logger          = $this->createMock(Logger::class);
+        $htmlify         = $this->createMock(HtmlifyInterface::class);
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $escapePlugin    = $this->createMock(EscapeHtml::class);
+        $partialPlugin   = $this->createMock(Partial::class);
 
-        $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $helperPluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class])
+            ->willReturn($htmlify, $containerParser);
+
+        $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewHelperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
             ->willReturn(false);
-        $helperPluginManager->expects(self::exactly(2))
+        $viewHelperPluginManager->expects(self::exactly(2))
             ->method('get')
             ->withConsecutive([EscapeHtml::class], [Partial::class])
             ->willReturnOnConsecutiveCalls($escapePlugin, $partialPlugin);
@@ -107,8 +127,8 @@ final class BreadcrumbsFactoryTest extends TestCase
             ->getMock();
         $container->expects(self::exactly(3))
             ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [Logger::class], [HtmlifyInterface::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $logger, $htmlify);
+            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
 
         /** @var ContainerInterface $container */
         $helper = ($this->factory)($container);

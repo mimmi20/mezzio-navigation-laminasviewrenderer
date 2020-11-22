@@ -14,8 +14,10 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 
 final class LinksFactory
 {
@@ -31,11 +33,14 @@ final class LinksFactory
      */
     public function __invoke(ContainerInterface $container): HelperInterface
     {
+        $helperPluginManager = $container->get(HelperPluginManager::class);
+
         return new Links(
             $container,
             $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
-            $container->get(FindRootInterface::class)
+            $helperPluginManager->get(HtmlifyInterface::class),
+            $helperPluginManager->get(ContainerParserInterface::class),
+            $helperPluginManager->get(FindRootInterface::class)
         );
     }
 }

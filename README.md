@@ -142,11 +142,11 @@ There are 5 built-in helpers:
 - [Navigation](navigation.md), used for proxying calls to other navigational
   helpers.
 
-All built-in helpers extend `Laminas\View\Helper\Navigation\AbstractHelper`, which
+All built-in helpers extend `Mezzio\Navigation\LaminasView\Helper\Navigation\AbstractHelper`, which
 adds integration with
 [laminas-acl](https://docs.laminas.dev/laminas-permissions-acl/) or [laminas-rbac](https://docs.laminas.dev/laminas-permissions-rbac/) and
 [laminas-i18n](https://docs.laminas.dev/laminas-i18n/). The abstract class
-implements the interface `Laminas\View\Helper\Navigation\HelperInterface`, which
+implements the interface `Mezzio\Navigation\LaminasView\Helper\Navigation\HelperInterface`, which
 defines the following methods:
 
 Method signature                                                       | Description
@@ -462,7 +462,7 @@ The setup of ACL can be done in a module class, e.g.
 ```php
 namespace MyModule;
 
-use Laminas\View\HelperPluginManager;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Role\GenericRole;
 use Laminas\Permissions\Acl\Resource\GenericResource;
@@ -475,7 +475,7 @@ class Module
         return [
             'factories' => [
                 // This will overwrite the native navigation helper
-                'navigation' => function(HelperPluginManager $pm) {
+                'navigation' => function(ViewHelperPluginManager $pm) {
                     // Setup ACL:
                     $acl = new Acl();
                     $acl->addRole(new GenericRole('member'));
@@ -486,7 +486,7 @@ class Module
                     $acl->allow('admin', null);
 
                     // Get an instance of the proxy helper
-                    $navigation = $pm->get('Laminas\View\Helper\Navigation');
+                    $navigation = $pm->get('Mezzio\Navigation\LaminasView\Helper\Navigation');
 
                     // Store ACL and role in the proxy helper:
                     $navigation->setAcl($acl);
@@ -509,7 +509,7 @@ navigational helpers. It can be considered an entry point to all
 navigation-related view tasks.
 
 The `Navigation` helper finds other helpers that implement
-`Laminas\View\Helper\Navigation\HelperInterface`, which means custom view helpers
+`Mezzio\Navigation\LaminasView\Helper\Navigation\HelperInterface`, which means custom view helpers
 can also be proxied.  This would, however, require that the custom helper path
 is added to the view.
 
@@ -745,23 +745,23 @@ See the example below for more information.
 
 The `LinksInterface` helper defines the following constants:
 
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_ALTERNATE`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_STYLESHEET`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_START`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_NEXT`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_PREV`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_CONTENTS`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_INDEX`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_GLOSSARY`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_COPYRIGHT`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_CHAPTER`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_SECTION`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_SUBSECTION`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_APPENDIX`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_HELP`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_BOOKMARK`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_CUSTOM`
-- `Laminas\View\Helper\Navigation\LinksInterface::RENDER_ALL`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_ALTERNATE`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_STYLESHEET`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_START`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_NEXT`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_PREV`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_CONTENTS`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_INDEX`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_GLOSSARY`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_COPYRIGHT`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_CHAPTER`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_SECTION`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_SUBSECTION`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_APPENDIX`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_HELP`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_BOOKMARK`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_CUSTOM`
+- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_ALL`
 
 The constants from `RENDER_ALTERNATE` to `RENDER_BOOKMARK` denote standard HTML
 link types.  `RENDER_CUSTOM` denotes non-standard relations specified in pages.
@@ -862,7 +862,7 @@ This example shows how to specify which relations to find and render.
 Render only start, next, and prev:
 
 ```php
-use Laminas\View\Helper\Navigation\LinksInterface;
+use Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface;
 
 $links = $this->navigation()->links();
 $links->setRenderFlag(LinksInterface::RENDER_START | LinksInterface::RENDER_NEXT | LinksInterface::RENDER_PREV);

@@ -13,7 +13,9 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 
 final class NavigationFactory
 {
@@ -28,11 +30,15 @@ final class NavigationFactory
      */
     public function __invoke(ContainerInterface $container): Navigation
     {
+        $helperPluginManager = $container->get(HelperPluginManager::class);
+
         $helper = new Navigation(
             $container,
             $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class)
+            $helperPluginManager->get(HtmlifyInterface::class),
+            $helperPluginManager->get(ContainerParserInterface::class)
         );
+
         $helper->setPluginManager(new Navigation\PluginManager($container));
 
         return $helper;

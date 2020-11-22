@@ -19,6 +19,7 @@ use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
 use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
@@ -63,6 +64,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      * @param \Interop\Container\ContainerInterface    $serviceLocator
      * @param Logger                                   $logger
      * @param HtmlifyInterface                         $htmlify
+     * @param ContainerParserInterface                 $containerParser
      * @param EscapeHtml                               $escaper
      * @param Partial                                  $partialPlugin
      * @param \Laminas\I18n\View\Helper\Translate|null $translator
@@ -71,16 +73,18 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
+        ContainerParserInterface $containerParser,
         EscapeHtml $escaper,
         Partial $partialPlugin,
         ?Translate $translator = null
     ) {
-        $this->serviceLocator = $serviceLocator;
-        $this->logger         = $logger;
-        $this->htmlify        = $htmlify;
-        $this->translator     = $translator;
-        $this->escaper        = $escaper;
-        $this->partialPlugin  = $partialPlugin;
+        $this->serviceLocator  = $serviceLocator;
+        $this->logger          = $logger;
+        $this->htmlify         = $htmlify;
+        $this->containerParser = $containerParser;
+        $this->translator      = $translator;
+        $this->escaper         = $escaper;
+        $this->partialPlugin   = $partialPlugin;
     }
 
     /**
@@ -126,7 +130,8 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      */
     public function renderStraight($container = null): string
     {
-        $this->parseContainer($container);
+        $container = $this->containerParser->parseContainer($container);
+
         if (null === $container) {
             $container = $this->getContainer();
         }
@@ -338,7 +343,8 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
             $partial = $partial[0];
         }
 
-        $this->parseContainer($container);
+        $container = $this->containerParser->parseContainer($container);
+
         if (null === $container) {
             $container = $this->getContainer();
         }

@@ -15,7 +15,7 @@ use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
-use Laminas\View\HelperPluginManager;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
@@ -60,7 +60,7 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      */
     private $injectAuthorization = true;
 
-    /** @var HelperPluginManager|null */
+    /** @var ViewHelperPluginManager|null */
     private $pluginManager;
 
     /**
@@ -188,7 +188,11 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
 
         if (!isset($this->injected[$hash])) {
             $helper->setContainer($container);
-            $this->inject($helper);
+
+            if ($this->getInjectAuthorization()) {
+                $this->inject($helper);
+            }
+
             $this->injected[$hash] = true;
         }
 
@@ -207,10 +211,6 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      */
     private function inject(HelperInterface $helper): void
     {
-        if (!$this->getInjectAuthorization()) {
-            return;
-        }
-
         if (!$helper->hasAuthorization()) {
             $helper->setAuthorization($this->getAuthorization());
         }
@@ -271,11 +271,11 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
     /**
      * Set manager for retrieving navigation helpers
      *
-     * @param HelperPluginManager $pluginManager
+     * @param ViewHelperPluginManager $pluginManager
      *
      * @return void
      */
-    public function setPluginManager(HelperPluginManager $pluginManager): void
+    public function setPluginManager(ViewHelperPluginManager $pluginManager): void
     {
         $renderer = $this->getView();
 

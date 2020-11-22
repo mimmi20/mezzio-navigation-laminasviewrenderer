@@ -14,7 +14,7 @@ namespace Mezzio\Navigation\LaminasView\Helper;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
-interface FindRootInterface
+interface FindRootInterface extends HelperInterface
 {
     /**
      * @param ContainerInterface|null $root

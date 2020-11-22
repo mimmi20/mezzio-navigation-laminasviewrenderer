@@ -13,10 +13,11 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\Page\PageInterface;
@@ -44,10 +45,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -75,10 +83,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -105,10 +120,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -138,10 +160,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -175,10 +204,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -207,10 +243,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -247,10 +290,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getView());
 
@@ -282,10 +332,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([null], [$container])
+            ->willReturnOnConsecutiveCalls(null, $container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $container1 = $helper->getContainer();
 
@@ -310,200 +369,6 @@ final class MenuTest extends TestCase
      *
      * @return void
      */
-    public function testSetContainerWithNumber(): void
-    {
-        $logger         = $this->createMock(Logger::class);
-        $serviceLocator = $this->createMock(ContainerInterface::class);
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
-
-        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface');
-
-        $helper->setContainer(1);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetContainerWithStringDefaultNotFound(): void
-    {
-        $logger = $this->createMock(Logger::class);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::once())
-            ->method('has')
-            ->with(\Mezzio\Navigation\Navigation::class)
-            ->willReturn(true);
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(\Mezzio\Navigation\Navigation::class)
-            ->willThrowException(new ServiceNotFoundException('test'));
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
-
-        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not load Container "%s"', \Mezzio\Navigation\Navigation::class));
-
-        $helper->setContainer('default');
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetContainerWithStringDefaultFound(): void
-    {
-        $logger    = $this->createMock(Logger::class);
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::once())
-            ->method('has')
-            ->with(\Mezzio\Navigation\Navigation::class)
-            ->willReturn(true);
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(\Mezzio\Navigation\Navigation::class)
-            ->willReturn($container);
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
-
-        $helper->setContainer('default');
-
-        self::assertSame($container, $helper->getContainer());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetContainerWithStringNavigationNotFound(): void
-    {
-        $logger = $this->createMock(Logger::class);
-        $name   = 'navigation';
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::exactly(2))
-            ->method('has')
-            ->withConsecutive([\Mezzio\Navigation\Navigation::class], [$name])
-            ->willReturnOnConsecutiveCalls(false, true);
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willThrowException(new ServiceNotFoundException('test'));
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
-
-        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
-
-        $helper->setContainer($name);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testSetContainerWithStringNavigationFound(): void
-    {
-        $logger    = $this->createMock(Logger::class);
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-        $name      = 'navigation';
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::exactly(2))
-            ->method('has')
-            ->withConsecutive([\Mezzio\Navigation\Navigation::class], [$name])
-            ->willReturnOnConsecutiveCalls(false, true);
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
-
-        $helper->setContainer($name);
-
-        self::assertSame($container, $helper->getContainer());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $logger = $this->createMock(Logger::class);
@@ -512,14 +377,10 @@ final class MenuTest extends TestCase
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $serviceLocator->expects(self::exactly(2))
-            ->method('has')
-            ->withConsecutive([\Mezzio\Navigation\Navigation::class], ['navigation'])
-            ->willReturnOnConsecutiveCalls(false, false);
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willThrowException(new ServiceNotFoundException('test'));
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -527,13 +388,22 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willThrowException(new InvalidArgumentException('test'));
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
-        $this->expectException(\Laminas\View\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('test');
 
         $helper->setContainer($name);
     }
@@ -559,10 +429,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -570,10 +438,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
 
@@ -599,10 +476,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -610,10 +485,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
 
@@ -663,10 +547,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -674,10 +556,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
 
@@ -736,10 +627,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -747,10 +636,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
 
@@ -821,10 +719,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -860,10 +756,19 @@ final class MenuTest extends TestCase
             ->with(Menu::class, $page)
             ->willReturn($expected);
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
 
@@ -900,10 +805,17 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame('', $helper->getIndent());
 
@@ -983,10 +895,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -994,10 +904,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
 
@@ -1084,10 +1003,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1095,10 +1012,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
 
@@ -1134,7 +1060,6 @@ final class MenuTest extends TestCase
     public function testFindActiveWithoutContainer(): void
     {
         $logger = $this->createMock(Logger::class);
-        $name   = 'Mezzio\\Navigation\\Top';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -1150,10 +1075,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with(null)
+            ->willReturn(null);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
 
@@ -1238,10 +1172,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1249,10 +1181,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
 
@@ -1316,10 +1257,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1327,10 +1266,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
 
@@ -1403,10 +1351,8 @@ final class MenuTest extends TestCase
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with($name)
-            ->willReturn($container);
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1414,10 +1360,19 @@ final class MenuTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
-        $helper = new Menu($serviceLocator, $logger, $htmlify);
+        /** @var ContainerParserInterface $containerParser */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
 
