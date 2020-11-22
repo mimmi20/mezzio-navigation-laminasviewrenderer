@@ -436,7 +436,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     public function setUseSitemapValidators(bool $useSitemapValidators): self
     {
-        $this->useSitemapValidators = (bool) $useSitemapValidators;
+        $this->useSitemapValidators = $useSitemapValidators;
 
         return $this;
     }
@@ -460,7 +460,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     public function setUseSchemaValidation(bool $schemaValidation): self
     {
-        $this->useSchemaValidation = (bool) $schemaValidation;
+        $this->useSchemaValidation = $schemaValidation;
 
         return $this;
     }
@@ -484,7 +484,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     public function setUseXmlDeclaration(bool $useXmlDecl): self
     {
-        $this->useXmlDeclaration = (bool) $useXmlDecl;
+        $this->useXmlDeclaration = $useXmlDecl;
 
         return $this;
     }
