@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\Uri\UriInterface;
 use Laminas\View\Exception;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
@@ -79,13 +80,13 @@ interface SitemapInterface extends HelperInterface
      *
      * E.g. http://www.example.com
      *
-     * @param string $serverUrl
+     * @param string|UriInterface $serverUrl
      *
      * @throws Exception\InvalidArgumentException
      *
      * @return self
      */
-    public function setServerUrl(string $serverUrl);
+    public function setServerUrl($serverUrl);
 
     /**
      * Returns server URL
