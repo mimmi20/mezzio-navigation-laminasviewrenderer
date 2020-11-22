@@ -16,13 +16,13 @@ use Laminas\Log\Logger;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperFactory;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
 use PHPUnit\Framework\TestCase;
 
-final class HelperFactoryTest extends TestCase
+final class SitemapFactoryTest extends TestCase
 {
-    /** @var HelperFactory */
+    /** @var SitemapFactory */
     private $factory;
 
     /**
@@ -30,7 +30,7 @@ final class HelperFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->factory = new HelperFactory();
+        $this->factory = new SitemapFactory();
     }
 
     /**
@@ -63,8 +63,8 @@ final class HelperFactoryTest extends TestCase
             ->willReturnOnConsecutiveCalls($helperPluginManager, $logger);
 
         /** @var ContainerInterface $container */
-        $helper = ($this->factory)($container, Menu::class);
+        $helper = ($this->factory)($container);
 
-        self::assertInstanceOf(Menu::class, $helper);
+        self::assertInstanceOf(Sitemap::class, $helper);
     }
 }

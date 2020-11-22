@@ -46,7 +46,7 @@ final class PluginManager extends ViewHelperPluginManager implements InteropCont
     protected $factories = [
         Breadcrumbs::class => BreadcrumbsFactory::class,
         Links::class => LinksFactory::class,
-        Menu::class => HelperFactory::class,
-        Sitemap::class => HelperFactory::class,
+        Menu::class => MenuFactory::class,
+        Sitemap::class => SitemapFactory::class,
     ];
 }

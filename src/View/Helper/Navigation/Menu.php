@@ -11,11 +11,14 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
 
@@ -81,6 +84,36 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @var string
      */
     private $liActiveClass = 'active';
+
+    /** @var EscapeHtmlAttr */
+    private $escaper;
+
+    /** @var Partial */
+    private $partialPlugin;
+
+    /**
+     * @param \Interop\Container\ContainerInterface $serviceLocator
+     * @param Logger                                $logger
+     * @param HtmlifyInterface                      $htmlify
+     * @param ContainerParserInterface              $containerParser
+     * @param EscapeHtmlAttr                        $escaper
+     * @param Partial                               $partialPlugin
+     */
+    public function __construct(
+        \Interop\Container\ContainerInterface $serviceLocator,
+        Logger $logger,
+        HtmlifyInterface $htmlify,
+        ContainerParserInterface $containerParser,
+        EscapeHtmlAttr $escaper,
+        Partial $partialPlugin
+    ) {
+        $this->serviceLocator  = $serviceLocator;
+        $this->logger          = $logger;
+        $this->htmlify         = $htmlify;
+        $this->containerParser = $containerParser;
+        $this->escaper         = $escaper;
+        $this->partialPlugin   = $partialPlugin;
+    }
 
     /**
      * Renders menu.
@@ -162,17 +195,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             $active['page'] = $active['page']->getParent();
         }
 
-        $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtmlAttr');
-        \assert(
-            $escaper instanceof EscapeHtmlAttr,
-            sprintf(
-                '$escaper should be an Instance of %s, but was %s',
-                EscapeHtmlAttr::class,
-                get_class($escaper)
-            )
-        );
-
-        $ulClass = $ulClass ? ' class="' . $escaper($ulClass) . '"' : '';
+        $ulClass = $ulClass ? ' class="' . ($this->escaper)($ulClass) . '"' : '';
         $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
 
         foreach ($active['page'] as $subPage) {
@@ -201,7 +224,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $liClasses[] = $subPage->getClass();
             }
 
-            $liClass = empty($liClasses) ? '' : ' class="' . $escaper(implode(' ', $liClasses)) . '"';
+            $liClass = empty($liClasses) ? '' : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
             $html .= $indent . '    <li' . $liClass . '>' . PHP_EOL;
             $html .= $indent . '        ' . $this->htmlify->toHtml(self::class, $subPage, $escapeLabels, $addClassToListItem) . PHP_EOL;
             $html .= $indent . '    </li>' . PHP_EOL;
@@ -303,16 +326,6 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         // find deepest active
         $found = $this->findActive($container, $minDepth, $maxDepth);
 
-        $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtmlAttr');
-        \assert(
-            $escaper instanceof EscapeHtmlAttr,
-            sprintf(
-                '$escaper should be an Instance of %s, but was %s',
-                EscapeHtmlAttr::class,
-                get_class($escaper)
-            )
-        );
-
         if ($found) {
             $foundPage  = $found['page'];
             $foundDepth = $found['depth'];
@@ -372,7 +385,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             if ($depth > $prevDepth) {
                 // start new ul tag
                 if ($ulClass && 0 === $depth) {
-                    $ulClass = ' class="' . $escaper($ulClass) . '"';
+                    $ulClass = ' class="' . ($this->escaper)($ulClass) . '"';
                 } else {
                     $ulClass = '';
                 }
@@ -414,7 +427,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $liClasses[] = $page->getClass();
             }
 
-            $liClass = empty($liClasses) ? '' : ' class="' . $escaper(implode(' ', $liClasses)) . '"';
+            $liClass = empty($liClasses) ? '' : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
             $html .= $myIndent . '    <li' . $liClass . '>' . PHP_EOL
                 . $myIndent . '        ' . $this->htmlify->toHtml(self::class, $page, $escapeLabels, $addClassToListItem) . PHP_EOL;
 
@@ -649,6 +662,14 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
     }
 
     /**
+     * @return bool
+     */
+    public function getEscapeLabels(): bool
+    {
+        return $this->escapeLabels;
+    }
+
+    /**
      * Enables/disables page class applied to <li> element.
      *
      * @param bool $flag [optional] page class applied to <li> element Default
@@ -861,18 +882,6 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             );
         }
 
-        $model = array_merge($params, ['container' => $container]);
-
-        $partialHelper = $this->getView()->getHelperPluginManager()->get('partial');
-        \assert(
-            $partialHelper instanceof Partial,
-            sprintf(
-                '$partialHelper should be an Instance of %s, but was %s',
-                Partial::class,
-                get_class($partialHelper)
-            )
-        );
-
         if (is_array($partial)) {
             if (2 !== count($partial)) {
                 throw new Exception\InvalidArgumentException(
@@ -884,7 +893,9 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             $partial = $partial[0];
         }
 
-        $rendered = $partialHelper($partial, $model);
+        $model = array_merge($params, ['container' => $container]);
+
+        $rendered = ($this->partialPlugin)($partial, $model);
 
         if ($rendered instanceof Partial) {
             throw new Exception\InvalidArgumentException(

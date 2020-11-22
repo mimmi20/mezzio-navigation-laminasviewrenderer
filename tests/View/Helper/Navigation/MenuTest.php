@@ -14,6 +14,8 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Helper\EscapeHtmlAttr;
+use Laminas\View\Helper\Partial;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -51,11 +53,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -89,11 +105,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -126,11 +156,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -166,11 +210,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -210,11 +268,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -249,11 +321,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -296,11 +382,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertNull($helper->getView());
 
@@ -340,11 +440,25 @@ final class MenuTest extends TestCase
             ->withConsecutive([null], [$container])
             ->willReturnOnConsecutiveCalls(null, $container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $container1 = $helper->getContainer();
 
@@ -396,11 +510,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
@@ -446,11 +574,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $helper->setContainer($name);
 
@@ -493,11 +635,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $helper->setContainer($name);
 
@@ -564,11 +720,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $helper->setContainer($name);
 
@@ -644,11 +814,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $helper->setContainer($name);
 
@@ -764,11 +948,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $helper->setContainer($name);
 
@@ -811,11 +1009,25 @@ final class MenuTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         self::assertSame('', $helper->getIndent());
 
@@ -912,11 +1124,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $role = 'testRole';
 
@@ -1020,11 +1246,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $role = 'testRole';
 
@@ -1083,11 +1323,25 @@ final class MenuTest extends TestCase
             ->with(null)
             ->willReturn(null);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $role = 'testRole';
 
@@ -1189,11 +1443,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $role = 'testRole';
 
@@ -1274,11 +1542,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $role = 'testRole';
 
@@ -1368,11 +1650,25 @@ final class MenuTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser);
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
 
         $role = 'testRole';
 
@@ -1395,5 +1691,417 @@ final class MenuTest extends TestCase
         ];
 
         self::assertSame($expected, $helper->findActive($name, 0, 0));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testEscapeLabels(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertTrue($helper->getEscapeLabels());
+
+        $helper->escapeLabels(false);
+
+        self::assertFalse($helper->getEscapeLabels());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetAddClassToListItem(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertFalse($helper->getAddClassToListItem());
+
+        $helper->setAddClassToListItem(true);
+
+        self::assertTrue($helper->getAddClassToListItem());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetOnlyActiveBranch(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertFalse($helper->getOnlyActiveBranch());
+
+        $helper->setOnlyActiveBranch(true);
+
+        self::assertTrue($helper->getOnlyActiveBranch());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetPartial(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertNull($helper->getPartial());
+
+        $helper->setPartial('test');
+
+        self::assertSame('test', $helper->getPartial());
+
+        $helper->setPartial(1);
+
+        self::assertSame('test', $helper->getPartial());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetRenderParents(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertTrue($helper->getRenderParents());
+
+        $helper->setRenderParents(false);
+
+        self::assertFalse($helper->getRenderParents());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetUlClass(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertSame('navigation', $helper->getUlClass());
+
+        $helper->setUlClass('test');
+
+        self::assertSame('test', $helper->getUlClass());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetLiClass(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertSame('', $helper->getLiClass());
+
+        $helper->setLiClass('test');
+
+        self::assertSame('test', $helper->getLiClass());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetLiActiveClass(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partialPlugin = $this->getMockBuilder(Partial::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $partialPlugin->expects(self::never())
+            ->method('__invoke');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var EscapeHtmlAttr $escapePlugin */
+        /** @var Partial $partialPlugin */
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+
+        self::assertSame('active', $helper->getLiActiveClass());
+
+        $helper->setLiActiveClass('test');
+
+        self::assertSame('test', $helper->getLiActiveClass());
     }
 }
