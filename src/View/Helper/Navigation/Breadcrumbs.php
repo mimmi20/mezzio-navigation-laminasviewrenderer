@@ -149,8 +149,6 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         } else {
             $label = (string) $active->getLabel();
 
-            $plugins = $this->getView()->getHelperPluginManager();
-
             if (null !== $this->translator) {
                 $label = ($this->translator)($label, $active->getTextDomain());
             }

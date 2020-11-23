@@ -13,6 +13,10 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Laminas\View\Helper\BasePath;
+use Laminas\View\Helper\EscapeHtml;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
@@ -45,6 +49,9 @@ final class SitemapFactoryTest extends TestCase
         $logger          = $this->createMock(Logger::class);
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
+        $basePath        = $this->createMock(BasePath::class);
+        $escaper         = $this->createMock(EscapeHtml::class);
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
 
         $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -54,13 +61,21 @@ final class SitemapFactoryTest extends TestCase
             ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class])
             ->willReturn($htmlify, $containerParser);
 
+        $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $viewHelperPluginManager->expects(self::exactly(3))
+            ->method('get')
+            ->withConsecutive([BasePath::class], [EscapeHtml::class], [ServerUrlHelper::class])
+            ->willReturnOnConsecutiveCalls($basePath, $escaper, $serverUrlHelper);
+
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $container->expects(self::exactly(3))
             ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [Logger::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $logger);
+            ->withConsecutive([HelperPluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
 
         /** @var ContainerInterface $container */
         $helper = ($this->factory)($container);

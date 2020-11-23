@@ -76,25 +76,31 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     private $rootFinder;
 
+    /** @var HeadLink */
+    private $headLink;
+
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
      * @param HtmlifyInterface                      $htmlify
      * @param ContainerParserInterface              $containerParser
      * @param FindRootInterface                     $rootFinder
+     * @param HeadLink                              $headLink
      */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
-        FindRootInterface $rootFinder
+        FindRootInterface $rootFinder,
+        HeadLink $headLink
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
         $this->htmlify         = $htmlify;
         $this->containerParser = $containerParser;
         $this->rootFinder      = $rootFinder;
+        $this->headLink        = $headLink;
     }
 
     /**
@@ -226,19 +232,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             'title' => $page->getLabel(),
         ];
 
-        $plugins = $this->getView()->getHelperPluginManager();
-
-        $headLink = $plugins->get('headLink');
-        \assert(
-            $headLink instanceof HeadLink,
-            sprintf(
-                '$headLink should be an Instance of %s, but was %s',
-                HeadLink::class,
-                get_class($headLink)
-            )
-        );
-
-        return $headLink->itemToString((object) $attribs);
+        return $this->headLink->itemToString((object) $attribs);
     }
 
     // Finder methods:
