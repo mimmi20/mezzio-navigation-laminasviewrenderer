@@ -14,6 +14,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Helper\HeadLink;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -33,6 +34,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -62,12 +64,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -80,6 +89,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -109,12 +119,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -127,6 +144,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -155,12 +173,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -174,6 +199,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -204,12 +230,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -229,6 +262,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -257,12 +291,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -275,6 +316,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -305,12 +347,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -332,6 +381,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -361,12 +411,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getView());
 
@@ -383,6 +440,7 @@ final class LinksTest extends TestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -414,12 +472,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $container1 = $helper->getContainer();
 
@@ -442,6 +507,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -480,12 +546,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
@@ -500,6 +573,7 @@ final class LinksTest extends TestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -539,12 +613,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
@@ -556,6 +637,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -595,12 +677,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
@@ -636,6 +725,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -675,12 +765,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
@@ -725,6 +822,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -764,12 +862,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
@@ -825,6 +930,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -893,12 +999,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
@@ -921,6 +1034,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -949,12 +1063,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame('', $helper->getIndent());
 
@@ -973,6 +1094,7 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1059,12 +1181,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
 
@@ -1090,6 +1219,7 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1176,12 +1306,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
 
@@ -1211,6 +1348,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1248,12 +1386,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
 
@@ -1279,6 +1424,7 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1363,12 +1509,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
 
@@ -1402,6 +1555,7 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1457,12 +1611,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
 
@@ -1488,6 +1649,7 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1560,12 +1722,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
 
@@ -1594,6 +1763,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1622,12 +1792,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
 
@@ -1640,6 +1817,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1668,12 +1846,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1691,6 +1876,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1737,12 +1923,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRevSubsection($page));
     }
@@ -1752,6 +1945,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1800,12 +1994,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentParentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRevSubsection($page));
     }
@@ -1814,6 +2015,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1842,12 +2044,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1865,6 +2074,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1909,12 +2119,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRevSection($page));
     }
@@ -1924,6 +2141,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -1970,12 +2188,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRevSection($page));
     }
@@ -1984,6 +2209,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2012,12 +2238,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2035,6 +2268,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2070,12 +2304,19 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         /* @var PageInterface $page */
         self::assertNull($helper->searchRelSubsection($parentPage));
@@ -2086,6 +2327,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2125,12 +2367,19 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($page, $helper->searchRelSubsection($parentPage));
     }
@@ -2139,6 +2388,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2167,12 +2417,19 @@ final class LinksTest extends TestCase
         $rootFinder->expects(self::never())
             ->method('find');
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2190,6 +2447,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2225,12 +2483,19 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelSection($parentPage));
     }
@@ -2240,6 +2505,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2277,12 +2543,19 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($page, $helper->searchRelSection($parentPage));
     }
@@ -2292,6 +2565,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2333,12 +2607,19 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($page, $helper->searchRelSection($parentPage));
     }
@@ -2350,6 +2631,7 @@ final class LinksTest extends TestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2382,12 +2664,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$page], [$page])
             ->willReturnOnConsecutiveCalls($page, $page);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelChapter($page));
     }
@@ -2399,6 +2688,7 @@ final class LinksTest extends TestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2434,12 +2724,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$parentPage], [$parentPage])
             ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($page, $helper->searchRelChapter($parentPage));
     }
@@ -2451,6 +2748,7 @@ final class LinksTest extends TestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2488,12 +2786,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$parentParentPage], [$parentParentPage])
             ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
     }
@@ -2505,6 +2810,7 @@ final class LinksTest extends TestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2546,12 +2852,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$parentParentPage], [$parentParentPage])
             ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
     }
@@ -2561,6 +2874,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2593,12 +2907,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelPrev($page));
     }
@@ -2608,6 +2929,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2645,12 +2967,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$page1], [$page2])
             ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelPrev($page1));
         self::assertSame($page1, $helper->searchRelPrev($page2));
@@ -2661,6 +2990,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2702,12 +3032,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$page1], [$page2], [$page3])
             ->willReturnOnConsecutiveCalls($parentPage, $parentPage, $parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelPrev($page1));
         self::assertNull($helper->searchRelPrev($page2));
@@ -2719,6 +3056,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2751,12 +3089,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelNext($page));
     }
@@ -2766,6 +3111,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2803,12 +3149,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$page2], [$page1])
             ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelNext($page2));
         self::assertSame($page2, $helper->searchRelNext($page1));
@@ -2819,6 +3172,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2851,12 +3205,19 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelStart($page));
     }
@@ -2866,6 +3227,7 @@ final class LinksTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
      */
@@ -2903,12 +3265,19 @@ final class LinksTest extends TestCase
             ->withConsecutive([$page1], [$page2])
             ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
 
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
         /** @var ContainerInterface $serviceLocator */
         /** @var Logger $logger */
         /** @var HtmlifyInterface $htmlify */
         /** @var ContainerParserInterface $containerParser */
         /** @var FindRootInterface $rootFinder */
-        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder);
+        /** @var HeadLink $headLink */
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRelStart($page1));
         self::assertSame($parentPage, $helper->searchRelStart($page2));

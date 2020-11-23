@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\Log\Logger;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\Uri;
 use Laminas\Uri\Exception\InvalidArgumentException;
@@ -23,7 +24,12 @@ use Laminas\Validator\Sitemap\Loc;
 use Laminas\Validator\Sitemap\Priority;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
+use Laminas\View\Helper\BasePath;
+use Laminas\View\Helper\EscapeHtml;
+use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
 
@@ -46,7 +52,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     /**
      * Server url
      *
-     * @var string
+     * @var string|null
      */
     private $serverUrl;
 
@@ -77,6 +83,45 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @var bool
      */
     private $useXmlDeclaration = true;
+
+    /** @var \Laminas\View\Helper\BasePath */
+    private $basePathHelper;
+
+    /** @var \Laminas\View\Helper\EscapeHtml */
+    private $escaper;
+
+    /** @var \Mezzio\LaminasView\ServerUrlHelper */
+    private $serverUrlHelper;
+
+    /** @var \DOMDocument */
+    private $dom;
+
+    /**
+     * @param \Interop\Container\ContainerInterface $serviceLocator
+     * @param Logger                                $logger
+     * @param HtmlifyInterface                      $htmlify
+     * @param ContainerParserInterface              $containerParser
+     * @param BasePath                              $basePathHelper
+     * @param EscapeHtml                            $escaper
+     * @param ServerUrlHelper                       $serverUrlHelper
+     */
+    public function __construct(
+        \Interop\Container\ContainerInterface $serviceLocator,
+        Logger $logger,
+        HtmlifyInterface $htmlify,
+        ContainerParserInterface $containerParser,
+        BasePath $basePathHelper,
+        EscapeHtml $escaper,
+        ServerUrlHelper $serverUrlHelper
+    ) {
+        $this->serviceLocator  = $serviceLocator;
+        $this->logger          = $logger;
+        $this->htmlify         = $htmlify;
+        $this->containerParser = $containerParser;
+        $this->basePathHelper  = $basePathHelper;
+        $this->escaper         = $escaper;
+        $this->serverUrlHelper = $serverUrlHelper;
+    }
 
     /**
      * Renders helper
@@ -135,7 +180,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         }
 
         // create document
-        $dom               = new \DOMDocument('1.0', 'UTF-8');
+        $dom               = $this->getDom();
         $dom->formatOutput = $this->getFormatOutput();
 
         // ...and urlset (root) element
@@ -288,15 +333,14 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         if ('/' === mb_substr($href, 0, 1)) {
             // href is relative to root; use serverUrl helper
             $url = $this->getServerUrl() . $href;
-        } elseif (preg_match('/^[a-z]+:/im', (string) $href)) {
+        } elseif (preg_match('/^[a-z]+:/im', $href)) {
             // scheme is given in href; assume absolute URL already
-            $url = (string) $href;
+            $url = $href;
         } else {
             // href is relative to current document; use url helpers
-            $basePathHelper = $this->getView()->getHelperPluginManager()->get('basepath');
-            $curDoc         = $basePathHelper();
-            $curDoc         = '/' === $curDoc ? '' : trim($curDoc, '/');
-            $url            = rtrim($this->getServerUrl(), '/') . '/' . $curDoc . (empty($curDoc) ? '' : '/') . $href;
+            $curDoc = ($this->basePathHelper)();
+            $curDoc = '/' === $curDoc ? '' : trim($curDoc, '/');
+            $url    = rtrim($this->getServerUrl(), '/') . '/' . $curDoc . (empty($curDoc) ? '' : '/') . $href;
         }
 
         if (!in_array($url, $this->urls, true)) {
@@ -317,9 +361,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     private function xmlEscape(string $string): string
     {
-        $escaper = $this->getView()->getHelperPluginManager()->get('escapeHtml');
-
-        return $escaper($string);
+        return ($this->escaper)($string);
     }
 
     /**
@@ -419,9 +461,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     public function getServerUrl(): string
     {
-        if (!isset($this->serverUrl)) {
-            $serverUrlHelper = $this->getView()->getHelperPluginManager()->get('serverUrl');
-            $this->serverUrl = $serverUrlHelper();
+        if (null === $this->serverUrl) {
+            $this->serverUrl = ($this->serverUrlHelper)();
         }
 
         return $this->serverUrl;
@@ -497,5 +538,29 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     public function getUseXmlDeclaration(): bool
     {
         return $this->useXmlDeclaration;
+    }
+
+    /**
+     * @return \DOMDocument
+     */
+    public function getDom(): \DOMDocument
+    {
+        if (null === $this->dom) {
+            return new \DOMDocument('1.0', 'UTF-8');
+        }
+
+        return $this->dom;
+    }
+
+    /**
+     * @param \DOMDocument $dom
+     *
+     * @return self
+     */
+    public function setDom(\DOMDocument $dom): self
+    {
+        $this->dom = $dom;
+
+        return $this;
     }
 }

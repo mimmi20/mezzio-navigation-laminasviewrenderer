@@ -18,7 +18,6 @@ use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
-use Laminas\View\HelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -4147,22 +4146,13 @@ final class BreadcrumbsTest extends TestCase
         $helper->setSeparator($seperator);
         $helper->setLinkLast(false);
 
-        $viewPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $viewPluginManager->expects(self::never())
-            ->method('has');
-        $viewPluginManager->expects(self::never())
-            ->method('get');
-
         $view = $this->getMockBuilder(PhpRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $view->expects(self::never())
             ->method('plugin');
-        $view->expects(self::once())
-            ->method('getHelperPluginManager')
-            ->willReturn($viewPluginManager);
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
 
         /* @var PhpRenderer $view */
         $helper->setView($view);

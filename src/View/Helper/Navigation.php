@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper;
 
+use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Exception;
@@ -18,6 +19,8 @@ use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
+use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
@@ -62,6 +65,24 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
 
     /** @var ViewHelperPluginManager|null */
     private $pluginManager;
+
+    /**
+     * @param \Interop\Container\ContainerInterface $serviceLocator
+     * @param Logger                                $logger
+     * @param HtmlifyInterface                      $htmlify
+     * @param ContainerParserInterface              $containerParser
+     */
+    public function __construct(
+        \Interop\Container\ContainerInterface $serviceLocator,
+        Logger $logger,
+        HtmlifyInterface $htmlify,
+        ContainerParserInterface $containerParser
+    ) {
+        $this->serviceLocator  = $serviceLocator;
+        $this->logger          = $logger;
+        $this->htmlify         = $htmlify;
+        $this->containerParser = $containerParser;
+    }
 
     /**
      * Magic overload: Proxy to other navigation helpers or the container

@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
-use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -110,24 +109,6 @@ trait HelperTrait
 
     /** @var AuthorizationInterface|null */
     private static $defaultAuthorization;
-
-    /**
-     * @param \Interop\Container\ContainerInterface $serviceLocator
-     * @param Logger                                $logger
-     * @param HtmlifyInterface                      $htmlify
-     * @param ContainerParserInterface              $containerParser
-     */
-    public function __construct(
-        ContainerInterface $serviceLocator,
-        Logger $logger,
-        HtmlifyInterface $htmlify,
-        ContainerParserInterface $containerParser
-    ) {
-        $this->serviceLocator  = $serviceLocator;
-        $this->logger          = $logger;
-        $this->htmlify         = $htmlify;
-        $this->containerParser = $containerParser;
-    }
 
     /**
      * Helper entry point

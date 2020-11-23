@@ -22,6 +22,5 @@ parameters:
     - '~is not subtype of Throwable~'
     - '~Useless \@throws~'
     - '~PHPDoc tag @throws with type .* is not compatible with parent~'
-    - '~Cannot call method getHelperPluginManager\(\) on Laminas\\View\\Renderer\\RendererInterface\|null~'
     - '~Parameter .* of (method|function) .* expects .*, .* given~'
     - '~Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with .* and null will always evaluate to false~'
