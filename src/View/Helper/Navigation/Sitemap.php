@@ -137,6 +137,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -153,10 +154,10 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     /**
      * Returns a DOMDocument containing the Sitemap XML for the given container
      *
-     * @param ContainerInterface|null $container [optional] container to get
-     *                                           breadcrumbs from, defaults
-     *                                           to what is registered in the
-     *                                           helper
+     * @param ContainerInterface|string|null $container [optional] container to get
+     *                                                  breadcrumbs from, defaults
+     *                                                  to what is registered in the
+     *                                                  helper
      *
      * @throws Exception\RuntimeException                            if schema validation is on
      *                                                               and the sitemap is invalid
@@ -166,14 +167,17 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                               loc element fails validation
      * @throws \Laminas\Validator\Exception\RuntimeException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return \DOMDocument DOM representation of the container
      */
-    public function getDomSitemap(?ContainerInterface $container = null): \DOMDocument
+    public function getDomSitemap($container = null): \DOMDocument
     {
         // Reset the urls
         $this->urls = [];
+
+        $container = $this->containerParser->parseContainer($container);
 
         if (null === $container) {
             $container = $this->getContainer();

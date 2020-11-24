@@ -31,10 +31,10 @@ interface SitemapInterface extends HelperInterface
     /**
      * Returns a DOMDocument containing the Sitemap XML for the given container
      *
-     * @param ContainerInterface|null $container [optional] container to get
-     *                                           breadcrumbs from, defaults
-     *                                           to what is registered in the
-     *                                           helper
+     * @param ContainerInterface|string|null $container [optional] container to get
+     *                                                  breadcrumbs from, defaults
+     *                                                  to what is registered in the
+     *                                                  helper
      *
      * @throws Exception\RuntimeException                            if schema validation is on
      *                                                               and the sitemap is invalid
@@ -48,7 +48,7 @@ interface SitemapInterface extends HelperInterface
      *
      * @return \DOMDocument DOM representation of the container
      */
-    public function getDomSitemap(?ContainerInterface $container = null): \DOMDocument;
+    public function getDomSitemap($container = null): \DOMDocument;
 
     /**
      * Returns an escaped absolute URL for the given page

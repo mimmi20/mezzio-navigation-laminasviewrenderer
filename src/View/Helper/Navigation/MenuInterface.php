@@ -68,12 +68,12 @@ interface MenuInterface extends HelperInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
-     * @param array                   $params
+     * @param ContainerInterface|string|null $container [optional] container to pass to view
+     *                                                  script. Default is to use the container registered in the helper.
+     * @param array|string|null              $partial   [optional] partial view script to use.
+     *                                                  Default is to use the partial registered in the helper. If an array
+     *                                                  is given, the first value is used for the partial view script.
+     * @param array                          $params
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -82,7 +82,7 @@ interface MenuInterface extends HelperInterface
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], ?ContainerInterface $container = null, $partial = null): string;
+    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string;
 
     /**
      * Renders the inner-most sub menu for the active page in the $container.

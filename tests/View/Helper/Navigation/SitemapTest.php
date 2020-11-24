@@ -26,6 +26,8 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapInterface;
+use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\TestCase;
@@ -522,14 +524,14 @@ final class SitemapTest extends TestCase
 
         $container1 = $helper->getContainer();
 
-        self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container1);
+        self::assertInstanceOf(Navigation::class, $container1);
 
         /* @var AuthorizationInterface $auth */
         $helper->setContainer();
 
         $container2 = $helper->getContainer();
 
-        self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container2);
+        self::assertInstanceOf(Navigation::class, $container2);
         self::assertNotSame($container1, $container2);
 
         $helper->setContainer($container);
@@ -1208,7 +1210,7 @@ final class SitemapTest extends TestCase
             ->with(false)
             ->willReturn(false);
 
-        $container = new \Mezzio\Navigation\Navigation();
+        $container = new Navigation();
         $container->addPage($page);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -1337,7 +1339,7 @@ final class SitemapTest extends TestCase
             ->with(false)
             ->willReturn(true);
 
-        $container = new \Mezzio\Navigation\Navigation();
+        $container = new Navigation();
         $container->addPage($page);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -1548,7 +1550,7 @@ final class SitemapTest extends TestCase
             ->with(false)
             ->willReturn(true);
 
-        $container = new \Mezzio\Navigation\Navigation();
+        $container = new Navigation();
         $container->addPage($page);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -1654,7 +1656,7 @@ final class SitemapTest extends TestCase
         $page->expects(self::never())
             ->method('isActive');
 
-        $container = new \Mezzio\Navigation\Navigation();
+        $container = new Navigation();
         $container->addPage($page);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -1769,7 +1771,7 @@ final class SitemapTest extends TestCase
 
         $parentPage->addPage($page);
 
-        $container = new \Mezzio\Navigation\Navigation();
+        $container = new Navigation();
         $container->addPage($parentPage);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -2869,9 +2871,139 @@ final class SitemapTest extends TestCase
 
         self::assertInstanceOf(\DOMDocument::class, $helper->getDom());
 
-        /* @var UriInterface $dom */
+        /* @var \DOMDocument $dom */
         $helper->setDom($dom);
 
         self::assertSame($dom, $helper->getDom());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testGetDomSitemapOneActivePageRecursive(): void
+    {
+        $logger = $this->createMock(Logger::class);
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('isActive');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::never())
+            ->method('__invoke');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var BasePath $basePath */
+        /** @var EscapeHtml $escaper */
+        /** @var ServerUrlHelper $serverUrlHelper */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::once())
+            ->method('isGranted')
+            ->with($role, $resource, $privilege)
+            ->willReturn(true);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(0);
+
+        $domElement = $this->createMock(\DOMElement::class);
+
+        $dom = $this->getMockBuilder(\DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::once())
+            ->method('createElementNS')
+            ->with(SitemapInterface::SITEMAP_NS, 'urlset')
+            ->willReturn($domElement);
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($domElement);
+
+        /* @var \DOMDocument $dom */
+        $helper->setDom($dom);
+
+        self::assertSame($dom, $helper->getDomSitemap());
     }
 }
