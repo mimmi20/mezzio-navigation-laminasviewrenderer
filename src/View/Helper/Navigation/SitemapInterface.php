@@ -32,7 +32,7 @@ interface SitemapInterface extends HelperInterface
      * Returns a DOMDocument containing the Sitemap XML for the given container
      *
      * @param ContainerInterface|string|null $container [optional] container to get
-     *                                                  breadcrumbs from, defaults
+     *                                                  sitemaps from, defaults
      *                                                  to what is registered in the
      *                                                  helper
      *
