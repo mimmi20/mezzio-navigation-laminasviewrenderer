@@ -483,12 +483,12 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param ContainerInterface|null $container [optional] container to pass to view
-     *                                           script. Default is to use the container registered in the helper.
-     * @param array|string|null       $partial   [optional] partial view script to use.
-     *                                           Default is to use the partial registered in the helper. If an array
-     *                                           is given, the first value is used for the partial view script.
-     * @param array                   $params
+     * @param ContainerInterface|string|null $container [optional] container to pass to view
+     *                                                  script. Default is to use the container registered in the helper.
+     * @param array|string|null              $partial   [optional] partial view script to use.
+     *                                                  Default is to use the partial registered in the helper. If an array
+     *                                                  is given, the first value is used for the partial view script.
+     * @param array                          $params
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -497,7 +497,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * @return string
      */
-    public function renderPartialWithParams(array $params = [], ?ContainerInterface $container = null, $partial = null): string
+    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
     {
         return $this->renderPartialModel($params, $container, $partial);
     }
@@ -853,9 +853,9 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
     /**
      * Render a partial with the given "model".
      *
-     * @param array                   $params
-     * @param ContainerInterface|null $container
-     * @param array|string|null       $partial
+     * @param array                          $params
+     * @param ContainerInterface|string|null $container
+     * @param array|string|null              $partial
      *
      * @throws Exception\RuntimeException                            if no partial provided
      * @throws Exception\InvalidArgumentException                    if partial is invalid array
@@ -864,7 +864,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * @return string
      */
-    private function renderPartialModel(array $params, ?ContainerInterface $container, $partial): string
+    private function renderPartialModel(array $params, $container, $partial): string
     {
         $container = $this->containerParser->parseContainer($container);
 
