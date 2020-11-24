@@ -2896,10 +2896,13 @@ final class SitemapTest extends TestCase
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
+        $parentUri = '/test.html';
+
         $parentPage = new Uri();
         $parentPage->setVisible(true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2914,6 +2917,8 @@ final class SitemapTest extends TestCase
             ->method('getParent');
         $page->expects(self::never())
             ->method('isActive');
+        $page->expects(self::never())
+            ->method('getHref');
 
         $parentPage->addPage($page);
 
@@ -2940,17 +2945,23 @@ final class SitemapTest extends TestCase
         $basePath->expects(self::never())
             ->method('__invoke');
 
+        $serverUrl = 'http://test.org';
+
         $escaper = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escaper->expects(self::never())
-            ->method('__invoke');
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . '/' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $serverUrlHelper->expects(self::never())
-            ->method('__invoke');
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
 
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
@@ -2988,18 +2999,32 @@ final class SitemapTest extends TestCase
         $helper->setMinDepth(0);
         $helper->setMaxDepth(0);
 
-        $domElement = $this->createMock(\DOMElement::class);
+        $urlLoc = $this->createMock(\DOMElement::class);
+
+        $urlNode = $this->getMockBuilder(\DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::once())
+            ->method('appendChild')
+            ->with($urlLoc);
+
+        $urlSet = $this->getMockBuilder(\DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
 
         $dom = $this->getMockBuilder(\DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::once())
+        $dom->expects(self::exactly(3))
             ->method('createElementNS')
-            ->with(SitemapInterface::SITEMAP_NS, 'urlset')
-            ->willReturn($domElement);
+            ->withConsecutive([SitemapInterface::SITEMAP_NS, 'urlset'], [SitemapInterface::SITEMAP_NS, 'url'], [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . '/' . $parentUri])
+            ->willReturnOnConsecutiveCalls($urlSet, $urlNode, $urlLoc);
         $dom->expects(self::once())
             ->method('appendChild')
-            ->with($domElement);
+            ->with($urlSet);
 
         /* @var \DOMDocument $dom */
         $helper->setDom($dom);
