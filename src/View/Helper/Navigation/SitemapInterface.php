@@ -21,12 +21,12 @@ interface SitemapInterface extends HelperInterface
     /**
      * Namespace for the <urlset> tag
      */
-    public const SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
+    public const SITEMAP_NS = 'https://www.sitemaps.org/schemas/sitemap/0.9';
 
     /**
      * Schema URL
      */
-    public const SITEMAP_XSD = 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
+    public const SITEMAP_XSD = 'https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
 
     /**
      * Returns a DOMDocument containing the Sitemap XML for the given container
@@ -35,6 +35,18 @@ interface SitemapInterface extends HelperInterface
      *                                                  sitemaps from, defaults
      *                                                  to what is registered in the
      *                                                  helper
+     * @param int|null                       $minDepth  [optional] minimum depth
+     *                                                  required for page to be
+     *                                                  valid. Default is to use
+     *                                                  {@link getMinDepth()}. A
+     *                                                  null value means no minimum
+     *                                                  depth required.
+     * @param int|null                       $maxDepth  [optional] maximum depth
+     *                                                  a page can have to be
+     *                                                  valid. Default is to use
+     *                                                  {@link getMaxDepth()}. A
+     *                                                  null value means no maximum
+     *                                                  depth required.
      *
      * @throws Exception\RuntimeException                            if schema validation is on
      *                                                               and the sitemap is invalid
@@ -48,7 +60,7 @@ interface SitemapInterface extends HelperInterface
      *
      * @return \DOMDocument DOM representation of the container
      */
-    public function getDomSitemap($container = null): \DOMDocument;
+    public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): \DOMDocument;
 
     /**
      * Returns an escaped absolute URL for the given page

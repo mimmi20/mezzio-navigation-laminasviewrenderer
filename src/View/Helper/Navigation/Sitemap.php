@@ -158,6 +158,18 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                  sitemaps from, defaults
      *                                                  to what is registered in the
      *                                                  helper
+     * @param int|null                       $minDepth  [optional] minimum depth
+     *                                                  required for page to be
+     *                                                  valid. Default is to use
+     *                                                  {@link getMinDepth()}. A
+     *                                                  null value means no minimum
+     *                                                  depth required.
+     * @param int|null                       $maxDepth  [optional] maximum depth
+     *                                                  a page can have to be
+     *                                                  valid. Default is to use
+     *                                                  {@link getMaxDepth()}. A
+     *                                                  null value means no maximum
+     *                                                  depth required.
      *
      * @throws Exception\RuntimeException                            if schema validation is on
      *                                                               and the sitemap is invalid
@@ -172,7 +184,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @return \DOMDocument DOM representation of the container
      */
-    public function getDomSitemap($container = null): \DOMDocument
+    public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): \DOMDocument
     {
         // Reset the urls
         $this->urls = [];
@@ -194,19 +206,32 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         // create iterator
         $iterator = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
 
-        $maxDepth = $this->getMaxDepth();
+        if (!is_int($minDepth)) {
+            $minDepth = $this->getMinDepth();
+        }
+
+        if ((!is_int($maxDepth) || 0 > $maxDepth) && null !== $maxDepth) {
+            $maxDepth = $this->getMaxDepth();
+        }
+
         if (is_int($maxDepth)) {
             $iterator->setMaxDepth($maxDepth);
         }
 
-        $minDepth = $this->getMinDepth();
-        if (!is_int($minDepth) || 0 > $minDepth) {
-            $minDepth = 0;
-        }
-
         // iterate container
         foreach ($iterator as $page) {
-            if ($iterator->getDepth() < $minDepth || !$this->accept($page)) {
+            \assert(
+                $page instanceof PageInterface,
+                sprintf(
+                    '$page should be an Instance of %s, but was %s',
+                    PageInterface::class,
+                    get_class($page)
+                )
+            );
+
+            $currDepth = $iterator->getDepth();
+
+            if ($currDepth < $minDepth || !$this->accept($page)) {
                 // page should not be included
                 continue;
             }
