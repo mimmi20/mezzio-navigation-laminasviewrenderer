@@ -16,7 +16,12 @@ use Laminas\Log\Logger;
 use Laminas\Uri\Exception\InvalidUriException;
 use Laminas\Uri\Exception\InvalidUriPartException;
 use Laminas\Uri\UriInterface;
+use Laminas\Validator\Sitemap\Changefreq;
+use Laminas\Validator\Sitemap\Lastmod;
+use Laminas\Validator\Sitemap\Loc;
+use Laminas\Validator\Sitemap\Priority;
 use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Renderer\PhpRenderer;
@@ -2881,6 +2886,250 @@ final class SitemapTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetLocValidator(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::never())
+            ->method('__invoke');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var BasePath $basePath */
+        /** @var EscapeHtml $escaper */
+        /** @var ServerUrlHelper $serverUrlHelper */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $locValidator = $this->createMock(Loc::class);
+
+        self::assertInstanceOf(Loc::class, $helper->getLocValidator());
+
+        /* @var Loc $locValidator */
+        $helper->setLocValidator($locValidator);
+
+        self::assertSame($locValidator, $helper->getLocValidator());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetLastmodValidator(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::never())
+            ->method('__invoke');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var BasePath $basePath */
+        /** @var EscapeHtml $escaper */
+        /** @var ServerUrlHelper $serverUrlHelper */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $lastmodValidator = $this->createMock(Lastmod::class);
+
+        self::assertInstanceOf(Lastmod::class, $helper->getLastmodValidator());
+
+        /* @var Lastmod $lastmodValidator */
+        $helper->setLastmodValidator($lastmodValidator);
+
+        self::assertSame($lastmodValidator, $helper->getLastmodValidator());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetPriorityValidator(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::never())
+            ->method('__invoke');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var BasePath $basePath */
+        /** @var EscapeHtml $escaper */
+        /** @var ServerUrlHelper $serverUrlHelper */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $priorityValidator = $this->createMock(Priority::class);
+
+        self::assertInstanceOf(Priority::class, $helper->getPriorityValidator());
+
+        /* @var Priority $priorityValidator */
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::assertSame($priorityValidator, $helper->getPriorityValidator());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetChangefreqValidator(): void
+    {
+        $logger         = $this->createMock(Logger::class);
+        $serviceLocator = $this->createMock(ContainerInterface::class);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::never())
+            ->method('__invoke');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var BasePath $basePath */
+        /** @var EscapeHtml $escaper */
+        /** @var ServerUrlHelper $serverUrlHelper */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $changefreqValidator = $this->createMock(Changefreq::class);
+
+        self::assertInstanceOf(Changefreq::class, $helper->getChangefreqValidator());
+
+        /* @var Changefreq $changefreqValidator */
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        self::assertSame($changefreqValidator, $helper->getChangefreqValidator());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
@@ -3313,7 +3562,7 @@ final class SitemapTest extends TestCase
         $helper->setFormatOutput(true);
         $helper->setMinDepth(0);
         $helper->setMaxDepth(42);
-        $helper->setUseSchemaValidation(true);
+        $helper->setUseSchemaValidation(false);
 
         $urlLoc = $this->createMock(\DOMElement::class);
 
@@ -3341,14 +3590,177 @@ final class SitemapTest extends TestCase
         $dom->expects(self::once())
             ->method('appendChild')
             ->with($urlSet);
-        $dom->expects(self::once())
-            ->method('schemaValidate')
-            ->with(SitemapInterface::SITEMAP_XSD)
-            ->willReturn(true);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
 
         /* @var \DOMDocument $dom */
         $helper->setDom($dom);
 
         self::assertSame($dom, $helper->getDomSitemap());
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidation(): void
+    {
+        $logger = $this->createMock(Logger::class);
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        /* @var PageInterface $page1 */
+        $parentPage->addPage($page1);
+
+        /* @var PageInterface $page2 */
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . 'test' . $parentUri);
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        /** @var ContainerInterface $serviceLocator */
+        /** @var Logger $logger */
+        /** @var HtmlifyInterface $htmlify */
+        /** @var ContainerParserInterface $containerParser */
+        /** @var BasePath $basePath */
+        /** @var EscapeHtml $escaper */
+        /** @var ServerUrlHelper $serverUrlHelper */
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $role = 'testRole';
+
+        $helper->setRole($role);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::once())
+            ->method('isGranted')
+            ->with($role, $resource, $privilege)
+            ->willReturn(true);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlNode = $this->getMockBuilder(\DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::never())
+            ->method('appendChild');
+
+        $urlSet = $this->getMockBuilder(\DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom = $this->getMockBuilder(\DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::exactly(2))
+            ->method('createElementNS')
+            ->withConsecutive([SitemapInterface::SITEMAP_NS, 'urlset'], [SitemapInterface::SITEMAP_NS, 'url'])
+            ->willReturnOnConsecutiveCalls($urlSet, $urlNode);
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        /* @var \DOMDocument $dom */
+        $helper->setDom($dom);
+
+        $locValidator = $dom = $this->getMockBuilder(Loc::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . 'test' . $parentUri)
+            ->willReturn(false);
+
+        /* @var Loc $locValidator */
+        $helper->setLocValidator($locValidator);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('Encountered an invalid URL for Sitemap XML: "%s"', $serverUrl . 'test' . $parentUri));
+
+        $helper->getDomSitemap();
     }
 }
