@@ -96,6 +96,18 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     /** @var \DOMDocument */
     private $dom;
 
+    /** @var Loc */
+    private $locValidator;
+
+    /** @var Lastmod */
+    private $lastmodValidator;
+
+    /** @var Priority */
+    private $priorityValidator;
+
+    /** @var Changefreq */
+    private $changefreqValidator;
+
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
@@ -248,7 +260,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             $urlSet->appendChild($urlNode);
 
             if ($this->getUseSitemapValidators()) {
-                $locValidator = new Loc();
+                $locValidator = $this->getLocValidator();
 
                 if (!$locValidator->isValid($url)) {
                     throw new Exception\RuntimeException(
@@ -272,7 +284,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                     $lastmod = date('c', $lastmod);
                 }
 
-                $lastmodValidator = new Lastmod();
+                $lastmodValidator = $this->getLastmodValidator();
 
                 if (
                     !$this->getUseSitemapValidators()
@@ -288,7 +300,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             // add 'changefreq' element if a valid changefreq is set in page
             if (isset($page->changefreq)) {
                 $changefreq          = $page->changefreq;
-                $changefreqValidator = new Changefreq();
+                $changefreqValidator = $this->getChangefreqValidator();
 
                 if (
                     !$this->getUseSitemapValidators() ||
@@ -308,7 +320,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             $priority = $page->priority;
 
             if ($this->getUseSitemapValidators()) {
-                $priorityValidator = new Priority();
+                $priorityValidator = $this->getPriorityValidator();
 
                 if (!$priorityValidator->isValid($priority)) {
                     continue;
@@ -575,7 +587,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     public function getDom(): \DOMDocument
     {
         if (null === $this->dom) {
-            return new \DOMDocument('1.0', 'UTF-8');
+            $this->dom = new \DOMDocument('1.0', 'UTF-8');
         }
 
         return $this->dom;
@@ -589,6 +601,102 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     public function setDom(\DOMDocument $dom): self
     {
         $this->dom = $dom;
+
+        return $this;
+    }
+
+    /**
+     * @return Loc
+     */
+    public function getLocValidator(): Loc
+    {
+        if (null === $this->locValidator) {
+            $this->locValidator = new Loc();
+        }
+
+        return $this->locValidator;
+    }
+
+    /**
+     * @param Loc $locValidator
+     *
+     * @return self
+     */
+    public function setLocValidator(Loc $locValidator): self
+    {
+        $this->locValidator = $locValidator;
+
+        return $this;
+    }
+
+    /**
+     * @return Lastmod
+     */
+    public function getLastmodValidator(): Lastmod
+    {
+        if (null === $this->lastmodValidator) {
+            $this->lastmodValidator = new Lastmod();
+        }
+
+        return $this->lastmodValidator;
+    }
+
+    /**
+     * @param Lastmod $lastmodValidator
+     *
+     * @return self
+     */
+    public function setLastmodValidator(Lastmod $lastmodValidator): self
+    {
+        $this->lastmodValidator = $lastmodValidator;
+
+        return $this;
+    }
+
+    /**
+     * @return Priority
+     */
+    public function getPriorityValidator(): Priority
+    {
+        if (null === $this->priorityValidator) {
+            $this->priorityValidator = new Priority();
+        }
+
+        return $this->priorityValidator;
+    }
+
+    /**
+     * @param Priority $priorityValidator
+     *
+     * @return self
+     */
+    public function setPriorityValidator(Priority $priorityValidator): self
+    {
+        $this->priorityValidator = $priorityValidator;
+
+        return $this;
+    }
+
+    /**
+     * @return Changefreq
+     */
+    public function getChangefreqValidator(): Changefreq
+    {
+        if (null === $this->changefreqValidator) {
+            $this->changefreqValidator = new Changefreq();
+        }
+
+        return $this->changefreqValidator;
+    }
+
+    /**
+     * @param Changefreq $changefreqValidator
+     *
+     * @return self
+     */
+    public function setChangefreqValidator(Changefreq $changefreqValidator): self
+    {
+        $this->changefreqValidator = $changefreqValidator;
 
         return $this;
     }
