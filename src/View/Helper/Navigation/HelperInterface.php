@@ -124,8 +124,6 @@ interface HelperInterface extends BaseHelperInterface
      *
      * @param string $role [optional] role to set.  Expects a string or null. Default is null.
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface if $role is invalid
-     *
      * @return void
      */
     public function setRole(string $role): void;

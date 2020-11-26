@@ -226,8 +226,6 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      *
      * @param HelperInterface $helper helper instance
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
      * @return void
      */
     private function inject(HelperInterface $helper): void

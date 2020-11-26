@@ -22,6 +22,7 @@ final class ContainerParserTest extends TestCase
 {
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -29,7 +30,13 @@ final class ContainerParserTest extends TestCase
      */
     public function testParseContainerWithNull(): void
     {
-        $serviceLocator = $this->createMock(ContainerInterface::class);
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         /** @var ContainerInterface $serviceLocator */
         $helper = new ContainerParser($serviceLocator);
@@ -39,12 +46,19 @@ final class ContainerParserTest extends TestCase
 
     /**
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      *
      * @return void
      */
     public function testParseContainerWithNumber(): void
     {
-        $serviceLocator = $this->createMock(ContainerInterface::class);
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         /** @var ContainerInterface $serviceLocator */
         $helper = new ContainerParser($serviceLocator);
@@ -240,13 +254,20 @@ final class ContainerParserTest extends TestCase
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      *
      * @return void
      */
     public function testParseContainerWithContainer(): void
     {
         $container      = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-        $serviceLocator = $this->createMock(ContainerInterface::class);
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
 
         /** @var ContainerInterface $serviceLocator */
         $helper = new ContainerParser($serviceLocator);

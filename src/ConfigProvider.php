@@ -11,8 +11,8 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView;
 
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager;
+use Mezzio\Navigation\LaminasView\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 
@@ -58,7 +58,7 @@ final class ConfigProvider
     {
         return [
             'factories' => [
-                PluginManager::class => InvokableFactory::class,
+                PluginManager::class => PluginManagerFactory::class,
             ],
         ];
     }
