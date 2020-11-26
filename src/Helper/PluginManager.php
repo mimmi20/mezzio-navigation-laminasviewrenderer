@@ -33,6 +33,7 @@ final class PluginManager extends AbstractPluginManager implements InteropContai
      * @var string[]
      */
     protected $factories = [
+        AcceptHelperInterface::class => AcceptHelperFactory::class,
         ContainerParserInterface::class => ContainerParserFactory::class,
         FindRootInterface::class => InvokableFactory::class,
         HtmlifyInterface::class => HtmlifyFactory::class,

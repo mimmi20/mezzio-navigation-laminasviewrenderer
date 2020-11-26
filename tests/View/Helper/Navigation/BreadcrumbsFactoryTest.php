@@ -46,7 +46,27 @@ final class BreadcrumbsFactoryTest extends TestCase
      */
     public function testInvocationWithTranslator(): void
     {
-        $logger          = $this->createMock(Logger::class);
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('log');
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $translatePlugin = $this->createMock(Translate::class);
@@ -96,7 +116,27 @@ final class BreadcrumbsFactoryTest extends TestCase
      */
     public function testInvocationWithoutTranslator(): void
     {
-        $logger          = $this->createMock(Logger::class);
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('log');
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $escapePlugin    = $this->createMock(EscapeHtml::class);

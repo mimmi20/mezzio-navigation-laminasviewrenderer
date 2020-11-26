@@ -12,13 +12,15 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
-use Laminas\View\Exception;
 use Laminas\View\Exception\ExceptionInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
+use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\Page\PageInterface;
+use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 
 /**
@@ -335,31 +337,23 @@ trait HelperTrait
      */
     final public function accept(PageInterface $page, bool $recursive = true): bool
     {
-        if (!$page->isVisible(false) && !$this->getRenderInvisible()) {
+        try {
+            $acceptHelper = $this->serviceLocator->get(PluginManager::class)->build(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
+                    'renderInvisible' => $this->getRenderInvisible(),
+                    'role' => $this->getRole(),
+                ]
+            );
+            \assert($acceptHelper instanceof AcceptHelperInterface);
+
+            return $acceptHelper->accept($page, $recursive);
+        } catch (ContainerExceptionInterface $e) {
+            $this->logger->err($e);
+
             return false;
         }
-
-        $accept = true;
-
-        if ($this->getUseAuthorization()) {
-            $authorization = $this->getAuthorization();
-            $role          = $this->getRole();
-            $resource      = $page->getResource();
-
-            if (null !== $authorization && null !== $role && null !== $resource) {
-                $accept = $authorization->isGranted($role, $resource, $page->getPrivilege());
-            }
-        }
-
-        if ($accept && $recursive) {
-            $parent = $page->getParent();
-
-            if ($parent instanceof PageInterface) {
-                $accept = $this->accept($parent, true);
-            }
-        }
-
-        return $accept;
     }
 
     // Util methods:
@@ -587,8 +581,6 @@ trait HelperTrait
      * Implements {@link HelperInterface::setRole()}.
      *
      * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
-     *
-     * @throws Exception\InvalidArgumentException
      *
      * @return void
      */
