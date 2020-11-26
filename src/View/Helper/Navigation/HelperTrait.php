@@ -375,30 +375,6 @@ trait HelperTrait
     }
 
     /**
-     * Converts an associative array to a string of tag attributes.
-     *
-     * Overloads {@link \Laminas\View\Helper\AbstractHtmlElement::htmlAttribs()}.
-     *
-     * @param array $attribs an array where each key-value pair is converted
-     *                       to an attribute name and value
-     *
-     * @return string
-     */
-    protected function htmlAttribs($attribs): string
-    {
-        // filter out null values and empty string values
-        foreach ($attribs as $key => $value) {
-            if (null !== $value && (!is_string($value) || mb_strlen($value))) {
-                continue;
-            }
-
-            unset($attribs[$key]);
-        }
-
-        return parent::htmlAttribs($attribs);
-    }
-
-    /**
      * Returns an HTML string containing an 'a' element for the given page
      *
      * @param PageInterface $page page to generate HTML for
@@ -408,23 +384,6 @@ trait HelperTrait
     public function htmlify(PageInterface $page): string
     {
         return $this->htmlify->toHtml(static::class, $page);
-    }
-
-    /**
-     * Normalize an ID
-     *
-     * Overrides {@link \Laminas\View\Helper\AbstractHtmlElement::normalizeId()}.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function normalizeId($value): string
-    {
-        $prefix = static::class;
-        $prefix = mb_strtolower(trim(mb_substr($prefix, (int) mb_strrpos($prefix, '\\')), '\\'));
-
-        return $prefix . '-' . $value;
     }
 
     /**

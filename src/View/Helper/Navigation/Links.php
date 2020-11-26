@@ -362,23 +362,22 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         $result = $this->convertToPages($result);
 
-        if ($result) {
-            if (!is_array($result)) {
-                $result = [$result];
-            }
-
-            foreach ($result as $key => $page) {
-                if ($this->accept($page)) {
-                    continue;
-                }
-
-                unset($result[$key]);
-            }
-
-            return 1 === count($result) ? $result[0] : $result;
+        if (!$result) {
+            return null;
         }
 
-        return null;
+        if (!is_array($result)) {
+            $result = [$result];
+        }
+
+        $filtered = array_filter(
+            $result,
+            function (PageInterface $page) {
+                return $this->accept($page);
+            }
+        );
+
+        return 1 === count($filtered) ? $filtered[0] : $filtered;
     }
 
     /**
@@ -741,36 +740,42 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return $pages;
         }
 
+        if (is_string($mixed)) {
+            // value is a string; make a URI page
+            try {
+                return (new PageFactory())->factory(
+                    [
+                        'type' => 'uri',
+                        'uri' => $mixed,
+                    ]
+                );
+            } catch (InvalidArgumentException $e) {
+                $this->logger->err($e);
+            }
+        }
+
         if ($mixed instanceof Traversable) {
             $mixed = ArrayUtils::iteratorToArray($mixed);
-        } elseif (is_string($mixed)) {
-            // value is a string; make a URI page
-            return (new PageFactory())->factory([
-                'type' => 'uri',
-                'uri' => $mixed,
-            ]);
         }
 
         if (is_array($mixed) && !empty($mixed)) {
             if ($recursive && is_numeric(key($mixed))) {
                 // first key is numeric; assume several pages
-                $pages = [];
-                foreach ($mixed as $value) {
-                    $value = $this->convertToPages($value, false);
-                    if (!$value) {
-                        continue;
+                $pages = array_filter(
+                    $mixed,
+                    function ($value) {
+                        return $this->convertToPages($value, false);
                     }
+                );
 
-                    $pages[] = $value;
-                }
-
-                return $pages;
+                return array_values($pages);
             }
 
             // pass array to factory directly
             try {
                 return (new PageFactory())->factory($mixed);
             } catch (InvalidArgumentException $e) {
+                $this->logger->err($e);
             }
         }
 
