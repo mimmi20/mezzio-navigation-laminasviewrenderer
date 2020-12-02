@@ -13,6 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
@@ -66,12 +67,13 @@ final class LinksFactoryTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $rootFinder      = $this->createMock(FindRootInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $headLink        = $this->createMock(HeadLink::class);
 
-        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(3))

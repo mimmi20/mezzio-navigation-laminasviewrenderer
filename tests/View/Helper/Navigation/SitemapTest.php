@@ -13,7 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\Uri\Exception\InvalidUriException;
 use Laminas\Uri\Exception\InvalidUriPartException;
 use Laminas\Uri\UriInterface;
@@ -242,6 +242,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -419,6 +420,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -577,7 +579,8 @@ final class SitemapTest extends TestCase
      */
     public function testSetView(): void
     {
-        $view   = $this->createMock(RendererInterface::class);
+        $view = $this->createMock(RendererInterface::class);
+
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -599,6 +602,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -783,6 +787,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'default';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -873,6 +878,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
@@ -961,6 +967,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
@@ -988,7 +995,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1223,6 +1230,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1313,6 +1321,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
@@ -1362,7 +1371,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1468,6 +1477,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
@@ -1519,7 +1529,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1729,6 +1739,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $resource  = 'testResource';
@@ -1783,7 +1794,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1897,6 +1908,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2015,6 +2027,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $resource  = 'testResource';
@@ -2063,7 +2076,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(2))
@@ -2172,6 +2185,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2256,6 +2270,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2340,6 +2355,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2423,6 +2439,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2507,6 +2524,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2589,6 +2607,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2688,6 +2707,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2789,6 +2809,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2893,6 +2914,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2997,6 +3019,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3081,6 +3104,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3164,6 +3188,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3251,6 +3276,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3344,6 +3370,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3436,6 +3463,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3532,6 +3560,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3619,6 +3648,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3706,6 +3736,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3793,6 +3824,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3880,6 +3912,7 @@ final class SitemapTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -4022,7 +4055,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4229,7 +4262,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4438,7 +4471,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(3))
@@ -4643,7 +4676,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4866,7 +4899,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(3))
@@ -5133,7 +5166,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(3))
@@ -5398,7 +5431,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(3))
@@ -5664,7 +5697,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(3))

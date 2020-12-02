@@ -13,6 +13,7 @@
     <rule ref="mimmi20-cs">
         <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
         <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
+        <exclude name="PSR12.Classes.AnonClassDeclaration.SpaceAfterKeyword"/>
     </rule>
 
     <!-- Paths to check -->

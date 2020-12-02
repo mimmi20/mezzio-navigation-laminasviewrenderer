@@ -12,13 +12,14 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Exception\ExceptionInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
@@ -121,7 +122,7 @@ trait HelperTrait
      *
      * @return self
      */
-    public function __invoke($container = null): self
+    final public function __invoke($container = null): self
     {
         if (null !== $container) {
             $this->setContainer($container);
@@ -141,11 +142,9 @@ trait HelperTrait
      *
      * @return self
      */
-    public function setContainer($container = null): self
+    final public function setContainer($container = null): self
     {
-        $container = $this->containerParser->parseContainer($container);
-
-        $this->container = $container;
+        $this->container = $this->containerParser->parseContainer($container);
 
         return $this;
     }
@@ -163,7 +162,7 @@ trait HelperTrait
      *
      * @return Navigation\ContainerInterface navigation container
      */
-    public function getContainer(): Navigation\ContainerInterface
+    final public function getContainer(): Navigation\ContainerInterface
     {
         if (null === $this->container) {
             $this->container = new Navigation\Navigation();
@@ -206,7 +205,7 @@ trait HelperTrait
      *
      * @return string
      */
-    public function __toString(): string
+    final public function __toString(): string
     {
         try {
             return $this->render();
@@ -338,7 +337,17 @@ trait HelperTrait
     final public function accept(PageInterface $page, bool $recursive = true): bool
     {
         try {
-            $acceptHelper = $this->serviceLocator->get(PluginManager::class)->build(
+            $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
+            \assert(
+                $helperPluginManager instanceof PluginManagerInterface,
+                sprintf(
+                    '$helperPluginManager should be an Instance of %s, but was %s',
+                    HelperPluginManager::class,
+                    get_class($helperPluginManager)
+                )
+            );
+
+            $acceptHelper = $helperPluginManager->build(
                 AcceptHelperInterface::class,
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
@@ -392,11 +401,13 @@ trait HelperTrait
      *
      * @param AuthorizationInterface|null $authorization AuthorizationInterface object
      *
-     * @return void
+     * @return self
      */
-    final public function setAuthorization(?AuthorizationInterface $authorization = null): void
+    final public function setAuthorization(?AuthorizationInterface $authorization = null): self
     {
         $this->authorization = $authorization;
+
+        return $this;
     }
 
     /**
@@ -447,11 +458,13 @@ trait HelperTrait
      *
      * @param int|string $indent
      *
-     * @return void
+     * @return self
      */
-    final public function setIndent($indent): void
+    final public function setIndent($indent): self
     {
         $this->indent = $this->getWhitespace($indent);
+
+        return $this;
     }
 
     /**
@@ -469,11 +482,13 @@ trait HelperTrait
      *
      * @param int $maxDepth default is null, which sets no maximum depth
      *
-     * @return void
+     * @return self
      */
-    final public function setMaxDepth(int $maxDepth): void
+    final public function setMaxDepth(int $maxDepth): self
     {
         $this->maxDepth = $maxDepth;
+
+        return $this;
     }
 
     /**
@@ -491,11 +506,13 @@ trait HelperTrait
      *
      * @param int $minDepth default is null, which sets no minimum depth
      *
-     * @return void
+     * @return self
      */
-    final public function setMinDepth(int $minDepth): void
+    final public function setMinDepth(int $minDepth): self
     {
         $this->minDepth = $minDepth;
+
+        return $this;
     }
 
     /**
@@ -517,11 +534,13 @@ trait HelperTrait
      *
      * @param bool $renderInvisible
      *
-     * @return void
+     * @return self
      */
-    final public function setRenderInvisible(bool $renderInvisible = true): void
+    final public function setRenderInvisible(bool $renderInvisible = true): self
     {
         $this->renderInvisible = $renderInvisible;
+
+        return $this;
     }
 
     /**
@@ -541,11 +560,13 @@ trait HelperTrait
      *
      * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
      *
-     * @return void
+     * @return self
      */
-    final public function setRole(string $role): void
+    final public function setRole(string $role): self
     {
         $this->role = $role;
+
+        return $this;
     }
 
     /**
@@ -584,11 +605,13 @@ trait HelperTrait
      *
      * @param bool $useAuthorization
      *
-     * @return void
+     * @return self
      */
-    final public function setUseAuthorization(bool $useAuthorization = true): void
+    final public function setUseAuthorization(bool $useAuthorization = true): self
     {
         $this->useAuthorization = $useAuthorization;
+
+        return $this;
     }
 
     /**
@@ -600,6 +623,14 @@ trait HelperTrait
     final public function getUseAuthorization(): bool
     {
         return $this->useAuthorization;
+    }
+
+    /**
+     * @return \Interop\Container\ContainerInterface
+     */
+    final public function getServiceLocator(): ContainerInterface
+    {
+        return $this->serviceLocator;
     }
 
     // Static methods:

@@ -15,6 +15,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -37,8 +38,26 @@ final class BreadcrumbsFactory
     public function __invoke(ContainerInterface $container): Breadcrumbs
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
-        $plugin              = $container->get(ViewHelperPluginManager::class);
-        $translator          = null;
+        \assert(
+            $helperPluginManager instanceof PluginManagerInterface,
+            sprintf(
+                '$helperPluginManager should be an Instance of %s, but was %s',
+                HelperPluginManager::class,
+                get_class($helperPluginManager)
+            )
+        );
+
+        $plugin = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $plugin instanceof ViewHelperPluginManager,
+            sprintf(
+                '$plugin should be an Instance of %s, but was %s',
+                ViewHelperPluginManager::class,
+                get_class($plugin)
+            )
+        );
+
+        $translator = null;
 
         if ($plugin->has(Translate::class)) {
             $translator = $plugin->get(Translate::class);

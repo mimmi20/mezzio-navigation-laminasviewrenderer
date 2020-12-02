@@ -14,6 +14,7 @@ namespace MezzioTest\Navigation\LaminasView\Helper;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelper;
 use Mezzio\Navigation\Page\PageInterface;
+use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\TestCase;
 
 final class AcceptHelperTest extends TestCase
@@ -139,6 +140,41 @@ final class AcceptHelperTest extends TestCase
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
+
+        /* @var PageInterface $page */
+        self::assertFalse($helper->accept($page));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testDoNotAcceptInvisibleParent(): void
+    {
+        $parentPage = new Uri();
+        $parentPage->setUri('page2/page2_3/page2_3_2');
+        $parentPage->setVisible('0');
+
+        $page = new Uri();
+        $page->setUri('page2/page2_3/page2_3_2/1');
+        $page->setActive('1');
+
+        $parentPage->addPage($page);
+
+        $role = 'testRole';
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        /** @var AuthorizationInterface $auth */
+        $helper = new AcceptHelper($auth, false, $role);
 
         /* @var PageInterface $page */
         self::assertFalse($helper->accept($page));

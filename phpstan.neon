@@ -24,3 +24,5 @@ parameters:
     - '~PHPDoc tag @throws with type .* is not compatible with parent~'
     - '~Parameter .* of (method|function) .* expects .*, .* given~'
     - '~Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with .* and null will always evaluate to false~'
+    - '~Parameter #1 .* of class Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\PluginManager constructor expects .*ContainerInterface\|.*ConfigInterface\|null, Laminas\\ServiceManager\\Config given~'
+    - '~Call to an undefined method .*::find(All|One)By.*\(\)~'

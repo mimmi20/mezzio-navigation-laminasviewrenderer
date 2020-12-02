@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -37,16 +38,53 @@ final class SitemapFactory
     public function __invoke(ContainerInterface $container): HelperInterface
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
-        $plugin              = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $helperPluginManager instanceof PluginManagerInterface,
+            sprintf(
+                '$helperPluginManager should be an Instance of %s, but was %s',
+                HelperPluginManager::class,
+                get_class($helperPluginManager)
+            )
+        );
+
+        $plugin = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $plugin instanceof ViewHelperPluginManager,
+            sprintf(
+                '$plugin should be an Instance of %s, but was %s',
+                ViewHelperPluginManager::class,
+                get_class($plugin)
+            )
+        );
+
+        $serverUrlHelper = $plugin->get(ServerUrlHelper::class);
+        \assert(
+            $serverUrlHelper instanceof ServerUrlHelper,
+            sprintf(
+                '$serverUrlHelper should be an Instance of %s, but was %s',
+                ServerUrlHelper::class,
+                get_class($serverUrlHelper)
+            )
+        );
+
+        $basePathHelper = $plugin->get(BasePath::class);
+        \assert(
+            $basePathHelper instanceof BasePath,
+            sprintf(
+                '$basePathHelper should be an Instance of %s, but was %s',
+                BasePath::class,
+                get_class($basePathHelper)
+            )
+        );
 
         return new Sitemap(
             $container,
             $container->get(Logger::class),
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
-            $plugin->get(BasePath::class),
+            $basePathHelper,
             $plugin->get(EscapeHtml::class),
-            $plugin->get(ServerUrlHelper::class)
+            $serverUrlHelper
         );
     }
 }

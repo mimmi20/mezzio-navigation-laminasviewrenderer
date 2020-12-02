@@ -13,6 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -66,12 +67,13 @@ final class MenuFactoryTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $escapePlugin    = $this->createMock(EscapeHtmlAttr::class);
         $partialPlugin   = $this->createMock(Partial::class);
 
-        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(2))

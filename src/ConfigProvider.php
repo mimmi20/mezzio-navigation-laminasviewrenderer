@@ -11,10 +11,16 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView;
 
+use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
+use Mezzio\Helper\UrlHelper as BaseUrlHelper;
+use Mezzio\LaminasView\ServerUrlHelper;
+use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
+use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
+use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
 
 final class ConfigProvider
 {
@@ -42,9 +48,18 @@ final class ConfigProvider
             'aliases' => [
                 'navigation' => Navigation::class,
                 'Navigation' => Navigation::class,
+                BaseServerUrlHelper::class => ServerUrlHelper::class,
+                'serverurl' => ServerUrlHelper::class,
+                'serverUrl' => ServerUrlHelper::class,
+                'ServerUrl' => ServerUrlHelper::class,
+                BaseUrlHelper::class => UrlHelper::class,
+                'url' => UrlHelper::class,
+                'Url' => UrlHelper::class,
             ],
             'factories' => [
                 Navigation::class => NavigationFactory::class,
+                UrlHelper::class => UrlHelperFactory::class,
+                ServerUrlHelper::class => ServerUrlHelperFactory::class,
             ],
         ];
     }

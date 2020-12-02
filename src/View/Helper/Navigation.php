@@ -114,14 +114,17 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
     public function __call(string $method, array $arguments = [])
     {
         // check if call should proxy to another helper
-        $helper = $this->findHelper($method, false);
+        try {
+            $helper = $this->findHelper($method, true);
+        } catch (Exception\RuntimeException $e) {
+            //var_dump($e);
+            $this->logger->err($e);
 
-        if ($helper) {
-            return call_user_func_array($helper, $arguments);
+            // default behaviour: proxy call to container
+            return $this->parentCall($method, $arguments);
         }
 
-        // default behaviour: proxy call to container
-        return $this->parentCall($method, $arguments);
+        return call_user_func_array($helper, $arguments);
     }
 
     /**
@@ -197,7 +200,9 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
         } catch (ServiceNotFoundException | InvalidServiceException $e) {
             if ($strict) {
                 throw new Exception\RuntimeException(
-                    sprintf('Failed to load plugin for %s', $proxy)
+                    sprintf('Failed to load plugin for %s', $proxy),
+                    0,
+                    $e
                 );
             }
 

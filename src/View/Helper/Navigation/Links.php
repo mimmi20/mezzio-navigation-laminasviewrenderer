@@ -129,7 +129,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         ErrorHandler::start(E_WARNING);
         $result = preg_match('/find(Rel|Rev)(.+)/', $method, $match);
         ErrorHandler::stop();
-        if ($result) {
+
+        if ($result && $arguments[0] instanceof PageInterface) {
             return $this->findRelation($arguments[0], mb_strtolower($match[1]), mb_strtolower($match[2]));
         }
 
@@ -214,10 +215,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     public function renderLink(PageInterface $page, string $attrib, string $relation): string
     {
         if (!in_array($attrib, ['rel', 'rev'], true)) {
-            throw new Exception\DomainException(sprintf(
-                'Invalid relation attribute "%s", must be "rel" or "rev"',
-                $attrib
-            ));
+            throw new Exception\DomainException(
+                sprintf(
+                    'Invalid relation attribute "%s", must be "rel" or "rev"',
+                    $attrib
+                )
+            );
         }
 
         if (!$href = $page->getHref()) {

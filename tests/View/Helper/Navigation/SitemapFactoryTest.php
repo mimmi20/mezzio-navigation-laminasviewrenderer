@@ -13,6 +13,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -67,13 +68,14 @@ final class SitemapFactoryTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $basePath        = $this->createMock(BasePath::class);
         $escaper         = $this->createMock(EscapeHtml::class);
         $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
 
-        $helperPluginManager = $this->getMockBuilder(ContainerInterface::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(2))
@@ -86,8 +88,8 @@ final class SitemapFactoryTest extends TestCase
             ->getMock();
         $viewHelperPluginManager->expects(self::exactly(3))
             ->method('get')
-            ->withConsecutive([BasePath::class], [EscapeHtml::class], [ServerUrlHelper::class])
-            ->willReturnOnConsecutiveCalls($basePath, $escaper, $serverUrlHelper);
+            ->withConsecutive([ServerUrlHelper::class], [BasePath::class], [EscapeHtml::class])
+            ->willReturnOnConsecutiveCalls($serverUrlHelper, $basePath, $escaper);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()

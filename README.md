@@ -1488,7 +1488,7 @@ priority   | float  | The priority of this URL relative to other URLs on your si
 > If you disable sitemap validators, the custom properties (see table) are not
 > validated at all.
 
-The sitemap helper also supports [Sitemap XSD Schema](http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd)
+The sitemap helper also supports [Sitemap XSD Schema](https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd)
 validation of the generated sitemap. This is disabled by default, since it will
 require a request to the schema file. It can be enabled with
 `$helper->setUseSchemaValidation(true)`.
@@ -1535,7 +1535,7 @@ the view helper are filtered out:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://www.example.com/</loc>
   </url>
@@ -1604,7 +1604,7 @@ Output:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://www.example.com/</loc>
   </url>
@@ -1670,7 +1670,7 @@ Output:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://www.example.com/</loc>
   </url>

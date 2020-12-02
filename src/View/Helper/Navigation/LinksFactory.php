@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
@@ -36,7 +37,24 @@ final class LinksFactory
     public function __invoke(ContainerInterface $container): HelperInterface
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
-        $plugin              = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $helperPluginManager instanceof PluginManagerInterface,
+            sprintf(
+                '$helperPluginManager should be an Instance of %s, but was %s',
+                HelperPluginManager::class,
+                get_class($helperPluginManager)
+            )
+        );
+
+        $plugin = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $plugin instanceof ViewHelperPluginManager,
+            sprintf(
+                '$plugin should be an Instance of %s, but was %s',
+                ViewHelperPluginManager::class,
+                get_class($plugin)
+            )
+        );
 
         return new Links(
             $container,
