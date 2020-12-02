@@ -11,14 +11,13 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\View\Helper\HelperInterface as BaseHelperInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 
 /**
  * Interface for navigational helpers
  */
-interface HelperInterface extends BaseHelperInterface
+interface HelperInterface
 {
     /**
      * Magic overload: Should proxy to {@link render()}.
@@ -61,9 +60,9 @@ interface HelperInterface extends BaseHelperInterface
      *
      * @param AuthorizationInterface|null $authorization [optional] AuthorizationInterface instance
      *
-     * @return void
+     * @return self
      */
-    public function setAuthorization(?AuthorizationInterface $authorization = null): void;
+    public function setAuthorization(?AuthorizationInterface $authorization = null);
 
     /**
      * Returns Authorization or null if it isn't set using {@link setAuthorization()} or
@@ -104,13 +103,62 @@ interface HelperInterface extends BaseHelperInterface
     public function hasContainer(): bool;
 
     /**
+     * Set the indentation string for using in {@link render()}, optionally a
+     * number of spaces to indent with
+     *
+     * @param int|string $indent
+     *
+     * @return self
+     */
+    public function setIndent($indent);
+
+    /**
+     * Returns indentation
+     *
+     * @return string
+     */
+    public function getIndent(): string;
+
+    /**
+     * Sets the maximum depth a page can have to be included when rendering
+     *
+     * @param int $maxDepth default is null, which sets no maximum depth
+     *
+     * @return self
+     */
+    public function setMaxDepth(int $maxDepth);
+
+    /**
+     * Sets the minimum depth a page must have to be included when rendering
+     *
+     * @param int $minDepth default is null, which sets no minimum depth
+     *
+     * @return self
+     */
+    public function setMinDepth(int $minDepth);
+
+    /**
+     * Returns minimum depth a page must have to be included when rendering
+     *
+     * @return int|null
+     */
+    public function getMinDepth(): ?int;
+
+    /**
+     * Returns maximum depth a page can have to be included when rendering
+     *
+     * @return int|null
+     */
+    public function getMaxDepth(): ?int;
+
+    /**
      * Render invisible items?
      *
      * @param bool $renderInvisible [optional] boolean flag
      *
-     * @return void
+     * @return self
      */
-    public function setRenderInvisible(bool $renderInvisible = true): void;
+    public function setRenderInvisible(bool $renderInvisible = true);
 
     /**
      * Return renderInvisible flag
@@ -124,9 +172,9 @@ interface HelperInterface extends BaseHelperInterface
      *
      * @param string $role [optional] role to set.  Expects a string or null. Default is null.
      *
-     * @return void
+     * @return self
      */
-    public function setRole(string $role): void;
+    public function setRole(string $role);
 
     /**
      * Returns Authorization role to use when iterating pages, or null if it isn't set
@@ -147,9 +195,9 @@ interface HelperInterface extends BaseHelperInterface
      *
      * @param bool $useAuthorization [optional] whether Authorization should be used. Default is true.
      *
-     * @return void
+     * @return self
      */
-    public function setUseAuthorization(bool $useAuthorization = true): void;
+    public function setUseAuthorization(bool $useAuthorization = true);
 
     /**
      * Returns whether Authorization should be used

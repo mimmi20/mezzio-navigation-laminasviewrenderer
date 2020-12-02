@@ -14,8 +14,8 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtml;
@@ -237,6 +237,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -414,6 +415,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -572,7 +574,8 @@ final class BreadcrumbsTest extends TestCase
      */
     public function testSetView(): void
     {
-        $view   = $this->createMock(RendererInterface::class);
+        $view = $this->createMock(RendererInterface::class);
+
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -594,6 +597,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -778,6 +782,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'default';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -868,6 +873,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
@@ -956,6 +962,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
@@ -983,7 +990,7 @@ final class BreadcrumbsTest extends TestCase
 
         $role = 'testRole';
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1093,6 +1100,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
@@ -1120,7 +1128,7 @@ final class BreadcrumbsTest extends TestCase
 
         $role = 'testRole';
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1355,6 +1363,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1445,6 +1454,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
@@ -1494,7 +1504,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1600,6 +1610,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
@@ -1651,7 +1662,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -1861,6 +1872,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -1982,6 +1994,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2100,6 +2113,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $resource  = 'testResource';
@@ -2148,7 +2162,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::exactly(2))
@@ -2257,6 +2271,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2345,6 +2360,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2433,6 +2449,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2519,6 +2536,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -2631,6 +2649,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -2747,6 +2766,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $resource  = 'testResource';
@@ -2795,7 +2815,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -2971,7 +2991,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -3153,7 +3173,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -3333,7 +3353,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -3464,6 +3484,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3601,6 +3622,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -3713,6 +3735,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -3829,6 +3852,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $resource  = 'testResource';
@@ -3877,7 +3901,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4006,6 +4030,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -4192,7 +4217,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4374,7 +4399,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4554,7 +4579,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -4684,6 +4709,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -4818,6 +4844,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $resource  = 'testResource';
@@ -4887,7 +4914,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -5090,7 +5117,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -5224,6 +5251,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name      = 'Mezzio\\Navigation\\Top';
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -5292,7 +5320,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(AbstractPluginManager::class)
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $helperPluginManager->expects(self::once())
@@ -5422,6 +5450,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -5565,6 +5594,7 @@ final class BreadcrumbsTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $name = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)

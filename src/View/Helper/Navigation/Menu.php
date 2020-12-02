@@ -544,18 +544,21 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         $indent = null,
         ?string $liActiveClass = null
     ): string {
-        return $this->renderMenu($container, [
-            'indent' => $indent,
-            'ulClass' => $ulClass,
-            'liClass' => $liClass,
-            'minDepth' => null,
-            'maxDepth' => null,
-            'onlyActiveBranch' => true,
-            'renderParents' => false,
-            'escapeLabels' => true,
-            'addClassToListItem' => false,
-            'liActiveClass' => $liActiveClass,
-        ]);
+        return $this->renderMenu(
+            $container,
+            [
+                'indent' => $indent,
+                'ulClass' => $ulClass,
+                'liClass' => $liClass,
+                'minDepth' => null,
+                'maxDepth' => null,
+                'onlyActiveBranch' => true,
+                'renderParents' => false,
+                'escapeLabels' => true,
+                'addClassToListItem' => false,
+                'liActiveClass' => $liActiveClass,
+            ]
+        );
     }
 
     /**

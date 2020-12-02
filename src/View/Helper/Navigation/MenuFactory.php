@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -36,7 +37,24 @@ final class MenuFactory
     public function __invoke(ContainerInterface $container): Menu
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
-        $plugin              = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $helperPluginManager instanceof PluginManagerInterface,
+            sprintf(
+                '$helperPluginManager should be an Instance of %s, but was %s',
+                HelperPluginManager::class,
+                get_class($helperPluginManager)
+            )
+        );
+
+        $plugin = $container->get(ViewHelperPluginManager::class);
+        \assert(
+            $plugin instanceof ViewHelperPluginManager,
+            sprintf(
+                '$plugin should be an Instance of %s, but was %s',
+                ViewHelperPluginManager::class,
+                get_class($plugin)
+            )
+        );
 
         return new Menu(
             $container,
