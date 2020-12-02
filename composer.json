@@ -24,7 +24,7 @@
     "laminas/laminas-config": "~3.3.0 || ~3.4.0",
     "laminas/laminas-i18n": "^2.10.3",
     "laminas/laminas-json": "^3.1.2",
-    "laminas/laminas-servicemanager": "~3.4.1",
+    "laminas/laminas-servicemanager": "~3.5.1",
     "laminas/laminas-uri": "^2.7.1",
     "laminas/laminas-validator": "^2.13.4",
     "mezzio/mezzio-router": "^3.1.3",
