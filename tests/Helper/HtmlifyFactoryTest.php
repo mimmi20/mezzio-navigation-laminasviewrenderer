@@ -65,7 +65,7 @@ final class HtmlifyFactoryTest extends TestCase
             ->with(HelperPluginManager::class)
             ->willReturn($helperPluginManager);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Htmlify::class, $helper);
@@ -104,7 +104,7 @@ final class HtmlifyFactoryTest extends TestCase
             ->with(HelperPluginManager::class)
             ->willReturn($helperPluginManager);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Htmlify::class, $helper);

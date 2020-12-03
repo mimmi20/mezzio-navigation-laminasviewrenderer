@@ -138,8 +138,11 @@ abstract class AbstractTest extends TestCase
                     $this->createMock(MiddlewareInterface::class)
                 );
 
+                $pages = $config->toArray();
+                $pages['default'] = $pages['nav_test1'];
+
                 $navConfig = new NavigationConfig();
-                $navConfig->setPages($config->toArray());
+                $navConfig->setPages($pages);
                 $navConfig->setRouteResult(RouteResult::fromRoute(
                     $route,
                     [
@@ -178,6 +181,11 @@ abstract class AbstractTest extends TestCase
                             Navigation::class => NavigationFactory::class,
                             UrlHelper::class => UrlHelperFactory::class,
                             ServerUrlHelper::class => ServerUrlHelperFactory::class,
+                        ],
+                    ],
+                    'templates' => [
+                        'map' => [
+                            'test::menu' => __DIR__ . '/_files/mvc/views/menu.phtml',
                         ],
                     ],
                 ];

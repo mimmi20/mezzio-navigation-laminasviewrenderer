@@ -45,7 +45,7 @@ final class AcceptHelperFactoryTest extends TestCase
         $container->expects(self::never())
             ->method('get');
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container, '');
 
         self::assertInstanceOf(AcceptHelper::class, $helper);
@@ -74,7 +74,7 @@ final class AcceptHelperFactoryTest extends TestCase
         $renderInvisible = true;
         $role            = 'test-role';
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)(
             $container,
             '',

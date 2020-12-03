@@ -38,7 +38,7 @@ final class ContainerParserTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         self::assertNull($helper->parseContainer(null));
@@ -60,7 +60,7 @@ final class ContainerParserTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         $this->expectException(InvalidArgumentException::class);
@@ -89,7 +89,7 @@ final class ContainerParserTest extends TestCase
             ->with(Navigation::class)
             ->willThrowException(new ServiceNotFoundException('test'));
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         $this->expectException(InvalidArgumentException::class);
@@ -122,7 +122,7 @@ final class ContainerParserTest extends TestCase
             ->with(Navigation::class)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         self::assertSame($container, $helper->parseContainer('default'));
@@ -150,7 +150,7 @@ final class ContainerParserTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         $this->expectException(InvalidArgumentException::class);
@@ -184,7 +184,7 @@ final class ContainerParserTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         self::assertSame($container, $helper->parseContainer($name));
@@ -212,7 +212,7 @@ final class ContainerParserTest extends TestCase
             ->with($name)
             ->willThrowException(new ServiceNotFoundException('test'));
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         $this->expectException(InvalidArgumentException::class);
@@ -244,7 +244,7 @@ final class ContainerParserTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         self::assertSame($container, $helper->parseContainer($name));
@@ -269,7 +269,7 @@ final class ContainerParserTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('get');
 
-        /** @var ContainerInterface $serviceLocator */
+        \assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);
 
         self::assertSame($container, $helper->parseContainer($container));

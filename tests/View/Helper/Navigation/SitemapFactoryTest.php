@@ -99,7 +99,7 @@ final class SitemapFactoryTest extends TestCase
             ->withConsecutive([HelperPluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
             ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Sitemap::class, $helper);

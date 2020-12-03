@@ -129,9 +129,9 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
-        /** @var Translate $translatePlugin */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        \assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr, $translatePlugin);
 
         /* @var PageInterface $page */
@@ -230,8 +230,8 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr);
 
         /* @var PageInterface $page */
@@ -343,9 +343,9 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
-        /** @var Translate $translatePlugin */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        \assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr, $translatePlugin);
 
         /* @var PageInterface $page */
@@ -441,8 +441,8 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr);
 
         /* @var PageInterface $page */
@@ -551,9 +551,9 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
-        /** @var Translate $translatePlugin */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        \assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr, $translatePlugin);
 
         /* @var PageInterface $page */
@@ -646,8 +646,8 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr);
 
         /* @var PageInterface $page */
@@ -751,9 +751,9 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
-        /** @var Translate $translatePlugin */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        \assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr, $translatePlugin);
 
         /* @var PageInterface $page */
@@ -845,8 +845,8 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr);
 
         /* @var PageInterface $page */
@@ -969,9 +969,9 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => (object) ['a' => 'b'], 'data-test' => ['test-class1', 'test-class2']]);
 
-        /** @var EscapeHtml $escapeHtml */
-        /** @var EscapeHtmlAttr $escapeHtmlAttr */
-        /** @var Translate $translatePlugin */
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        \assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $escapeHtmlAttr, $translatePlugin);
 
         /* @var PageInterface $page */

@@ -16,10 +16,10 @@ use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtmlAttr;
-use Laminas\View\Helper\Partial;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -89,19 +89,20 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -167,19 +168,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -245,19 +246,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -324,19 +325,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -409,19 +410,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -488,19 +489,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -577,19 +578,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getView());
 
@@ -661,19 +662,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $container1 = $helper->getContainer();
 
@@ -752,19 +753,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
@@ -837,19 +838,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
 
@@ -960,19 +961,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
         $helper->setRole($role);
@@ -1075,19 +1076,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
 
@@ -1163,19 +1164,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('', $helper->getIndent());
 
@@ -1315,19 +1316,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
@@ -1466,19 +1467,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
@@ -1553,19 +1554,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $role = 'testRole';
 
@@ -1717,19 +1718,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
@@ -1827,19 +1828,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $role = 'testRole';
 
@@ -1985,19 +1986,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
@@ -2069,19 +2070,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertTrue($helper->getEscapeLabels());
 
@@ -2147,19 +2148,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertFalse($helper->getAddClassToListItem());
 
@@ -2225,19 +2226,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertFalse($helper->getOnlyActiveBranch());
 
@@ -2303,19 +2304,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getPartial());
 
@@ -2385,19 +2386,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertTrue($helper->getRenderParents());
 
@@ -2463,19 +2464,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('navigation', $helper->getUlClass());
 
@@ -2541,19 +2542,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('', $helper->getLiClass());
 
@@ -2619,19 +2620,19 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $partialPlugin = $this->getMockBuilder(Partial::class)
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $partialPlugin->expects(self::never())
-            ->method('__invoke');
+        $renderer->expects(self::never())
+            ->method('render');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var EscapeHtmlAttr $escapePlugin */
-        /** @var Partial $partialPlugin */
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $partialPlugin);
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('active', $helper->getLiActiveClass());
 

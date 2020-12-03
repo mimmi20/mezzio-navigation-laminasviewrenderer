@@ -31,7 +31,7 @@ final class AcceptHelperTest extends TestCase
         $role = 'testRole';
         $auth = $this->createMock(AuthorizationInterface::class);
 
-        /** @var AuthorizationInterface $auth */
+        \assert($auth instanceof AuthorizationInterface);
         $helper = new AcceptHelper($auth, false, $role);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -71,7 +71,7 @@ final class AcceptHelperTest extends TestCase
             ->with($role, $resource, $privilege)
             ->willReturn(false);
 
-        /** @var AuthorizationInterface $auth */
+        \assert($auth instanceof AuthorizationInterface);
         $helper = new AcceptHelper($auth, false, $role);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -113,7 +113,7 @@ final class AcceptHelperTest extends TestCase
             ->with($role, $resource, $privilege)
             ->willReturn(true);
 
-        /** @var AuthorizationInterface $auth */
+        \assert($auth instanceof AuthorizationInterface);
         $helper = new AcceptHelper($auth, false, $role);
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
@@ -173,7 +173,7 @@ final class AcceptHelperTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /** @var AuthorizationInterface $auth */
+        \assert($auth instanceof AuthorizationInterface);
         $helper = new AcceptHelper($auth, false, $role);
 
         /* @var PageInterface $page */

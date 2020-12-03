@@ -16,8 +16,8 @@ use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtml;
-use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager;
@@ -73,7 +73,7 @@ final class BreadcrumbsFactoryTest extends TestCase
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $translatePlugin = $this->createMock(Translate::class);
         $escapePlugin    = $this->createMock(EscapeHtml::class);
-        $partialPlugin   = $this->createMock(Partial::class);
+        $renderer        = $this->createMock(LaminasViewRenderer::class);
 
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
@@ -90,20 +90,20 @@ final class BreadcrumbsFactoryTest extends TestCase
             ->method('has')
             ->with(Translate::class)
             ->willReturn(true);
-        $viewHelperPluginManager->expects(self::exactly(3))
+        $viewHelperPluginManager->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive([Translate::class], [EscapeHtml::class], [Partial::class])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapePlugin, $partialPlugin);
+            ->withConsecutive([Translate::class], [EscapeHtml::class])
+            ->willReturnOnConsecutiveCalls($translatePlugin, $escapePlugin);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(3))
+        $container->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
+            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class], [LaminasViewRenderer::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger, $renderer);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Breadcrumbs::class, $helper);
@@ -143,7 +143,7 @@ final class BreadcrumbsFactoryTest extends TestCase
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $escapePlugin    = $this->createMock(EscapeHtml::class);
-        $partialPlugin   = $this->createMock(Partial::class);
+        $renderer        = $this->createMock(LaminasViewRenderer::class);
 
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
@@ -160,20 +160,20 @@ final class BreadcrumbsFactoryTest extends TestCase
             ->method('has')
             ->with(Translate::class)
             ->willReturn(false);
-        $viewHelperPluginManager->expects(self::exactly(2))
+        $viewHelperPluginManager->expects(self::once())
             ->method('get')
-            ->withConsecutive([EscapeHtml::class], [Partial::class])
-            ->willReturnOnConsecutiveCalls($escapePlugin, $partialPlugin);
+            ->with(EscapeHtml::class)
+            ->willReturn($escapePlugin);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(3))
+        $container->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
+            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class], [LaminasViewRenderer::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger, $renderer);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Breadcrumbs::class, $helper);
