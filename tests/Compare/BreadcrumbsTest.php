@@ -14,8 +14,8 @@ namespace MezzioTest\Navigation\LaminasView\Compare;
 use Laminas\Log\Logger;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtml;
-use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
@@ -97,26 +97,7 @@ final class BreadcrumbsTest extends AbstractTest
             )
         );
 
-        $partialHelper = $plugin->get(Partial::class);
-        \assert(
-            $partialHelper instanceof Partial,
-            sprintf(
-                '$partialHelper should be an Instance of %s, but was %s',
-                Partial::class,
-                get_class($partialHelper)
-            )
-        );
-
-        $partialHelper = $plugin->get(Partial::class);
-        \assert(
-            $partialHelper instanceof Partial,
-            sprintf(
-                '$partialHelper should be an Instance of %s, but was %s',
-                Partial::class,
-                get_class($partialHelper)
-            )
-        );
-
+        $renderer   = $this->serviceManager->get(LaminasViewRenderer::class);
         $translator = null;
 
         // create helper
@@ -126,7 +107,7 @@ final class BreadcrumbsTest extends AbstractTest
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $escapeHelper,
-            $partialHelper,
+            $renderer,
             $translator
         );
 

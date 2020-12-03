@@ -14,9 +14,9 @@ namespace MezzioTest\Navigation\LaminasView\Compare;
 use Laminas\Log\Logger;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
-use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
@@ -98,15 +98,7 @@ final class MenuTest extends AbstractTest
             )
         );
 
-        $partialHelper = $plugin->get(Partial::class);
-        \assert(
-            $partialHelper instanceof Partial,
-            sprintf(
-                '$partialHelper should be an Instance of %s, but was %s',
-                Partial::class,
-                get_class($partialHelper)
-            )
-        );
+        $renderer = $this->serviceManager->get(LaminasViewRenderer::class);
 
         // create helper
         $this->helper = new Menu(
@@ -115,7 +107,7 @@ final class MenuTest extends AbstractTest
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $plugin->get(EscapeHtmlAttr::class),
-            $partialHelper
+            $renderer
         );
 
         // set nav1 in helper as default
@@ -123,36 +115,41 @@ final class MenuTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testCanRenderMenuFromServiceAlias(): void
     {
-        self::markTestSkipped();
-//        $returned = $this->helper->renderMenu('Navigation');
-//        $this->assertEquals($this->_getExpected('menu/default1.html'), $returned);
+        $returned = $this->helper->renderMenu('Navigation');
+        $expected = $this->_getExpected('menu/default1.html');
+
+        self::assertEquals($expected, $returned);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testCanRenderPartialFromServiceAlias(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial('menu.phtml');
-//        $returned = $this->helper->renderPartial('Navigation');
-//        $this->assertEquals($this->_getExpected('menu/partial.html'), $returned);
+        $this->helper->setPartial('test::menu');
+
+        $returned = $this->helper->renderPartial('Navigation');
+        $expected = $this->_getExpected('menu/partial.html');
+
+        self::assertEquals($expected, $returned);
     }
 
     /**

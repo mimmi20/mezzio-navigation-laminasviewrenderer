@@ -15,8 +15,8 @@ use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
-use Laminas\View\Helper\Partial;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager;
@@ -71,7 +71,7 @@ final class MenuFactoryTest extends TestCase
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $escapePlugin    = $this->createMock(EscapeHtmlAttr::class);
-        $partialPlugin   = $this->createMock(Partial::class);
+        $renderer        = $this->createMock(LaminasViewRenderer::class);
 
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
@@ -84,20 +84,20 @@ final class MenuFactoryTest extends TestCase
         $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewHelperPluginManager->expects(self::exactly(2))
+        $viewHelperPluginManager->expects(self::once())
             ->method('get')
-            ->withConsecutive([EscapeHtmlAttr::class], [Partial::class])
-            ->willReturnOnConsecutiveCalls($escapePlugin, $partialPlugin);
+            ->with(EscapeHtmlAttr::class)
+            ->willReturn($escapePlugin);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(3))
+        $container->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
+            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class], [LaminasViewRenderer::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger, $renderer);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Menu::class, $helper);

@@ -111,10 +111,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -196,10 +196,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -281,10 +281,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -367,10 +367,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -459,10 +459,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -545,10 +545,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -641,10 +641,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -732,10 +732,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([null], [$container])
             ->willReturnOnConsecutiveCalls(null, $container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -830,10 +830,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -922,10 +922,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1052,10 +1052,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1174,10 +1174,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1269,10 +1269,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1428,10 +1428,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1586,10 +1586,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1680,10 +1680,10 @@ final class SitemapTest extends TestCase
             ->with(null)
             ->willReturn(null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1851,10 +1851,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -1968,10 +1968,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2133,10 +2133,10 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2224,10 +2224,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2309,10 +2309,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2394,10 +2394,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2478,10 +2478,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2563,10 +2563,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2646,10 +2646,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2746,10 +2746,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2848,10 +2848,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -2953,10 +2953,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3058,10 +3058,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3146,10 +3146,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3234,10 +3234,10 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn('');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3328,10 +3328,10 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3420,10 +3420,10 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3518,10 +3518,10 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3599,10 +3599,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3687,10 +3687,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3775,10 +3775,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3863,10 +3863,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -3951,10 +3951,10 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -4118,10 +4118,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -4325,10 +4325,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -4534,10 +4534,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -4739,10 +4739,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -4962,10 +4962,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -5229,10 +5229,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -5494,10 +5494,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -5760,10 +5760,10 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */
@@ -5949,10 +5949,10 @@ final class SitemapTest extends TestCase
             ->with($container)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         /** @var BasePath $basePath */
         /** @var EscapeHtml $escaper */
         /** @var ServerUrlHelper $serverUrlHelper */

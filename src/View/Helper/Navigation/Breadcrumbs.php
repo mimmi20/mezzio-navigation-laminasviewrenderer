@@ -16,8 +16,8 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtml;
-use Laminas\View\Helper\Partial;
 use Laminas\View\Model\ModelInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -57,8 +57,8 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     /** @var EscapeHtml */
     private $escaper;
 
-    /** @var Partial */
-    private $partialPlugin;
+    /** @var LaminasViewRenderer */
+    private $renderer;
 
     /**
      * @param \Interop\Container\ContainerInterface    $serviceLocator
@@ -66,7 +66,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      * @param HtmlifyInterface                         $htmlify
      * @param ContainerParserInterface                 $containerParser
      * @param EscapeHtml                               $escaper
-     * @param Partial                                  $partialPlugin
+     * @param LaminasViewRenderer                      $renderer
      * @param \Laminas\I18n\View\Helper\Translate|null $translator
      */
     public function __construct(
@@ -75,7 +75,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         EscapeHtml $escaper,
-        Partial $partialPlugin,
+        LaminasViewRenderer $renderer,
         ?Translate $translator = null
     ) {
         $this->serviceLocator  = $serviceLocator;
@@ -84,7 +84,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         $this->containerParser = $containerParser;
         $this->translator      = $translator;
         $this->escaper         = $escaper;
-        $this->partialPlugin   = $partialPlugin;
+        $this->renderer        = $renderer;
     }
 
     /**
@@ -372,15 +372,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
             $model['pages'] = array_reverse($model['pages']);
         }
 
-        $rendered = ($this->partialPlugin)($partial, $model);
-
-        if ($rendered instanceof Partial) {
-            throw new Exception\InvalidArgumentException(
-                'Unable to render breadcrumbs: A view partial was not rendered correctly'
-            );
-        }
-
-        return $rendered;
+        return $this->renderer->render($partial, $model);
     }
 
     /**

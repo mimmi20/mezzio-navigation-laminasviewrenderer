@@ -84,7 +84,7 @@ final class NavigationFactoryTest extends TestCase
             ->withConsecutive([HelperPluginManager::class], [Logger::class])
             ->willReturnOnConsecutiveCalls($helperPluginManager, $logger);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $navigation = ($this->factory)($container);
 
         self::assertInstanceOf(Navigation::class, $navigation);

@@ -44,7 +44,7 @@ final class ContainerParserFactoryTest extends TestCase
         $container->expects(self::never())
             ->method('get');
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(ContainerParser::class, $helper);

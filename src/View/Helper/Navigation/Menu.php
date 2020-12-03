@@ -15,7 +15,7 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\EscapeHtmlAttr;
-use Laminas\View\Helper\Partial;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -88,8 +88,8 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
     /** @var EscapeHtmlAttr */
     private $escaper;
 
-    /** @var Partial */
-    private $partialPlugin;
+    /** @var LaminasViewRenderer */
+    private $renderer;
 
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
@@ -97,7 +97,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param HtmlifyInterface                      $htmlify
      * @param ContainerParserInterface              $containerParser
      * @param EscapeHtmlAttr                        $escaper
-     * @param Partial                               $partialPlugin
+     * @param LaminasViewRenderer                   $renderer
      */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
@@ -105,14 +105,14 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         EscapeHtmlAttr $escaper,
-        Partial $partialPlugin
+        LaminasViewRenderer $renderer
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
         $this->htmlify         = $htmlify;
         $this->containerParser = $containerParser;
         $this->escaper         = $escaper;
-        $this->partialPlugin   = $partialPlugin;
+        $this->renderer        = $renderer;
     }
 
     /**
@@ -898,14 +898,6 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
         $model = array_merge($params, ['container' => $container]);
 
-        $rendered = ($this->partialPlugin)($partial, $model);
-
-        if ($rendered instanceof Partial) {
-            throw new Exception\InvalidArgumentException(
-                'Unable to render menu: A view partial was not rendered correctly'
-            );
-        }
-
-        return $rendered;
+        return $this->renderer->render($partial, $model);
     }
 }

@@ -81,7 +81,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
             ->with(BaseServerUrlHelper::class)
             ->willReturn($baseHelper);
 
-        /** @var ContainerInterface $container */
+        \assert($container instanceof ContainerInterface);
         $serverUrlHelper = ($this->factory)($container);
 
         self::assertInstanceOf(ServerUrlHelper::class, $serverUrlHelper);

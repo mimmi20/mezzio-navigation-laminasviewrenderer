@@ -94,10 +94,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         /* @var Navigation\PluginManager $pluginManager */
@@ -163,10 +163,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertTrue($helper->getInjectAuthorization());
@@ -227,10 +227,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame('menu', $helper->getDefaultProxy());
@@ -296,10 +296,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->findHelper($proxy, false));
@@ -366,10 +366,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -447,10 +447,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -532,10 +532,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
@@ -630,10 +630,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
@@ -731,10 +731,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -811,10 +811,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
@@ -906,10 +906,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -987,10 +987,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\MenuInterface::class)
@@ -1082,10 +1082,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getMaxDepth());
@@ -1146,10 +1146,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame(0, $helper->getMinDepth());
@@ -1210,10 +1210,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertFalse($helper->getRenderInvisible());
@@ -1275,10 +1275,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getRole());
@@ -1346,10 +1346,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertTrue($helper->getUseAuthorization());
@@ -1411,10 +1411,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getAuthorization());
@@ -1486,10 +1486,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getView());
@@ -1556,10 +1556,10 @@ final class NavigationTest extends TestCase
             ->withConsecutive([null], [$container])
             ->willReturnOnConsecutiveCalls(null, $container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $container1 = $helper->getContainer();
@@ -1636,10 +1636,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $this->expectException(InvalidArgumentException::class);
@@ -1707,10 +1707,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
@@ -1816,10 +1816,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
@@ -1917,10 +1917,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
@@ -1991,10 +1991,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame('', $helper->getIndent());
@@ -2129,10 +2129,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
@@ -2266,10 +2266,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
@@ -2339,10 +2339,10 @@ final class NavigationTest extends TestCase
             ->with(null)
             ->willReturn(null);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
@@ -2489,10 +2489,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
@@ -2585,10 +2585,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $role = 'testRole';
@@ -2729,10 +2729,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
@@ -2803,10 +2803,10 @@ final class NavigationTest extends TestCase
             ->with($container)
             ->willReturn($container);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $container1 = $helper->getContainer();
@@ -2873,10 +2873,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -2953,10 +2953,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)

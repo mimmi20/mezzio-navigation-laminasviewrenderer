@@ -103,12 +103,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getMaxDepth());
@@ -184,12 +184,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame(0, $helper->getMinDepth());
@@ -265,12 +265,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertFalse($helper->getRenderInvisible());
@@ -347,12 +347,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getRole());
@@ -435,12 +435,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertTrue($helper->getUseAuthorization());
@@ -517,12 +517,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getAuthorization());
@@ -609,12 +609,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getView());
@@ -696,12 +696,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $container1 = $helper->getContainer();
@@ -791,12 +791,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $this->expectException(InvalidArgumentException::class);
@@ -879,12 +879,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
@@ -1005,12 +1005,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
@@ -1123,12 +1123,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
@@ -1214,12 +1214,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame('', $helper->getIndent());
@@ -1369,12 +1369,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -1523,12 +1523,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -1613,12 +1613,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
@@ -1777,12 +1777,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -1890,12 +1890,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $role = 'testRole';
@@ -2051,12 +2051,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -2138,12 +2138,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
@@ -2219,12 +2219,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2323,12 +2323,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRevSubsection($page));
@@ -2421,12 +2421,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRevSubsection($page));
@@ -2498,12 +2498,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2600,12 +2600,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRevSection($page));
@@ -2696,12 +2696,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRevSection($page));
@@ -2773,12 +2773,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2866,12 +2866,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         /* @var PageInterface $page */
@@ -2989,12 +2989,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -3071,12 +3071,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3164,12 +3164,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelSection($parentPage));
@@ -3284,12 +3284,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -3413,12 +3413,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -3502,12 +3502,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelChapter($page));
@@ -3622,12 +3622,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -3749,12 +3749,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -3880,12 +3880,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -3967,12 +3967,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelPrev($page));
@@ -4087,12 +4087,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -4217,12 +4217,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -4306,12 +4306,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelNext($page));
@@ -4426,12 +4426,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -4514,12 +4514,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelStart($page));
@@ -4634,12 +4634,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -4733,12 +4733,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -4854,12 +4854,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5011,12 +5011,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5158,12 +5158,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5306,12 +5306,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5455,12 +5455,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5572,12 +5572,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5695,12 +5695,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
@@ -5833,12 +5833,12 @@ final class LinksTest extends TestCase
             ->with($params)
             ->willReturn($expected);
 
-        /** @var ContainerInterface $serviceLocator */
-        /** @var Logger $logger */
-        /** @var HtmlifyInterface $htmlify */
-        /** @var ContainerParserInterface $containerParser */
-        /** @var FindRootInterface $rootFinder */
-        /** @var HeadLink $headLink */
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
         $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
