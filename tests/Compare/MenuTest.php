@@ -21,6 +21,8 @@ use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mezzio\Navigation\Page\PageFactory;
+use Mezzio\Navigation\Page\PageInterface;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu.
@@ -30,8 +32,6 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
  */
 final class MenuTest extends AbstractTest
 {
-    /** @codingStandardsIgnoreStart */
-
     /**
      * Class name for view helper to test.
      *
@@ -45,8 +45,6 @@ final class MenuTest extends AbstractTest
      * @var Menu
      */
     protected $helper;
-
-    /** @codingStandardsIgnoreEnd */
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
@@ -126,7 +124,7 @@ final class MenuTest extends AbstractTest
     public function testCanRenderMenuFromServiceAlias(): void
     {
         $returned = $this->helper->renderMenu('Navigation');
-        $expected = $this->_getExpected('menu/default1.html');
+        $expected = $this->getExpected('menu/default1.html');
 
         self::assertEquals($expected, $returned);
     }
@@ -134,6 +132,7 @@ final class MenuTest extends AbstractTest
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @ throws \PHPUnit\Framework\MockObject\RuntimeException
+     *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -147,7 +146,7 @@ final class MenuTest extends AbstractTest
         $this->helper->setPartial('test::menu');
 
         $returned = $this->helper->renderPartial('Navigation');
-        $expected = $this->_getExpected('menu/partial.html');
+        $expected = $this->getExpected('menu/partial.html');
 
         self::assertEquals($expected, $returned);
     }
@@ -200,325 +199,286 @@ final class MenuTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testSetIndentAndOverrideInRenderMenu(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setIndent(8);
-//
-//        $expected = [
-//            'indent4' => $this->_getExpected('menu/indent4.html'),
-//            'indent8' => $this->_getExpected('menu/indent8.html'),
-//        ];
-//
-//        $renderOptions = [
-//            'indent' => 4,
-//        ];
-//
-//        $actual = [
-//            'indent4' => rtrim($this->helper->renderMenu(null, $renderOptions), PHP_EOL),
-//            'indent8' => rtrim($this->helper->renderMenu(), PHP_EOL),
-//        ];
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setIndent(8);
+
+        $expected = [
+            'indent4' => $this->getExpected('menu/indent4.html'),
+            'indent8' => $this->getExpected('menu/indent8.html'),
+        ];
+
+        $actual = [
+            'indent4' => rtrim($this->helper->renderMenu(null, ['indent' => 4]), PHP_EOL),
+            'indent8' => rtrim($this->helper->renderMenu(), PHP_EOL),
+        ];
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testRenderSuppliedContainerWithoutInterfering(): void
     {
-        self::markTestSkipped();
-//        $rendered1 = $this->_getExpected('menu/default1.html');
-//        $rendered2 = $this->_getExpected('menu/default2.html');
-//        $expected = [
-//            'registered'       => $rendered1,
-//            'supplied'         => $rendered2,
-//            'registered_again' => $rendered1,
-//        ];
-//
-//        $actual = [
-//            'registered'       => $this->helper->render(),
-//            'supplied'         => $this->helper->render($this->nav2),
-//            'registered_again' => $this->helper->render(),
-//        ];
-//
-//        $this->assertEquals($expected, $actual);
+        $rendered1 = $this->getExpected('menu/default1.html');
+        $rendered2 = $this->getExpected('menu/default2.html');
+        $expected  = [
+            'registered' => $rendered1,
+            'supplied' => $rendered2,
+            'registered_again' => $rendered1,
+        ];
+
+        $actual = [
+            'registered' => $this->helper->render(),
+            'supplied' => $this->helper->render($this->nav2),
+            'registered_again' => $this->helper->render(),
+        ];
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testUseAclRoleAsString(): void
     {
-        self::markTestSkipped();
-//        $acl = $this->_getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole('member');
-//
-//        $expected = $this->_getExpected('menu/acl_string.html');
-//        $this->assertEquals($expected, $this->helper->render());
+        $acl = $this->getAcl();
+        $this->helper->setAuthorization($acl['acl']);
+        $this->helper->setRole('member');
+
+        $expected = $this->getExpected('menu/acl_string.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testFilterOutPagesBasedOnAcl(): void
     {
-        self::markTestSkipped();
-//        $acl = $this->_getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['role']);
-//
-//        $expected = $this->_getExpected('menu/acl.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
+        $acl = $this->getAcl();
+        $this->helper->setAuthorization($acl['acl']);
+        $this->helper->setRole($acl['role']);
+
+        $expected = $this->getExpected('menu/acl.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testDisablingAcl(): void
     {
-        self::markTestSkipped();
-//        $acl = $this->_getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['role']);
-//        $this->helper->setUseAuthorization(false);
-//
-//        $expected = $this->_getExpected('menu/default1.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
+        $acl = $this->getAcl();
+        $this->helper->setAuthorization($acl['acl']);
+        $this->helper->setRole($acl['role']);
+        $this->helper->setUseAuthorization(false);
+
+        $expected = $this->getExpected('menu/default1.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testUseAnAclRoleInstanceFromAclObject(): void
-    {
-        self::markTestSkipped();
-//        $acl = $this->_getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['acl']->getRole('member'));
-//
-//        $expected = $this->_getExpected('menu/acl_role_interface.html');
-//        $this->assertEquals($expected, $this->helper->render());
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testUseConstructedAclRolesNotFromAclObject(): void
-    {
-        self::markTestSkipped();
-//        $acl = $this->_getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole(new \Laminas\Permissions\Acl\Role\GenericRole('member'));
-//
-//        $expected = $this->_getExpected('menu/acl_role_interface.html');
-//        $this->assertEquals($expected, $this->helper->render());
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testSetUlCssClass(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setUlClass('My_Nav');
-//        $expected = $this->_getExpected('menu/css.html');
-//        $this->assertEquals($expected, $this->helper->render($this->nav2));
+        $this->helper->setUlClass('My_Nav');
+
+        $expected = $this->getExpected('menu/css.html');
+        $actual   = $this->helper->render($this->nav2);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testSetLiActiveCssClass(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setLiActiveClass('activated');
-//        $expected = $this->_getExpected('menu/css2.html');
-//        $this->assertEquals(trim($expected), $this->helper->render($this->nav2));
+        $this->helper->setLiActiveClass('activated');
+
+        $expected = $this->getExpected('menu/css2.html');
+        $actual   = $this->helper->render($this->nav2);
+
+        self::assertEquals(trim($expected), $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionEscapeLabelsAsTrue(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'escapeLabels' => true,
-//        ];
-//
-//        $container = new Navigation($this->nav2->toArray());
-//        $page = (new PageFactory())->factory(
-//            [
-//                'label' => 'Badges <span class="badge">1</span>',
-//                'uri' => 'badges',
-//            ]
-//        );
-//
-//        $container->addPage($page);
-//
-//        $expected = $this->_getExpected('menu/escapelabels_as_true.html');
-//        $actual = $this->helper->renderMenu($container, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = ['escapeLabels' => true];
+
+        $nav2 = clone $this->nav2;
+        $page = (new PageFactory())->factory(
+            [
+                'label' => 'Badges <span class="badge">1</span>',
+                'uri' => 'badges',
+            ]
+        );
+
+        $nav2->addPage($page);
+
+        $expected = $this->getExpected('menu/escapelabels_as_true.html');
+        $actual   = $this->helper->renderMenu($nav2, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionEscapeLabelsAsFalse(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'escapeLabels' => false,
-//        ];
-//
-//        $container = new Navigation($this->nav2->toArray());
-//
-//        $page = (new PageFactory())->factory(
-//            [
-//                'label' => 'Badges <span class="badge">1</span>',
-//                'uri' => 'badges',
-//            ]
-//        );
-//
-//        $container->addPage($page);
-//
-//        $expected = $this->_getExpected('menu/escapelabels_as_false.html');
-//        $actual = $this->helper->renderMenu($container, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = ['escapeLabels' => false];
+
+        $nav2 = clone $this->nav2;
+        $page = (new PageFactory())->factory(
+            [
+                'label' => 'Badges <span class="badge">1</span>',
+                'uri' => 'badges',
+            ]
+        );
+
+        $nav2->addPage($page);
+
+        $expected = $this->getExpected('menu/escapelabels_as_false.html');
+        $actual   = $this->helper->renderMenu($nav2, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testRenderingPartial(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial('menu.phtml');
-//
-//        $expected = $this->_getExpected('menu/partial.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setPartial('test::menu');
+
+        $expected = $this->getExpected('menu/partial.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testRenderingPartialBySpecifyingAnArrayAsPartial(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial(['menu.phtml', 'application']);
-//
-//        $expected = $this->_getExpected('menu/partial.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setPartial(['test::menu', 'application']);
+
+        $expected = $this->getExpected('menu/partial.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testRenderingPartialWithParams(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial(['menu_with_partial_params.phtml', 'application']);
-//        $expected = $this->_getExpected('menu/partial_with_params.html');
-//        $actual = $this->helper->renderPartialWithParams(['variable' => 'test value']);
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setPartial(['test::menu-with-partials', 'application']);
+
+        $expected = $this->getExpected('menu/partial_with_params.html');
+        $actual   = $this->helper->renderPartialWithParams(['variable' => 'test value']);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -552,7 +512,7 @@ final class MenuTest extends AbstractTest
     {
         $this->helper->setMaxDepth(1);
 
-        $expected = $this->_getExpected('menu/maxdepth.html');
+        $expected = $this->getExpected('menu/maxdepth.html');
         $actual   = $this->helper->renderMenu();
 
         self::assertEquals($expected, $actual);
@@ -571,7 +531,7 @@ final class MenuTest extends AbstractTest
     {
         $this->helper->setMinDepth(1);
 
-        $expected = $this->_getExpected('menu/mindepth.html');
+        $expected = $this->getExpected('menu/mindepth.html');
         $actual   = $this->helper->renderMenu();
 
         self::assertEquals($expected, $actual);
@@ -590,7 +550,7 @@ final class MenuTest extends AbstractTest
     {
         $this->helper->setMinDepth(1)->setMaxDepth(2);
 
-        $expected = $this->_getExpected('menu/bothdepts.html');
+        $expected = $this->getExpected('menu/bothdepts.html');
         $actual   = $this->helper->renderMenu();
 
         self::assertEquals($expected, $actual);
@@ -609,116 +569,109 @@ final class MenuTest extends AbstractTest
     {
         $this->helper->setOnlyActiveBranch(true);
 
-        $expected = $this->_getExpected('menu/onlyactivebranch.html');
+        $expected = $this->getExpected('menu/onlyactivebranch.html');
         $actual   = $this->helper->renderMenu();
 
         self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testSetRenderParents(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setOnlyActiveBranch(true)->setRenderParents(false);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_noparents.html');
-//        $actual   = $this->helper->renderMenu();
-//
-//        self::assertEquals($expected, $actual);
+        $this->helper->setOnlyActiveBranch(true)->setRenderParents(false);
+
+        $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
+        $actual   = $this->helper->renderMenu();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testSetOnlyActiveBranchAndMinDepth(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setOnlyActiveBranch()->setMinDepth(1);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_mindepth.html');
-//        $actual = $this->helper->renderMenu();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setOnlyActiveBranch()->setMinDepth(1);
+
+        $expected = $this->getExpected('menu/onlyactivebranch_mindepth.html');
+        $actual   = $this->helper->renderMenu();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOnlyActiveBranchAndMaxDepth(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setOnlyActiveBranch()->setMaxDepth(2);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_maxdepth.html');
-//        $actual = $this->helper->renderMenu();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setOnlyActiveBranch()->setMaxDepth(2);
+
+        $expected = $this->getExpected('menu/onlyactivebranch_maxdepth.html');
+        $actual   = $this->helper->renderMenu();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOnlyActiveBranchAndBothDepthsSpecified(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setOnlyActiveBranch()->setMinDepth(1)->setMaxDepth(2);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_bothdepts.html');
-//        $actual = $this->helper->renderMenu();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setOnlyActiveBranch()->setMinDepth(1)->setMaxDepth(2);
+
+        $expected = $this->getExpected('menu/onlyactivebranch_bothdepts.html');
+        $actual   = $this->helper->renderMenu();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOnlyActiveBranchNoParentsAndBothDepthsSpecified(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setOnlyActiveBranch()
-//                      ->setMinDepth(1)
-//                      ->setMaxDepth(2)
-//                      ->setRenderParents(false);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_np_bd.html');
-//        $actual = $this->helper->renderMenu();
-//
-//        $this->assertEquals($expected, $actual);
-    }
+        $this->helper->setOnlyActiveBranch()
+            ->setMinDepth(1)
+            ->setMaxDepth(2)
+            ->setRenderParents(false);
 
-    /** @codingStandardsIgnoreStart */
+        $expected = $this->getExpected('menu/onlyactivebranch_np_bd.html');
+        $actual   = $this->helper->renderMenu();
+
+        self::assertEquals($expected, $actual);
+    }
 
     /**
      * @param string $label
@@ -728,9 +681,8 @@ final class MenuTest extends AbstractTest
      *
      * @return void
      */
-    private function _setActive(string $label): void
+    private function setActive(string $label): void
     {
-        /** @codingStandardsIgnoreEnd */
         $container = $this->helper->getContainer();
 
         foreach ($container->findAllByActive(true) as $page) {
@@ -745,347 +697,331 @@ final class MenuTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOnlyActiveBranchNoParentsActiveOneBelowMinDepth(): void
     {
-        self::markTestSkipped();
-//        $this->_setActive('Page 2');
-//
-//        $this->helper->setOnlyActiveBranch()
-//                      ->setMinDepth(1)
-//                      ->setMaxDepth(1)
-//                      ->setRenderParents(false);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_np_bd2.html');
-//        $actual = $this->helper->renderMenu();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->setActive('Page 2');
+
+        $this->helper->setOnlyActiveBranch()
+            ->setMinDepth(1)
+            ->setMaxDepth(1)
+            ->setRenderParents(false);
+
+        $expected = $this->getExpected('menu/onlyactivebranch_np_bd2.html');
+        $actual   = $this->helper->renderMenu();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderSubMenuShouldOverrideOptions(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setOnlyActiveBranch(false)
-//                      ->setMinDepth(1)
-//                      ->setMaxDepth(2)
-//                      ->setRenderParents(true);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_noparents.html');
-//        $actual = $this->helper->renderSubMenu();
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setOnlyActiveBranch(false)
+            ->setMinDepth(1)
+            ->setMaxDepth(2)
+            ->setRenderParents(true);
+
+        $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
+        $actual   = $this->helper->renderSubMenu();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionMaxDepth(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'maxDepth' => 1,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/maxdepth.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = ['maxDepth' => 1];
+
+        $expected = $this->getExpected('menu/maxdepth.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionMinDepth(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'minDepth' => 1,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/mindepth.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = ['minDepth' => 1];
+
+        $expected = $this->getExpected('menu/mindepth.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionBothDepts(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'minDepth' => 1,
-//            'maxDepth' => 2,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/bothdepts.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = [
+            'minDepth' => 1,
+            'maxDepth' => 2,
+        ];
+
+        $expected = $this->getExpected('menu/bothdepts.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionOnlyActiveBranch(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'onlyActiveBranch' => true,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = ['onlyActiveBranch' => true];
+
+        $expected = $this->getExpected('menu/onlyactivebranch.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionOnlyActiveBranchNoParents(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'onlyActiveBranch' => true,
-//            'renderParents' => false,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_noparents.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = [
+            'onlyActiveBranch' => true,
+            'renderParents' => false,
+        ];
+
+        $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionOnlyActiveBranchAndMinDepth(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'minDepth' => 1,
-//            'onlyActiveBranch' => true,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_mindepth.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = [
+            'minDepth' => 1,
+            'onlyActiveBranch' => true,
+        ];
+
+        $expected = $this->getExpected('menu/onlyactivebranch_mindepth.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionOnlyActiveBranchAndMaxDepth(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'maxDepth' => 2,
-//            'onlyActiveBranch' => true,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_maxdepth.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = [
+            'maxDepth' => 2,
+            'onlyActiveBranch' => true,
+        ];
+
+        $expected = $this->getExpected('menu/onlyactivebranch_maxdepth.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionOnlyActiveBranchAndBothDepthsSpecified(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'minDepth' => 1,
-//            'maxDepth' => 2,
-//            'onlyActiveBranch' => true,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_bothdepts.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = [
+            'minDepth' => 1,
+            'maxDepth' => 2,
+            'onlyActiveBranch' => true,
+        ];
+
+        $expected = $this->getExpected('menu/onlyactivebranch_bothdepts.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testOptionOnlyActiveBranchNoParentsAndBothDepthsSpecified(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'minDepth' => 2,
-//            'maxDepth' => 2,
-//            'onlyActiveBranch' => true,
-//            'renderParents' => false,
-//        ];
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_np_bd.html');
-//        $actual = $this->helper->renderMenu(null, $options);
-//
-//        $this->assertEquals($expected, $actual);
+        $options = [
+            'minDepth' => 2,
+            'maxDepth' => 2,
+            'onlyActiveBranch' => true,
+            'renderParents' => false,
+        ];
+
+        $expected = $this->getExpected('menu/onlyactivebranch_np_bd.html');
+        $actual   = $this->helper->renderMenu(null, $options);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderingWithoutPageClassToLi(): void
     {
-        self::markTestSkipped();
-//        $container = new Navigation($this->nav2->toArray());
-//        $container->addPage([
-//            'label' => 'Class test',
-//            'uri' => 'test',
-//            'class' => 'foobar',
-//        ]);
-//
-//        $expected = $this->_getExpected('menu/addclasstolistitem_as_false.html');
-//        $actual   = $this->helper->renderMenu($container);
-//
-//        $this->assertEquals(trim($expected), trim($actual));
+        $nav2 = clone $this->nav2;
+        $page = (new PageFactory())->factory(
+            [
+                'label' => 'Class test',
+                'uri' => 'test',
+                'class' => 'foobar',
+            ]
+        );
+
+        $nav2->addPage($page);
+
+        $expected = $this->getExpected('menu/addclasstolistitem_as_false.html');
+        $actual   = $this->helper->renderMenu($nav2);
+
+        self::assertEquals(trim($expected), trim($actual));
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderingWithPageClassToLi(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'addClassToListItem' => true,
-//        ];
-//
-//        $container = new Navigation($this->nav2->toArray());
-//
-//        $page = (new PageFactory())->factory(
-//            [
-//                'label' => 'Class test',
-//                'uri' => 'test',
-//                'class' => 'foobar',
-//            ]
-//        );
-//        $container->addPage($page);
-//
-//        $expected = $this->_getExpected('menu/addclasstolistitem_as_true.html');
-//        $actual = $this->helper->renderMenu($container, $options);
-//
-//        $this->assertEquals(trim($expected), trim($actual));
+        $options = ['addClassToListItem' => true];
+
+        $nav2 = clone $this->nav2;
+        $page = (new PageFactory())->factory(
+            [
+                'label' => 'Class test',
+                'uri' => 'test',
+                'class' => 'foobar',
+            ]
+        );
+        $nav2->addPage($page);
+
+        $expected = $this->getExpected('menu/addclasstolistitem_as_true.html');
+        $actual   = $this->helper->renderMenu($nav2, $options);
+
+        self::assertEquals(trim($expected), trim($actual));
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \ErrorException
      *
      * @return void
      */
     public function testRenderDeepestMenuWithPageClassToLi(): void
     {
-        self::markTestSkipped();
-//        $options = [
-//            'addClassToListItem' => true,
-//            'onlyActiveBranch' => true,
-//            'renderParents' => false,
-//        ];
-//
-//        $pages = $this->nav2->toArray();
-//        $pages[1]['class'] = 'foobar';
-//        $container = new Navigation($pages);
-//
-//        $expected = $this->_getExpected('menu/onlyactivebranch_addclasstolistitem.html');
-//        $actual = $this->helper->renderMenu($container, $options);
-//
-//        $this->assertEquals(trim($expected), trim($actual));
-    }
+        $options = [
+            'addClassToListItem' => true,
+            'onlyActiveBranch' => true,
+            'renderParents' => false,
+        ];
 
-    /** @codingStandardsIgnoreStart */
+        $nav2 = clone $this->nav2;
+
+        $page = $nav2->findOneByLabel('Site 2');
+        \assert($page instanceof PageInterface);
+        self::assertInstanceOf(PageInterface::class, $page);
+        $page->setClass('foobar');
+
+        $expected = $this->getExpected('menu/onlyactivebranch_addclasstolistitem.html');
+        $actual   = $this->helper->renderMenu($nav2, $options);
+
+        self::assertEquals(trim($expected), trim($actual));
+    }
 
     /**
      * Returns the contens of the expected $file, normalizes newlines.
@@ -1094,9 +1030,8 @@ final class MenuTest extends AbstractTest
      *
      * @return string
      */
-    protected function _getExpected(string $file): string
+    protected function getExpected(string $file): string
     {
-        // @codingStandardsIgnoreEnd
-        return str_replace("\n", PHP_EOL, parent::_getExpected($file));
+        return str_replace(["\r\n", "\n", "\r", '##lb##'], ['##lb##', '##lb##', '##lb##', PHP_EOL], parent::getExpected($file));
     }
 }

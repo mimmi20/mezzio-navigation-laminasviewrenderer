@@ -34,12 +34,8 @@ use Psr\Http\Message\UriInterface;
  */
 final class SitemapTest extends AbstractTest
 {
-    /** @codingStandardsIgnoreStart */
-
-    /**
-     * @var array
-     */
-    protected $_oldServer = [];
+    /** @var array */
+    private $oldServer = [];
 
     /**
      * Class name for view helper to test
@@ -60,9 +56,7 @@ final class SitemapTest extends AbstractTest
      *
      * @var string
      */
-    private $_originaltimezone;
-
-    /** @codingStandardsIgnoreEnd */
+    private $originalTimezone;
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
@@ -77,19 +71,19 @@ final class SitemapTest extends AbstractTest
      */
     protected function setUp(): void
     {
-        $this->_originaltimezone = date_default_timezone_get();
+        $this->originalTimezone = date_default_timezone_get();
         date_default_timezone_set('Europe/Berlin');
 
         if (isset($_SERVER['SERVER_NAME'])) {
-            $this->_oldServer['SERVER_NAME'] = $_SERVER['SERVER_NAME'];
+            $this->oldServer['SERVER_NAME'] = $_SERVER['SERVER_NAME'];
         }
 
         if (isset($_SERVER['SERVER_PORT'])) {
-            $this->_oldServer['SERVER_PORT'] = $_SERVER['SERVER_PORT'];
+            $this->oldServer['SERVER_PORT'] = $_SERVER['SERVER_PORT'];
         }
 
         if (isset($_SERVER['REQUEST_URI'])) {
-            $this->_oldServer['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
+            $this->oldServer['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
         }
 
         $_SERVER['SERVER_NAME'] = 'localhost';
@@ -390,11 +384,11 @@ final class SitemapTest extends AbstractTest
      */
     protected function tearDown(): void
     {
-        foreach ($this->_oldServer as $key => $value) {
+        foreach ($this->oldServer as $key => $value) {
             $_SERVER[$key] = $value;
         }
 
-        date_default_timezone_set($this->_originaltimezone);
+        date_default_timezone_set($this->originalTimezone);
     }
 
     /**
@@ -485,7 +479,7 @@ final class SitemapTest extends AbstractTest
     public function testUseAclRoles(): void
     {
         self::markTestSkipped();
-//        $acl = $this->_getAcl();
+//        $acl = $this->getAcl();
 //        $this->helper->setAuthorization($acl['acl']);
 //        $this->helper->setRole($acl['role']);
 //
@@ -505,7 +499,7 @@ final class SitemapTest extends AbstractTest
     public function testUseAclButNoRole(): void
     {
         self::markTestSkipped();
-//        $acl = $this->_getAcl();
+//        $acl = $this->getAcl();
 //        $this->helper->setAuthorization($acl['acl']);
 //        $this->helper->setRole(null);
 //
@@ -528,7 +522,7 @@ final class SitemapTest extends AbstractTest
     {
         $this->helper->setMaxDepth(0);
 
-        $expected = $this->_getExpected('sitemap/depth1.xml');
+        $expected = $this->getExpected('sitemap/depth1.xml');
         self::assertEquals(trim($expected), $this->helper->render());
     }
 
@@ -547,7 +541,7 @@ final class SitemapTest extends AbstractTest
     {
         $this->helper->setMinDepth(1);
 
-        $expected = $this->_getExpected('sitemap/depth2.xml');
+        $expected = $this->getExpected('sitemap/depth2.xml');
         self::assertEquals(trim($expected), $this->helper->render());
     }
 
@@ -567,7 +561,7 @@ final class SitemapTest extends AbstractTest
         $this->helper->setMinDepth(1);
         $this->helper->setMaxDepth(2);
 
-        $expected = $this->_getExpected('sitemap/depth3.xml');
+        $expected = $this->getExpected('sitemap/depth3.xml');
         self::assertEquals(trim($expected), $this->helper->render());
     }
 
@@ -586,7 +580,7 @@ final class SitemapTest extends AbstractTest
     {
         $this->helper->setUseXmlDeclaration(false);
 
-        $expected = $this->_getExpected('sitemap/nodecl.xml');
+        $expected = $this->getExpected('sitemap/nodecl.xml');
         self::assertEquals(trim($expected), $this->helper->render($this->nav2));
     }
 
@@ -640,7 +634,7 @@ final class SitemapTest extends AbstractTest
         $nav->addPage($page);
         $this->helper->setUseSitemapValidators(false);
 
-        $expected = $this->_getExpected('sitemap/invalid.xml');
+        $expected = $this->getExpected('sitemap/invalid.xml');
 
         // using assertEqualXMLStructure to prevent differences in libxml from invalidating test
         $expectedDom = new DOMDocument();
@@ -689,7 +683,7 @@ final class SitemapTest extends AbstractTest
     {
         $this->helper->setServerUrl('http://sub.example.org');
 
-        $expected = $this->_getExpected('sitemap/serverurl1.xml');
+        $expected = $this->getExpected('sitemap/serverurl1.xml');
         self::assertEquals(trim($expected), $this->helper->render());
     }
 
@@ -710,7 +704,7 @@ final class SitemapTest extends AbstractTest
     {
         $this->helper->setServerUrl('http://sub.example.org:8080/foo/');
 
-        $expected = $this->_getExpected('sitemap/serverurl2.xml');
+        $expected = $this->getExpected('sitemap/serverurl2.xml');
         self::assertEquals(trim($expected), $this->helper->render());
     }
 

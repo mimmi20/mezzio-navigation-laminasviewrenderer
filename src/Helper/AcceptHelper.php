@@ -77,11 +77,12 @@ final class AcceptHelper implements AcceptHelperInterface
             return false;
         }
 
-        $accept   = true;
-        $resource = $page->getResource();
+        $accept    = true;
+        $resource  = $page->getResource();
+        $privilege = $page->getPrivilege();
 
-        if (null !== $this->authorization && null !== $this->role && null !== $resource) {
-            $accept = $this->authorization->isGranted($this->role, $resource, $page->getPrivilege());
+        if (null !== $this->authorization && (null !== $resource || null !== $privilege)) {
+            $accept = $this->authorization->isGranted($this->role, $resource, $privilege);
         }
 
         if ($accept && $recursive) {
