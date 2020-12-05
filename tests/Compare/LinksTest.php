@@ -29,8 +29,6 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
  */
 final class LinksTest extends AbstractTest
 {
-    /** @codingStandardsIgnoreStart */
-
     /**
      * Class name for view helper to test
      *
@@ -44,8 +42,6 @@ final class LinksTest extends AbstractTest
      * @var Navigation\Links
      */
     protected $helper;
-
-    /** @codingStandardsIgnoreEnd */
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
@@ -133,31 +129,6 @@ final class LinksTest extends AbstractTest
         foreach ($this->helper->findAllByActive(true) as $page) {
             $page->active = false;
         }
-    }
-
-//    protected function tearDown()
-//    {
-//        return;
-//        $this->_doctypeHelper->setDoctype($this->_oldDoctype);
-//    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testCanRenderFromServiceAlias(): void
-    {
-        self::markTestSkipped();
-//        $sm = $this->serviceManager;
-//        $this->helper->setServiceLocator($sm);
-//
-//        $returned = $this->helper->render('Navigation');
-//        $this->assertEquals($returned, $this->_getExpected('links/default.html'));
     }
 
     /**
@@ -1015,32 +986,29 @@ final class LinksTest extends AbstractTest
 //        $this->assertEquals($expected, $actual);
     }
 
-    /** @codingStandardsIgnoreStart */
-
-    /**
-     * @return array
-     */
-    private function _getFlags(): array
-    {
-        // @codingStandardsIgnoreEnd
-        return [
-            Navigation\Links::RENDER_ALTERNATE => 'alternate',
-            Navigation\Links::RENDER_STYLESHEET => 'stylesheet',
-            Navigation\Links::RENDER_START => 'start',
-            Navigation\Links::RENDER_NEXT => 'next',
-            Navigation\Links::RENDER_PREV => 'prev',
-            Navigation\Links::RENDER_CONTENTS => 'contents',
-            Navigation\Links::RENDER_INDEX => 'index',
-            Navigation\Links::RENDER_GLOSSARY => 'glossary',
-            Navigation\Links::RENDER_CHAPTER => 'chapter',
-            Navigation\Links::RENDER_SECTION => 'section',
-            Navigation\Links::RENDER_SUBSECTION => 'subsection',
-            Navigation\Links::RENDER_APPENDIX => 'appendix',
-            Navigation\Links::RENDER_HELP => 'help',
-            Navigation\Links::RENDER_BOOKMARK => 'bookmark',
-            Navigation\Links::RENDER_CUSTOM => 'canonical',
-        ];
-    }
+//    /**
+//     * @return array
+//     */
+//    private function getFlags(): array
+//    {
+//        return [
+//            Navigation\Links::RENDER_ALTERNATE => 'alternate',
+//            Navigation\Links::RENDER_STYLESHEET => 'stylesheet',
+//            Navigation\Links::RENDER_START => 'start',
+//            Navigation\Links::RENDER_NEXT => 'next',
+//            Navigation\Links::RENDER_PREV => 'prev',
+//            Navigation\Links::RENDER_CONTENTS => 'contents',
+//            Navigation\Links::RENDER_INDEX => 'index',
+//            Navigation\Links::RENDER_GLOSSARY => 'glossary',
+//            Navigation\Links::RENDER_CHAPTER => 'chapter',
+//            Navigation\Links::RENDER_SECTION => 'section',
+//            Navigation\Links::RENDER_SUBSECTION => 'subsection',
+//            Navigation\Links::RENDER_APPENDIX => 'appendix',
+//            Navigation\Links::RENDER_HELP => 'help',
+//            Navigation\Links::RENDER_BOOKMARK => 'bookmark',
+//            Navigation\Links::RENDER_CUSTOM => 'canonical',
+//        ];
+//    }
 
     /**
      * @ throws \PHPUnit\Framework\ExpectationFailedException
@@ -1061,7 +1029,7 @@ final class LinksTest extends AbstractTest
 //        $actual   = [];
 //
 //        // build expected and actual result
-//        foreach ($this->_getFlags() as $newFlag => $type) {
+//        foreach ($this->getFlags() as $newFlag => $type) {
 //            // add forced relation
 //            $active->addRel($type, 'http://www.example.com/');
 //            $active->addRev($type, 'http://www.example.com/');
@@ -1185,8 +1153,6 @@ final class LinksTest extends AbstractTest
 //        $this->assertEquals($expected, $actual);
     }
 
-    /** @codingStandardsIgnoreStart */
-
     /**
      * Returns the contens of the expected $file, normalizes newlines
      *
@@ -1194,9 +1160,8 @@ final class LinksTest extends AbstractTest
      *
      * @return string
      */
-    protected function _getExpected(string $file): string
+    protected function getExpected(string $file): string
     {
-        // @codingStandardsIgnoreEnd
-        return str_replace("\n", PHP_EOL, parent::_getExpected($file));
+        return str_replace("\n", PHP_EOL, parent::getExpected($file));
     }
 }

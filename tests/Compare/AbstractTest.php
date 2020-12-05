@@ -21,6 +21,7 @@ use Laminas\Permissions\Acl\Role\GenericRole;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\HelperPluginManagerFactory;
@@ -52,8 +53,6 @@ abstract class AbstractTest extends TestCase
 {
     /** @var ServiceManager */
     protected $serviceManager;
-
-    /** @codingStandardsIgnoreStart */
 
     /**
      * Path to files needed for test
@@ -96,8 +95,6 @@ abstract class AbstractTest extends TestCase
      * @var Navigation
      */
     protected $nav3;
-
-    /** @codingStandardsIgnoreEnd */
 
     /**
      * Prepares the environment before running a test
@@ -146,8 +143,7 @@ abstract class AbstractTest extends TestCase
                 $navConfig->setRouteResult(RouteResult::fromRoute(
                     $route,
                     [
-                        'controller' => 'post',
-                        'action' => 'view',
+                        'route' => 'post',
                         'id' => '1337',
                     ]
                 ));
@@ -186,6 +182,10 @@ abstract class AbstractTest extends TestCase
                     'templates' => [
                         'map' => [
                             'test::menu' => __DIR__ . '/_files/mvc/views/menu.phtml',
+                            'test::menu-with-partials' => __DIR__ . '/_files/mvc/views/menu_with_partial_params.phtml',
+                            'test::bc' => __DIR__ . '/_files/mvc/views/bc.phtml',
+                            'test::bc-separator' => __DIR__ . '/_files/mvc/views/bc_separator.phtml',
+                            'test::bc-with-partials' => __DIR__ . '/_files/mvc/views/bc_with_partial_params.phtml',
                         ],
                     ],
                 ];
@@ -207,8 +207,6 @@ abstract class AbstractTest extends TestCase
         $sm->setAllowOverride(false);
     }
 
-    /** @codingStandardsIgnoreStart */
-
     /**
      * Returns the contens of the expected $file
      *
@@ -216,17 +214,14 @@ abstract class AbstractTest extends TestCase
      *
      * @return string
      */
-    protected function _getExpected(string $file): string
+    protected function getExpected(string $file): string
     {
-        /** @codingStandardsIgnoreEnd */
         $content = file_get_contents($this->files . '/expected/' . $file);
 
         self::assertIsString($content, sprintf('could not load file %s', $this->files . '/expected/' . $file));
 
         return $content;
     }
-
-    /** @codingStandardsIgnoreStart */
 
     /**
      * Sets up ACL
@@ -235,9 +230,8 @@ abstract class AbstractTest extends TestCase
      *
      * @return array
      */
-    protected function _getAcl(): array
+    protected function getAcl(): array
     {
-        /** @codingStandardsIgnoreEnd */
         $acl = new Acl();
 
         $acl->addRole(new GenericRole('guest'));
@@ -247,7 +241,7 @@ abstract class AbstractTest extends TestCase
 
         $acl->addResource(new GenericResource('guest_foo'));
         $acl->addResource(new GenericResource('member_foo'), 'guest_foo');
-        $acl->addResource(new GenericResource('admin_foo'), 'member_foo');
+        $acl->addResource(new GenericResource('admin_foo'));
         $acl->addResource(new GenericResource('special_foo'), 'member_foo');
 
         $acl->allow('guest', 'guest_foo');
@@ -256,19 +250,16 @@ abstract class AbstractTest extends TestCase
         $acl->allow('special', 'special_foo');
         $acl->allow('special', 'admin_foo', 'read');
 
-        return ['acl' => $acl, 'role' => 'special'];
+        return ['acl' => new LaminasAcl($acl), 'role' => 'special'];
     }
-
-    /** @codingStandardsIgnoreStart */
 
     /**
      * Returns translator
      *
      * @return Translator
      */
-    protected function _getTranslator(): Translator
+    protected function getTranslator(): Translator
     {
-        /** @codingStandardsIgnoreEnd */
         $loader               = new TestAsset\ArrayTranslator();
         $loader->translations = [
             'Page 1' => 'Side 1',
@@ -286,16 +277,13 @@ abstract class AbstractTest extends TestCase
         return $translator;
     }
 
-    /** @codingStandardsIgnoreStart */
-
     /**
      * Returns translator with text domain
      *
      * @return Translator
      */
-    protected function _getTranslatorWithTextDomain(): Translator
+    protected function getTranslatorWithTextDomain(): Translator
     {
-        /** @codingStandardsIgnoreEnd */
         $loader1               = new TestAsset\ArrayTranslator();
         $loader1->translations = [
             'Page 1' => 'TextDomain1 1',

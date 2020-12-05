@@ -20,6 +20,8 @@ use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
+use Mezzio\Navigation\Navigation;
+use Mezzio\Navigation\Page\PageFactory;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs.
@@ -29,8 +31,6 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
  */
 final class BreadcrumbsTest extends AbstractTest
 {
-    /** @codingStandardsIgnoreStart */
-
     /**
      * Class name for view helper to test.
      *
@@ -44,8 +44,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @var Breadcrumbs
      */
     protected $helper;
-
-    /** @codingStandardsIgnoreEnd */
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
@@ -143,6 +141,7 @@ final class BreadcrumbsTest extends AbstractTest
     public function testHelperEntryPointWithContainerParam(): void
     {
         $returned = $this->helper->__invoke($this->nav2);
+
         self::assertEquals($this->helper, $returned);
         self::assertEquals($this->nav2, $returned->getContainer());
     }
@@ -166,21 +165,23 @@ final class BreadcrumbsTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      *
      * @return void
      */
     public function testSetSeparator(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setSeparator('foo');
-//
-//        $expected = $this->_getExpected('bc/separator.html');
-//        $this->assertEquals($expected, $this->helper->render());
+        $this->helper->setSeparator('foo');
+
+        $expected = $this->getExpected('bc/separator.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -197,8 +198,10 @@ final class BreadcrumbsTest extends AbstractTest
     {
         $this->helper->setMaxDepth(1);
 
-        $expected = $this->_getExpected('bc/maxdepth.html');
-        self::assertEquals($expected, $this->helper->render());
+        $expected = $this->getExpected('bc/maxdepth.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -216,25 +219,29 @@ final class BreadcrumbsTest extends AbstractTest
         $this->helper->setMinDepth(1);
 
         $expected = '';
-        self::assertEquals($expected, $this->helper->render($this->nav2));
+        $actual   = $this->helper->render($this->nav2);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testLinkLastElement(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setLinkLast(true);
-//
-//        $expected = $this->_getExpected('bc/linklast.html');
-//        $this->assertEquals($expected, $this->helper->render());
+        $this->helper->setLinkLast(true);
+
+        $expected = $this->getExpected('bc/linklast.html');
+        $actual   = $this->helper->render();
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -258,109 +265,111 @@ final class BreadcrumbsTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderSuppliedContainerWithoutInterfering(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setMinDepth(0);
-//
-//        $rendered1 = $this->_getExpected('bc/default.html');
-//        $rendered2 = 'Site 2';
-//
-//        $expected = [
-//            'registered'       => $rendered1,
-//            'supplied'         => $rendered2,
-//            'registered_again' => $rendered1,
-//        ];
-//
-//        $actual = [
-//            'registered'       => $this->helper->render(),
-//            'supplied'         => $this->helper->render($this->nav2),
-//            'registered_again' => $this->helper->render(),
-//        ];
-//
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setMinDepth(0);
+        self::assertSame(0, $this->helper->getMinDepth());
+
+        $rendered1 = $this->getExpected('bc/default.html');
+        $rendered2 = 'Site 2';
+
+        $expected = [
+            'registered' => $rendered1,
+            'supplied' => $rendered2,
+            'registered_again' => $rendered1,
+        ];
+
+        $actual = [
+            'registered' => $this->helper->render(),
+            'supplied' => $this->helper->render($this->nav2),
+            'registered_again' => $this->helper->render(),
+        ];
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testUseAclResourceFromPages(): void
     {
-        self::markTestSkipped();
-//        $acl = $this->_getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['role']);
-//
-//        $expected = $this->_getExpected('bc/acl.html');
-//        $this->assertEquals($expected, $this->helper->render());
+        $acl = $this->getAcl();
+        $this->helper->setAuthorization($acl['acl']);
+        $this->helper->setRole($acl['role']);
+
+        $expected = $this->getExpected('bc/acl.html');
+        self::assertEquals($expected, $this->helper->render());
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderingPartial(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial('bc.phtml');
-//
-//        $expected = $this->_getExpected('bc/partial.html');
-//        $this->assertEquals($expected, $this->helper->render());
+        $this->helper->setPartial('test::bc');
+
+        $expected = $this->getExpected('bc/partial.html');
+        self::assertEquals($expected, $this->helper->render());
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderingPartialWithSeparator(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial('bc_separator.phtml')->setSeparator(' / ');
-//
-//        $expected = trim($this->_getExpected('bc/partialwithseparator.html'));
-//        $this->assertEquals($expected, $this->helper->render());
+        $this->helper->setPartial('test::bc-separator')->setSeparator(' / ');
+
+        $expected = trim($this->getExpected('bc/partialwithseparator.html'));
+        self::assertEquals($expected, $this->helper->render());
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderingPartialBySpecifyingAnArrayAsPartial(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial(['bc.phtml', 'application']);
-//
-//        $expected = $this->_getExpected('bc/partial.html');
-//        $this->assertEquals($expected, $this->helper->render());
+        $this->helper->setPartial(['test::bc', 'application']);
+
+        $expected = $this->getExpected('bc/partial.html');
+        self::assertEquals($expected, $this->helper->render());
     }
 
     /**
@@ -386,46 +395,64 @@ final class BreadcrumbsTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testRenderingPartialWithParams(): void
     {
-        self::markTestSkipped();
-//        $this->helper->setPartial('bc_with_partial_params.phtml')->setSeparator(' / ');
-//        $expected = $this->_getExpected('bc/partial_with_params.html');
-//        $actual = $this->helper->renderPartialWithParams(['variable' => 'test value']);
-//        $this->assertEquals($expected, $actual);
+        $this->helper->setPartial('test::bc-with-partials')->setSeparator(' / ');
+
+        $expected = $this->getExpected('bc/partial_with_params.html');
+        $actual   = $this->helper->renderPartialWithParams(['variable' => 'test value']);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testLastBreadcrumbShouldBeEscaped(): void
     {
-        self::markTestSkipped();
-//        $container = new Navigation([
-//            [
-//                'label'  => 'Live & Learn',
-//                'uri'    => '#',
-//                'active' => true,
-//            ],
-//        ]);
-//
-//        $expected = 'Live &amp; Learn';
-//        $actual = $this->helper->setMinDepth(0)->render($container);
-//
-//        $this->assertEquals($expected, $actual);
+        $container = new Navigation();
+
+        $page = (new PageFactory())->factory(
+            [
+                'label' => 'Live & Learn',
+                'uri' => '#',
+                'active' => true,
+            ]
+        );
+
+        $container->addPage($page);
+
+        $expected = 'Live &amp; Learn';
+        $actual   = $this->helper->setMinDepth(0)->render($container);
+
+        self::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Returns the contens of the expected $file, normalizes newlines.
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    protected function getExpected(string $file): string
+    {
+        return str_replace(["\r\n", "\n", "\r", '##lb##'], ['##lb##', '##lb##', '##lb##', PHP_EOL], parent::getExpected($file));
     }
 }

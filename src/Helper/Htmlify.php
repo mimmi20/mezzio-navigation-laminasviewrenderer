@@ -81,7 +81,17 @@ final class Htmlify implements HtmlifyInterface
             $element = 'span';
         }
 
-        $html = '<' . $element . $this->htmlAttribs($prefix, array_merge($attribs, $page->getCustomProperties())) . '>';
+        // remove sitemap specific attributes
+        $attribs = array_diff_key(
+            array_merge($attribs, $page->getCustomProperties()),
+            [
+                'lastmod' => 1,
+                'changefreq' => 1,
+                'priority' => 1,
+            ]
+        );
+
+        $html = '<' . $element . $this->htmlAttribs($prefix, $attribs) . '>';
 
         if (true === $escapeLabel) {
             $label = ($this->escaper)($label);

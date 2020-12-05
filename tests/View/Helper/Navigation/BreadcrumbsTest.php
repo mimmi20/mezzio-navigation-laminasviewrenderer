@@ -1427,6 +1427,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1583,6 +1584,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1746,6 +1748,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -1837,7 +1841,7 @@ final class BreadcrumbsTest extends TestCase
 
         $expected = [];
 
-        self::assertSame($expected, $helper->findActive(null, 0, 42));
+        self::assertSame($expected, $helper->findActive(null, 1, 42));
     }
 
     /**
@@ -1845,6 +1849,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1956,7 +1961,7 @@ final class BreadcrumbsTest extends TestCase
 
         $expected = [];
 
-        $helper->setMinDepth(0);
+        $helper->setMinDepth(1);
         $helper->setMaxDepth(42);
 
         self::assertSame($expected, $helper->findActive($name));
@@ -1967,6 +1972,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -2086,6 +2092,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void

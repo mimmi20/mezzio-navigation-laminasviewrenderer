@@ -164,6 +164,8 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param string             $liActiveClass      CSS class for active LI
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -306,6 +308,8 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param string             $liActiveClass      CSS class for active LI
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -347,8 +351,11 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         // iterate container
         $prevDepth = -1;
         foreach ($iterator as $page) {
+            \assert($page instanceof PageInterface);
+
             $depth    = $iterator->getDepth();
             $isActive = $page->isActive(true);
+
             if ($depth < $minDepth || !$this->accept($page)) {
                 // page is below minDepth or not accepted by acl/visibility
                 continue;
@@ -357,6 +364,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             if ($onlyActive && !$isActive) {
                 // page is not active itself, but might be in the active branch
                 $accept = false;
+
                 if ($foundPage) {
                     if ($foundPage->hasPage($page)) {
                         // accept if page is a direct child of the active page

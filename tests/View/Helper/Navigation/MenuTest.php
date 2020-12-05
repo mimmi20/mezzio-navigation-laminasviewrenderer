@@ -1194,6 +1194,7 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1343,6 +1344,7 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1499,6 +1501,8 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -1591,6 +1595,7 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1620,9 +1625,6 @@ final class MenuTest extends TestCase
             ->method('debug');
 
         $name = 'Mezzio\\Navigation\\Top';
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1753,6 +1755,7 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -1865,6 +1868,7 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void

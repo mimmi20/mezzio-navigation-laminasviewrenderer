@@ -382,7 +382,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
      */
     public function getMinDepth(): ?int
     {
-        if (!is_int($this->minDepth) || 1 > $this->minDepth) {
+        if (!is_int($this->minDepth) || 0 > $this->minDepth) {
             return 1;
         }
 

@@ -213,13 +213,11 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
         $hash      = spl_object_hash($container) . spl_object_hash($helper);
 
         if (!isset($this->injected[$hash])) {
-            $helper->setContainer($container);
-
-            if ($this->getInjectAuthorization()) {
-                $this->inject($helper);
-            }
+            $this->inject($helper);
 
             $this->injected[$hash] = true;
+        } elseif ($this->getInjectContainer()) {
+            $helper->setContainer($container);
         }
 
         return $helper;
@@ -231,11 +229,18 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      *
      * @param HelperInterface $helper helper instance
      *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
      * @return void
      */
     private function inject(HelperInterface $helper): void
     {
-        if (!$helper->hasAuthorization()) {
+        if ($this->getInjectContainer() && !$helper->hasContainer()) {
+            $helper->setContainer($this->getContainer());
+        }
+
+        if ($this->getInjectAuthorization() && !$helper->hasAuthorization()) {
             $helper->setAuthorization($this->getAuthorization());
         }
 

@@ -541,7 +541,7 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::once())
+        $menu->expects(self::exactly(2))
             ->method('setContainer')
             ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
         $menu->expects(self::once())
@@ -639,7 +639,7 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::once())
+        $menu->expects(self::exactly(2))
             ->method('setContainer')
             ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
         $menu->expects(self::once())
@@ -1583,6 +1583,69 @@ final class NavigationTest extends TestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetInjectContainer(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('log');
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
+
+        self::assertTrue($helper->getInjectContainer());
+
+        $helper->setInjectContainer(false);
+
+        self::assertFalse($helper->getInjectContainer());
+    }
+
+    /**
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
@@ -2013,6 +2076,7 @@ final class NavigationTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -2148,6 +2212,7 @@ final class NavigationTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -2290,6 +2355,8 @@ final class NavigationTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -2368,6 +2435,7 @@ final class NavigationTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -2397,9 +2465,6 @@ final class NavigationTest extends TestCase
             ->method('debug');
 
         $name = 'Mezzio\\Navigation\\Top';
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2516,6 +2581,7 @@ final class NavigationTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -2614,6 +2680,7 @@ final class NavigationTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void

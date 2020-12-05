@@ -96,6 +96,13 @@ trait HelperTrait
     private $serviceLocator;
 
     /**
+     * Whether container should be injected when proxying
+     *
+     * @var bool
+     */
+    private $injectContainer = true;
+
+    /**
      * Whether Authorization should be used for filtering out pages
      *
      * @var bool
@@ -172,6 +179,30 @@ trait HelperTrait
     }
 
     /**
+     * Sets whether container should be injected when proxying
+     *
+     * @param bool $injectContainer
+     *
+     * @return self
+     */
+    public function setInjectContainer(bool $injectContainer = true): self
+    {
+        $this->injectContainer = $injectContainer;
+
+        return $this;
+    }
+
+    /**
+     * Returns whether container should be injected when proxying
+     *
+     * @return bool
+     */
+    public function getInjectContainer()
+    {
+        return $this->injectContainer;
+    }
+
+    /**
      * Magic overload: Proxy calls to the navigation container
      *
      * @param string $method    method name in container
@@ -234,15 +265,21 @@ trait HelperTrait
      *                                                             depth required.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return array an associative array with the values 'depth' and 'page',
      *               or an empty array if not found
      */
     final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
     {
-        $this->setContainer($container);
+        $container = $this->containerParser->parseContainer($container);
 
-        if (!$this->container instanceof Navigation\ContainerInterface) {
+        if (null === $container) {
+            $container = $this->getContainer();
+        }
+
+        if (!$container instanceof Navigation\ContainerInterface) {
             return [];
         }
 
@@ -257,7 +294,7 @@ trait HelperTrait
         $found      = null;
         $foundDepth = -1;
         $iterator   = new RecursiveIteratorIterator(
-            $this->container,
+            $container,
             RecursiveIteratorIterator::CHILD_FIRST
         );
 
