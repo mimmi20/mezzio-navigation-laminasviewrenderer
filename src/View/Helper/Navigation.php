@@ -117,7 +117,6 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
         try {
             $helper = $this->findHelper($method, true);
         } catch (Exception\RuntimeException $e) {
-            //var_dump($e);
             $this->logger->err($e);
 
             // default behaviour: proxy call to container
@@ -213,6 +212,8 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
         $hash      = spl_object_hash($container) . spl_object_hash($helper);
 
         if (!isset($this->injected[$hash])) {
+            $helper->setContainer();
+
             $this->inject($helper);
 
             $this->injected[$hash] = true;
