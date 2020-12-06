@@ -675,12 +675,12 @@ trait HelperTrait
     /**
      * Sets default Authorization to use if another Authorization is not explicitly set
      *
-     * @param \Mezzio\GenericAuthorization\AuthorizationInterface $authorization [optional] Authorization object. Default is null, which
-     *                                                                           sets no Authorization object.
+     * @param \Mezzio\GenericAuthorization\AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which
+     *                                                                                sets no Authorization object.
      *
      * @return void
      */
-    final public static function setDefaultAuthorization(AuthorizationInterface $authorization): void
+    final public static function setDefaultAuthorization(?AuthorizationInterface $authorization = null): void
     {
         static::$defaultAuthorization = $authorization;
     }
@@ -689,12 +689,12 @@ trait HelperTrait
      * Sets default Authorization role(s) to use when iterating pages if not explicitly
      * set later with {@link setRole()}
      *
-     * @param string $role [optional] role to set. Expects null or string. Default is null, which
-     *                     sets no default role.
+     * @param string|null $role [optional] role to set. Expects null or string. Default is null, which
+     *                          sets no default role.
      *
      * @return void
      */
-    final public static function setDefaultRole(string $role): void
+    final public static function setDefaultRole(?string $role = null): void
     {
         static::$defaultRole = $role;
     }

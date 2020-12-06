@@ -41,6 +41,19 @@ final class NavigationTest extends TestCase
      *
      * @return void
      */
+    protected function tearDown(): void
+    {
+        Navigation::setDefaultAuthorization(null);
+        Navigation::setDefaultRole(null);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
     public function testSetPluginManager(): void
     {
         $logger = $this->getMockBuilder(Logger::class)
@@ -541,9 +554,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::exactly(2))
+        $menu->expects(self::exactly(3))
             ->method('setContainer')
-            ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -639,9 +652,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::exactly(2))
+        $menu->expects(self::exactly(3))
             ->method('setContainer')
-            ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -820,9 +833,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::once())
+        $menu->expects(self::exactly(2))
             ->method('setContainer')
-            ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -996,9 +1009,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\MenuInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::once())
+        $menu->expects(self::exactly(2))
             ->method('setContainer')
-            ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -3029,9 +3042,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::once())
+        $menu->expects(self::exactly(2))
             ->method('setContainer')
-            ->with(new IsInstanceOf(\Mezzio\Navigation\Navigation::class));
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);

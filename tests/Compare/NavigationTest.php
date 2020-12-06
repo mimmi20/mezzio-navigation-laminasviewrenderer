@@ -14,11 +14,13 @@ namespace MezzioTest\Navigation\LaminasView\Compare;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\Renderer\PhpRenderer;
+use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Navigation as Container;
+use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\Uri;
 
 /**
@@ -93,6 +95,19 @@ final class NavigationTest extends AbstractTest
 
         // set nav1 in helper as default
         $this->helper->setContainer($this->nav1);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        Navigation::setDefaultAuthorization(null);
+        Navigation::setDefaultRole(null);
     }
 
     /**
@@ -304,7 +319,7 @@ final class NavigationTest extends AbstractTest
      *
      * @return void
      */
-    public function testInjectingAcl(): void
+    public function testInjectingAuthorization(): void
     {
         // setup
         $acl = $this->getAcl();
@@ -312,9 +327,9 @@ final class NavigationTest extends AbstractTest
         $this->helper->setRole($acl['role']);
 
         $expected = $this->getExpected('menu/acl.html');
-        $actual = $this->helper->render();
+        $actual   = $this->helper->render();
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -337,100 +352,36 @@ final class NavigationTest extends AbstractTest
         $this->helper->setInjectAuthorization(false);
 
         $expected = $this->getExpected('menu/default1.html');
-        $actual = $this->helper->render();
+        $actual   = $this->helper->render();
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     *
-     * @requires extension intl
-     */
-    public function testInjectingTranslator(): void
-    {
-        self::markTestSkipped();
-//        $expected = $this->_getExpected('menu/translated.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     *
-     * @requires extension intl
-     */
-    public function testDisablingTranslatorInjection(): void
-    {
-        self::markTestSkipped();
-//        $expected = $this->_getExpected('menu/default1.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testTranslatorMethods(): void
-    {
-        self::markTestSkipped();
-//        $translatorMock = $this->prophesize(Translator::class)->reveal();
-//        $this->helper->setTranslator($translatorMock, 'foo');
-//
-//        $this->assertEquals($translatorMock, $this->helper->getTranslator());
-//        $this->assertEquals('foo', $this->helper->getTranslatorTextDomain());
-//        $this->assertTrue($this->helper->hasTranslator());
-//        $this->assertTrue($this->helper->isTranslatorEnabled());
-//
-//        $this->helper->setTranslatorEnabled(false);
-//        $this->assertFalse($this->helper->isTranslatorEnabled());
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
     public function testSpecifyingDefaultProxy(): void
     {
-        self::markTestSkipped();
-//        $expected = [
-//            'breadcrumbs' => $this->_getExpected('bc/default.html'),
-//            'menu' => $this->_getExpected('menu/default1.html')
-//        ];
-//        $actual = [];
-//
-//        // result
-//        $this->helper->setDefaultProxy('breadcrumbs');
-//        $actual['breadcrumbs'] = $this->helper->render($this->nav1);
-//        $this->helper->setDefaultProxy('menu');
-//        $actual['menu'] = $this->helper->render($this->nav1);
-//
-//        $this->assertEquals($expected, $actual);
+        $expected = [
+            'breadcrumbs' => $this->getExpected('bc/default.html'),
+            'menu' => $this->getExpected('menu/default1.html'),
+        ];
+        $actual = [];
+
+        // result
+        $this->helper->setDefaultProxy('breadcrumbs');
+        $actual['breadcrumbs'] = $this->helper->render($this->nav1);
+        $this->helper->setDefaultProxy('menu');
+        $actual['menu'] = $this->helper->render($this->nav1);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -445,75 +396,59 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
      */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
-        self::markTestSkipped();
-//        $acl = new Acl\Acl();
-//        $this->helper->setAuthorization($acl);
-//        $this->assertEquals($acl, $this->helper->getAuthorization());
+        $acl = $this->createMock(AuthorizationInterface::class);
+        $this->helper->setAuthorization($acl);
+        self::assertEquals($acl, $this->helper->getAuthorization());
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
      */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetDefaultAuthorization(): void
     {
-        self::markTestSkipped();
-//        $acl = new Acl\Acl();
-//        Navigation::setDefaultAuthorization($acl);
-//        $actual = $this->helper->getAuthorization();
-//        Navigation::setDefaultAuthorization(null);
-//        $this->assertEquals($acl, $actual);
+        $acl = $this->createMock(AuthorizationInterface::class);
+        Navigation::setDefaultAuthorization($acl);
+        $actual = $this->helper->getAuthorization();
+        Navigation::setDefaultAuthorization(null);
+        self::assertEquals($acl, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
      */
     public function testsetDefaultAuthorizationAcceptsNull(): void
     {
-        self::markTestSkipped();
-//        $acl = new Acl\Acl();
-//        Navigation::setDefaultAuthorization($acl);
-//        Navigation::setDefaultAuthorization(null);
-//        $this->assertNull($this->helper->getAuthorization());
+        $acl = $this->createMock(AuthorizationInterface::class);
+        Navigation::setDefaultAuthorization($acl);
+        Navigation::setDefaultAuthorization(null);
+        self::assertNull($this->helper->getAuthorization());
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
      */
     public function testsetDefaultAuthorizationAcceptsNoParam(): void
     {
-        self::markTestSkipped();
-//        $acl = new Acl\Acl();
-//        Navigation::setDefaultAuthorization($acl);
-//        Navigation::setDefaultAuthorization();
-//        $this->assertNull($this->helper->getAuthorization());
+        $acl = $this->createMock(AuthorizationInterface::class);
+        Navigation::setDefaultAuthorization($acl);
+        Navigation::setDefaultAuthorization();
+        self::assertNull($this->helper->getAuthorization());
     }
 
     /**
@@ -528,99 +463,63 @@ final class NavigationTest extends AbstractTest
         self::assertEquals('member', $this->helper->getRole());
     }
 
-//    /** @var string */
-//    private $errorMessage;
-//
-//    /**
-//     * @param int    $code
-//     * @param string $msg
-//     * @param string $file
-//     * @param int    $line
-//     * @param array  $c
-//     *
-//     * @return void
-//     */
-//    public function toStringErrorHandler($code, $msg, $file, $line, array $c): void
-//    {
-//        $this->errorMessage = $msg;
-//    }
-
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testMagicToStringShouldNotThrowException(): void
-    {
-        self::markTestSkipped();
-//        set_error_handler([$this, 'toStringErrorHandler']);
-//        $this->helper->menu()->setPartial([1337]);
-//        $this->helper->__toString();
-//        restore_error_handler();
-//
-//        $this->assertContains('array must contain', $this->_errorMessage);
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
     public function testPageIdShouldBeNormalized(): void
     {
-        self::markTestSkipped();
-//        $nl = PHP_EOL;
-//
-//        $pageFactory = new PageFactory();
-//
-//        $pages = [
-//            $pageFactory->factory(
-//                [
-//                    'label' => 'Page 1',
-//                    'id'    => 'p1',
-//                    'uri'   => 'p1'
-//                ]
-//            ),
-//            $pageFactory->factory(
-//                [
-//                    'label' => 'Page 2',
-//                    'id'    => 'p2',
-//                    'uri'   => 'p2'
-//                ]
-//            ),
-//        ];
-//
-//        $container = new Container();
-//        $container->setPages($pages);
-//
-//        $expected = '<ul class="navigation">' . $nl
-//                  . '    <li>' . $nl
-//                  . '        <a id="menu-p1" href="p1">Page 1</a>' . $nl
-//                  . '    </li>' . $nl
-//                  . '    <li>' . $nl
-//                  . '        <a id="menu-p2" href="p2">Page 2</a>' . $nl
-//                  . '    </li>' . $nl
-//                  . '</ul>';
-//
-//        $actual = $this->helper->render($container);
-//
-//        $this->assertEquals($expected, $actual);
+        $nl = PHP_EOL;
+
+        $pageFactory = new PageFactory();
+
+        $pages = [
+            $pageFactory->factory(
+                [
+                    'label' => 'Page 1',
+                    'id' => 'p1',
+                    'uri' => 'p1',
+                ]
+            ),
+            $pageFactory->factory(
+                [
+                    'label' => 'Page 2',
+                    'id' => 'p2',
+                    'uri' => 'p2',
+                ]
+            ),
+        ];
+
+        $container = new Container();
+        $container->setPages($pages);
+
+        $expected = '<ul class="navigation">' . $nl
+                  . '    <li>' . $nl
+                  . '        <a id="menu-p1" href="p1">Page 1</a>' . $nl
+                  . '    </li>' . $nl
+                  . '    <li>' . $nl
+                  . '        <a id="menu-p2" href="p2">Page 2</a>' . $nl
+                  . '    </li>' . $nl
+                  . '</ul>';
+
+        $actual = $this->helper->render($container);
+
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      *
@@ -628,62 +527,61 @@ final class NavigationTest extends AbstractTest
      */
     public function testRenderInvisibleItem(): void
     {
-        self::markTestSkipped();
-//        $pageFactory = new PageFactory();
-//
-//        $pages = [
-//            $pageFactory->factory(
-//                [
-//                    'label' => 'Page 1',
-//                    'id'    => 'p1',
-//                    'uri'   => 'p1'
-//                ]
-//            ),
-//            $pageFactory->factory(
-//                [
-//                    'label'   => 'Page 2',
-//                    'id'      => 'p2',
-//                    'uri'     => 'p2',
-//                    'visible' => false
-//                ]
-//            ),
-//        ];
-//
-//        $container = new Container();
-//        $container->setPages($pages);
-//
-//        $render = $this->helper->menu()->render($container);
-//
-//        $this->assertNotContains('p2', $render);
-//
-//        $this->helper->menu()->setRenderInvisible();
-//
-//        $render = $this->helper->menu()->render($container);
-//
-//        $this->assertContains('p2', $render);
+        $pageFactory = new PageFactory();
+
+        $pages = [
+            $pageFactory->factory(
+                [
+                    'label' => 'Page 1',
+                    'id' => 'p1',
+                    'uri' => 'p1',
+                ]
+            ),
+            $pageFactory->factory(
+                [
+                    'label' => 'Page 2',
+                    'id' => 'p2',
+                    'uri' => 'p2',
+                    'visible' => false,
+                ]
+            ),
+        ];
+
+        $container = new Container();
+        $container->setPages($pages);
+
+        $render = $this->helper->menu()->render($container);
+
+        self::assertNotContains('p2', $render);
+
+        $this->helper->menu()->setRenderInvisible();
+
+        $render = $this->helper->menu()->render($container);
+
+        self::assertContains('p2', $render);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testMultipleNavigations(): void
     {
-        self::markTestSkipped();
-//        $menu     = ($this->helper)('nav1')->menu();
-//        $actual   = spl_object_hash($this->nav1);
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $menu     = ($this->helper)('nav2')->menu();
-//        $actual   = spl_object_hash($this->nav2);
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
+        $menu     = ($this->helper)('nav1')->menu();
+        $actual   = spl_object_hash($this->nav1);
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($this->nav1, $menu->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $menu     = ($this->helper)('nav2')->menu();
+        $actual   = spl_object_hash($this->nav2);
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($this->nav2, $menu->getContainer());
+        self::assertEquals($expected, $actual);
     }
 
     /**
