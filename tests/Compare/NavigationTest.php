@@ -294,50 +294,52 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
      */
     public function testInjectingAcl(): void
     {
-        self::markTestSkipped();
-//        // setup
-//        $acl = $this->getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['role']);
-//
-//        $expected = $this->_getExpected('menu/acl.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
+        // setup
+        $acl = $this->getAcl();
+        $this->helper->setAuthorization($acl['acl']);
+        $this->helper->setRole($acl['role']);
+
+        $expected = $this->getExpected('menu/acl.html');
+        $actual = $this->helper->render();
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
      */
-    public function testDisablingAclInjection(): void
+    public function testDisablingInjectAuthorization(): void
     {
-        self::markTestSkipped();
-//        // setup
-//        $acl = $this->getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['role']);
-//        //$this->helper->setInjectAcl(false);
-//
-//        $expected = $this->_getExpected('menu/default1.html');
-//        $actual = $this->helper->render();
-//
-//        $this->assertEquals($expected, $actual);
+        // setup
+        $acl = $this->getAcl();
+        $this->helper->setAuthorization($acl['acl']);
+        $this->helper->setRole($acl['role']);
+        $this->helper->setInjectAuthorization(false);
+
+        $expected = $this->getExpected('menu/default1.html');
+        $actual = $this->helper->render();
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**
