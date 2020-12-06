@@ -180,6 +180,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             foreach ($types as $relation => $pages) {
                 foreach ($pages as $page) {
                     $r = $this->renderLink($page, $attrib, $relation);
+
                     if (!$r) {
                         continue;
                     }
