@@ -585,11 +585,10 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      *
@@ -597,28 +596,26 @@ final class NavigationTest extends AbstractTest
      */
     public function testMultipleNavigationsWithDifferentHelpersAndDifferentContainers(): void
     {
-        self::markTestSkipped();
-//        $menu     = ($this->helper)('nav1')->menu();
-//        $actual   = spl_object_hash($this->nav1);
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $breadcrumbs = ($this->helper)('nav2')->breadcrumbs();
-//        $actual      = spl_object_hash($this->nav2);
-//        $expected    = spl_object_hash($breadcrumbs->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $links    = ($this->helper)()->links();
-//        $expected = spl_object_hash($links->getContainer());
-//        $this->assertEquals($expected, $actual);
+        $menu     = ($this->helper)('nav1')->menu();
+        $actual   = spl_object_hash($this->nav1);
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $breadcrumbs = ($this->helper)('nav2')->breadcrumbs();
+        $actual      = spl_object_hash($this->nav2);
+        $expected    = spl_object_hash($breadcrumbs->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $links    = ($this->helper)()->links();
+        $expected = spl_object_hash($links->getContainer());
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      *
@@ -626,28 +623,26 @@ final class NavigationTest extends AbstractTest
      */
     public function testMultipleNavigationsWithDifferentHelpersAndSameContainer(): void
     {
-        self::markTestSkipped();
-//        // Tests
-//        $menu     = ($this->helper)('nav1')->menu();
-//        $actual   = spl_object_hash($this->nav1);
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $breadcrumbs = ($this->helper)('nav1')->breadcrumbs();
-//        $expected    = spl_object_hash($breadcrumbs->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $links    = ($this->helper)()->links();
-//        $expected = spl_object_hash($links->getContainer());
-//        $this->assertEquals($expected, $actual);
+        // Tests
+        $menu     = ($this->helper)('nav1')->menu();
+        $actual   = spl_object_hash($this->nav1);
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $breadcrumbs = ($this->helper)('nav1')->breadcrumbs();
+        $expected    = spl_object_hash($breadcrumbs->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $links    = ($this->helper)()->links();
+        $expected = spl_object_hash($links->getContainer());
+        self::assertEquals($expected, $actual);
     }
 
     /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      *
@@ -655,20 +650,19 @@ final class NavigationTest extends AbstractTest
      */
     public function testMultipleNavigationsWithSameHelperAndSameContainer(): void
     {
-        self::markTestSkipped();
-//        // Test
-//        $menu     = ($this->helper)('nav1')->menu();
-//        $actual   = spl_object_hash($this->nav1);
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $menu     = ($this->helper)('nav1')->menu();
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
-//
-//        $menu    = ($this->helper)()->menu();
-//        $expected = spl_object_hash($menu->getContainer());
-//        $this->assertEquals($expected, $actual);
+        // Test
+        $menu     = ($this->helper)('nav1')->menu();
+        $actual   = spl_object_hash($this->nav1);
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $menu     = ($this->helper)('nav1')->menu();
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($expected, $actual);
+
+        $menu     = ($this->helper)()->menu();
+        $expected = spl_object_hash($menu->getContainer());
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -686,34 +680,6 @@ final class NavigationTest extends AbstractTest
         $this->helper->setView($view);
 
         self::assertEquals($view, $pluginManager->getRenderer());
-    }
-
-    /**
-     * @ throws \PHPUnit\Framework\ExpectationFailedException
-     * @ throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @ throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     *
-     * @group 49
-     */
-    public function testInjectsLazyInstantiatedPluginManagerWithCurrentServiceLocator(): void
-    {
-        self::markTestSkipped();
-//        $services = $this->prophesize(ContainerInterface::class)->reveal();
-//
-//        $plugins = $this->helper->getPluginManager();
-//        $this->assertInstanceOf(Navigation\PluginManager::class, $plugins);
-//
-//        if (method_exists($plugins, 'configure')) {
-//            // v3
-//            $this->assertAttributeSame($services, 'creationContext', $plugins);
-//        } else {
-//            // v2
-//            $this->assertSame($services, $plugins->getServiceLocator());
-//        }
     }
 
     /**
