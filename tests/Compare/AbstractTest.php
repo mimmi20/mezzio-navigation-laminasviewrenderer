@@ -156,7 +156,7 @@ abstract class AbstractTest extends TestCase
         $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
         $sm->setFactory(
             'config',
-            static function () use ($config) {
+            static function () use ($config): array {
                 return [
                     'navigation' => [
                         'default' => $config->get('nav_test1'),

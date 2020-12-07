@@ -1049,10 +1049,10 @@ final class LinksTest extends AbstractTest
         $expected = [];
         $actual   = [];
 
-        foreach ($search as $type => $active) {
+        foreach ($search as $type => $activeLabel) {
             $expected[$type] = false;
 
-            $active = $this->helper->findOneByLabel($active);
+            $active = $this->helper->findOneByLabel($activeLabel);
 
             self::assertInstanceOf(PageInterface::class, $active);
 

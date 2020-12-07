@@ -324,7 +324,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
             $partial = $this->getPartial();
         }
 
-        if (empty($partial)) {
+        if (null === $partial || '' === $partial || [] === $partial) {
             throw new Exception\RuntimeException(
                 'Unable to render breadcrumbs: No partial view script provided'
             );

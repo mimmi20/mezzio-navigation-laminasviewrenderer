@@ -128,28 +128,28 @@ final class SitemapTest extends AbstractTest
         );
 
         $uri = new class() implements UriInterface {
-            /** @var string|null */
+            /** @var string */
             private $schema = 'http';
 
-            /** @var string|null */
+            /** @var string */
             private $host = 'localhost';
 
             /** @var int|null */
             private $port = 80;
 
-            /** @var string|null */
+            /** @var string */
             private $path = '/';
 
-            /** @var string|null */
-            private $query;
+            /** @var string */
+            private $query = '';
 
-            /** @var string|null */
-            private $fragment;
+            /** @var string */
+            private $fragment = '';
 
             /**
-             * @return string|null
+             * @return string
              */
-            public function getScheme(): ?string
+            public function getScheme(): string
             {
                 return $this->schema;
             }
@@ -171,9 +171,9 @@ final class SitemapTest extends AbstractTest
             }
 
             /**
-             * @return string|null
+             * @return string
              */
-            public function getHost(): ?string
+            public function getHost(): string
             {
                 return $this->host;
             }
@@ -187,25 +187,25 @@ final class SitemapTest extends AbstractTest
             }
 
             /**
-             * @return string|null
+             * @return string
              */
-            public function getPath(): ?string
+            public function getPath(): string
             {
                 return $this->path;
             }
 
             /**
-             * @return string|null
+             * @return string
              */
-            public function getQuery(): ?string
+            public function getQuery(): string
             {
                 return $this->query;
             }
 
             /**
-             * @return string|null
+             * @return string
              */
-            public function getFragment(): ?string
+            public function getFragment(): string
             {
                 return $this->fragment;
             }
@@ -215,7 +215,7 @@ final class SitemapTest extends AbstractTest
              *
              * @throws \InvalidArgumentException for invalid or unsupported schemes
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified scheme
+             * @return static a new instance with the specified scheme
              */
             public function withScheme($scheme)
             {
@@ -229,7 +229,7 @@ final class SitemapTest extends AbstractTest
              * @param string      $user     the user name to use for authority
              * @param string|null $password the password associated with $user
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified user information
+             * @return static a new instance with the specified user information
              */
             public function withUserInfo($user, $password = null)
             {
@@ -241,7 +241,7 @@ final class SitemapTest extends AbstractTest
              *
              * @throws \InvalidArgumentException for invalid hostnames
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified host
+             * @return static a new instance with the specified host
              */
             public function withHost($host)
             {
@@ -257,7 +257,7 @@ final class SitemapTest extends AbstractTest
              *
              * @throws \InvalidArgumentException for invalid ports
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified port
+             * @return static a new instance with the specified port
              */
             public function withPort($port)
             {
@@ -272,7 +272,7 @@ final class SitemapTest extends AbstractTest
              *
              * @throws \InvalidArgumentException for invalid paths
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified path
+             * @return static a new instance with the specified path
              */
             public function withPath($path)
             {
@@ -287,7 +287,7 @@ final class SitemapTest extends AbstractTest
              *
              * @throws \InvalidArgumentException for invalid query strings
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified query string
+             * @return static a new instance with the specified query string
              */
             public function withQuery($query)
             {
@@ -300,7 +300,7 @@ final class SitemapTest extends AbstractTest
             /**
              * @param string $fragment the fragment to use with the new instance
              *
-             * @return \Psr\Http\Message\UriInterface a new instance with the specified fragment
+             * @return static a new instance with the specified fragment
              */
             public function withFragment($fragment)
             {

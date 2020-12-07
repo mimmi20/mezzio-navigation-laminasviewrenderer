@@ -69,7 +69,7 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(Logger::class, InvokableFactory::class);
         $sm->setFactory(
             'config',
-            static function () {
+            static function (): array {
                 return [
                     'view_helpers' => [
                         'aliases' => [
@@ -180,7 +180,7 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
         $sm->setFactory(
             'config',
-            static function () {
+            static function (): array {
                 return [
                     'navigation' => [
                         'default' => [],
