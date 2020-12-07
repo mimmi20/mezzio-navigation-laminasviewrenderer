@@ -381,7 +381,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             // href is relative to current document; use url helpers
             $curDoc = ($this->basePathHelper)();
             $curDoc = '/' === $curDoc ? '' : trim($curDoc, '/');
-            $url    = rtrim($this->getServerUrl(), '/') . '/' . $curDoc . (empty($curDoc) ? '' : '/') . $href;
+            $url    = rtrim($this->getServerUrl(), '/') . '/' . $curDoc . ('' === $curDoc ? '' : '/') . $href;
         }
 
         if (!in_array($url, $this->urls, true)) {

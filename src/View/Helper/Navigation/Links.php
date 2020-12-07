@@ -376,7 +376,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         $filtered = array_filter(
             $result,
-            function (PageInterface $page) {
+            function (PageInterface $page): bool {
                 return $this->accept($page);
             }
         );
@@ -762,7 +762,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             $mixed = ArrayUtils::iteratorToArray($mixed);
         }
 
-        if (is_array($mixed) && !empty($mixed)) {
+        if (is_array($mixed) && [] !== $mixed) {
             if ($recursive && is_numeric(key($mixed))) {
                 // first key is numeric; assume several pages
                 $pages = array_filter(

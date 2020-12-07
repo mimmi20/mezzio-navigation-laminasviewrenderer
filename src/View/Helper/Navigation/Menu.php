@@ -157,7 +157,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param string             $ulClass            CSS class for first UL
      * @param string             $liCssClass         CSS class for all LI
      * @param string             $indent             initial indentation
-     * @param int|null           $minDepth           minimum depth
+     * @param int                $minDepth           minimum depth
      * @param int|null           $maxDepth           maximum depth
      * @param bool               $escapeLabels       Whether or not to escape the labels
      * @param bool               $addClassToListItem Whether or not page class applied to <li> element
@@ -174,7 +174,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         string $ulClass,
         string $liCssClass,
         string $indent,
-        ?int $minDepth,
+        int $minDepth,
         ?int $maxDepth,
         bool $escapeLabels,
         bool $addClassToListItem,
@@ -226,7 +226,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $liClasses[] = $subPage->getClass();
             }
 
-            $liClass = empty($liClasses) ? '' : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
+            $liClass = [] === $liClasses ? '' : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
             $html .= $indent . '    <li' . $liClass . '>' . PHP_EOL;
             $html .= $indent . '        ' . $this->htmlify->toHtml(self::class, $subPage, $escapeLabels, $addClassToListItem) . PHP_EOL;
             $html .= $indent . '    </li>' . PHP_EOL;
@@ -271,7 +271,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $options['ulClass'],
                 $options['liClass'],
                 $options['indent'],
-                $options['minDepth'],
+                $options['minDepth'] ?? 0,
                 $options['maxDepth'],
                 $options['escapeLabels'],
                 $options['addClassToListItem'],
@@ -435,7 +435,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $liClasses[] = $page->getClass();
             }
 
-            $liClass = empty($liClasses) ? '' : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
+            $liClass = [] === $liClasses ? '' : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
             $html .= $myIndent . '    <li' . $liClass . '>' . PHP_EOL
                 . $myIndent . '        ' . $this->htmlify->toHtml(self::class, $page, $escapeLabels, $addClassToListItem) . PHP_EOL;
 
@@ -887,7 +887,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             $partial = $this->getPartial();
         }
 
-        if (empty($partial)) {
+        if (null === $partial || '' === $partial || [] === $partial) {
             throw new Exception\RuntimeException(
                 'Unable to render menu: No partial view script provided'
             );
