@@ -303,8 +303,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                 $changefreqValidator = $this->getChangefreqValidator();
 
                 if (
-                    !$this->getUseSitemapValidators() ||
-                    $changefreqValidator->isValid($changefreq)
+                    !$this->getUseSitemapValidators()
+                    || $changefreqValidator->isValid($changefreq)
                 ) {
                     $urlNode->appendChild(
                         $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq)
