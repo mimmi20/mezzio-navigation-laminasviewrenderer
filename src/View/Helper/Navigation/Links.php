@@ -541,9 +541,9 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         foreach ($root as $chapter) {
             // exclude self and start page from chapters
             if (
-                $chapter === $page ||
-                in_array($chapter, $start, true) ||
-                !$this->accept($chapter)
+                $chapter === $page
+                || in_array($chapter, $start, true)
+                || !$this->accept($chapter)
             ) {
                 continue;
             }
