@@ -14,7 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Laminas\View\Exception;
 use Mezzio\Navigation\Page\PageInterface;
 
-interface LinksInterface extends HelperInterface
+interface LinksInterface extends ViewHelperInterface
 {
     /**
      * Constants used for specifying which link types to find and render

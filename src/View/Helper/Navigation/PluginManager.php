@@ -24,7 +24,7 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 final class PluginManager extends ViewHelperPluginManager implements InteropContainerInterface
 {
     /** @var string Valid instance types. */
-    protected $instanceOf = HelperInterface::class;
+    protected $instanceOf = ViewHelperInterface::class;
 
     /**
      * Default aliases

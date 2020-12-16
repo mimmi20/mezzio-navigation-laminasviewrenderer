@@ -53,6 +53,7 @@ final class UrlHelperFactoryTest extends TestCase
                 BaseUrlHelper::class
             )
         );
+        $this->expectExceptionCode(0);
 
         /* @var ContainerInterface $container */
         ($this->factory)($container);

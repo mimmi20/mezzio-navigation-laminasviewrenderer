@@ -65,6 +65,7 @@ final class ContainerParserTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Container must be a string alias or an instance of Mezzio\Navigation\ContainerInterface');
+        $this->expectExceptionCode(0);
 
         $helper->parseContainer(1);
     }
@@ -94,6 +95,7 @@ final class ContainerParserTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', Navigation::class));
+        $this->expectExceptionCode(0);
 
         $helper->parseContainer('default');
     }
@@ -155,6 +157,7 @@ final class ContainerParserTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
+        $this->expectExceptionCode(0);
 
         $helper->parseContainer($name);
     }
@@ -217,6 +220,7 @@ final class ContainerParserTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Could not load Container "%s"', $name));
+        $this->expectExceptionCode(0);
 
         $helper->parseContainer($name);
     }

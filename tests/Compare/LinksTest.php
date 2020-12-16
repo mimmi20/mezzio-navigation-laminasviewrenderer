@@ -72,13 +72,6 @@ final class LinksTest extends AbstractTest
     {
         parent::setUp();
 
-//        // doctype fix (someone forgot to clean up after their unit tests)
-//        $this->_doctypeHelper = $this->helper->getView()->plugin('doctype');
-//        $this->_oldDoctype = $this->_doctypeHelper->getDoctype();
-//        $this->_doctypeHelper->setDoctype(
-//            \Laminas\View\Helper\Doctype::HTML4_LOOSE
-//        );
-
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();

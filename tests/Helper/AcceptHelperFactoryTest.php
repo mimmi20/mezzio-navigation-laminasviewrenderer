@@ -91,4 +91,41 @@ final class AcceptHelperFactoryTest extends TestCase
         self::assertSame($role, $helper->getRole());
         self::assertTrue($helper->getRenderInvisible());
     }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testInvocationWithOptions2(): void
+    {
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $container->expects(self::never())
+            ->method('get');
+
+        $auth            = 'invalid-auth';
+        $renderInvisible = '1';
+        $role            = null;
+
+        \assert($container instanceof ContainerInterface);
+        $helper = ($this->factory)(
+            $container,
+            '',
+            [
+                'authorization' => $auth,
+                'renderInvisible' => $renderInvisible,
+                'role' => $role,
+            ]
+        );
+
+        self::assertInstanceOf(AcceptHelper::class, $helper);
+
+        self::assertNull($helper->getAuthorization());
+        self::assertNull($helper->getRole());
+        self::assertTrue($helper->getRenderInvisible());
+    }
 }

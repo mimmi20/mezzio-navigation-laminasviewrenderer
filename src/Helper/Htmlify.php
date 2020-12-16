@@ -84,11 +84,7 @@ final class Htmlify implements HtmlifyInterface
         // remove sitemap specific attributes
         $attribs = array_diff_key(
             array_merge($attribs, $page->getCustomProperties()),
-            [
-                'lastmod' => 1,
-                'changefreq' => 1,
-                'priority' => 1,
-            ]
+            array_flip(['lastmod', 'changefreq', 'priority'])
         );
 
         $html = '<' . $element . $this->htmlAttribs($prefix, $attribs) . '>';
