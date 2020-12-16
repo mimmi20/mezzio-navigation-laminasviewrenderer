@@ -17,7 +17,7 @@ use Mezzio\Navigation;
 /**
  * Interface for navigational helpers
  */
-interface HelperInterface
+interface ViewHelperInterface
 {
     /**
      * Magic overload: Should proxy to {@link render()}.

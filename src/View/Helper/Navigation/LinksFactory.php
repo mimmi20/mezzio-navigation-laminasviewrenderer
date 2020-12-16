@@ -29,12 +29,12 @@ final class LinksFactory
      *
      * @param ContainerInterface $container
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws ServiceNotCreatedException
+     * @return ViewHelperInterface
+     *@throws ServiceNotCreatedException
      *
-     * @return HelperInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): HelperInterface
+    public function __invoke(ContainerInterface $container): ViewHelperInterface
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
         \assert(

@@ -138,7 +138,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     /**
      * Renders helper
      *
-     * Implements {@link HelperInterface::render()}.
+     * Implements {@link ViewHelperInterface::render()}.
      *
      * @param ContainerInterface|string|null $container [optional] container to render.
      *                                                  Default is null, which indicates

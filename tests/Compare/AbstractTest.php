@@ -71,7 +71,7 @@ abstract class AbstractTest extends TestCase
     /**
      * View helper
      *
-     * @var \Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface
+     * @var \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface
      */
     protected $helper;
 

@@ -90,7 +90,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     /**
      * Renders helper.
      *
-     * Implements {@link HelperInterface::render()}.
+     * Implements {@link ViewHelperInterface::render()}.
      *
      * @param ContainerInterface|string|null $container [optional] container to render.
      *                                                  Default is null, which indicates
@@ -350,7 +350,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         $model  = array_merge($params, ['pages' => []], ['separator' => $this->getSeparator()]);
         $active = $this->findActive($container);
 
-        if ($active) {
+        if ([] !== $active) {
             $active           = $active['page'];
             $model['pages'][] = $active;
 

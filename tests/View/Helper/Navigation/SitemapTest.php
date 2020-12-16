@@ -841,6 +841,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
 
         $helper->setContainer($name);
     }
@@ -2498,6 +2499,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid server URL');
+        $this->expectExceptionCode(0);
 
         $helper->setServerUrl($uri);
     }
@@ -2581,6 +2583,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('$serverUrl should be aa string or an Instance of %s', UriInterface::class));
+        $this->expectExceptionCode(0);
 
         $helper->setServerUrl([]);
     }
@@ -2680,6 +2683,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid server URL');
+        $this->expectExceptionCode(0);
 
         /* @var UriInterface $uri */
         $helper->setServerUrl($uri);
@@ -2782,6 +2786,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid server URL');
+        $this->expectExceptionCode(0);
 
         /* @var UriInterface $uri */
         $helper->setServerUrl($uri);
@@ -2885,6 +2890,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid server URL');
+        $this->expectExceptionCode(0);
 
         /* @var UriInterface $uri */
         $helper->setServerUrl($uri);
@@ -4813,6 +4819,7 @@ final class SitemapTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Encountered an invalid URL for Sitemap XML: "%s"', $serverUrl . 'test' . $parentUri));
+        $this->expectExceptionCode(0);
 
         $helper->getDomSitemap();
     }

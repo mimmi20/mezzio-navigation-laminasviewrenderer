@@ -15,7 +15,7 @@ use Laminas\View\Exception;
 use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
 
-interface BreadcrumbsInterface extends HelperInterface
+interface BreadcrumbsInterface extends ViewHelperInterface
 {
     /**
      * Renders breadcrumbs by chaining 'a' elements with the separator

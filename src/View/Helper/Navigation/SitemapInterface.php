@@ -16,7 +16,7 @@ use Laminas\View\Exception;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
-interface SitemapInterface extends HelperInterface
+interface SitemapInterface extends ViewHelperInterface
 {
     /**
      * Namespace for the <urlset> tag

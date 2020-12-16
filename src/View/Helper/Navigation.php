@@ -22,7 +22,7 @@ use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
@@ -36,7 +36,7 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
  * @method Menu        menu(ContainerInterface|string|null $container = null)
  * @method Sitemap     sitemap(ContainerInterface|string|null $container = null)
  */
-final class Navigation extends AbstractHtmlElement implements HelperInterface
+final class Navigation extends AbstractHtmlElement implements ViewHelperInterface
 {
     use HelperTrait {
         __call as parentCall;
@@ -158,21 +158,21 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      * Returns the helper matching $proxy
      *
      * The helper must implement the interface
-     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface}.
+     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
      *
      * @param string $proxy  helper name
      * @param bool   $strict [optional] whether exceptions should be
      *                       thrown if something goes
      *                       wrong. Default is true.
      *
-     * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @return ViewHelperInterface|null helper instance
+     *@throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
-     * @return HelperInterface|null helper instance
+     * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
      */
-    public function findHelper(string $proxy, bool $strict = true): ?HelperInterface
+    public function findHelper(string $proxy, bool $strict = true): ?ViewHelperInterface
     {
         if (null === $this->pluginManager) {
             if ($strict) {
@@ -228,14 +228,14 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      * Injects container, ACL, and translator to the given $helper if this
      * helper is configured to do so
      *
-     * @param HelperInterface $helper helper instance
-     *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @param ViewHelperInterface $helper helper instance
      *
      * @return void
+     *@throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    private function inject(HelperInterface $helper): void
+    private function inject(ViewHelperInterface $helper): void
     {
         if ($this->getInjectContainer() && !$helper->hasContainer()) {
             $helper->setContainer($this->getContainer());
@@ -323,7 +323,7 @@ final class Navigation extends AbstractHtmlElement implements HelperInterface
      *
      * @return self
      */
-    public function setView(Renderer $view)
+    public function setView(Renderer $view): self
     {
         parent::setView($view);
 

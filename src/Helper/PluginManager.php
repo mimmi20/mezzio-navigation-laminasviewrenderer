@@ -35,6 +35,7 @@ final class PluginManager extends AbstractPluginManager implements InteropContai
     protected $factories = [
         AcceptHelperInterface::class => AcceptHelperFactory::class,
         ContainerParserInterface::class => ContainerParserFactory::class,
+        FindActive::class => FindActiveFactory::class,
         FindRoot::class => InvokableFactory::class,
         HtmlifyInterface::class => HtmlifyFactory::class,
     ];

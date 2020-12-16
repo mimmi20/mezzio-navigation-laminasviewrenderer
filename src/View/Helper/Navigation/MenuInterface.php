@@ -15,7 +15,7 @@ use Laminas\View\Exception;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
-interface MenuInterface extends HelperInterface
+interface MenuInterface extends ViewHelperInterface
 {
     /**
      * Renders helper.

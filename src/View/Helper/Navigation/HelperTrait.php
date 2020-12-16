@@ -141,13 +141,13 @@ trait HelperTrait
     /**
      * Sets navigation container the helper operates on by default
      *
-     * Implements {@link HelperInterface::setContainer()}.
+     * Implements {@link ViewHelperInterface::setContainer()}.
      *
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
+     * @return self
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
-     * @return self
      */
     final public function setContainer($container = null): self
     {
@@ -159,15 +159,15 @@ trait HelperTrait
     /**
      * Returns the navigation container helper operates on by default
      *
-     * Implements {@link HelperInterface::getContainer()}.
+     * Implements {@link ViewHelperInterface::getContainer()}.
      *
      * If no container is set, a new container will be instantiated and
      * stored in the helper.
      *
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
      * @return Navigation\ContainerInterface navigation container
+     *@throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      */
     final public function getContainer(): Navigation\ContainerInterface
     {
@@ -228,13 +228,13 @@ trait HelperTrait
      * This method will trigger an E_USER_ERROR if rendering the helper causes
      * an exception to be thrown.
      *
-     * Implements {@link HelperInterface::__toString()}.
-     *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * Implements {@link ViewHelperInterface::__toString()}.
      *
      * @return string
+     *@throws \Laminas\Validator\Exception\RuntimeException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     final public function __toString(): string
     {
@@ -283,7 +283,7 @@ trait HelperTrait
             return [];
         }
 
-        if (!is_int($minDepth)) {
+        if (null === $minDepth) {
             $minDepth = $this->getMinDepth();
         }
 
@@ -434,7 +434,7 @@ trait HelperTrait
 
     /**
      * Sets AuthorizationInterface to use when iterating pages
-     * Implements {@link HelperInterface::setAuthorization()}.
+     * Implements {@link ViewHelperInterface::setAuthorization()}.
      *
      * @param AuthorizationInterface|null $authorization AuthorizationInterface object
      *
@@ -451,7 +451,7 @@ trait HelperTrait
      * Returns AuthorizationInterface or null if it isn't set using {@link setAuthorization()} or
      * {@link setDefaultAuthorization()}
      *
-     * Implements {@link HelperInterface::getAuthorization()}.
+     * Implements {@link ViewHelperInterface::getAuthorization()}.
      *
      * @return AuthorizationInterface|null AuthorizationInterface object or null
      */
@@ -467,7 +467,7 @@ trait HelperTrait
     /**
      * Checks if the helper has an Authorization instance
      *
-     * Implements {@link HelperInterface::hasAuthorization()}.
+     * Implements {@link ViewHelperInterface::hasAuthorization()}.
      *
      * @return bool
      */
@@ -480,7 +480,7 @@ trait HelperTrait
     /**
      * Checks if the helper has a container
      *
-     * Implements {@link HelperInterface::hasContainer()}.
+     * Implements {@link ViewHelperInterface::hasContainer()}.
      *
      * @return bool
      */
@@ -593,7 +593,7 @@ trait HelperTrait
     /**
      * Sets Authorization role(s) to use when iterating pages
      *
-     * Implements {@link HelperInterface::setRole()}.
+     * Implements {@link ViewHelperInterface::setRole()}.
      *
      * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
      *
@@ -610,7 +610,7 @@ trait HelperTrait
      * Returns Authorization role to use when iterating pages, or null if it isn't set
      * using {@link setRole()} or {@link setDefaultRole()}
      *
-     * Implements {@link HelperInterface::getRole()}.
+     * Implements {@link ViewHelperInterface::getRole()}.
      *
      * @return string|null
      */
@@ -626,7 +626,7 @@ trait HelperTrait
     /**
      * Checks if the helper has an Authorization role
      *
-     * Implements {@link HelperInterface::hasRole()}.
+     * Implements {@link ViewHelperInterface::hasRole()}.
      *
      * @return bool
      */
@@ -638,7 +638,7 @@ trait HelperTrait
 
     /**
      * Sets whether Authorization should be used
-     * Implements {@link HelperInterface::setUseAuthorization()}.
+     * Implements {@link ViewHelperInterface::setUseAuthorization()}.
      *
      * @param bool $useAuthorization
      *
@@ -653,7 +653,7 @@ trait HelperTrait
 
     /**
      * Returns whether Authorization should be used
-     * Implements {@link HelperInterface::getUseAuthorization()}.
+     * Implements {@link ViewHelperInterface::getUseAuthorization()}.
      *
      * @return bool
      */

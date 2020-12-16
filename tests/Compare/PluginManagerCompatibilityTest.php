@@ -29,7 +29,7 @@ use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperInterface;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
@@ -109,7 +109,7 @@ final class PluginManagerCompatibilityTest extends TestCase
      */
     protected function getInstanceOf(): string
     {
-        return HelperInterface::class;
+        return ViewHelperInterface::class;
     }
 
     /**
@@ -224,6 +224,7 @@ final class PluginManagerCompatibilityTest extends TestCase
     {
         $this->expectException($this->getServiceNotFoundException());
         $this->getPluginManager()->setService('test', $this);
+        $this->expectExceptionCode(0);
     }
 
     /**
@@ -237,6 +238,9 @@ final class PluginManagerCompatibilityTest extends TestCase
         $manager = $this->getPluginManager();
         $manager->setInvokableClass('test', self::class);
         $this->expectException($this->getServiceNotFoundException());
+        $this->expectExceptionMessage('Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager can only create instances of Laminas\View\Helper\HelperInterface and/or callables; MezzioTest\Navigation\LaminasView\Compare\PluginManagerCompatibilityTest is invalid');
+        $this->expectExceptionCode(0);
+
         $manager->get('test');
     }
 }

@@ -187,6 +187,10 @@ final class NavigationTest extends TestCase
         $helper->setInjectAuthorization(false);
 
         self::assertFalse($helper->getInjectAuthorization());
+
+        $helper->setInjectAuthorization();
+
+        self::assertTrue($helper->getInjectAuthorization());
     }
 
     /**
@@ -319,6 +323,7 @@ final class NavigationTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Failed to find plugin for %s, no PluginManager set', $proxy));
+        $this->expectExceptionCode(0);
 
         $helper->findHelper($proxy, true);
     }
@@ -400,6 +405,7 @@ final class NavigationTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Failed to find plugin for %s', $proxy));
+        $this->expectExceptionCode(0);
 
         $helper->findHelper($proxy, true);
     }
@@ -485,6 +491,7 @@ final class NavigationTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Failed to load plugin for %s', $proxy));
+        $this->expectExceptionCode(0);
 
         $helper->findHelper($proxy, true);
     }
@@ -551,7 +558,7 @@ final class NavigationTest extends TestCase
         \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
-        $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
+        $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $menu->expects(self::exactly(3))
@@ -649,7 +656,7 @@ final class NavigationTest extends TestCase
         \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
-        $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
+        $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $menu->expects(self::exactly(3))
@@ -830,7 +837,7 @@ final class NavigationTest extends TestCase
         \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
-        $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
+        $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $menu->expects(self::exactly(2))
@@ -942,6 +949,7 @@ final class NavigationTest extends TestCase
 
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Bad method call: Unknown method Mezzio\Navigation\Navigation::menu');
+        $this->expectExceptionCode(0);
 
         $helper->{$proxy}();
     }
@@ -1656,6 +1664,10 @@ final class NavigationTest extends TestCase
         $helper->setInjectContainer(false);
 
         self::assertFalse($helper->getInjectContainer());
+
+        $helper->setInjectContainer();
+
+        self::assertTrue($helper->getInjectContainer());
     }
 
     /**
@@ -1720,6 +1732,7 @@ final class NavigationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
 
         $helper->setContainer($name);
     }
@@ -3039,7 +3052,7 @@ final class NavigationTest extends TestCase
         \assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
-        $menu = $this->getMockBuilder(Navigation\HelperInterface::class)
+        $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $menu->expects(self::exactly(2))

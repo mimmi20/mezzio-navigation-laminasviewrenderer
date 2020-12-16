@@ -140,7 +140,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     /**
      * Renders helper
      *
-     * Implements {@link HelperInterface::render()}.
+     * Implements {@link ViewHelperInterface::render()}.
      *
      * @param ContainerInterface|string|null $container [optional] container to render.
      *                                                  Default is null, which indicates
@@ -156,14 +156,9 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function render($container = null): string
     {
-        $container = $this->containerParser->parseContainer($container);
-
-        if (null === $container) {
-            $container = $this->getContainer();
-        }
-
         $active = $this->findActive($container);
-        if (!$active) {
+
+        if ([] === $active) {
             // no active page
             return '';
         }
