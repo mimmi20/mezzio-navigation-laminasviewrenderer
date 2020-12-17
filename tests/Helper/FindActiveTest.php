@@ -6,6 +6,7 @@ use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindActive;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
+use Mezzio\Navigation\Page\Route;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\TestCase;
 
@@ -20,6 +21,8 @@ class FindActiveTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
+     *
+     * @group findActive
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -230,5 +233,72 @@ class FindActiveTest extends TestCase
         ];
 
         self::assertSame($expected, $helper->find($container, 0, 0));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testFindActiveOneActivePageRecursive2(): void
+    {
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        //$parentPage->setActive(true);
+        $parentPage->setUri('parent');
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+
+        $page1 = new Uri();
+        //$page1->setActive(true);
+        $page1->setUri('test1');
+
+        $page2 = new Uri();
+        //$page2->setActive(true);
+        $page1->setUri('test2');
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        $parentParentPage       = new Route();
+        $parentParentPage->setVisible(true);
+        //$parentParentPage->setActive(true);
+        $parentParentPage->setRoute('parentParent');
+
+        $parentParentParentPage = new Route();
+        $parentParentParentPage->setVisible(true);
+        $parentParentParentPage->setActive(true);
+        $parentParentParentPage->setRoute('parentParentParent');
+
+        $parentParentPage->addPage($parentPage);
+        $parentParentParentPage->addPage($parentParentPage);
+
+        $container = new Navigation();
+        $container->addPage($parentParentParentPage);
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(3))
+            ->method('accept')
+            ->withConsecutive([$page1], [$page2], [$parentPage])
+            ->willReturnOnConsecutiveCalls(true, true, true);
+
+        $helper = new FindActive($acceptHelper);
+
+        $expected = [
+        //    'page' => $page2,
+        //    'depth' => 3,
+        ];
+
+        self::assertSame($expected, $helper->find($container, 2, 42));
     }
 }
