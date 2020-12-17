@@ -2332,10 +2332,7 @@ final class MenuTest extends TestCase
         $helper->setMinDepth(-1);
         $helper->setMaxDepth(-1);
 
-        $expected = [
-            // 'page' => $parentPage,
-            // 'depth' => 0,
-        ];
+        $expected = [];
 
         self::assertSame($expected, $helper->findActive($name));
     }
