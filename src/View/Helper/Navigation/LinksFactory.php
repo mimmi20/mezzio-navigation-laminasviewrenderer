@@ -29,10 +29,10 @@ final class LinksFactory
      *
      * @param ContainerInterface $container
      *
-     * @return ViewHelperInterface
-     *@throws ServiceNotCreatedException
-     *
+     * @throws ServiceNotCreatedException
      * @throws \Psr\Container\ContainerExceptionInterface
+     *
+     * @return ViewHelperInterface
      */
     public function __invoke(ContainerInterface $container): ViewHelperInterface
     {

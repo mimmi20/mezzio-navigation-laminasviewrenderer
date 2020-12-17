@@ -14,7 +14,6 @@ namespace Mezzio\Navigation\LaminasView\Helper;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\PluginManagerInterface;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 
 final class FindActiveFactory implements FactoryInterface
@@ -25,6 +24,8 @@ final class FindActiveFactory implements FactoryInterface
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return FindActive
      */

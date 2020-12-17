@@ -12,17 +12,6 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\Helper;
 
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Page\PageInterface;
-use RecursiveIteratorIterator;
-use Laminas\ServiceManager\PluginManagerInterface;
-use Laminas\View\Exception\ExceptionInterface;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\Navigation;
-use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
-use Psr\Container\ContainerExceptionInterface;
 
 interface FindActiveInterface extends HelperInterface
 {
@@ -30,18 +19,18 @@ interface FindActiveInterface extends HelperInterface
      * Finds the deepest active page in the given container
      *
      * @param ContainerInterface $container to search
-     * @param int|null                                  $minDepth  [optional] minimum depth
-     *                                                             required for page to be
-     *                                                             valid. Default is to use
-     *                                                             {@link getMinDepth()}. A
-     *                                                             null value means no minimum
-     *                                                             depth required.
-     * @param int|null                                  $maxDepth  [optional] maximum depth
-     *                                                             a page can have to be
-     *                                                             valid. Default is to use
-     *                                                             {@link getMaxDepth()}. A
-     *                                                             null value means no maximum
-     *                                                             depth required.
+     * @param int|null           $minDepth  [optional] minimum depth
+     *                                      required for page to be
+     *                                      valid. Default is to use
+     *                                      {@link getMinDepth()}. A
+     *                                      null value means no minimum
+     *                                      depth required.
+     * @param int|null           $maxDepth  [optional] maximum depth
+     *                                      a page can have to be
+     *                                      valid. Default is to use
+     *                                      {@link getMaxDepth()}. A
+     *                                      null value means no maximum
+     *                                      depth required.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
