@@ -17,13 +17,10 @@ use RecursiveIteratorIterator;
 
 final class FindActive implements FindActiveInterface
 {
-    /**
-     * @var AcceptHelperInterface
-     */
+    /** @var AcceptHelperInterface */
     private $acceptHelper;
 
     /**
-     * FindActive constructor.
      * @param AcceptHelperInterface $acceptHelper
      */
     public function __construct(AcceptHelperInterface $acceptHelper)
@@ -35,18 +32,18 @@ final class FindActive implements FindActiveInterface
      * Finds the deepest active page in the given container
      *
      * @param ContainerInterface $container to search
-     * @param int|null                                  $minDepth  [optional] minimum depth
-     *                                                             required for page to be
-     *                                                             valid. Default is to use
-     *                                                             {@link getMinDepth()}. A
-     *                                                             null value means no minimum
-     *                                                             depth required.
-     * @param int|null                                  $maxDepth  [optional] maximum depth
-     *                                                             a page can have to be
-     *                                                             valid. Default is to use
-     *                                                             {@link getMaxDepth()}. A
-     *                                                             null value means no maximum
-     *                                                             depth required.
+     * @param int|null           $minDepth  [optional] minimum depth
+     *                                      required for page to be
+     *                                      valid. Default is to use
+     *                                      {@link getMinDepth()}. A
+     *                                      null value means no minimum
+     *                                      depth required.
+     * @param int|null           $maxDepth  [optional] maximum depth
+     *                                      a page can have to be
+     *                                      valid. Default is to use
+     *                                      {@link getMaxDepth()}. A
+     *                                      null value means no maximum
+     *                                      depth required.
      *
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -81,7 +78,7 @@ final class FindActive implements FindActiveInterface
                 continue;
             }
 
-            if (!$page->isActive(false) || $currDepth <= $foundDepth) {
+            if ($currDepth <= $foundDepth || !$page->isActive(false)) {
                 continue;
             }
 
@@ -90,14 +87,10 @@ final class FindActive implements FindActiveInterface
             $foundDepth = $currDepth;
         }
 
-        if (is_int($maxDepth) && $foundDepth > $maxDepth) {
+        if (is_int($maxDepth) && $foundDepth > $maxDepth && $found instanceof PageInterface) {
             while ($foundDepth > $maxDepth) {
                 if (--$foundDepth < $minDepth) {
                     $found = null;
-                    break;
-                }
-
-                if (null === $found) {
                     break;
                 }
 
@@ -109,7 +102,7 @@ final class FindActive implements FindActiveInterface
             }
         }
 
-        if ($found) {
+        if ($found instanceof PageInterface) {
             return ['page' => $found, 'depth' => $foundDepth];
         }
 

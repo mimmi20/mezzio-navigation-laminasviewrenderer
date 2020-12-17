@@ -145,9 +145,9 @@ trait HelperTrait
      *
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
-     * @return self
      * @throws \Laminas\View\Exception\InvalidArgumentException
      *
+     * @return self
      */
     final public function setContainer($container = null): self
     {
@@ -164,10 +164,10 @@ trait HelperTrait
      * If no container is set, a new container will be instantiated and
      * stored in the helper.
      *
-     * @return Navigation\ContainerInterface navigation container
      *@throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return Navigation\ContainerInterface navigation container
      */
     final public function getContainer(): Navigation\ContainerInterface
     {
@@ -230,11 +230,11 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::__toString()}.
      *
-     * @return string
      *@throws \Laminas\Validator\Exception\RuntimeException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return string
      */
     final public function __toString(): string
     {

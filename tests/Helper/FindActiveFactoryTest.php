@@ -1,18 +1,26 @@
 <?php
+/**
+ * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
+ *
+ * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView\Helper;
 
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\PluginManagerInterface;
+use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindActive;
 use Mezzio\Navigation\LaminasView\Helper\FindActiveFactory;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use PHPUnit\Framework\TestCase;
-use Interop\Container\ContainerInterface;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\Navigation\LaminasView\Helper\AcceptHelper;
 
-class FindActiveFactoryTest extends TestCase
+final class FindActiveFactoryTest extends TestCase
 {
     /** @var FindActiveFactory */
     private $factory;

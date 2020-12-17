@@ -2022,6 +2022,328 @@ final class MenuTest extends TestCase
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testFindActiveOneActivePageRecursive2(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('log');
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $name = 'Mezzio\\Navigation\\Top';
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setActive(true);
+        $parentPage->setUri('parent');
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+
+        $page1 = new Uri();
+        $page1->setActive(true);
+        $page1->setUri('test1');
+
+        $page2 = new Uri();
+        $page2->setActive(true);
+        $page1->setUri('test2');
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        $parentParentPage = new Uri();
+        $parentParentPage->setVisible(true);
+        $parentParentPage->setActive(true);
+        $parentParentPage->setUri('parentParent');
+
+        $parentParentParentPage = new Uri();
+        $parentParentParentPage->setVisible(true);
+        $parentParentParentPage->setActive(true);
+        $parentParentParentPage->setUri('parentParentParent');
+
+        $parentParentPage->addPage($parentPage);
+        $parentParentParentPage->addPage($parentParentPage);
+
+        $container = new Navigation();
+        $container->addPage($parentParentParentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(3))
+            ->method('accept')
+            ->withConsecutive([$page1], [$page2], [$parentPage])
+            ->willReturnOnConsecutiveCalls(true, true, true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(3))
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(3))
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $renderer->expects(self::never())
+            ->method('render');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $expected = [];
+
+        self::assertSame($expected, $helper->findActive($name, 2, 1));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testFindActiveOneActivePageRecursive3(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('log');
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $name = 'Mezzio\\Navigation\\Top';
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setActive(true);
+        $parentPage->setUri('parent');
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+
+        $page1 = new Uri();
+        $page1->setActive(true);
+        $page1->setUri('test1');
+
+        $page2 = new Uri();
+        $page2->setActive(true);
+        $page1->setUri('test2');
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        $parentParentPage = new Uri();
+        $parentParentPage->setVisible(true);
+        $parentParentPage->setActive(true);
+        $parentParentPage->setUri('parentParent');
+
+        $parentParentParentPage = new Uri();
+        $parentParentParentPage->setVisible(true);
+        $parentParentParentPage->setActive(true);
+        $parentParentParentPage->setUri('parentParentParent');
+
+        $parentParentPage->addPage($parentPage);
+        $parentParentParentPage->addPage($parentParentPage);
+
+        $container = new Navigation();
+        $container->addPage($parentParentParentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(5))
+            ->method('accept')
+            ->withConsecutive([$page1], [$page2], [$parentPage], [$parentParentPage], [$parentParentParentPage])
+            ->willReturnOnConsecutiveCalls(true, true, true, true, true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(5))
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(5))
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
+        $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $renderer->expects(self::never())
+            ->method('render');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        \assert($renderer instanceof LaminasViewRenderer);
+        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $helper->setMinDepth(-1);
+        $helper->setMaxDepth(-1);
+
+        $expected = [
+            // 'page' => $parentPage,
+            // 'depth' => 0,
+        ];
+
+        self::assertSame($expected, $helper->findActive($name));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
      */
@@ -2648,11 +2970,12 @@ final class MenuTest extends TestCase
 
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
      *
      * @return void
      */

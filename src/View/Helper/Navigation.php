@@ -22,11 +22,11 @@ use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 
 /**
  * Proxy helper for retrieving navigational helpers and forwarding calls
@@ -165,12 +165,12 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *                       thrown if something goes
      *                       wrong. Default is true.
      *
-     * @return ViewHelperInterface|null helper instance
-     *@throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
      * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
+     *
+     * @return ViewHelperInterface|null helper instance
      */
     public function findHelper(string $proxy, bool $strict = true): ?ViewHelperInterface
     {
@@ -230,10 +230,10 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param ViewHelperInterface $helper helper instance
      *
-     * @return void
-     *@throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
      */
     private function inject(ViewHelperInterface $helper): void
     {
