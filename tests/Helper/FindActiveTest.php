@@ -314,8 +314,6 @@ final class FindActiveTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
-     *
-     * @group findActive
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
