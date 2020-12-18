@@ -18,11 +18,11 @@ use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\FindActiveInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
-use RecursiveIteratorIterator;
 
 /**
  * Base class for navigational helpers.
@@ -291,63 +291,33 @@ trait HelperTrait
             $maxDepth = $this->getMaxDepth();
         }
 
-        $found      = null;
-        $foundDepth = -1;
-        $iterator   = new RecursiveIteratorIterator(
-            $container,
-            RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($iterator as $page) {
+        try {
+            $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
             \assert(
-                $page instanceof PageInterface,
+                $helperPluginManager instanceof PluginManagerInterface,
                 sprintf(
-                    '$page should be an Instance of %s, but was %s',
-                    PageInterface::class,
-                    get_class($page)
+                    '$helperPluginManager should be an Instance of %s, but was %s',
+                    HelperPluginManager::class,
+                    get_class($helperPluginManager)
                 )
             );
 
-            $currDepth = $iterator->getDepth();
+            $acceptHelper = $helperPluginManager->build(
+                FindActiveInterface::class,
+                [
+                    'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
+                    'renderInvisible' => $this->getRenderInvisible(),
+                    'role' => $this->getRole(),
+                ]
+            );
+            \assert($acceptHelper instanceof FindActiveInterface);
 
-            if ($currDepth < $minDepth || !$this->accept($page)) {
-                // page is not accepted
-                continue;
-            }
+            return $acceptHelper->find($container, $minDepth, $maxDepth);
+        } catch (ContainerExceptionInterface $e) {
+            $this->logger->err($e);
 
-            if (!$page->isActive(false) || $currDepth <= $foundDepth) {
-                continue;
-            }
-
-            // found an active page at a deeper level than before
-            $found      = $page;
-            $foundDepth = $currDepth;
+            return [];
         }
-
-        if (is_int($maxDepth) && $foundDepth > $maxDepth) {
-            while ($foundDepth > $maxDepth) {
-                if (--$foundDepth < $minDepth) {
-                    $found = null;
-                    break;
-                }
-
-                if (null === $found) {
-                    break;
-                }
-
-                $found = $found->getParent();
-                if (!$found instanceof PageInterface) {
-                    $found = null;
-                    break;
-                }
-            }
-        }
-
-        if ($found) {
-            return ['page' => $found, 'depth' => $foundDepth];
-        }
-
-        return [];
     }
 
     // Iterator filter methods:

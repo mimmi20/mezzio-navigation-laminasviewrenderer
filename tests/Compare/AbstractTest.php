@@ -194,7 +194,28 @@ abstract class AbstractTest extends TestCase
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
-        $sm->setFactory(Logger::class, InvokableFactory::class);
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $sm->setService(Logger::class, $logger);
 
         // setup containers from config
         $this->nav1 = $sm->get('nav_test1');

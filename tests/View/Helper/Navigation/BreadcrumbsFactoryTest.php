@@ -51,8 +51,6 @@ final class BreadcrumbsFactoryTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -121,8 +119,6 @@ final class BreadcrumbsFactoryTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
