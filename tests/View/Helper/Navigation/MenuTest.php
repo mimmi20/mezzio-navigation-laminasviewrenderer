@@ -22,12 +22,15 @@ use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\FindActiveInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
+use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\TestCase;
 
 final class MenuTest extends TestCase
@@ -39,14 +42,26 @@ final class MenuTest extends TestCase
      *
      * @return void
      */
+    protected function tearDown(): void
+    {
+        Menu::setDefaultAuthorization(null);
+        Menu::setDefaultRole(null);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
-        $logger   = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -121,11 +136,10 @@ final class MenuTest extends TestCase
     public function testSetMinDepth(): void
     {
         $minDepth = 4;
-        $logger   = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -202,8 +216,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -278,11 +290,10 @@ final class MenuTest extends TestCase
     {
         $role        = 'testRole';
         $defaultRole = 'testDefaultRole';
-        $logger      = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -366,8 +377,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -442,11 +451,10 @@ final class MenuTest extends TestCase
     {
         $auth        = $this->createMock(AuthorizationInterface::class);
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
-        $logger      = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -534,8 +542,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -613,11 +619,10 @@ final class MenuTest extends TestCase
     public function testSetContainer(): void
     {
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-        $logger    = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -705,8 +710,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -790,8 +793,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -871,8 +872,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -997,11 +996,10 @@ final class MenuTest extends TestCase
     public function testHtmlify(): void
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
-        $logger   = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -1121,8 +1119,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -1206,8 +1202,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -1257,15 +1251,17 @@ final class MenuTest extends TestCase
         $container = new Navigation();
         $container->addPage($page);
 
-        $role = 'testRole';
+        $role     = 'testRole';
+        $maxDepth = 42;
+        $minDepth = 0;
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::once())
-            ->method('accept')
-            ->with($page)
-            ->willReturn(false);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willReturn([]);
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -1279,14 +1275,14 @@ final class MenuTest extends TestCase
         $helperPluginManager->expects(self::once())
             ->method('build')
             ->with(
-                AcceptHelperInterface::class,
+                FindActiveInterface::class,
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
                 ]
             )
-            ->willReturn($acceptHelper);
+            ->willReturn($findActiveHelper);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -1337,7 +1333,7 @@ final class MenuTest extends TestCase
         /* @var AuthorizationInterface $auth */
         $helper->setAuthorization($auth);
 
-        self::assertSame([], $helper->findActive($name, 0, 42));
+        self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
@@ -1355,8 +1351,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -1401,23 +1395,28 @@ final class MenuTest extends TestCase
             ->method('getPrivilege');
         $page->expects(self::never())
             ->method('getParent');
-        $page->expects(self::once())
-            ->method('isActive')
-            ->with(false)
-            ->willReturn(true);
+        $page->expects(self::never())
+            ->method('isActive');
 
         $container = new Navigation();
         $container->addPage($page);
 
-        $role = 'testRole';
+        $role     = 'testRole';
+        $maxDepth = 42;
+        $minDepth = 0;
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::once())
-            ->method('accept')
-            ->with($page)
-            ->willReturn(true);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willReturn(
+                [
+                    'page' => $page,
+                    'depth' => 0,
+                ]
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -1431,14 +1430,14 @@ final class MenuTest extends TestCase
         $helperPluginManager->expects(self::once())
             ->method('build')
             ->with(
-                AcceptHelperInterface::class,
+                FindActiveInterface::class,
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
                 ]
             )
-            ->willReturn($acceptHelper);
+            ->willReturn($findActiveHelper);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -1494,7 +1493,7 @@ final class MenuTest extends TestCase
             'depth' => 0,
         ];
 
-        self::assertSame($expected, $helper->findActive($name, 0, 42));
+        self::assertSame($expected, $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
@@ -1513,8 +1512,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -1531,13 +1528,48 @@ final class MenuTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
+        $role     = 'testRole';
+        $maxDepth = 42;
+        $minDepth = 0;
+
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with(new IsInstanceOf(Navigation::class), $minDepth, $maxDepth)
+            ->willReturn([]);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::once())
+            ->method('build')
+            ->with(
+                FindActiveInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($findActiveHelper);
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::never())
-            ->method('get');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1573,22 +1605,14 @@ final class MenuTest extends TestCase
         \assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $role = 'testRole';
-
         $helper->setRole($role);
-
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $auth->expects(self::never())
-            ->method('isGranted');
 
         /* @var AuthorizationInterface $auth */
         $helper->setAuthorization($auth);
 
         $expected = [];
 
-        self::assertSame($expected, $helper->findActive(null, 0, 42));
+        self::assertSame($expected, $helper->findActive(null, $minDepth, $maxDepth));
     }
 
     /**
@@ -1606,8 +1630,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -1652,23 +1674,28 @@ final class MenuTest extends TestCase
             ->method('getPrivilege');
         $page->expects(self::never())
             ->method('getParent');
-        $page->expects(self::once())
-            ->method('isActive')
-            ->with(false)
-            ->willReturn(true);
+        $page->expects(self::never())
+            ->method('isActive');
 
         $container = new Navigation();
         $container->addPage($page);
 
-        $role = 'testRole';
+        $role     = 'testRole';
+        $maxDepth = 42;
+        $minDepth = 0;
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::once())
-            ->method('accept')
-            ->with($page)
-            ->willReturn(true);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willReturn(
+                [
+                    'page' => $page,
+                    'depth' => 0,
+                ]
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -1682,14 +1709,14 @@ final class MenuTest extends TestCase
         $helperPluginManager->expects(self::once())
             ->method('build')
             ->with(
-                AcceptHelperInterface::class,
+                FindActiveInterface::class,
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
                 ]
             )
-            ->willReturn($acceptHelper);
+            ->willReturn($findActiveHelper);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -1745,8 +1772,8 @@ final class MenuTest extends TestCase
             'depth' => 0,
         ];
 
-        $helper->setMinDepth(0);
-        $helper->setMaxDepth(42);
+        $helper->setMinDepth($minDepth);
+        $helper->setMaxDepth($maxDepth);
 
         self::assertSame($expected, $helper->findActive($name));
     }
@@ -1766,8 +1793,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -1804,13 +1829,48 @@ final class MenuTest extends TestCase
         $container = new Navigation();
         $container->addPage($page);
 
+        $role     = 'testRole';
+        $maxDepth = 42;
+        $minDepth = 2;
+
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willReturn([]);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::once())
+            ->method('build')
+            ->with(
+                FindActiveInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($findActiveHelper);
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::never())
-            ->method('get');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1846,15 +1906,7 @@ final class MenuTest extends TestCase
         \assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $role = 'testRole';
-
         $helper->setRole($role);
-
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $auth->expects(self::never())
-            ->method('isGranted');
 
         /* @var AuthorizationInterface $auth */
         $helper->setAuthorization($auth);
@@ -1879,8 +1931,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -1917,28 +1967,32 @@ final class MenuTest extends TestCase
             ->method('getResource');
         $page->expects(self::never())
             ->method('getPrivilege');
-        $page->expects(self::once())
-            ->method('getParent')
-            ->willReturn($parentPage);
-        $page->expects(self::once())
-            ->method('isActive')
-            ->with(false)
-            ->willReturn(true);
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('isActive');
 
         $parentPage->addPage($page);
 
         $container = new Navigation();
         $container->addPage($parentPage);
 
-        $role = 'testRole';
+        $role     = 'testRole';
+        $maxDepth = 0;
+        $minDepth = 0;
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
-            ->method('accept')
-            ->withConsecutive([$page], [$parentPage])
-            ->willReturnOnConsecutiveCalls(true, true);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willReturn(
+                [
+                    'page' => $parentPage,
+                    'depth' => 0,
+                ]
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -1949,24 +2003,24 @@ final class MenuTest extends TestCase
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $helperPluginManager->expects(self::once())
             ->method('build')
             ->with(
-                AcceptHelperInterface::class,
+                FindActiveInterface::class,
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
                 ]
             )
-            ->willReturn($acceptHelper);
+            ->willReturn($findActiveHelper);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::exactly(2))
+        $serviceLocator->expects(self::once())
             ->method('get')
             ->with(PluginManager::class)
             ->willReturn($helperPluginManager);
@@ -2015,7 +2069,7 @@ final class MenuTest extends TestCase
             'depth' => 0,
         ];
 
-        self::assertSame($expected, $helper->findActive($name, 0, 0));
+        self::assertSame($expected, $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
@@ -2033,8 +2087,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -2091,15 +2143,17 @@ final class MenuTest extends TestCase
         $container = new Navigation();
         $container->addPage($parentParentParentPage);
 
-        $role = 'testRole';
+        $role     = 'testRole';
+        $maxDepth = 1;
+        $minDepth = 2;
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
-            ->method('accept')
-            ->withConsecutive([$page1], [$page2], [$parentPage])
-            ->willReturnOnConsecutiveCalls(true, true, true);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willReturn([]);
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -2110,24 +2164,24 @@ final class MenuTest extends TestCase
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $helperPluginManager->expects(self::once())
             ->method('build')
             ->with(
-                AcceptHelperInterface::class,
+                FindActiveInterface::class,
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
                 ]
             )
-            ->willReturn($acceptHelper);
+            ->willReturn($findActiveHelper);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::exactly(3))
+        $serviceLocator->expects(self::once())
             ->method('get')
             ->with(PluginManager::class)
             ->willReturn($helperPluginManager);
@@ -2173,7 +2227,7 @@ final class MenuTest extends TestCase
 
         $expected = [];
 
-        self::assertSame($expected, $helper->findActive($name, 2, 1));
+        self::assertSame($expected, $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
@@ -2191,8 +2245,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -2249,15 +2301,16 @@ final class MenuTest extends TestCase
         $container = new Navigation();
         $container->addPage($parentParentParentPage);
 
-        $role = 'testRole';
+        $role     = 'testRole';
+        $maxDepth = -1;
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(5))
-            ->method('accept')
-            ->withConsecutive([$page1], [$page2], [$parentPage], [$parentParentPage], [$parentParentParentPage])
-            ->willReturnOnConsecutiveCalls(true, true, true, true, true);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, 0, $maxDepth)
+            ->willReturn([]);
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -2268,24 +2321,24 @@ final class MenuTest extends TestCase
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(5))
+        $helperPluginManager->expects(self::once())
             ->method('build')
             ->with(
-                AcceptHelperInterface::class,
+                FindActiveInterface::class,
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
                 ]
             )
-            ->willReturn($acceptHelper);
+            ->willReturn($findActiveHelper);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::exactly(5))
+        $serviceLocator->expects(self::once())
             ->method('get')
             ->with(PluginManager::class)
             ->willReturn($helperPluginManager);
@@ -2330,7 +2383,7 @@ final class MenuTest extends TestCase
         $helper->setAuthorization($auth);
 
         $helper->setMinDepth(-1);
-        $helper->setMaxDepth(-1);
+        $helper->setMaxDepth($maxDepth);
 
         $expected = [];
 
@@ -2349,8 +2402,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -2428,8 +2479,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -2506,8 +2555,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -2583,8 +2630,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -2666,8 +2711,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -2743,8 +2786,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -2822,8 +2863,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -2899,8 +2938,6 @@ final class MenuTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
-            ->method('log');
         $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
@@ -2982,8 +3019,6 @@ final class MenuTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
@@ -3000,21 +3035,46 @@ final class MenuTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
+        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, 0, null)
+            ->willReturn([]);
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::once())
+            ->method('build')
+            ->with(
+                FindActiveInterface::class,
+                [
+                    'authorization' => null,
+                    'renderInvisible' => false,
+                    'role' => null,
+                ]
+            )
+            ->willReturn($findActiveHelper);
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::never())
-            ->method('get');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(HelperPluginManager::class)
+            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $htmlify->expects(self::never())
             ->method('toHtml');
-
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
 
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()

@@ -96,8 +96,6 @@ final class SitemapTest extends AbstractTest
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('log');
-        $logger->expects(self::never())
             ->method('emerg');
         $logger->expects(self::never())
             ->method('alert');
