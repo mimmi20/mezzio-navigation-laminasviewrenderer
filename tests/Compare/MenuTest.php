@@ -27,8 +27,9 @@ use Mezzio\Navigation\Page\PageInterface;
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu.
  *
- * @group      Laminas_View
- * @group      Laminas_View_Helper
+ * @group Laminas_View
+ * @group Laminas_View_Helper
+ * @group Compare
  */
 final class MenuTest extends AbstractTest
 {

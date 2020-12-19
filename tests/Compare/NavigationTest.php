@@ -26,8 +26,9 @@ use Mezzio\Navigation\Page\Uri;
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation
  *
- * @group      Laminas_View
- * @group      Laminas_View_Helper
+ * @group Laminas_View
+ * @group Laminas_View_Helper
+ * @group Compare
  */
 final class NavigationTest extends AbstractTest
 {

@@ -26,8 +26,9 @@ use Mezzio\Navigation\Page\PageFactory;
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs.
  *
- * @group      Laminas_View
- * @group      Laminas_View_Helper
+ * @group Laminas_View
+ * @group Laminas_View_Helper
+ * @group Compare
  */
 final class BreadcrumbsTest extends AbstractTest
 {

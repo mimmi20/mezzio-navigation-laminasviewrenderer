@@ -137,8 +137,6 @@ final class MenuTest extends TestCase
      */
     public function testSetMinDepth(): void
     {
-        $minDepth = 4;
-
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -200,9 +198,25 @@ final class MenuTest extends TestCase
 
         self::assertSame(0, $helper->getMinDepth());
 
-        $helper->setMinDepth($minDepth);
+        $helper->setMinDepth(4);
 
-        self::assertSame($minDepth, $helper->getMinDepth());
+        self::assertSame(4, $helper->getMinDepth());
+
+        $helper->setMinDepth(-1);
+
+        self::assertSame(0, $helper->getMinDepth());
+
+        $helper->setMinDepth(0);
+
+        self::assertSame(0, $helper->getMinDepth());
+
+        $helper->setMinDepth(1);
+
+        self::assertSame(1, $helper->getMinDepth());
+
+        $helper->setMinDepth(4);
+
+        self::assertSame(4, $helper->getMinDepth());
     }
 
     /**
@@ -440,6 +454,10 @@ final class MenuTest extends TestCase
         $helper->setUseAuthorization(false);
 
         self::assertFalse($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization();
+
+        self::assertTrue($helper->getUseAuthorization());
     }
 
     /**

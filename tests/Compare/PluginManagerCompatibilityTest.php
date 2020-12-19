@@ -42,7 +42,8 @@ use Mezzio\Navigation\Service\DefaultNavigationFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @group      Laminas_View
+ * @group Laminas_View
+ * @group Compare
  */
 final class PluginManagerCompatibilityTest extends TestCase
 {

@@ -413,7 +413,8 @@ final class NavigationTest extends TestCase
      */
     public function testFindHelperExceptionInPluginManager(): void
     {
-        $proxy = 'menu';
+        $proxy     = 'menu';
+        $exception = new ServiceNotFoundException('test');
 
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
@@ -432,8 +433,9 @@ final class NavigationTest extends TestCase
             ->method('notice');
         $logger->expects(self::never())
             ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
+        $logger->expects(self::once())
+            ->method('debug')
+            ->with($exception);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -471,7 +473,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::exactly(2))
             ->method('get')
             ->with($proxy)
-            ->willThrowException(new ServiceNotFoundException('test'));
+            ->willThrowException($exception);
 
         /* @var Navigation\PluginManager $pluginManager */
         $helper->setPluginManager($pluginManager);
@@ -1103,8 +1105,6 @@ final class NavigationTest extends TestCase
      */
     public function testSetMinDepth(): void
     {
-        $minDepth = 4;
-
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1152,9 +1152,25 @@ final class NavigationTest extends TestCase
 
         self::assertSame(0, $helper->getMinDepth());
 
-        $helper->setMinDepth($minDepth);
+        $helper->setMinDepth(4);
 
-        self::assertSame($minDepth, $helper->getMinDepth());
+        self::assertSame(4, $helper->getMinDepth());
+
+        $helper->setMinDepth(-1);
+
+        self::assertSame(0, $helper->getMinDepth());
+
+        $helper->setMinDepth(0);
+
+        self::assertSame(0, $helper->getMinDepth());
+
+        $helper->setMinDepth(1);
+
+        self::assertSame(1, $helper->getMinDepth());
+
+        $helper->setMinDepth(4);
+
+        self::assertSame(4, $helper->getMinDepth());
     }
 
     /**
@@ -1350,6 +1366,10 @@ final class NavigationTest extends TestCase
         $helper->setUseAuthorization(false);
 
         self::assertFalse($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization();
+
+        self::assertTrue($helper->getUseAuthorization());
     }
 
     /**
