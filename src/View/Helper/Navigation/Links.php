@@ -156,6 +156,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function render($container = null): string
     {
+        $container = $this->containerParser->parseContainer($container);
+
+        if (null === $container) {
+            $container = $this->getContainer();
+        }
+
         $active = $this->findActive($container);
 
         if ([] === $active) {
@@ -171,12 +177,13 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         $this->rootFinder->setRoot($container);
 
         $result = $this->findAllRelations($active, $this->getRenderFlag());
+
         foreach ($result as $attrib => $types) {
             foreach ($types as $relation => $pages) {
                 foreach ($pages as $page) {
                     $r = $this->renderLink($page, $attrib, $relation);
 
-                    if (!$r) {
+                    if ('' === $r) {
                         continue;
                     }
 

@@ -33,8 +33,9 @@ use Mezzio\Navigation\Page\Uri;
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links
  *
- * @group      Laminas_View
- * @group      Laminas_View_Helper
+ * @group Laminas_View
+ * @group Laminas_View_Helper
+ * @group Compare
  */
 final class LinksTest extends AbstractTest
 {

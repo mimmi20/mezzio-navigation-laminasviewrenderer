@@ -29,8 +29,9 @@ use Psr\Http\Message\UriInterface;
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap
  *
- * @group      Laminas_View
- * @group      Laminas_View_Helper
+ * @group Laminas_View
+ * @group Laminas_View_Helper
+ * @group Compare
  */
 final class SitemapTest extends AbstractTest
 {

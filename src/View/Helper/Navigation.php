@@ -115,7 +115,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     {
         // check if call should proxy to another helper
         try {
-            $helper = $this->findHelper($method, true);
+            $helper = $this->findHelperStrict($method);
         } catch (Exception\RuntimeException $e) {
             $this->logger->err($e);
 
@@ -140,14 +140,10 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     public function render($container = null): string
     {
         try {
-            $helper = $this->findHelper($this->getDefaultProxy());
+            $helper = $this->findHelperStrict($this->getDefaultProxy());
         } catch (Exception\RuntimeException $e) {
             $this->logger->err($e);
 
-            return '';
-        }
-
-        if (null === $helper) {
             return '';
         }
 
@@ -174,40 +170,103 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      */
     public function findHelper(string $proxy, bool $strict = true): ?ViewHelperInterface
     {
-        if (null === $this->pluginManager) {
-            if ($strict) {
-                throw new Exception\RuntimeException(
-                    sprintf('Failed to find plugin for %s, no PluginManager set', $proxy)
-                );
-            }
+        if ($strict) {
+            return $this->findHelperStrict($proxy);
+        }
 
+        return $this->findHelperNonStrict($proxy);
+    }
+
+    /**
+     * Returns the helper matching $proxy
+     *
+     * The helper must implement the interface
+     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
+     *
+     * @param string $proxy helper name
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return ViewHelperInterface|null helper instance
+     */
+    private function findHelperNonStrict(string $proxy): ?ViewHelperInterface
+    {
+        if (null === $this->pluginManager) {
             return null;
         }
 
         if (!$this->pluginManager->has($proxy)) {
-            if ($strict) {
-                throw new Exception\RuntimeException(
-                    sprintf('Failed to find plugin for %s', $proxy)
-                );
-            }
-
             return null;
         }
 
         try {
             $helper = $this->pluginManager->get($proxy);
         } catch (ServiceNotFoundException | InvalidServiceException $e) {
-            if ($strict) {
-                throw new Exception\RuntimeException(
-                    sprintf('Failed to load plugin for %s', $proxy),
-                    0,
-                    $e
-                );
-            }
+            $this->logger->debug($e);
 
             return null;
         }
 
+        $this->prepareHelper($helper);
+
+        return $helper;
+    }
+
+    /**
+     * Returns the helper matching $proxy
+     *
+     * The helper must implement the interface
+     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
+     *
+     * @param string $proxy helper name
+     *
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
+     *
+     * @return ViewHelperInterface helper instance
+     */
+    public function findHelperStrict(string $proxy): ViewHelperInterface
+    {
+        if (null === $this->pluginManager) {
+            throw new Exception\RuntimeException(
+                sprintf('Failed to find plugin for %s, no PluginManager set', $proxy)
+            );
+        }
+
+        if (!$this->pluginManager->has($proxy)) {
+            throw new Exception\RuntimeException(
+                sprintf('Failed to find plugin for %s', $proxy)
+            );
+        }
+
+        try {
+            $helper = $this->pluginManager->get($proxy);
+        } catch (ServiceNotFoundException | InvalidServiceException $e) {
+            throw new Exception\RuntimeException(
+                sprintf('Failed to load plugin for %s', $proxy),
+                0,
+                $e
+            );
+        }
+
+        $this->prepareHelper($helper);
+
+        return $helper;
+    }
+
+    /**
+     * @param ViewHelperInterface $helper
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    private function prepareHelper(ViewHelperInterface $helper): void
+    {
         $container = $this->getContainer();
         $hash      = spl_object_hash($container) . spl_object_hash($helper);
 
@@ -220,8 +279,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         } elseif ($this->getInjectContainer()) {
             $helper->setContainer($container);
         }
-
-        return $helper;
     }
 
     /**
