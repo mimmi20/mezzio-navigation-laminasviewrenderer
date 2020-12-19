@@ -279,10 +279,6 @@ trait HelperTrait
             $container = $this->getContainer();
         }
 
-        if (!$container instanceof Navigation\ContainerInterface) {
-            return [];
-        }
-
         if (null === $minDepth) {
             $minDepth = $this->getMinDepth();
         }
