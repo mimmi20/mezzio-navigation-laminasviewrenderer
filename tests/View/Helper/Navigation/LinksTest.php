@@ -14,6 +14,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\Config\Config;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
@@ -1305,6 +1306,162 @@ final class LinksTest extends TestCase
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::once())
+            ->method('build')
+            ->with(
+                FindActiveInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($findActiveHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
+
+        $helper->setRole($role);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
+     *
+     * @return void
+     */
+    public function testFindActiveException(): void
+    {
+        $exception = new ServiceNotFoundException();
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::once())
+            ->method('err')
+            ->with($exception);
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $name = 'Mezzio\\Navigation\\Top';
+
+        $parentPage = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $parentPage->expects(self::never())
+            ->method('isVisible');
+        $parentPage->expects(self::never())
+            ->method('getResource');
+        $parentPage->expects(self::never())
+            ->method('getPrivilege');
+        $parentPage->expects(self::never())
+            ->method('getParent');
+        $parentPage->expects(self::never())
+            ->method('isActive');
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('isActive');
+
+        $container = new Navigation();
+        $container->addPage($page);
+
+        $role     = 'testRole';
+        $maxDepth = 42;
+        $minDepth = 0;
+
+        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, $minDepth, $maxDepth)
+            ->willThrowException($exception);
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
