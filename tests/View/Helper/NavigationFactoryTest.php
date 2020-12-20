@@ -14,6 +14,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
@@ -86,5 +87,7 @@ final class NavigationFactoryTest extends TestCase
         $navigation = ($this->factory)($container);
 
         self::assertInstanceOf(Navigation::class, $navigation);
+
+        self::assertInstanceOf(ViewHelperPluginManager::class, $navigation->getPluginManager());
     }
 }

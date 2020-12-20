@@ -1100,4 +1100,110 @@ final class HtmlifyTest extends TestCase
         /* @var PageInterface $page */
         self::assertSame($expected, $helper->toHtml(Breadcrumbs::class, $page));
     }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testHtmlifyWithArrayOfClasses3(): void
+    {
+        $expected = '<a id="breadcrumbs-testIdEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped" onClick=\'{"a":"b"}\' data-test="test-class1 test-class2">testLabelTranslatedAndEscaped</a>';
+
+        $escapedTranslatedLabel = 'testLabelTranslatedAndEscaped';
+        $id                     = 'testId';
+        $class                  = 'test-class';
+        $href                   = '#';
+        $target                 = '_blank';
+
+        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtml->expects(self::exactly(7))
+            ->method('__invoke')
+            ->withConsecutive(
+                ['id'],
+                ['class'],
+                ['href'],
+                ['target'],
+                ['onClick'],
+                ['data-test'],
+                ['']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'id',
+                'classEscaped',
+                'hrefEscaped',
+                'targetEscaped',
+                'onClick',
+                'data-test',
+                $escapedTranslatedLabel
+            );
+
+        $escapeHtmlAttr = $this->getMockBuilder(EscapeHtmlAttr::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtmlAttr->expects(self::exactly(6))
+            ->method('__invoke')
+            ->withConsecutive(
+                [$id],
+                [$class],
+                [$href],
+                [$target],
+                ['{"a":"b"}'],
+                ['test-class1 test-class2']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'testIdEscaped',
+                'testClassEscaped',
+                '#Escaped',
+                '_blankEscaped',
+                '{"a":"b"}',
+                'test-class1 test-class2'
+            );
+
+        $page = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('getLabel')
+            ->willReturn(null);
+        $page->expects(self::once())
+            ->method('getTitle')
+            ->willReturn(null);
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::once())
+            ->method('getId')
+            ->willReturn($id);
+        $page->expects(self::once())
+            ->method('getClass')
+            ->willReturn($class);
+        $page->expects(self::once())
+            ->method('getHref')
+            ->willReturn($href);
+        $page->expects(self::once())
+            ->method('getTarget')
+            ->willReturn($target);
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn(['onClick' => (object) ['a' => 'b'], 'data-test' => ['test-class1', 'test-class2']]);
+
+        \assert($escapeHtml instanceof EscapeHtml);
+        \assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        $helper = new Htmlify($escapeHtml, $escapeHtmlAttr);
+
+        /* @var PageInterface $page */
+        self::assertSame($expected, $helper->toHtml(Breadcrumbs::class, $page));
+    }
 }

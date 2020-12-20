@@ -228,7 +228,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @return ViewHelperInterface helper instance
      */
-    public function findHelperStrict(string $proxy): ViewHelperInterface
+    private function findHelperStrict(string $proxy): ViewHelperInterface
     {
         if (null === $this->pluginManager) {
             throw new Exception\RuntimeException(
@@ -371,6 +371,14 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         }
 
         $this->pluginManager = $pluginManager;
+    }
+
+    /**
+     * @return ViewHelperPluginManager|null
+     */
+    public function getPluginManager(): ?ViewHelperPluginManager
+    {
+        return $this->pluginManager;
     }
 
     /**

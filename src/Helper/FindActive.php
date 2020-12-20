@@ -17,6 +17,8 @@ use RecursiveIteratorIterator;
 
 final class FindActive implements FindActiveInterface
 {
+    private const START_DEPTH = -1;
+
     /** @var AcceptHelperInterface */
     private $acceptHelper;
 
@@ -55,7 +57,7 @@ final class FindActive implements FindActiveInterface
     public function find(ContainerInterface $container, ?int $minDepth, ?int $maxDepth): array
     {
         $found      = null;
-        $foundDepth = -1;
+        $foundDepth = self::START_DEPTH;
         $iterator   = new RecursiveIteratorIterator(
             $container,
             RecursiveIteratorIterator::CHILD_FIRST
@@ -88,7 +90,11 @@ final class FindActive implements FindActiveInterface
         }
 
         if (is_int($maxDepth) && $foundDepth > $maxDepth && $found instanceof PageInterface) {
+            \assert($foundDepth > $maxDepth);
+
             while ($foundDepth > $maxDepth) {
+                \assert($foundDepth >= $minDepth);
+
                 if (--$foundDepth < $minDepth) {
                     $found = null;
                     break;

@@ -24,6 +24,7 @@ use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
+use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 use Traversable;
 
@@ -747,9 +748,19 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         }
 
         if (is_string($mixed)) {
+            try {
+                $pageFactory = $this->serviceLocator->get(PageFactory::class);
+            } catch (ContainerExceptionInterface $e) {
+                $this->logger->err($e);
+
+                return null;
+            }
+
+            \assert($pageFactory instanceof PageFactory);
+
             // value is a string; make a URI page
             try {
-                return (new PageFactory())->factory(
+                return $pageFactory->factory(
                     [
                         'type' => 'uri',
                         'uri' => $mixed,
@@ -777,9 +788,19 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                 return array_values($pages);
             }
 
+            try {
+                $pageFactory = $this->serviceLocator->get(PageFactory::class);
+            } catch (ContainerExceptionInterface $e) {
+                $this->logger->err($e);
+
+                return null;
+            }
+
+            \assert($pageFactory instanceof PageFactory);
+
             // pass array to factory directly
             try {
-                return (new PageFactory())->factory($mixed);
+                return $pageFactory->factory($mixed);
             } catch (InvalidArgumentException $e) {
                 $this->logger->err($e);
             }
