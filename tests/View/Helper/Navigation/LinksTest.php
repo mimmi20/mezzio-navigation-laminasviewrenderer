@@ -31,6 +31,8 @@ use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mezzio\Navigation\Navigation;
+use Mezzio\Navigation\Page\PageFactory;
+use Mezzio\Navigation\Page\PageFactoryInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Route;
 use Mezzio\Navigation\Page\Uri;
@@ -5734,6 +5736,8 @@ final class LinksTest extends TestCase
         $page1->expects(self::never())
             ->method('getRev');
 
+        $page3 = $this->createMock(PageInterface::class);
+
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
 
@@ -5746,7 +5750,7 @@ final class LinksTest extends TestCase
             ->getMock();
         $acceptHelper->expects(self::once())
             ->method('accept')
-            ->with(new IsInstanceOf(Uri::class))
+            ->with($page3)
             ->willReturn(true);
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -5770,15 +5774,28 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
+        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageFactory->expects(self::once())
+            ->method('factory')
+            ->with(
+                [
+                    'type' => 'uri',
+                    'uri' => $uri,
+                ]
+            )
+            ->willReturn($page3);
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
-        $serviceLocator->expects(self::once())
+        $serviceLocator->expects(self::exactly(2))
             ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
+            ->withConsecutive([PageFactory::class], [PluginManager::class])
+            ->willReturnOnConsecutiveCalls($pageFactory, $helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -5821,7 +5838,154 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertInstanceOf(Uri::class, $helper->findRelation($page1, $rel, $type));
+        self::assertSame($page3, $helper->findRelation($page1, $rel, $type));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testFindStringRelationFromPropertyWithError(): void
+    {
+        $exception = new \Mezzio\Navigation\Exception\InvalidArgumentException('test');
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::once())
+            ->method('err')
+            ->with($exception);
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $parentPage = new Route();
+        $page2      = new Route();
+        $type       = 'test';
+        $uri        = 'http://test.org';
+
+        $container = new Navigation();
+
+        $page1 = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page1->expects(self::never())
+            ->method('isVisible');
+        $page1->expects(self::never())
+            ->method('getResource');
+        $page1->expects(self::never())
+            ->method('getPrivilege');
+        $page1->expects(self::once())
+            ->method('getRel')
+            ->with($type)
+            ->willReturn($uri);
+        $page1->expects(self::never())
+            ->method('getRev');
+
+        $page3 = $this->createMock(PageInterface::class);
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::never())
+            ->method('build');
+
+        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageFactory->expects(self::once())
+            ->method('factory')
+            ->with(
+                [
+                    'type' => 'uri',
+                    'uri' => $uri,
+                ]
+            )
+            ->willThrowException($exception);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(PageFactory::class)
+            ->willReturn($pageFactory);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
+
+        $helper->setRole($role);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $rel = 'rel';
+
+        self::assertNull($helper->findRelation($page1, $rel, $type));
     }
 
     /**
@@ -5848,6 +6012,168 @@ final class LinksTest extends TestCase
             ->method('crit');
         $logger->expects(self::never())
             ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $parentPage = new Route();
+        $page2      = new Route();
+        $type       = 'test';
+
+        $page3 = $this->createMock(PageInterface::class);
+
+        $uri = 'http://test.org';
+
+        $config = new Config(
+            ['uri' => $uri]
+        );
+
+        $page1 = $this->getMockBuilder(PageInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page1->expects(self::never())
+            ->method('isVisible');
+        $page1->expects(self::never())
+            ->method('getResource');
+        $page1->expects(self::never())
+            ->method('getPrivilege');
+        $page1->expects(self::once())
+            ->method('getRel')
+            ->with($type)
+            ->willReturn($config);
+        $page1->expects(self::never())
+            ->method('getRev');
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($page3)
+            ->willReturn(true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::once())
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageFactory->expects(self::once())
+            ->method('factory')
+            ->with(
+                ['uri' => $uri]
+            )
+            ->willReturn($page3);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive([PageFactory::class], [PluginManager::class])
+            ->willReturnOnConsecutiveCalls($pageFactory, $helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::never())
+            ->method('find');
+
+        $headLink = $this->getMockBuilder(HeadLink::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $headLink->expects(self::never())
+            ->method('__invoke');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        \assert($rootFinder instanceof FindRootInterface);
+        \assert($headLink instanceof HeadLink);
+        $helper = new Links($serviceLocator, $logger, $htmlify, $containerParser, $rootFinder, $headLink);
+
+        $helper->setRole($role);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
+
+        $rel = 'rel';
+
+        self::assertSame($page3, $helper->findRelation($page1, $rel, $type));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\BadMethodCallException
+     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testFindConfigRelationFromPropertyWithError(): void
+    {
+        $exception = new \Mezzio\Navigation\Exception\InvalidArgumentException('test');
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::once())
+            ->method('err')
+            ->with($exception);
         $logger->expects(self::never())
             ->method('warn');
         $logger->expects(self::never())
@@ -5888,14 +6214,6 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $acceptHelper->expects(self::once())
-            ->method('accept')
-            ->with(new IsInstanceOf(Uri::class))
-            ->willReturn(true);
-
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -5905,17 +6223,18 @@ final class LinksTest extends TestCase
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
-            ->method('build')
+        $helperPluginManager->expects(self::never())
+            ->method('build');
+
+        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageFactory->expects(self::once())
+            ->method('factory')
             ->with(
-                AcceptHelperInterface::class,
-                [
-                    'authorization' => $auth,
-                    'renderInvisible' => false,
-                    'role' => $role,
-                ]
+                ['uri' => $uri]
             )
-            ->willReturn($acceptHelper);
+            ->willThrowException($exception);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -5924,8 +6243,8 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::once())
             ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
+            ->with(PageFactory::class)
+            ->willReturn($pageFactory);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -5968,7 +6287,7 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertInstanceOf(Uri::class, $helper->findRelation($page1, $rel, $type));
+        self::assertNull($helper->findRelation($page1, $rel, $type));
     }
 
     /**

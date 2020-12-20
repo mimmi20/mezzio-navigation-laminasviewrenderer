@@ -411,6 +411,86 @@ final class NavigationTest extends TestCase
      *
      * @return void
      */
+    public function testFindHelperNotInPluginManager2(): void
+    {
+        $proxy = 'menu';
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pluginManager->expects(self::exactly(2))
+            ->method('has')
+            ->with($proxy)
+            ->willReturn(false);
+
+        /* @var Navigation\PluginManager $pluginManager */
+        $helper->setPluginManager($pluginManager);
+
+        self::assertNull($helper->findHelper($proxy, false));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('Failed to find plugin for %s', $proxy));
+        $this->expectExceptionCode(0);
+
+        $helper->findHelper($proxy);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
     public function testFindHelperExceptionInPluginManager(): void
     {
         $proxy     = 'menu';
@@ -497,6 +577,92 @@ final class NavigationTest extends TestCase
      *
      * @return void
      */
+    public function testFindHelperExceptionInPluginManager2(): void
+    {
+        $proxy     = 'menu';
+        $exception = new ServiceNotFoundException('test');
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::once())
+            ->method('debug')
+            ->with($exception);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pluginManager->expects(self::exactly(2))
+            ->method('has')
+            ->with($proxy)
+            ->willReturn(true);
+        $pluginManager->expects(self::exactly(2))
+            ->method('get')
+            ->with($proxy)
+            ->willThrowException($exception);
+
+        /* @var Navigation\PluginManager $pluginManager */
+        $helper->setPluginManager($pluginManager);
+
+        self::assertNull($helper->findHelper($proxy, false));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('Failed to load plugin for %s', $proxy));
+        $this->expectExceptionCode(0);
+
+        $helper->findHelper($proxy);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
     public function testFindHelper(): void
     {
         $proxy = 'menu';
@@ -550,9 +716,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::exactly(3))
+        $menu->expects(self::exactly(4))
             ->method('setContainer')
-            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -566,11 +732,11 @@ final class NavigationTest extends TestCase
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $pluginManager->expects(self::exactly(2))
+        $pluginManager->expects(self::exactly(3))
             ->method('has')
             ->with($proxy)
             ->willReturn(true);
-        $pluginManager->expects(self::exactly(2))
+        $pluginManager->expects(self::exactly(3))
             ->method('get')
             ->with($proxy)
             ->willReturn($menu);
@@ -580,6 +746,7 @@ final class NavigationTest extends TestCase
 
         self::assertSame($menu, $helper->findHelper($proxy, false));
         self::assertSame($menu, $helper->findHelper($proxy, true));
+        self::assertSame($menu, $helper->findHelper($proxy));
     }
 
     /**
@@ -646,9 +813,9 @@ final class NavigationTest extends TestCase
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $menu->expects(self::exactly(3))
+        $menu->expects(self::exactly(4))
             ->method('setContainer')
-            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -665,11 +832,11 @@ final class NavigationTest extends TestCase
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $pluginManager->expects(self::exactly(2))
+        $pluginManager->expects(self::exactly(3))
             ->method('has')
             ->with($proxy)
             ->willReturn(true);
-        $pluginManager->expects(self::exactly(2))
+        $pluginManager->expects(self::exactly(3))
             ->method('get')
             ->with($proxy)
             ->willReturn($menu);
@@ -680,6 +847,7 @@ final class NavigationTest extends TestCase
 
         self::assertSame($menu, $helper->findHelper($proxy, false));
         self::assertSame($menu, $helper->findHelper($proxy, true));
+        self::assertSame($menu, $helper->findHelper($proxy));
     }
 
     /**
