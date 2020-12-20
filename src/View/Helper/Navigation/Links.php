@@ -22,7 +22,7 @@ use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Page\PageFactory;
+use Mezzio\Navigation\Page\PageFactoryInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
@@ -749,14 +749,14 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         if (is_string($mixed)) {
             try {
-                $pageFactory = $this->serviceLocator->get(PageFactory::class);
+                $pageFactory = $this->serviceLocator->get(PageFactoryInterface::class);
             } catch (ContainerExceptionInterface $e) {
                 $this->logger->err($e);
 
                 return null;
             }
 
-            \assert($pageFactory instanceof PageFactory);
+            \assert($pageFactory instanceof PageFactoryInterface);
 
             // value is a string; make a URI page
             try {
@@ -789,14 +789,14 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             }
 
             try {
-                $pageFactory = $this->serviceLocator->get(PageFactory::class);
+                $pageFactory = $this->serviceLocator->get(PageFactoryInterface::class);
             } catch (ContainerExceptionInterface $e) {
                 $this->logger->err($e);
 
                 return null;
             }
 
-            \assert($pageFactory instanceof PageFactory);
+            \assert($pageFactory instanceof PageFactoryInterface);
 
             // pass array to factory directly
             try {
