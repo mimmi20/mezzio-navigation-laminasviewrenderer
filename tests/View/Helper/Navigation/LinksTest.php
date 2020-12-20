@@ -31,7 +31,6 @@ use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mezzio\Navigation\Navigation;
-use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageFactoryInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Route;
@@ -5794,7 +5793,7 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive([PageFactory::class], [PluginManager::class])
+            ->withConsecutive([PageFactoryInterface::class], [PluginManager::class])
             ->willReturnOnConsecutiveCalls($pageFactory, $helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -5941,7 +5940,7 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::once())
             ->method('get')
-            ->with(PageFactory::class)
+            ->with(PageFactoryInterface::class)
             ->willReturn($pageFactory);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -6100,7 +6099,7 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::exactly(2))
             ->method('get')
-            ->withConsecutive([PageFactory::class], [PluginManager::class])
+            ->withConsecutive([PageFactoryInterface::class], [PluginManager::class])
             ->willReturnOnConsecutiveCalls($pageFactory, $helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -6243,7 +6242,7 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::once())
             ->method('get')
-            ->with(PageFactory::class)
+            ->with(PageFactoryInterface::class)
             ->willReturn($pageFactory);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
