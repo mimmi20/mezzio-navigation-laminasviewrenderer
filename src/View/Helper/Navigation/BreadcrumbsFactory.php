@@ -14,7 +14,6 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -31,7 +30,6 @@ final class BreadcrumbsFactory
      * @param ContainerInterface $container
      *
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws ServiceNotCreatedException
      *
      * @return Breadcrumbs
      */

@@ -14,7 +14,8 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\View\Exception;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
@@ -102,12 +103,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @param string $method    helper name or method name in container
      * @param array  $arguments [optional] arguments to pass
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface         if proxying to a helper, and the
-     *                                                            helper is not an instance of the
-     *                                                            interface specified in
-     *                                                            {@link findHelper()}
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface    if method does not exist in container
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return mixed returns what the proxied call returns
      */
@@ -116,7 +112,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         // check if call should proxy to another helper
         try {
             $helper = $this->findHelperStrict($method);
-        } catch (Exception\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->logger->err($e);
 
             // default behaviour: proxy call to container
@@ -131,17 +127,13 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param ContainerInterface|string|null $container
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
      * @return string
      */
     public function render($container = null): string
     {
         try {
             $helper = $this->findHelperStrict($this->getDefaultProxy());
-        } catch (Exception\RuntimeException $e) {
+        } catch (InvalidArgumentException | RuntimeException $e) {
             $this->logger->err($e);
 
             return '';
@@ -161,10 +153,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *                       thrown if something goes
      *                       wrong. Default is true.
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
+     * @throws InvalidArgumentException
+     * @throws RuntimeException         if $strict is true and helper cannot be found
      *
      * @return ViewHelperInterface|null helper instance
      */
@@ -185,8 +175,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param string $proxy helper name
      *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return ViewHelperInterface|null helper instance
      */
@@ -221,23 +210,21 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param string $proxy helper name
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException                            if $strict is true and helper cannot be found
+     * @throws InvalidArgumentException
+     * @throws RuntimeException         if helper cannot be found
      *
      * @return ViewHelperInterface helper instance
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
         if (null === $this->pluginManager) {
-            throw new Exception\RuntimeException(
+            throw new RuntimeException(
                 sprintf('Failed to find plugin for %s, no PluginManager set', $proxy)
             );
         }
 
         if (!$this->pluginManager->has($proxy)) {
-            throw new Exception\RuntimeException(
+            throw new RuntimeException(
                 sprintf('Failed to find plugin for %s', $proxy)
             );
         }
@@ -245,7 +232,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         try {
             $helper = $this->pluginManager->get($proxy);
         } catch (ServiceNotFoundException | InvalidServiceException $e) {
-            throw new Exception\RuntimeException(
+            throw new RuntimeException(
                 sprintf('Failed to load plugin for %s', $proxy),
                 0,
                 $e
@@ -260,8 +247,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     /**
      * @param ViewHelperInterface $helper
      *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return void
      */
@@ -287,8 +273,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param ViewHelperInterface $helper helper instance
      *
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return void
      */

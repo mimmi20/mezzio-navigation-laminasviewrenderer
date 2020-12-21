@@ -12,13 +12,15 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView\Helper;
 
 use Interop\Container\ContainerInterface;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParser;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserFactory;
+use Laminas\Log\Logger;
+use Mezzio\Navigation\LaminasView\Helper\ConvertToPages;
+use Mezzio\Navigation\LaminasView\Helper\ConvertToPagesFactory;
+use Mezzio\Navigation\Page\PageFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
-final class ContainerParserFactoryTest extends TestCase
+final class ConvertToPagesFactoryTest extends TestCase
 {
-    /** @var ContainerParserFactory */
+    /** @var ConvertToPagesFactory */
     private $factory;
 
     /**
@@ -26,7 +28,7 @@ final class ContainerParserFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->factory = new ContainerParserFactory();
+        $this->factory = new ConvertToPagesFactory();
     }
 
     /**
@@ -38,15 +40,20 @@ final class ContainerParserFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
+        $logger      = $this->createMock(Logger::class);
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
+
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::never())
-            ->method('get');
+        $container->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive([Logger::class], [PageFactoryInterface::class])
+            ->willReturnOnConsecutiveCalls($logger, $pageFactory);
 
         \assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
-        self::assertInstanceOf(ContainerParser::class, $helper);
+        self::assertInstanceOf(ConvertToPages::class, $helper);
     }
 }

@@ -18,6 +18,7 @@ use Laminas\Uri\Exception\InvalidArgumentException;
 use Laminas\Uri\Exception\InvalidUriException;
 use Laminas\Uri\Exception\InvalidUriPartException;
 use Laminas\Uri\UriInterface;
+use Laminas\Validator\Exception\RuntimeException;
 use Laminas\Validator\Sitemap\Changefreq;
 use Laminas\Validator\Sitemap\Lastmod;
 use Laminas\Validator\Sitemap\Loc;
@@ -145,11 +146,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                  that the helper should render
      *                                                  the container returned by {@link getContainer()}.
      *
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -183,16 +181,13 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                  null value means no maximum
      *                                                  depth required.
      *
-     * @throws Exception\RuntimeException                            if schema validation is on
-     *                                                               and the sitemap is invalid
-     *                                                               according to the sitemap
-     *                                                               schema, or if sitemap
-     *                                                               validators are used and the
-     *                                                               loc element fails validation
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException         if schema validation is on
+     *                                            and the sitemap is invalid
+     *                                            according to the sitemap
+     *                                            schema, or if sitemap
+     *                                            validators are used and the
+     *                                            loc element fails validation
+     * @throws Exception\InvalidArgumentException
      *
      * @return \DOMDocument DOM representation of the container
      */
@@ -262,7 +257,20 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             if ($this->getUseSitemapValidators()) {
                 $locValidator = $this->getLocValidator();
 
-                if (!$locValidator->isValid($url)) {
+                try {
+                    $isValid = $locValidator->isValid($url);
+                } catch (RuntimeException $e) {
+                    throw new Exception\RuntimeException(
+                        sprintf(
+                            'An error occured while validating an URL for Sitemap XML: "%s"',
+                            $url
+                        ),
+                        0,
+                        $e
+                    );
+                }
+
+                if (!$isValid) {
                     throw new Exception\RuntimeException(
                         sprintf(
                             'Encountered an invalid URL for Sitemap XML: "%s"',
@@ -286,9 +294,17 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
                 $lastmodValidator = $this->getLastmodValidator();
 
+                try {
+                    $isValid = $lastmodValidator->isValid($lastmod);
+                } catch (RuntimeException $e) {
+                    $this->logger->err($e);
+
+                    $isValid = false;
+                }
+
                 if (
                     !$this->getUseSitemapValidators()
-                    || (false !== $lastmod && $lastmodValidator->isValid($lastmod))
+                    || (false !== $lastmod && $isValid)
                 ) {
                     // Cast $lastmod to string in case no validation was used
                     $urlNode->appendChild(
@@ -302,9 +318,17 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                 $changefreq          = $page->changefreq;
                 $changefreqValidator = $this->getChangefreqValidator();
 
+                try {
+                    $isValid = $changefreqValidator->isValid($changefreq);
+                } catch (RuntimeException $e) {
+                    $this->logger->err($e);
+
+                    $isValid = false;
+                }
+
                 if (
                     !$this->getUseSitemapValidators()
-                    || $changefreqValidator->isValid($changefreq)
+                    || $isValid
                 ) {
                     $urlNode->appendChild(
                         $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq)
@@ -322,7 +346,15 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             if ($this->getUseSitemapValidators()) {
                 $priorityValidator = $this->getPriorityValidator();
 
-                if (!$priorityValidator->isValid($priority)) {
+                try {
+                    $isValid = $priorityValidator->isValid($priority);
+                } catch (RuntimeException $e) {
+                    $this->logger->err($e);
+
+                    continue;
+                }
+
+                if (!$isValid) {
                     continue;
                 }
             }

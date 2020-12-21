@@ -13,7 +13,6 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
@@ -30,7 +29,6 @@ final class SitemapFactory
      *
      * @param ContainerInterface $container
      *
-     * @throws ServiceNotCreatedException
      * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @return ViewHelperInterface

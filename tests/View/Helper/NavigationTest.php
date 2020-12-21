@@ -122,6 +122,7 @@ final class NavigationTest extends TestCase
         $helper->setPluginManager($pluginManager);
 
         self::assertSame($view, $helper->getView());
+        self::assertSame($serviceLocator, $helper->getServiceLocator());
     }
 
     /**
@@ -963,6 +964,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1137,6 +1139,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1231,6 +1234,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1292,6 +1296,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1434,6 +1439,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1571,6 +1577,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1711,6 +1718,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -1787,6 +1795,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -2080,7 +2089,8 @@ final class NavigationTest extends TestCase
     public function testHtmlify(): void
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
-        $logger   = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
@@ -2099,6 +2109,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
@@ -2317,145 +2328,6 @@ final class NavigationTest extends TestCase
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
-
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $auth->expects(self::never())
-            ->method('isGranted');
-
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $helperPluginManager->expects(self::once())
-            ->method('build')
-            ->with(
-                FindActiveInterface::class,
-                [
-                    'authorization' => $auth,
-                    'renderInvisible' => false,
-                    'role' => $role,
-                ]
-            )
-            ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $containerParser->expects(self::once())
-            ->method('parseContainer')
-            ->with($name)
-            ->willReturn($container);
-
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
-
-        $helper->setRole($role);
-
-        /* @var AuthorizationInterface $auth */
-        $helper->setAuthorization($auth);
-
-        self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testFindActiveException(): void
-    {
-        $exception = new ServiceNotFoundException();
-
-        $logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emerg');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::once())
-            ->method('err')
-            ->with($exception);
-        $logger->expects(self::never())
-            ->method('warn');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $name = 'Mezzio\\Navigation\\Top';
-
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $parentPage->expects(self::never())
-            ->method('isVisible');
-        $parentPage->expects(self::never())
-            ->method('getResource');
-        $parentPage->expects(self::never())
-            ->method('getPrivilege');
-        $parentPage->expects(self::never())
-            ->method('getParent');
-        $parentPage->expects(self::never())
-            ->method('isActive');
-
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $page->expects(self::never())
-            ->method('isVisible');
-        $page->expects(self::never())
-            ->method('getResource');
-        $page->expects(self::never())
-            ->method('getPrivilege');
-        $page->expects(self::never())
-            ->method('getParent');
-        $page->expects(self::never())
-            ->method('isActive');
-
-        $container = new \Mezzio\Navigation\Navigation();
-        $container->addPage($page);
-
-        $role     = 'testRole';
-        $maxDepth = 42;
-        $minDepth = 0;
-
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $findActiveHelper->expects(self::once())
-            ->method('find')
-            ->with($container, $minDepth, $maxDepth)
-            ->willThrowException($exception);
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -3484,7 +3356,8 @@ final class NavigationTest extends TestCase
     public function testInvoke(): void
     {
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
-        $logger    = $this->getMockBuilder(Logger::class)
+
+        $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
@@ -3503,6 +3376,7 @@ final class NavigationTest extends TestCase
             ->method('info');
         $logger->expects(self::never())
             ->method('debug');
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3551,7 +3425,8 @@ final class NavigationTest extends TestCase
      */
     public function testToStringExceptionInPluginManager(): void
     {
-        $proxy          = 'menu';
+        $proxy = 'menu';
+
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -3613,6 +3488,108 @@ final class NavigationTest extends TestCase
 
         /* @var Navigation\PluginManager $pluginManager */
         $helper->setPluginManager($pluginManager);
+
+        self::assertSame('', (string) $helper);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testToStringExceptionInRenderer(): void
+    {
+        $proxy     = 'menu';
+        $container = null;
+        $auth      = $this->createMock(AuthorizationInterface::class);
+        $exception = new RuntimeException('test');
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::once())
+            ->method('err')
+            ->with($exception);
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        \assert($serviceLocator instanceof ContainerInterface);
+        \assert($logger instanceof Logger);
+        \assert($htmlify instanceof HtmlifyInterface);
+        \assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
+
+        $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $menu->expects(self::exactly(2))
+            ->method('setContainer')
+            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
+        $menu->expects(self::once())
+            ->method('hasAuthorization')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('setAuthorization')
+            ->with($auth);
+        $menu->expects(self::once())
+            ->method('hasRole')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('render')
+            ->with($container)
+            ->willThrowException($exception);
+
+        $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pluginManager->expects(self::once())
+            ->method('has')
+            ->with($proxy)
+            ->willReturn(true);
+        $pluginManager->expects(self::once())
+            ->method('get')
+            ->with($proxy)
+            ->willReturn($menu);
+
+        /* @var Navigation\PluginManager $pluginManager */
+        $helper->setPluginManager($pluginManager);
+
+        /* @var AuthorizationInterface $auth */
+        $helper->setAuthorization($auth);
 
         self::assertSame('', (string) $helper);
     }

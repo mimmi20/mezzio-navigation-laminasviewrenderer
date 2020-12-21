@@ -48,15 +48,13 @@ interface SitemapInterface extends ViewHelperInterface
      *                                                  null value means no maximum
      *                                                  depth required.
      *
-     * @throws Exception\RuntimeException                            if schema validation is on
-     *                                                               and the sitemap is invalid
-     *                                                               according to the sitemap
-     *                                                               schema, or if sitemap
-     *                                                               validators are used and the
-     *                                                               loc element fails validation
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException         if schema validation is on
+     *                                            and the sitemap is invalid
+     *                                            according to the sitemap
+     *                                            schema, or if sitemap
+     *                                            validators are used and the
+     *                                            loc element fails validation
+     * @throws Exception\InvalidArgumentException
      *
      * @return \DOMDocument DOM representation of the container
      */
