@@ -17,6 +17,7 @@ use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
@@ -70,14 +71,25 @@ final class LinksFactoryTest extends TestCase
         $rootFinder      = $this->createMock(FindRootInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $headLink        = $this->createMock(HeadLink::class);
+        $convertToPages  = $this->createMock(ConvertToPagesInterface::class);
 
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $helperPluginManager->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class], [FindRootInterface::class])
-            ->willReturnOnConsecutiveCalls($htmlify, $containerParser, $rootFinder);
+            ->withConsecutive(
+                [HtmlifyInterface::class],
+                [ContainerParserInterface::class],
+                [FindRootInterface::class],
+                [ConvertToPagesInterface::class]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $htmlify,
+                $containerParser,
+                $rootFinder,
+                $convertToPages
+            );
 
         $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
             ->disableOriginalConstructor()

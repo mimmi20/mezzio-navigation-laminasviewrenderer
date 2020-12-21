@@ -12,7 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\Log\Logger;
-use Laminas\Stdlib\ArrayUtils;
+use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
@@ -20,13 +20,14 @@ use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
+use Mezzio\Navigation\LaminasView\Helper\FindFromPropertyInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Page\PageFactoryInterface;
+use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
-use Traversable;
 
 /**
  * Helper for printing <link> elements
@@ -80,6 +81,9 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     /** @var HeadLink */
     private $headLink;
 
+    /** @var ConvertToPagesInterface */
+    private $convertToPages;
+
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
@@ -87,6 +91,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param ContainerParserInterface              $containerParser
      * @param FindRootInterface                     $rootFinder
      * @param HeadLink                              $headLink
+     * @param ConvertToPagesInterface               $convertToPages
      */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
@@ -94,7 +99,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         FindRootInterface $rootFinder,
-        HeadLink $headLink
+        HeadLink $headLink,
+        ConvertToPagesInterface $convertToPages
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
@@ -102,6 +108,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         $this->containerParser = $containerParser;
         $this->rootFinder      = $rootFinder;
         $this->headLink        = $headLink;
+        $this->convertToPages  = $convertToPages;
     }
 
     /**
@@ -120,7 +127,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws Exception\ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \ErrorException
      *
      * @return mixed
@@ -148,10 +154,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *                                                  that the helper should render
      *                                                  the container returned by {@link getContainer()}.
      *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws Exception\DomainException
+     * @throws Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -177,7 +181,13 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         $this->rootFinder->setRoot($container);
 
-        $result = $this->findAllRelations($active, $this->getRenderFlag());
+        try {
+            $result = $this->findAllRelations($active, $this->getRenderFlag());
+        } catch (InvalidArgumentException $e) {
+            $this->logger->err($e);
+
+            return '';
+        }
 
         foreach ($result as $attrib => $types) {
             foreach ($types as $relation => $pages) {
@@ -267,9 +277,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param PageInterface $page page to find links for
      * @param int|null      $flag
      *
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return array
      */
@@ -295,7 +303,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                     continue;
                 }
 
-                $found = $this->findRelation($page, $rel, $type);
+                try {
+                    $found = $this->findRelation($page, $rel, $type);
+                } catch (Exception\DomainException $e) {
+                    continue;
+                }
+
                 if (!$found) {
                     continue;
                 }
@@ -321,9 +334,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @throws Exception\DomainException                             if $rel is not "rel" or "rev"
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\DomainException if $rel is not "rel" or "rev"
+     * @throws InvalidArgumentException
      *
      * @return array|PageInterface|null
      */
@@ -338,7 +350,9 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             );
         }
 
-        if (!$result = $this->findFromProperty($page, $rel, $type)) {
+        $result = $this->findFromProperty($page, $rel, $type);
+
+        if (!$result) {
             $result = $this->findFromSearch($page, $rel, $type);
         }
 
@@ -353,38 +367,49 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws \Laminas\View\Exception\DomainException
      *
      * @return array|PageInterface|null
      */
     private function findFromProperty(PageInterface $page, string $rel, string $type)
     {
-        $method = 'get' . ucfirst($rel);
-        $result = $page->{$method}($type);
+        try {
+            $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
+            \assert(
+                $helperPluginManager instanceof PluginManagerInterface,
+                sprintf(
+                    '$helperPluginManager should be an Instance of %s, but was %s',
+                    HelperPluginManager::class,
+                    get_class($helperPluginManager)
+                )
+            );
 
-        if (!$result) {
+            $findFromPropertyHelper = $helperPluginManager->build(
+                FindFromPropertyInterface::class,
+                [
+                    'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
+                    'renderInvisible' => $this->getRenderInvisible(),
+                    'role' => $this->getRole(),
+                ]
+            );
+        } catch (ContainerExceptionInterface $e) {
+            $this->logger->err($e);
+
             return null;
         }
 
-        $result = $this->convertToPages($result);
+        \assert($findFromPropertyHelper instanceof FindFromPropertyInterface);
+        $filtered = $findFromPropertyHelper->find($page, $rel, $type);
 
-        if (!$result) {
-            return null;
+        switch (count($filtered)) {
+            case 0:
+                return null;
+            case 1:
+                return $filtered[0];
+            default:
+                return $filtered;
         }
-
-        if (!is_array($result)) {
-            $result = [$result];
-        }
-
-        $filtered = array_filter(
-            $result,
-            function (PageInterface $page): bool {
-                return $this->accept($page);
-            }
-        );
-
-        return 1 === count($filtered) ? $filtered[0] : $filtered;
     }
 
     /**
@@ -521,9 +546,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @param PageInterface $page
      *
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\DomainException
+     * @throws InvalidArgumentException
      *
      * @return array|PageInterface|null
      */
@@ -718,97 +742,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     }
 
     // Util methods:
-
-    /**
-     * Converts a $mixed value to an array of pages
-     *
-     * @param ContainerInterface|PageInterface|string|Traversable $mixed     mixed value to get page(s) from
-     * @param bool                                                $recursive whether $value should be looped if it is an array or a config
-     *
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
-     * @return array|PageInterface|null
-     */
-    private function convertToPages($mixed, bool $recursive = true)
-    {
-        if ($mixed instanceof PageInterface) {
-            // value is a page instance; return directly
-            return $mixed;
-        }
-
-        if ($mixed instanceof ContainerInterface) {
-            // value is a container; return pages in it
-            $pages = [];
-            foreach ($mixed as $page) {
-                $pages[] = $page;
-            }
-
-            return $pages;
-        }
-
-        if (is_string($mixed)) {
-            try {
-                $pageFactory = $this->serviceLocator->get(PageFactoryInterface::class);
-            } catch (ContainerExceptionInterface $e) {
-                $this->logger->err($e);
-
-                return null;
-            }
-
-            \assert($pageFactory instanceof PageFactoryInterface);
-
-            // value is a string; make a URI page
-            try {
-                return $pageFactory->factory(
-                    [
-                        'type' => 'uri',
-                        'uri' => $mixed,
-                    ]
-                );
-            } catch (InvalidArgumentException $e) {
-                $this->logger->err($e);
-            }
-        }
-
-        if ($mixed instanceof Traversable) {
-            $mixed = ArrayUtils::iteratorToArray($mixed);
-        }
-
-        if (is_array($mixed) && [] !== $mixed) {
-            if ($recursive && is_numeric(key($mixed))) {
-                // first key is numeric; assume several pages
-                $pages = array_filter(
-                    $mixed,
-                    function ($value) {
-                        return $this->convertToPages($value, false);
-                    }
-                );
-
-                return array_values($pages);
-            }
-
-            try {
-                $pageFactory = $this->serviceLocator->get(PageFactoryInterface::class);
-            } catch (ContainerExceptionInterface $e) {
-                $this->logger->err($e);
-
-                return null;
-            }
-
-            \assert($pageFactory instanceof PageFactoryInterface);
-
-            // pass array to factory directly
-            try {
-                return $pageFactory->factory($mixed);
-            } catch (InvalidArgumentException $e) {
-                $this->logger->err($e);
-            }
-        }
-
-        // nothing found
-        return null;
-    }
 
     /**
      * Sets the helper's render flag

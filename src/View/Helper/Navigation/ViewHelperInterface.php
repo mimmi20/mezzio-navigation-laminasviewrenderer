@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\View\Exception;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 
@@ -22,10 +23,6 @@ interface ViewHelperInterface
     /**
      * Magic overload: Should proxy to {@link render()}.
      *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
      * @return string
      */
     public function __toString(): string;
@@ -35,7 +32,7 @@ interface ViewHelperInterface
      *
      * @param Navigation\ContainerInterface|string|null $container container to operate on
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @return self
      */
@@ -49,7 +46,7 @@ interface ViewHelperInterface
      *                                                             that the helper should render
      *                                                             the container returned by {@link getContainer()}.
      *
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception\RuntimeException
      *
      * @return string helper output
      */

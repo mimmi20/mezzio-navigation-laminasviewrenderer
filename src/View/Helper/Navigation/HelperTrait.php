@@ -13,7 +13,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\PluginManagerInterface;
-use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Exception;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
@@ -125,7 +125,7 @@ trait HelperTrait
      *
      * @param Navigation\ContainerInterface|string|null $container container to operate on
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @return self
      */
@@ -145,7 +145,7 @@ trait HelperTrait
      *
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @return self
      */
@@ -163,9 +163,6 @@ trait HelperTrait
      *
      * If no container is set, a new container will be instantiated and
      * stored in the helper.
-     *
-     *@throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return Navigation\ContainerInterface navigation container
      */
@@ -209,8 +206,6 @@ trait HelperTrait
      * @param array  $arguments rguments to pass
      *
      * @throws Navigation\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return mixed
      */
@@ -230,17 +225,13 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::__toString()}.
      *
-     *@throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
      * @return string
      */
     final public function __toString(): string
     {
         try {
             return $this->render();
-        } catch (ExceptionInterface $e) {
+        } catch (Exception\ExceptionInterface $e) {
             $this->logger->err($e);
 
             return '';
@@ -264,9 +255,7 @@ trait HelperTrait
      *                                                             null value means no maximum
      *                                                             depth required.
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @return array an associative array with the values 'depth' and 'page',
      *               or an empty array if not found
@@ -306,14 +295,15 @@ trait HelperTrait
                     'role' => $this->getRole(),
                 ]
             );
-            \assert($acceptHelper instanceof FindActiveInterface);
-
-            return $acceptHelper->find($container, $minDepth, $maxDepth);
         } catch (ContainerExceptionInterface $e) {
             $this->logger->err($e);
 
             return [];
         }
+
+        \assert($acceptHelper instanceof FindActiveInterface);
+
+        return $acceptHelper->find($container, $minDepth, $maxDepth);
     }
 
     // Iterator filter methods:
@@ -358,14 +348,15 @@ trait HelperTrait
                     'role' => $this->getRole(),
                 ]
             );
-            \assert($acceptHelper instanceof AcceptHelperInterface);
-
-            return $acceptHelper->accept($page, $recursive);
         } catch (ContainerExceptionInterface $e) {
             $this->logger->err($e);
 
             return false;
         }
+
+        \assert($acceptHelper instanceof AcceptHelperInterface);
+
+        return $acceptHelper->accept($page, $recursive);
     }
 
     // Util methods:

@@ -29,9 +29,7 @@ interface MenuInterface extends ViewHelperInterface
      *                                                  Default is to use the container retrieved from {@link getContainer()}.
      * @param array                          $options   [optional] options for controlling rendering
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @return string
      */
@@ -50,10 +48,8 @@ interface MenuInterface extends ViewHelperInterface
      *                                                  Default is to use the partial registered in the helper. If an array
      *                                                  is given, the first value is used for the partial view script.
      *
-     * @throws Exception\RuntimeException                            if no partial provided
-     * @throws Exception\InvalidArgumentException                    if partial is invalid array
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException         if no partial provided
+     * @throws Exception\InvalidArgumentException if partial is invalid array
      *
      * @return string
      */
@@ -75,10 +71,8 @@ interface MenuInterface extends ViewHelperInterface
      *                                                  is given, the first value is used for the partial view script.
      * @param array                          $params
      *
-     * @throws Exception\RuntimeException                            if no partial provided
-     * @throws Exception\InvalidArgumentException                    if partial is invalid array
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException         if no partial provided
+     * @throws Exception\InvalidArgumentException if partial is invalid array
      *
      * @return string
      */
@@ -112,9 +106,7 @@ interface MenuInterface extends ViewHelperInterface
      * @param string|null             $liActiveClass [optional] CSS class to use for UL
      *                                               element. Default is to use the value from {@link getUlClass()}.
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @return string
      */

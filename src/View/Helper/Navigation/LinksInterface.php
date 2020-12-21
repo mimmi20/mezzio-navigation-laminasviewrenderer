@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\Page\PageInterface;
 
 interface LinksInterface extends ViewHelperInterface
@@ -53,7 +54,6 @@ interface LinksInterface extends ViewHelperInterface
      *
      * @throws Exception\ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \ErrorException
      *
      * @return mixed
@@ -104,9 +104,7 @@ interface LinksInterface extends ViewHelperInterface
      * @param PageInterface $page page to find links for
      * @param int|null      $flag
      *
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return array
      */
@@ -122,9 +120,8 @@ interface LinksInterface extends ViewHelperInterface
      * @param string        $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @throws Exception\DomainException                             if $rel is not "rel" or "rev"
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\DomainException if $rel is not "rel" or "rev"
+     * @throws InvalidArgumentException
      *
      * @return array|PageInterface|null
      */
@@ -185,9 +182,8 @@ interface LinksInterface extends ViewHelperInterface
      *
      * @param PageInterface $page
      *
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\DomainException
+     * @throws InvalidArgumentException
      *
      * @return array|PageInterface|null
      */

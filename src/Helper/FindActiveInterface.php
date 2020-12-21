@@ -32,10 +32,6 @@ interface FindActiveInterface extends HelperInterface
      *                                      null value means no maximum
      *                                      depth required.
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     *
      * @return array an associative array with the values 'depth' and 'page',
      *               or an empty array if not found
      */

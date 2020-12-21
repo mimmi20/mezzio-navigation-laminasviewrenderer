@@ -13,7 +13,6 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -30,7 +29,6 @@ final class MenuFactory
      * @param ContainerInterface $container
      *
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws ServiceNotCreatedException
      *
      * @return Menu
      */

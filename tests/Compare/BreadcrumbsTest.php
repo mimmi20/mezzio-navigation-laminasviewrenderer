@@ -117,7 +117,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -133,7 +132,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -150,7 +148,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -167,7 +164,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      *
@@ -189,7 +185,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -209,7 +204,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -229,7 +223,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -249,7 +242,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -269,7 +261,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -302,7 +293,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      *
      * @return void
@@ -323,7 +313,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -341,7 +330,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -359,7 +347,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -374,7 +361,6 @@ final class BreadcrumbsTest extends AbstractTest
     /**
      * @throws \PHPUnit\Framework\ExpectationFailedException
      * @throws \PHPUnit\Framework\AssertionFailedError
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      *
      * @return void
@@ -399,7 +385,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -419,7 +404,6 @@ final class BreadcrumbsTest extends AbstractTest
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\RuntimeException
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */

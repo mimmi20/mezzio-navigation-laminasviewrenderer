@@ -25,7 +25,6 @@ final class HtmlifyFactory
      * @param ContainerInterface $container
      *
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Laminas\ServiceManager\Exception\ServiceNotCreatedException
      *
      * @return Htmlify
      */
