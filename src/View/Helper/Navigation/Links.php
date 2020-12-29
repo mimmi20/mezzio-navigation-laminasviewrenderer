@@ -20,7 +20,6 @@ use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindFromPropertyInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -81,9 +80,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     /** @var HeadLink */
     private $headLink;
 
-    /** @var ConvertToPagesInterface */
-    private $convertToPages;
-
     /**
      * @param \Interop\Container\ContainerInterface $serviceLocator
      * @param Logger                                $logger
@@ -91,7 +87,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param ContainerParserInterface              $containerParser
      * @param FindRootInterface                     $rootFinder
      * @param HeadLink                              $headLink
-     * @param ConvertToPagesInterface               $convertToPages
      */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
@@ -99,8 +94,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         FindRootInterface $rootFinder,
-        HeadLink $headLink,
-        ConvertToPagesInterface $convertToPages
+        HeadLink $headLink
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
@@ -108,7 +102,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         $this->containerParser = $containerParser;
         $this->rootFinder      = $rootFinder;
         $this->headLink        = $headLink;
-        $this->convertToPages  = $convertToPages;
     }
 
     /**

@@ -22,7 +22,6 @@ use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindActiveInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindFromPropertyInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
@@ -118,27 +117,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->getMaxDepth());
@@ -212,33 +203,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertSame(0, $helper->getMinDepth());
@@ -328,27 +305,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertFalse($helper->getRenderInvisible());
@@ -425,27 +394,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->getRole());
@@ -526,27 +487,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertTrue($helper->getUseAuthorization());
@@ -627,27 +580,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->getAuthorization());
@@ -732,27 +677,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->getView());
@@ -835,27 +772,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $container1 = $helper->getContainer();
@@ -943,27 +872,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $this->expectException(InvalidArgumentException::class);
@@ -1045,27 +966,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setContainer($name);
@@ -1184,27 +1097,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setContainer($name);
@@ -1317,27 +1222,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setContainer($name);
@@ -1421,27 +1318,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertSame('', $helper->getIndent());
@@ -1592,27 +1481,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -1765,27 +1646,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -1905,27 +1778,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -2080,27 +1945,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -2242,27 +2099,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -2413,27 +2262,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -2592,27 +2433,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -2767,27 +2600,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -2867,27 +2692,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
@@ -2961,27 +2778,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3078,27 +2887,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRevSubsection($page));
@@ -3189,27 +2990,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertSame($parentPage, $helper->searchRevSubsection($page));
@@ -3279,27 +3072,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3394,27 +3179,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRevSection($page));
@@ -3503,27 +3280,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertSame($parentPage, $helper->searchRevSection($page));
@@ -3593,27 +3362,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3699,27 +3460,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         /* @var PageInterface $page */
@@ -3835,27 +3588,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -3977,27 +3722,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -4121,27 +3858,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -4216,27 +3945,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -4322,27 +4043,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRelSection($parentPage));
@@ -4455,27 +4168,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -4597,27 +4302,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -4737,27 +4434,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -4879,27 +4568,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -5017,27 +4698,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -5146,27 +4819,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRelChapter($page));
@@ -5297,27 +4962,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -5455,27 +5112,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -5625,27 +5274,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -5795,27 +5436,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -5965,27 +5598,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -6065,27 +5690,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRelPrev($page));
@@ -6198,27 +5815,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -6341,27 +5950,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -6443,27 +6044,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRelNext($page));
@@ -6576,27 +6169,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -6677,27 +6262,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         self::assertNull($helper->searchRelStart($page));
@@ -6810,27 +6387,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -6958,27 +6527,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -7070,27 +6631,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -7229,27 +6782,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -7397,27 +6942,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -7556,27 +7093,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -7716,27 +7245,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -7874,27 +7395,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -8029,27 +7542,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -8183,27 +7688,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -8313,27 +7810,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -8450,27 +7939,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -8601,27 +8082,19 @@ final class LinksTest extends TestCase
             ->with($params)
             ->willReturn($expected);
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -8734,27 +8207,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setContainer($container);
@@ -9390,27 +8855,19 @@ final class LinksTest extends TestCase
             ->with((object) ['rel' => 'start', 'href' => $parentUri, 'title' => $parentLabel])
             ->willReturn($expected);
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -10050,27 +9507,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         $helper->setRole($role);
@@ -10165,27 +9614,19 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        $convertToPages = $this->getMockBuilder(ConvertToPagesInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $convertToPages->expects(self::never())
-            ->method('convert');
-
         \assert($serviceLocator instanceof ContainerInterface);
         \assert($logger instanceof Logger);
         \assert($htmlify instanceof HtmlifyInterface);
         \assert($containerParser instanceof ContainerParserInterface);
         \assert($rootFinder instanceof FindRootInterface);
         \assert($headLink instanceof HeadLink);
-        \assert($convertToPages instanceof ConvertToPagesInterface);
         $helper = new Links(
             $serviceLocator,
             $logger,
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink,
-            $convertToPages
+            $headLink
         );
 
         /* @var AuthorizationInterface $auth */

@@ -17,7 +17,6 @@ use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
@@ -61,8 +60,7 @@ final class LinksFactory
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $helperPluginManager->get(FindRootInterface::class),
-            $plugin->get(HeadLink::class),
-            $helperPluginManager->get(ConvertToPagesInterface::class)
+            $plugin->get(HeadLink::class)
         );
     }
 }
