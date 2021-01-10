@@ -21,6 +21,7 @@
   },
   "conflict": {
     "container-interop/container-interop": "<1.2.0",
+    "mezzio/mezzio-authorization": "*",
     "mezzio/mezzio-authorization-acl": "*"
   },
   "require-dev": {
@@ -34,7 +35,8 @@
     "mezzio/mezzio-authentication": "~1.1.0 || ~1.2.1",
     "mezzio/mezzio-router": "~3.1.3 || ~3.3.0",
     "mimmi20/coding-standard": "~1.0.8",
-    "mimmi20/mezzio-generic-authorization-acl": "~1.0.0",
+    "mimmi20/mezzio-generic-authorization": "~1.0.1",
+    "mimmi20/mezzio-generic-authorization-acl": "~1.0.1",
     "pepakriz/phpstan-exception-rules": "~0.11.3",
     "phpstan/extension-installer": "~1.1.0",
     "phpstan/phpstan": "~0.12.65",
@@ -46,10 +48,11 @@
   "suggest": {
     "ext-dom": "required to use the Sitemap ViewHelper",
     "laminas/laminas-config": "~3.3.0 || ~3.4.0, to provide page configuration (optional, as arrays and Traversables are also allowed)",
-    "laminas/laminas-i18n": "~2.10.3, required to use the Menu ViewHelper or the Breadcrumbs ViewHelper",
+    "laminas/laminas-i18n": "~2.10.3 || ~2.11.0, required to use the Menu ViewHelper or the Breadcrumbs ViewHelper",
     "laminas/laminas-servicemanager": "~3.5.1, to use the navigation factories",
-    "laminas/laminas-uri": "~2.7.1, required to use the Sitemap ViewHelper",
-    "laminas/laminas-validator": "~2.13.4, required to use the Sitemap ViewHelper"
+    "laminas/laminas-uri": "~2.7.1 || ~2.8.0, required to use the Sitemap ViewHelper",
+    "laminas/laminas-validator": "~2.13.5 || ~2.14.0, required to use the Sitemap ViewHelper",
+    "mimmi20/mezzio-generic-authorization": "~1.0.1, to use authrization roles or privileges"
   },
   "config": {
     "platform": {
