@@ -37,7 +37,7 @@
     "mimmi20/coding-standard": "~1.0.9",
     "mimmi20/mezzio-generic-authorization": "~1.0.1",
     "mimmi20/mezzio-generic-authorization-acl": "~1.0.1",
-    "pepakriz/phpstan-exception-rules": "~0.11.3",
+    "pepakriz/phpstan-exception-rules": "~0.11.4",
     "phpstan/extension-installer": "~1.1.0",
     "phpstan/phpstan": "~0.12.67",
     "phpstan/phpstan-deprecation-rules": "~0.12.6",
