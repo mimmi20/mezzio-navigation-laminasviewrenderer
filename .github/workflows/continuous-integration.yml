@@ -396,4 +396,4 @@ jobs:
           flags: "phpunit,php-${{ matrix.php-version }},${{ matrix.coverage-drivers }}"
 
       - name: "Run mutation tests with infection/infection"
-        run: "vendor/bin/infection --min-covered-msi=85 --min-msi=85 --coverage=.build/coverage"
+        run: "vendor/bin/infection --min-covered-msi=79 --min-msi=79 --coverage=.build/coverage"
