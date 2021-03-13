@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,14 +14,13 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\Helper\ContainerParserInterface;
+use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
@@ -103,8 +102,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @param string $method    helper name or method name in container
      * @param array  $arguments [optional] arguments to pass
      *
-     * @throws InvalidArgumentException
-     *
      * @return mixed returns what the proxied call returns
      */
     public function __call(string $method, array $arguments = [])
@@ -133,7 +130,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     {
         try {
             $helper = $this->findHelperStrict($this->getDefaultProxy());
-        } catch (InvalidArgumentException | RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->logger->err($e);
 
             return '';
@@ -153,8 +150,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *                       thrown if something goes
      *                       wrong. Default is true.
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException         if $strict is true and helper cannot be found
+     * @throws RuntimeException if $strict is true and helper cannot be found
      *
      * @return ViewHelperInterface|null helper instance
      */
@@ -174,8 +170,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
      *
      * @param string $proxy helper name
-     *
-     * @throws InvalidArgumentException
      *
      * @return ViewHelperInterface|null helper instance
      */
@@ -210,8 +204,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param string $proxy helper name
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException         if helper cannot be found
+     * @throws RuntimeException if helper cannot be found
      *
      * @return ViewHelperInterface helper instance
      */
@@ -247,8 +240,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     /**
      * @param ViewHelperInterface $helper
      *
-     * @throws InvalidArgumentException
-     *
      * @return void
      */
     private function prepareHelper(ViewHelperInterface $helper): void
@@ -272,8 +263,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * helper is configured to do so
      *
      * @param ViewHelperInterface $helper helper instance
-     *
-     * @throws InvalidArgumentException
      *
      * @return void
      */

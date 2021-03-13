@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView;
 
 use Mezzio\Navigation\LaminasView\ConfigProvider;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +29,7 @@ final class ConfigProviderTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -53,24 +52,7 @@ final class ConfigProviderTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testProviderDefinesDepencyConfig(): void
-    {
-        $dependencyConfig = $this->provider->getDependencyConfig();
-        self::assertIsArray($dependencyConfig);
-
-        self::assertArrayHasKey('factories', $dependencyConfig);
-        $factories = $dependencyConfig['factories'];
-        self::assertIsArray($factories);
-        self::assertArrayHasKey(PluginManager::class, $factories);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -96,13 +78,5 @@ final class ConfigProviderTest extends TestCase
         self::assertIsArray($aliases);
         self::assertArrayHasKey('Navigation', $aliases);
         self::assertArrayHasKey('navigation', $aliases);
-
-        $dependencyConfig = $config['dependencies'];
-        self::assertIsArray($dependencyConfig);
-
-        self::assertArrayHasKey('factories', $dependencyConfig);
-        $factories = $dependencyConfig['factories'];
-        self::assertIsArray($factories);
-        self::assertArrayHasKey(PluginManager::class, $factories);
     }
 }

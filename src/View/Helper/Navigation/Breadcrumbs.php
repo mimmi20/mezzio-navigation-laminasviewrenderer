@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,8 +19,8 @@ use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Model\ModelInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
+use Mezzio\Navigation\Helper\ContainerParserInterface;
+use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
 /**

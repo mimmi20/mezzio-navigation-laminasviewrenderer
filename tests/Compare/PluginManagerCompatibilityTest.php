@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,8 +26,8 @@ use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
-use Mezzio\Navigation\LaminasView\Helper\PluginManagerFactory;
+use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
@@ -50,6 +50,8 @@ final class PluginManagerCompatibilityTest extends TestCase
     use CommonPluginManagerTrait;
 
     /**
+     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
+     *
      * @return \Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager
      */
     protected function getPluginManager(): PluginManager
@@ -114,56 +116,11 @@ final class PluginManagerCompatibilityTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     *
-     * @group 43
-     */
-    public function testConstructorArgumentsAreOptionalUnderV2(): void
-    {
-        $helpers = $this->getPluginManager();
-
-        if (method_exists($helpers, 'configure')) {
-            self::markTestSkipped('laminas-servicemanager v3 plugin managers require a container argument');
-        }
-
-        $helpers = new PluginManager();
-        self::assertInstanceOf(PluginManager::class, $helpers);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     *
-     * @group 43
-     */
-    public function testConstructorAllowsConfigInstanceAsFirstArgumentUnderV2(): void
-    {
-        $helpers = $this->getPluginManager();
-
-        if (method_exists($helpers, 'configure')) {
-            self::markTestSkipped('laminas-servicemanager v3 plugin managers require a container argument');
-        }
-
-        $config = new Config([]);
-
-        self::assertInstanceOf(ConfigInterface::class, $config);
-
-        $helpers = new PluginManager($config);
-        self::assertInstanceOf(PluginManager::class, $helpers);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\ServiceManager\Exception\ServiceNotFoundException
      * @throws \Laminas\ServiceManager\Exception\InvalidServiceException
+     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
      *
      * @return void
      */
@@ -219,6 +176,8 @@ final class PluginManagerCompatibilityTest extends TestCase
     }
 
     /**
+     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
+     *
      * @return void
      */
     public function testRegisteringInvalidElementRaisesException(): void
@@ -231,6 +190,7 @@ final class PluginManagerCompatibilityTest extends TestCase
     /**
      * @throws \Laminas\ServiceManager\Exception\ServiceNotFoundException
      * @throws \Laminas\ServiceManager\Exception\InvalidServiceException
+     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
      *
      * @return void
      */

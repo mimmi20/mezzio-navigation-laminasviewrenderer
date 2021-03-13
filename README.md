@@ -1,9 +1,14 @@
 # Mezzio Navigation ViewHelper
 
-[![Code Coverage](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer)
+[![Latest Stable Version](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/v/stable?format=flat-square)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
+[![Latest Unstable Version](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/v/unstable?format=flat-square)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
+[![License](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/license?format=flat-square)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
 
-[![Latest Stable Version](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/v/stable)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
-[![Total Downloads](https://poser.pugx.org/mimmi20/mezzio-navigation-laminasviewrenderer/downloads)](https://packagist.org/packages/mimmi20/mezzio-navigation-laminasviewrenderer)
+## Code Status
+
+[![codecov](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](http://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](http://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Percentage of issues still open")
 
 ## Installation
 
@@ -118,28 +123,25 @@ The following example demonstrates rendering the navigation menus for the named
 
 # View Helpers
 
-
-
 The navigation helpers are used for rendering navigational elements from
 [`Mezzio\Navigation\Navigation`](../containers.md) instances.
 
 There are 5 built-in helpers:
 
-- [Breadcrumbs](breadcrumbs.md), used for rendering the path to the currently
+- Breadcrumbs, used for rendering the path to the currently
   active page.
-- [Links](links.md), used for rendering navigational head links (e.g.
+- Links, used for rendering navigational head links (e.g.
   `<link rel="next" href="..." />`).
-- [Menu](menu.md), used for rendering menus.
-- [Sitemap](sitemap.md), used for rendering sitemaps conforming to the
+- Menu, used for rendering menus.
+- Sitemap, used for rendering sitemaps conforming to the
   [Sitemaps XML format](http://www.sitemaps.org/protocol.php).
-- [Navigation](navigation.md), used for proxying calls to other navigational
+- Navigation, used for proxying calls to other navigational
   helpers.
 
-All built-in helpers extend `Mezzio\Navigation\LaminasView\Helper\Navigation\AbstractHelper`, which
+All built-in helpers implements the interface `Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface`, which
 adds integration with
 [laminas-acl](https://docs.laminas.dev/laminas-permissions-acl/) or [laminas-rbac](https://docs.laminas.dev/laminas-permissions-rbac/) and
-[laminas-i18n](https://docs.laminas.dev/laminas-i18n/). The abstract class
-implements the interface `Mezzio\Navigation\LaminasView\Helper\Navigation\HelperInterface`, which
+[laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
 defines the following methods:
 
 Method signature                                                       | Description
@@ -479,7 +481,7 @@ class Module
                     $acl->allow('admin', null);
 
                     // Get an instance of the proxy helper
-                    $navigation = $pm->get('Mezzio\Navigation\LaminasView\Helper\Navigation');
+                    $navigation = $pm->get('Mezzio\Navigation\Helper\Navigation');
 
                     // Store ACL and role in the proxy helper:
                     $navigation->setAcl($acl);
@@ -502,7 +504,7 @@ navigational helpers. It can be considered an entry point to all
 navigation-related view tasks.
 
 The `Navigation` helper finds other helpers that implement
-`Mezzio\Navigation\LaminasView\Helper\Navigation\HelperInterface`, which means custom view helpers
+`Mezzio\Navigation\Helper\Navigation\HelperInterface`, which means custom view helpers
 can also be proxied.  This would, however, require that the custom helper path
 is added to the view.
 
@@ -738,23 +740,23 @@ See the example below for more information.
 
 The `LinksInterface` helper defines the following constants:
 
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_ALTERNATE`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_STYLESHEET`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_START`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_NEXT`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_PREV`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_CONTENTS`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_INDEX`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_GLOSSARY`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_COPYRIGHT`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_CHAPTER`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_SECTION`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_SUBSECTION`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_APPENDIX`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_HELP`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_BOOKMARK`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_CUSTOM`
-- `Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface::RENDER_ALL`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_ALTERNATE`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_STYLESHEET`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_START`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_NEXT`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_PREV`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CONTENTS`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_INDEX`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_GLOSSARY`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_COPYRIGHT`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CHAPTER`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_SECTION`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_SUBSECTION`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_APPENDIX`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_HELP`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_BOOKMARK`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CUSTOM`
+- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_ALL`
 
 The constants from `RENDER_ALTERNATE` to `RENDER_BOOKMARK` denote standard HTML
 link types.  `RENDER_CUSTOM` denotes non-standard relations specified in pages.
@@ -855,7 +857,7 @@ This example shows how to specify which relations to find and render.
 Render only start, next, and prev:
 
 ```php
-use Mezzio\Navigation\LaminasView\Helper\Navigation\LinksInterface;
+use Mezzio\Navigation\Helper\Navigation\LinksInterface;
 
 $links = $this->navigation()->links();
 $links->setRenderFlag(LinksInterface::RENDER_START | LinksInterface::RENDER_NEXT | LinksInterface::RENDER_PREV);

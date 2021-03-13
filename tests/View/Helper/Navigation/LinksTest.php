@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,13 +20,13 @@ use Laminas\View\Helper\HeadLink;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\Navigation\LaminasView\Helper\AcceptHelperInterface;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\FindActiveInterface;
-use Mezzio\Navigation\LaminasView\Helper\FindFromPropertyInterface;
-use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager;
+use Mezzio\Navigation\Helper\AcceptHelperInterface;
+use Mezzio\Navigation\Helper\ContainerParserInterface;
+use Mezzio\Navigation\Helper\FindActiveInterface;
+use Mezzio\Navigation\Helper\FindFromPropertyInterface;
+use Mezzio\Navigation\Helper\FindRootInterface;
+use Mezzio\Navigation\Helper\HtmlifyInterface;
+use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mezzio\Navigation\Navigation;
@@ -39,8 +39,7 @@ use PHPUnit\Framework\TestCase;
 final class LinksTest extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -52,8 +51,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -140,8 +138,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -242,8 +239,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -328,8 +324,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -424,8 +419,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -514,8 +508,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -612,8 +605,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -702,13 +694,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -805,10 +794,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      *
      * @return void
      */
@@ -895,13 +883,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -987,11 +972,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -1123,11 +1107,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -1255,8 +1238,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -1345,13 +1327,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -1505,13 +1485,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -1675,13 +1653,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -1804,13 +1779,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -1977,13 +1950,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -2125,13 +2096,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -2291,13 +2260,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -2459,13 +2426,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -2629,8 +2594,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -2715,8 +2679,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -2805,10 +2768,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -2906,10 +2868,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3009,8 +2970,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -3099,10 +3059,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3198,10 +3157,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3299,8 +3257,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -3389,10 +3346,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3480,10 +3436,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3612,10 +3567,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3746,10 +3700,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -3882,8 +3835,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
@@ -3972,10 +3924,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4062,10 +4013,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4192,10 +4142,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4326,10 +4275,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4458,10 +4406,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4592,10 +4539,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4722,12 +4668,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4838,12 +4782,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -4986,12 +4928,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5136,12 +5076,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5298,12 +5236,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5460,12 +5396,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5622,10 +5556,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5709,10 +5642,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5840,10 +5772,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -5976,10 +5907,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -6063,10 +5993,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -6194,10 +6123,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -6281,10 +6209,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -6412,10 +6339,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      *
      * @return void
@@ -6552,11 +6478,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -6661,13 +6586,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -6808,13 +6731,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -6968,13 +6889,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      * @group Render2
@@ -7119,13 +7038,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -7271,13 +7188,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -7421,13 +7336,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -7568,13 +7481,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @return void
      */
@@ -7714,7 +7625,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
      *
@@ -7840,8 +7751,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -7965,8 +7875,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \Laminas\View\Exception\BadMethodCallException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -8106,14 +8015,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @return void
      */
@@ -8228,14 +8134,12 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \PHPUnit\Framework\Exception
      *
      * @return void
      */
@@ -8890,14 +8794,12 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \PHPUnit\Framework\Exception
      *
      * @return void
      */
@@ -9542,8 +9444,7 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\View\Exception\BadMethodCallException
      *

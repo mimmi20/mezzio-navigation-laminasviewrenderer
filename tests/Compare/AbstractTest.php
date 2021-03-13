@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -31,8 +31,8 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Navigation\Config\NavigationConfig;
 use Mezzio\Navigation\Config\NavigationConfigInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
-use Mezzio\Navigation\LaminasView\Helper\PluginManagerFactory;
+use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
@@ -99,8 +99,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Prepares the environment before running a test
      *
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
@@ -233,6 +232,9 @@ abstract class AbstractTest extends TestCase
      *
      * @param string $file
      *
+     * @throws \PHPUnit\Framework\Exception
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     *
      * @return string
      */
     protected function getExpected(string $file): string
@@ -277,6 +279,8 @@ abstract class AbstractTest extends TestCase
     /**
      * Returns translator
      *
+     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
+     *
      * @return Translator
      */
     protected function getTranslator(): Translator
@@ -300,6 +304,8 @@ abstract class AbstractTest extends TestCase
 
     /**
      * Returns translator with text domain
+     *
+     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
      *
      * @return Translator
      */
