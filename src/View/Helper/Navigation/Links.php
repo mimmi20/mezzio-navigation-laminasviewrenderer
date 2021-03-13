@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,11 +19,11 @@ use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\FindFromPropertyInterface;
-use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\ContainerParserInterface;
+use Mezzio\Navigation\Helper\FindFromPropertyInterface;
+use Mezzio\Navigation\Helper\FindRootInterface;
+use Mezzio\Navigation\Helper\HtmlifyInterface;
+use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
@@ -360,7 +360,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\DomainException
      *
      * @return array|PageInterface|null

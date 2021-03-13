@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,10 +21,10 @@ use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\ContainerParserInterface;
+use Mezzio\Navigation\Helper\FindRootInterface;
+use Mezzio\Navigation\Helper\HtmlifyInterface;
+use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
@@ -54,12 +54,8 @@ final class LinksTest extends AbstractTest
     protected $helper;
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -136,11 +132,9 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -152,11 +146,9 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -168,12 +160,9 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -183,13 +172,9 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \ErrorException
      *
@@ -223,13 +208,9 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \ErrorException
      *
@@ -266,11 +247,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -308,11 +286,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -350,85 +325,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testDetectMultipleRelationsFromArrayPropertyOfActivePage(): void
-    {
-        self::markTestSkipped();
-//        $active = $this->helper->findOneByLabel('Page 2');
-//
-//
-//        self::assertInstanceOf(PageInterface::class, $active);
-//
-//        $active->addRel('alternate', [
-//            [
-//                'label' => 'foo',
-//                'uri'   => 'bar'
-//            ],
-//            [
-//                'label' => 'baz',
-//                'uri'   => 'bat'
-//            ]
-//        ]);
-//
-//        $found = $this->helper->findRelAlternate($active);
-//
-//        self::assertIsObject($found);
-//        self::assertInstanceOf(PageInterface::class, $found);
-//
-//        $expected = ['type' => 'array', 'count' => 2];
-//        $actual = ['type' => gettype($found), 'count' => count($found)];
-//        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testDetectMultipleRelationsFromConfigPropertyOfActivePage(): void
-    {
-        self::markTestSkipped();
-//        $active = $this->helper->findOneByLabel('Page 2');
-//
-//
-//        self::assertInstanceOf(PageInterface::class, $active);
-//
-//        $active->addRel('alternate', new Config([
-//            [
-//                'label' => 'foo',
-//                'uri'   => 'bar'
-//            ],
-//            [
-//                'label' => 'baz',
-//                'uri'   => 'bat'
-//            ]
-//        ]));
-//
-//        $found = $this->helper->findRelAlternate($active);
-//
-//        $expected = ['type' => 'array', 'count' => 2];
-//        $actual = ['type' => gettype($found), 'count' => count($found)];
-//        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -487,11 +385,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -510,11 +405,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -532,11 +424,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -555,11 +444,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -578,11 +464,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -601,11 +484,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -624,11 +504,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -647,11 +524,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -670,11 +544,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -699,11 +570,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -728,11 +596,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -756,11 +621,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -778,11 +640,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -800,11 +659,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -829,11 +685,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -851,11 +704,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -873,11 +723,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -895,11 +742,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -917,11 +761,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
@@ -989,11 +830,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
@@ -1061,12 +899,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\AssertionFailedError
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -1084,17 +918,13 @@ final class LinksTest extends AbstractTest
 
             self::fail('An invalid value was given, but a Laminas\View\Exception\InvalidArgumentException was not thrown');
         } catch (DomainException $e) {
-            self::assertContains('Invalid argument: $rel', $e->getMessage());
+            self::assertStringContainsString('Invalid argument: $rel', $e->getMessage());
         }
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\AssertionFailedError
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -1113,16 +943,13 @@ final class LinksTest extends AbstractTest
             self::fail('An invalid value was given, but a ' .
                         'Laminas\View\Exception\InvalidArgumentException was not thrown');
         } catch (DomainException $e) {
-            self::assertContains('Invalid relation attribute', $e->getMessage());
+            self::assertStringContainsString('Invalid relation attribute', $e->getMessage());
         }
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -1212,11 +1039,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -1263,13 +1087,10 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \ErrorException
      *
      * @return void
@@ -1295,13 +1116,10 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \ErrorException
      *
      * @return void
@@ -1328,11 +1146,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
@@ -1352,11 +1167,8 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException

@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,8 +15,6 @@ use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager;
-use Mezzio\Navigation\LaminasView\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
@@ -73,7 +71,7 @@ final class ConfigProvider
     {
         return [
             'factories' => [
-                PluginManager::class => PluginManagerFactory::class,
+                Navigation\PluginManager::class => Navigation\PluginManagerFactory::class,
             ],
         ];
     }

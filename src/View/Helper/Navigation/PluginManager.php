@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,8 @@
 declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface as InteropContainerInterface;
+use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\ConfigInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 
 /**
@@ -21,7 +22,7 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
  * Navigation\HelperInterface. Additionally, it registers a number of default
  * helpers.
  */
-final class PluginManager extends ViewHelperPluginManager implements InteropContainerInterface
+final class PluginManager extends ViewHelperPluginManager implements ContainerInterface
 {
     /** @var string Valid instance types. */
     protected $instanceOf = ViewHelperInterface::class;
@@ -49,4 +50,29 @@ final class PluginManager extends ViewHelperPluginManager implements InteropCont
         Menu::class => MenuFactory::class,
         Sitemap::class => SitemapFactory::class,
     ];
+
+    /**
+     * Constructor
+     *
+     * Merges provided configuration with default configuration.
+     *
+     * Adds initializers to inject the attached renderer and translator, if
+     * any, to the currently requested helper.
+     *
+     * @param ConfigInterface|ContainerInterface|null $configOrContainerInstance
+     * @param array                                   $v3config                  if $configOrContainerInstance is a container, this
+     *                                                                           value will be passed to the parent constructor
+     */
+    public function __construct($configOrContainerInstance = null, array $v3config = [])
+    {
+        $v3config = array_merge_recursive(
+            [
+                'aliases' => $this->aliases,
+                'factories' => $this->factories,
+            ],
+            $v3config
+        );
+
+        parent::__construct($configOrContainerInstance, $v3config);
+    }
 }

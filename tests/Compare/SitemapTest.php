@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,9 +19,9 @@ use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
-use Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mezzio\Navigation\LaminasView\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\ContainerParserInterface;
+use Mezzio\Navigation\Helper\HtmlifyInterface;
+use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\Page\PageFactory;
 use Psr\Http\Message\UriInterface;
@@ -60,10 +60,9 @@ final class SitemapTest extends AbstractTest
     private $originalTimezone;
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
      * @throws \Laminas\Config\Exception\RuntimeException
@@ -310,8 +309,6 @@ final class SitemapTest extends AbstractTest
             }
 
             /**
-             * @throws \Laminas\Uri\Exception\InvalidUriException
-             * @throws \Laminas\Uri\Exception\InvalidUriPartException
              * @throws \Laminas\Uri\Exception\InvalidArgumentException
              *
              * @return string
@@ -375,8 +372,7 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -391,11 +387,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -407,11 +401,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -423,11 +415,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -438,79 +428,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testRenderSuppliedContainerWithoutInterfering(): void
-    {
-        self::markTestSkipped();
-//        $rendered1 = trim($this->_getExpected('sitemap/default1.xml'));
-//        $rendered2 = trim($this->_getExpected('sitemap/default2.xml'));
-//
-//        $expected = [
-//            'registered'       => $rendered1,
-//            'supplied'         => $rendered2,
-//            'registered_again' => $rendered1
-//        ];
-//        $actual = [
-//            'registered'       => $this->helper->render(),
-//            'supplied'         => $this->helper->render($this->nav2),
-//            'registered_again' => $this->helper->render()
-//        ];
-//
-//        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testUseAclRoles(): void
-    {
-        self::markTestSkipped();
-//        $acl = $this->getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole($acl['role']);
-//
-//        $expected = $this->_getExpected('sitemap/acl.xml');
-//        $this->assertEquals(trim($expected), $this->helper->render());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testUseAclButNoRole(): void
-    {
-        self::markTestSkipped();
-//        $acl = $this->getAcl();
-//        $this->helper->setAuthorization($acl['acl']);
-//        $this->helper->setRole(null);
-//
-//        $expected = $this->_getExpected('sitemap/acl2.xml');
-//        $this->assertEquals(trim($expected), $this->helper->render());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -523,13 +443,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -542,13 +458,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -562,13 +474,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -581,43 +489,10 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\IncompleteTestError
-     *
-     * @return void
-     */
-    public function testThrowExceptionOnInvalidLoc(): void
-    {
-        self::markTestIncomplete('Laminas\URI changes affect this test');
-//        $nav = clone $this->nav2;
-//        $nav->addPage(['label' => 'Invalid', 'uri' => 'http://w.']);
-//
-//        try {
-//            $this->helper->render($nav);
-//        } catch (View\Exception\ExceptionInterface $e) {
-//            $expected = sprintf(
-//                'Encountered an invalid URL for Sitemap XML: "%s"',
-//                'http://w.'
-//            );
-//            $actual = $e->getMessage();
-//            $this->assertEquals($expected, $actual);
-//            return;
-//        }
-//
-//        $this->fail('A Laminas\View\Exception\InvalidArgumentException was not thrown on invalid <loc />');
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\AssertionFailedError
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \ErrorException
      *
      * @return void
@@ -643,33 +518,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\IncompleteTestError
-     *
-     * @return void
-     */
-    public function testSetServerUrlRequiresValidUri(): void
-    {
-        self::markTestIncomplete('Laminas\URI changes affect this test');
-//        try {
-//            $this->helper->setServerUrl('site.example.org');
-//            $this->fail('An invalid server URL was given, but a ' .
-//                        'Laminas\URI\Exception\ExceptionInterface was not thrown');
-//        } catch (\Laminas\URI\Exception\ExceptionInterface $e) {
-//            $this->assertContains('Illegal scheme', $e->getMessage());
-//        }
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      */
@@ -682,13 +533,9 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
-     * @throws \Laminas\Validator\Exception\RuntimeException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws \Laminas\View\Exception\ExceptionInterface
      *
      * @return void
      *
@@ -703,7 +550,7 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      *
      * @return void
@@ -714,37 +561,5 @@ final class SitemapTest extends AbstractTest
         self::assertTrue($this->helper->getUseSchemaValidation());
         $this->helper->setUseSchemaValidation(false);
         self::assertFalse($this->helper->getUseSchemaValidation());
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \PHPUnit\Framework\SkippedTestError
-     *
-     * @return void
-     */
-    public function testUseSchemaValidation(): void
-    {
-        self::markTestSkipped('Skipped because it fetches XSD from web');
-//        return;
-//        $nav = clone $this->nav2;
-//        $this->helper->setUseSitemapValidators(false);
-//        $this->helper->setUseSchemaValidation(true);
-//        $nav->addPage(['label' => 'Invalid', 'uri' => 'http://w.']);
-//
-//        try {
-//            $this->helper->render($nav);
-//        } catch (View\Exception\ExceptionInterface $e) {
-//            $expected = sprintf(
-//                'Sitemap is invalid according to XML Schema at "%s"',
-//                Sitemap::SITEMAP_XSD
-//            );
-//            $actual = $e->getMessage();
-//            $this->assertEquals($expected, $actual);
-//            return;
-//        }
-//
-//        $this->fail('A Laminas\View\Exception\InvalidArgumentException was not thrown when using Schema validation');
     }
 }
