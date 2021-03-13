@@ -25,4 +25,3 @@ parameters:
     - '~Call to an undefined method .*::find(All|One)By.*\(\)~'
     - '~Call to an undefined method .*::find(Rel|Rev).*\(\)~'
     - '~Call to (static )?(method|function) .* with .* will always evaluate to (true|false)~'
-    - '~Call to deprecated method~'
