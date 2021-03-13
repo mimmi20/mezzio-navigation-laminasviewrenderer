@@ -18,13 +18,6 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 final class PluginManagerFactory implements FactoryInterface
 {
     /**
-     * zend-servicemanager v2 support for invocation options.
-     *
-     * @var array
-     */
-    private $creationOptions;
-
-    /**
      * @param ContainerInterface $container
      * @param string             $name
      * @param array|null         $options

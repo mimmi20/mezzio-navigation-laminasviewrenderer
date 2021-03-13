@@ -63,8 +63,8 @@ final class NavigationFactoryTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $htmlify                 = $this->createMock(HtmlifyInterface::class);
+        $containerParser         = $this->createMock(ContainerParserInterface::class);
         $navigationPluginManager = $this->createMock(ViewHelperPluginManager::class);
 
         $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
