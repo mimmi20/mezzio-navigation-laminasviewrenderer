@@ -12,8 +12,6 @@ declare(strict_types = 1);
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Config;
-use Laminas\ServiceManager\ConfigInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\ServiceManager\Test\CommonPluginManagerTrait;

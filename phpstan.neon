@@ -20,18 +20,9 @@ parameters:
     - */tests/*/data/*
   ignoreErrors:
     - '~is not subtype of Throwable~'
-#    - '~Useless \@throws~'
-#    - '~Unused \@throws~'
     - '~PHPDoc tag @throws with type .* is not compatible with parent~'
     - '~Parameter .* of (method|function) .* expects .*, .* given~'
-#    - '~Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with .* and null will always evaluate to false~'
-#    - '~Parameter #1 .* of class Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\PluginManager constructor expects .*ContainerInterface\|.*ConfigInterface\|null, Laminas\\ServiceManager\\Config given~'
     - '~Call to an undefined method .*::find(All|One)By.*\(\)~'
     - '~Call to an undefined method .*::find(Rel|Rev).*\(\)~'
     - '~Call to (static )?(method|function) .* with .* will always evaluate to (true|false)~'
-#    - '~Instanceof between .* and .* will always evaluate to true~'
-#    - '~Only booleans are allowed in~'
-#    - '~Variable method call on~'
-#    - '~Casting to .* something that.s already~'
-#    - '~Strict comparison using \!== between null and .* will always evaluate to true~'
     - '~Call to deprecated method~'
