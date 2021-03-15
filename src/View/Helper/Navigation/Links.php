@@ -230,7 +230,9 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             );
         }
 
-        if (!$href = $page->getHref()) {
+        $href = $page->getHref();
+
+        if (!$href) {
             return '';
         }
 
@@ -288,7 +290,9 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             $types = array_merge($native, array_diff($page->{$meth}(), $native));
 
             foreach ($types as $type) {
-                if (!$relFlag = array_search($type, self::$RELATIONS, true)) {
+                $relFlag = array_search($type, self::$RELATIONS, true);
+
+                if (!$relFlag) {
                     $relFlag = self::RENDER_CUSTOM;
                 }
 
