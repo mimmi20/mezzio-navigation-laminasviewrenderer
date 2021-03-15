@@ -243,8 +243,10 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                 continue;
             }
 
+            $url = $this->url($page);
+
             // get absolute url from page
-            if (!$url = $this->url($page)) {
+            if (!$url) {
                 // skip page if it has no url (rare case)
                 // or already is in the sitemap
                 continue;

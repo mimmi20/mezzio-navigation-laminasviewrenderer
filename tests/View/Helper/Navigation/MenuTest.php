@@ -3973,10 +3973,8 @@ final class MenuTest extends TestCase
             ->method('getResource');
         $page->expects(self::never())
             ->method('getPrivilege');
-        $page->expects(self::once())
-            ->method('isActive')
-            ->with(true)
-            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('isActive');
         $page->expects(self::never())
             ->method('getParent');
 

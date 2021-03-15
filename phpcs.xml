@@ -12,9 +12,10 @@
     <!-- inherit rules from: -->
     <rule ref="mimmi20-cs">
         <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
-        <exclude name="SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition"/>
         <exclude name="PSR12.Classes.AnonClassDeclaration.SpaceAfterKeyword"/>
         <exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectAnnotationsGroup"/>
+        <exclude name="SlevomatCodingStandard.Classes.TraitUseDeclaration.MultipleTraitsPerDeclaration"/>
+        <exclude name="SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod"/>
     </rule>
 
     <!-- Paths to check -->

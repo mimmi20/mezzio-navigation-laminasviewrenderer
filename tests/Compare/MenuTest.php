@@ -620,7 +620,9 @@ final class MenuTest extends AbstractTest
             $page->setActive(false);
         }
 
-        if (!$p = $container->findOneByLabel($label)) {
+        $p = $container->findOneByLabel($label);
+
+        if (!$p) {
             return;
         }
 
