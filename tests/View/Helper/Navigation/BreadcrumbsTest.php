@@ -5126,10 +5126,8 @@ final class BreadcrumbsTest extends TestCase
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
-        $page->expects(self::once())
-            ->method('isActive')
-            ->with(false)
-            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('isActive');
         $page->expects(self::once())
             ->method('getLabel')
             ->willReturn($label);

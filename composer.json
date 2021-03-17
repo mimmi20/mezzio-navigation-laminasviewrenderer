@@ -17,7 +17,7 @@
     "laminas/laminas-stdlib": "^3.3.1",
     "mezzio/mezzio-laminasviewrenderer": "^2.2.0",
     "mimmi20/mezzio-navigation": "^2.0.0",
-    "mimmi20/mezzio-navigation-helpers": "^1.0.2",
+    "mimmi20/mezzio-navigation-helpers": "^1.0.3",
     "psr/container": "^1.0.0 || ^2.0.0"
   },
   "conflict": {
@@ -43,7 +43,7 @@
     "phpstan/phpstan": "^0.12.81",
     "phpstan/phpstan-deprecation-rules": "^0.12.6",
     "phpstan/phpstan-phpunit": "^0.12.18",
-    "phpunit/phpunit": "^9.5.2"
+    "phpunit/phpunit": "^9.5.3"
   },
   "suggest": {
     "ext-dom": "required to use the Sitemap ViewHelper",
