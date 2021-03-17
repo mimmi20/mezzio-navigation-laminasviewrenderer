@@ -189,7 +189,11 @@ trait BreadcrumbsTrait
 
         // put the deepest active page last in breadcrumbs
         if ($this->getLinkLast()) {
-            $html = $this->htmlify->toHtml(self::class, $active);
+            $html = $this->renderBreadcrumbItem(
+                $this->htmlify->toHtml(self::class, $active),
+                $active->getLiClass() ?? '',
+                $active->isActive()
+            );
         } else {
             $label = (string) $active->getLabel();
 
@@ -206,8 +210,8 @@ trait BreadcrumbsTrait
                 // prepend crumb to html
                 $entry = $this->renderBreadcrumbItem(
                     $this->htmlify->toHtml(self::class, $parent),
-                    $active->getLiClass() ?? '',
-                    $active->isActive()
+                    $parent->getLiClass() ?? '',
+                    $parent->isActive()
                 );
                 $html = $entry . $this->getSeparator() . $html;
             }
