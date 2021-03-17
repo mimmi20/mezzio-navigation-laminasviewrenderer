@@ -201,7 +201,9 @@ trait BreadcrumbsTrait
                 $label = ($this->translator)($label, $active->getTextDomain());
             }
 
-            $html = ($this->escaper)($label);
+            $html = $this->renderBreadcrumbItem(
+                ($this->escaper)($label)
+            );
         }
 
         // walk back to root
