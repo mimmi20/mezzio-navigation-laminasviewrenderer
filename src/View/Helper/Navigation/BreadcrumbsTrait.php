@@ -202,7 +202,9 @@ trait BreadcrumbsTrait
             }
 
             $html = $this->renderBreadcrumbItem(
-                ($this->escaper)($label)
+                ($this->escaper)($label),
+                $active->getLiClass() ?? '',
+                $active->isActive()
             );
         }
 
