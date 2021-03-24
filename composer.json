@@ -43,7 +43,7 @@
     "phpstan/phpstan": "^0.12.82",
     "phpstan/phpstan-deprecation-rules": "^0.12.6",
     "phpstan/phpstan-phpunit": "^0.12.18",
-    "phpunit/phpunit": "^9.5.3"
+    "phpunit/phpunit": "^9.5.4"
   },
   "suggest": {
     "ext-dom": "required to use the Sitemap ViewHelper",
