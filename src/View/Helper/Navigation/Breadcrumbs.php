@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Helper\AbstractHtmlElement;
@@ -23,13 +24,9 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     }
 
     /**
-     * @param string $html
-     * @param string $liClass
-     * @param bool   $active
-     *
-     * @return string
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    private function renderBreadcrumbItem(string $html, string $liClass = '', bool $active = false)
+    private function renderBreadcrumbItem(string $html, string $liClass = '', bool $active = false): string
     {
         return $html;
     }

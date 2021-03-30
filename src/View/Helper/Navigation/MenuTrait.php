@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\Log\Logger;
@@ -20,78 +21,64 @@ use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
+use function array_key_exists;
+use function array_merge;
+use function assert;
+use function count;
+use function get_class;
+use function is_array;
+use function is_int;
+use function is_string;
+use function sprintf;
+
 trait MenuTrait
 {
     /**
      * Whether page class should be applied to <li> element.
-     *
-     * @var bool
      */
-    private $addClassToListItem = false;
+    private bool $addClassToListItem = false;
 
     /**
      * Whether labels should be escaped.
-     *
-     * @var bool
      */
-    private $escapeLabels = true;
+    private bool $escapeLabels = true;
 
     /**
      * Whether only active branch should be rendered.
-     *
-     * @var bool
      */
-    private $onlyActiveBranch = false;
+    private bool $onlyActiveBranch = false;
 
     /**
      * Partial view script to use for rendering menu.
      *
-     * @var array|string|null
+     * @var array<int, string>|string|null
      */
     private $partial;
 
     /**
      * Whether parents should be rendered when only rendering active branch.
-     *
-     * @var bool
      */
-    private $renderParents = true;
+    private bool $renderParents = true;
 
     /**
      * CSS class to use for the ul element.
-     *
-     * @var string
      */
-    private $ulClass = 'navigation';
+    private string $ulClass = 'navigation';
 
     /**
      * CSS class to use for the li elements.
-     *
-     * @var string
      */
-    private $liClass = '';
+    private string $liClass = '';
 
     /**
      * CSS class to use for the active li element.
-     *
-     * @var string
      */
-    private $liActiveClass = 'active';
+    private string $liActiveClass = 'active';
 
-    /** @var LaminasViewRenderer */
-    private $renderer;
+    private LaminasViewRenderer $renderer;
 
-    /** @var EscapeHtmlAttr */
-    private $escaper;
+    private EscapeHtmlAttr $escaper;
 
-    /**
-     * @param \Interop\Container\ContainerInterface $serviceLocator
-     * @param Logger                                $logger
-     * @param HtmlifyInterface                      $htmlify
-     * @param ContainerParserInterface              $containerParser
-     * @param EscapeHtmlAttr                        $escaper
-     * @param LaminasViewRenderer                   $renderer
-     */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
@@ -127,8 +114,6 @@ trait MenuTrait
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
-     *
-     * @return string
      */
     public function render($container = null): string
     {
@@ -150,14 +135,12 @@ trait MenuTrait
      *
      * @param ContainerInterface|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
-     * @param array|string|null              $partial   [optional] partial view script to use.
+     * @param array<int, string>|string|null $partial   [optional] partial view script to use.
      *                                                  Default is to use the partial registered in the helper. If an array
      *                                                  is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     public function renderPartial($container = null, $partial = null): string
     {
@@ -173,17 +156,15 @@ trait MenuTrait
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
+     * @param array<mixed>                   $params
      * @param ContainerInterface|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
-     * @param array|string|null              $partial   [optional] partial view script to use.
+     * @param array<int, string>|string|null $partial   [optional] partial view script to use.
      *                                                  Default is to use the partial registered in the helper. If an array
      *                                                  is given, the first value is used for the partial view script.
-     * @param array                          $params
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
     {
@@ -199,8 +180,6 @@ trait MenuTrait
      * @param PageInterface $page               page to generate HTML for
      * @param bool          $escapeLabel        Whether or not to escape the label
      * @param bool          $addClassToListItem Whether or not to add the page class to the list item
-     *
-     * @return string
      */
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
@@ -208,11 +187,187 @@ trait MenuTrait
     }
 
     /**
+     * Sets a flag indicating whether labels should be escaped.
+     *
+     * @param bool $flag [optional] escape labels
+     */
+    public function escapeLabels(bool $flag = true): self
+    {
+        $this->escapeLabels = $flag;
+
+        return $this;
+    }
+
+    public function getEscapeLabels(): bool
+    {
+        return $this->escapeLabels;
+    }
+
+    /**
+     * Enables/disables page class applied to <li> element.
+     *
+     * @param bool $flag [optional] page class applied to <li> element Default
+     *                   is true
+     *
+     * @return self fluent interface, returns self
+     */
+    public function setAddClassToListItem(bool $flag = true): self
+    {
+        $this->addClassToListItem = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Returns flag indicating whether page class should be applied to <li> element.
+     *
+     * By default, this value is false.
+     *
+     * @return bool whether parents should be rendered
+     */
+    public function getAddClassToListItem(): bool
+    {
+        return $this->addClassToListItem;
+    }
+
+    /**
+     * Sets a flag indicating whether only active branch should be rendered.
+     *
+     * @param bool $flag [optional] render only active branch
+     */
+    public function setOnlyActiveBranch(bool $flag = true): self
+    {
+        $this->onlyActiveBranch = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Returns a flag indicating whether only active branch should be rendered.
+     *
+     * By default, this value is false, meaning the entire menu will be
+     * be rendered.
+     */
+    public function getOnlyActiveBranch(): bool
+    {
+        return $this->onlyActiveBranch;
+    }
+
+    /**
+     * Sets which partial view script to use for rendering menu.
+     *
+     * @param array<int, string>|string|null $partial partial view script or null. If an array
+     *                                                is given, the first value is used for the partial view script.
+     */
+    public function setPartial($partial): self
+    {
+        if (null === $partial || is_string($partial) || is_array($partial)) {
+            $this->partial = $partial;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns partial view script to use for rendering menu.
+     *
+     * @return array<int, string>|string|null
+     */
+    public function getPartial()
+    {
+        return $this->partial;
+    }
+
+    /**
+     * Enables/disables rendering of parents when only rendering active branch.
+     *
+     * See {@link setOnlyActiveBranch()} for more information.
+     *
+     * @param bool $flag [optional] render parents when rendering active branch
+     */
+    public function setRenderParents(bool $flag = true): self
+    {
+        $this->renderParents = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Returns flag indicating whether parents should be rendered when rendering only the active branch.
+     *
+     * By default, this value is true.
+     */
+    public function getRenderParents(): bool
+    {
+        return $this->renderParents;
+    }
+
+    /**
+     * Sets CSS class to use for the first 'ul' element when rendering.
+     *
+     * @param string $ulClass CSS class to set
+     */
+    public function setUlClass(string $ulClass): self
+    {
+        $this->ulClass = $ulClass;
+
+        return $this;
+    }
+
+    /**
+     * Returns CSS class to use for the first 'ul' element when rendering.
+     */
+    public function getUlClass(): string
+    {
+        return $this->ulClass;
+    }
+
+    /**
+     * Sets CSS class to use for the 'li' elements when rendering.
+     *
+     * @param string $liClass CSS class to set
+     */
+    public function setLiClass(string $liClass): self
+    {
+        $this->liClass = $liClass;
+
+        return $this;
+    }
+
+    /**
+     * Returns CSS class to use for the 'li' elements when rendering.
+     */
+    public function getLiClass(): string
+    {
+        return $this->liClass;
+    }
+
+    /**
+     * Sets CSS class to use for the active 'li' element when rendering.
+     *
+     * @param string $liActiveClass CSS class to set
+     */
+    public function setLiActiveClass(string $liActiveClass): self
+    {
+        $this->liActiveClass = $liActiveClass;
+
+        return $this;
+    }
+
+    /**
+     * Returns CSS class to use for the active 'li' element when rendering.
+     */
+    public function getLiActiveClass(): string
+    {
+        return $this->liActiveClass;
+    }
+
+    /**
      * Normalizes given render options.
      *
-     * @param array $options [optional] options to normalize
+     * @param array<string, int|string> $options [optional] options to normalize
      *
-     * @return array
+     * @return array<string, bool|int|string|null>
      */
     private function normalizeOptions(array $options = []): array
     {
@@ -280,219 +435,14 @@ trait MenuTrait
     }
 
     /**
-     * Sets a flag indicating whether labels should be escaped.
-     *
-     * @param bool $flag [optional] escape labels
-     *
-     * @return self
-     */
-    public function escapeLabels(bool $flag = true): self
-    {
-        $this->escapeLabels = $flag;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getEscapeLabels(): bool
-    {
-        return $this->escapeLabels;
-    }
-
-    /**
-     * Enables/disables page class applied to <li> element.
-     *
-     * @param bool $flag [optional] page class applied to <li> element Default
-     *                   is true
-     *
-     * @return self fluent interface, returns self
-     */
-    public function setAddClassToListItem(bool $flag = true): self
-    {
-        $this->addClassToListItem = $flag;
-
-        return $this;
-    }
-
-    /**
-     * Returns flag indicating whether page class should be applied to <li> element.
-     *
-     * By default, this value is false.
-     *
-     * @return bool whether parents should be rendered
-     */
-    public function getAddClassToListItem(): bool
-    {
-        return $this->addClassToListItem;
-    }
-
-    /**
-     * Sets a flag indicating whether only active branch should be rendered.
-     *
-     * @param bool $flag [optional] render only active branch
-     *
-     * @return self
-     */
-    public function setOnlyActiveBranch(bool $flag = true): self
-    {
-        $this->onlyActiveBranch = $flag;
-
-        return $this;
-    }
-
-    /**
-     * Returns a flag indicating whether only active branch should be rendered.
-     *
-     * By default, this value is false, meaning the entire menu will be
-     * be rendered.
-     *
-     * @return bool
-     */
-    public function getOnlyActiveBranch(): bool
-    {
-        return $this->onlyActiveBranch;
-    }
-
-    /**
-     * Sets which partial view script to use for rendering menu.
-     *
-     * @param array|string|null $partial partial view script or null. If an array
-     *                                   is given, the first value is used for the partial view script.
-     *
-     * @return self
-     */
-    public function setPartial($partial): self
-    {
-        if (null === $partial || is_string($partial) || is_array($partial)) {
-            $this->partial = $partial;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Returns partial view script to use for rendering menu.
-     *
-     * @return array|string|null
-     */
-    public function getPartial()
-    {
-        return $this->partial;
-    }
-
-    /**
-     * Enables/disables rendering of parents when only rendering active branch.
-     *
-     * See {@link setOnlyActiveBranch()} for more information.
-     *
-     * @param bool $flag [optional] render parents when rendering active branch
-     *
-     * @return self
-     */
-    public function setRenderParents(bool $flag = true): self
-    {
-        $this->renderParents = $flag;
-
-        return $this;
-    }
-
-    /**
-     * Returns flag indicating whether parents should be rendered when rendering only the active branch.
-     *
-     * By default, this value is true.
-     *
-     * @return bool
-     */
-    public function getRenderParents(): bool
-    {
-        return $this->renderParents;
-    }
-
-    /**
-     * Sets CSS class to use for the first 'ul' element when rendering.
-     *
-     * @param string $ulClass CSS class to set
-     *
-     * @return self
-     */
-    public function setUlClass(string $ulClass): self
-    {
-        $this->ulClass = $ulClass;
-
-        return $this;
-    }
-
-    /**
-     * Returns CSS class to use for the first 'ul' element when rendering.
-     *
-     * @return string
-     */
-    public function getUlClass(): string
-    {
-        return $this->ulClass;
-    }
-
-    /**
-     * Sets CSS class to use for the 'li' elements when rendering.
-     *
-     * @param string $liClass CSS class to set
-     *
-     * @return self
-     */
-    public function setLiClass(string $liClass): self
-    {
-        $this->liClass = $liClass;
-
-        return $this;
-    }
-
-    /**
-     * Returns CSS class to use for the 'li' elements when rendering.
-     *
-     * @return string
-     */
-    public function getLiClass(): string
-    {
-        return $this->liClass;
-    }
-
-    /**
-     * Sets CSS class to use for the active 'li' element when rendering.
-     *
-     * @param string $liActiveClass CSS class to set
-     *
-     * @return self
-     */
-    public function setLiActiveClass(string $liActiveClass): self
-    {
-        $this->liActiveClass = $liActiveClass;
-
-        return $this;
-    }
-
-    /**
-     * Returns CSS class to use for the active 'li' element when rendering.
-     *
-     * @return string
-     */
-    public function getLiActiveClass(): string
-    {
-        return $this->liActiveClass;
-    }
-
-    /**
      * Render a partial with the given "model".
      *
-     * @param array                          $params
+     * @param array<mixed>                   $params
      * @param ContainerInterface|string|null $container
-     * @param array|string|null              $partial
+     * @param array<int, string>|string|null $partial
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     private function renderPartialModel(array $params, $container, $partial): string
     {
@@ -529,17 +479,24 @@ trait MenuTrait
     }
 
     /**
-     * @param array                                 $found
-     * @param \Mezzio\Navigation\Page\PageInterface $page
-     * @param int|null                              $maxDepth
-     *
-     * @return bool
+     * @param array<string, int|PageInterface> $found
      */
     private function isActiveBranch(array $found, PageInterface $page, ?int $maxDepth): bool
     {
         if ($found) {
-            $foundPage  = $found['page'];
+            $foundPage = $found['page'];
+
+            assert(
+                $foundPage instanceof PageInterface,
+                sprintf(
+                    '$foundPage should be an Instance of %s, but was %s',
+                    PageInterface::class,
+                    get_class($foundPage)
+                )
+            );
+
             $foundDepth = $found['depth'];
+            assert(is_int($foundDepth));
         } else {
             $foundPage  = null;
             $foundDepth = 0;
@@ -554,7 +511,7 @@ trait MenuTrait
         if ($foundPage->hasPage($page)) {
             // accept if page is a direct child of the active page
             $accept = true;
-        } elseif ($foundPage->getParent()->hasPage($page)) {
+        } elseif ($foundPage->getParent() instanceof ContainerInterface && $foundPage->getParent()->hasPage($page)) {
             // page is a sibling of the active page...
             if (
                 !$foundPage->hasPages(!$this->renderInvisible)

@@ -9,11 +9,14 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\ConfigInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+
+use function array_merge_recursive;
 
 /**
  * Plugin manager implementation for navigation helpers
@@ -24,13 +27,17 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
  */
 final class PluginManager extends ViewHelperPluginManager implements ContainerInterface
 {
-    /** @var string Valid instance types. */
+    /**
+     * @var string Valid instance types
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $instanceOf = ViewHelperInterface::class;
 
     /**
      * Default aliases
      *
-     * @var string[]
+     * @var array<string>
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      */
     protected $aliases = [
         'breadcrumbs' => Breadcrumbs::class,
@@ -42,7 +49,8 @@ final class PluginManager extends ViewHelperPluginManager implements ContainerIn
     /**
      * Default factories
      *
-     * @var string[]
+     * @var array<string>
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      */
     protected $factories = [
         Breadcrumbs::class => BreadcrumbsFactory::class,
@@ -60,7 +68,7 @@ final class PluginManager extends ViewHelperPluginManager implements ContainerIn
      * any, to the currently requested helper.
      *
      * @param ConfigInterface|ContainerInterface|null $configOrContainerInstance
-     * @param array                                   $v3config                  if $configOrContainerInstance is a container, this
+     * @param array<mixed>                            $v3config                  if $configOrContainerInstance is a container, this
      *                                                                           value will be passed to the parent constructor
      */
     public function __construct($configOrContainerInstance = null, array $v3config = [])

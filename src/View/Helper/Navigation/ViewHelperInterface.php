@@ -9,21 +9,21 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Laminas\View\Helper\HelperInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
 
 /**
  * Interface for navigational helpers
  */
-interface ViewHelperInterface
+interface ViewHelperInterface extends HelperInterface
 {
     /**
      * Magic overload: Should proxy to {@link render()}.
-     *
-     * @return string
      */
     public function __toString(): string;
 
@@ -35,6 +35,7 @@ interface ViewHelperInterface
      * @throws Exception\InvalidArgumentException
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function __invoke($container = null);
 
@@ -46,9 +47,9 @@ interface ViewHelperInterface
      *                                                             that the helper should render
      *                                                             the container returned by {@link getContainer()}.
      *
-     * @throws Exception\RuntimeException
-     *
      * @return string helper output
+     *
+     * @throws Exception\RuntimeException
      */
     public function render($container = null): string;
 
@@ -58,21 +59,18 @@ interface ViewHelperInterface
      * @param AuthorizationInterface|null $authorization [optional] AuthorizationInterface instance
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setAuthorization(?AuthorizationInterface $authorization = null);
 
     /**
      * Returns Authorization or null if it isn't set using {@link setAuthorization()} or
      * {@link setDefaultAuthorization()}
-     *
-     * @return AuthorizationInterface|null
      */
     public function getAuthorization(): ?AuthorizationInterface;
 
     /**
      * Checks if the helper has an AuthorizationInterface instance
-     *
-     * @return bool
      */
     public function hasAuthorization(): bool;
 
@@ -82,6 +80,7 @@ interface ViewHelperInterface
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setContainer($container = null);
 
@@ -94,8 +93,6 @@ interface ViewHelperInterface
 
     /**
      * Checks if the helper has a container
-     *
-     * @return bool
      */
     public function hasContainer(): bool;
 
@@ -106,13 +103,12 @@ interface ViewHelperInterface
      * @param int|string $indent
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setIndent($indent);
 
     /**
      * Returns indentation
-     *
-     * @return string
      */
     public function getIndent(): string;
 
@@ -122,6 +118,7 @@ interface ViewHelperInterface
      * @param int $maxDepth default is null, which sets no maximum depth
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setMaxDepth(int $maxDepth);
 
@@ -131,20 +128,17 @@ interface ViewHelperInterface
      * @param int $minDepth default is null, which sets no minimum depth
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setMinDepth(int $minDepth);
 
     /**
      * Returns minimum depth a page must have to be included when rendering
-     *
-     * @return int|null
      */
     public function getMinDepth(): ?int;
 
     /**
      * Returns maximum depth a page can have to be included when rendering
-     *
-     * @return int|null
      */
     public function getMaxDepth(): ?int;
 
@@ -154,13 +148,12 @@ interface ViewHelperInterface
      * @param bool $renderInvisible [optional] boolean flag
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setRenderInvisible(bool $renderInvisible = true);
 
     /**
      * Return renderInvisible flag
-     *
-     * @return bool
      */
     public function getRenderInvisible(): bool;
 
@@ -170,20 +163,17 @@ interface ViewHelperInterface
      * @param string $role [optional] role to set.  Expects a string or null. Default is null.
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setRole(string $role);
 
     /**
      * Returns Authorization role to use when iterating pages, or null if it isn't set
-     *
-     * @return string|null
      */
     public function getRole(): ?string;
 
     /**
      * Checks if the helper has an Authorization role
-     *
-     * @return bool
      */
     public function hasRole(): bool;
 
@@ -193,13 +183,12 @@ interface ViewHelperInterface
      * @param bool $useAuthorization [optional] whether Authorization should be used. Default is true.
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setUseAuthorization(bool $useAuthorization = true);
 
     /**
      * Returns whether Authorization should be used
-     *
-     * @return bool
      */
     public function getUseAuthorization(): bool;
 }

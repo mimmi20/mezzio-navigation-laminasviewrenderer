@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
@@ -27,11 +28,9 @@ interface MenuInterface extends ViewHelperInterface
      *
      * @param ContainerInterface|string|null $container [optional] container to create menu from.
      *                                                  Default is to use the container retrieved from {@link getContainer()}.
-     * @param array                          $options   [optional] options for controlling rendering
+     * @param array<mixed>                   $options   [optional] options for controlling rendering
      *
      * @throws Exception\InvalidArgumentException
-     *
-     * @return string
      */
     public function renderMenu($container = null, array $options = []): string;
 
@@ -44,14 +43,12 @@ interface MenuInterface extends ViewHelperInterface
      *
      * @param ContainerInterface|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
-     * @param array|string|null              $partial   [optional] partial view script to use.
+     * @param array<int, string>|string|null $partial   [optional] partial view script to use.
      *                                                  Default is to use the partial registered in the helper. If an array
      *                                                  is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     public function renderPartial($container = null, $partial = null): string;
 
@@ -64,17 +61,15 @@ interface MenuInterface extends ViewHelperInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
+     * @param array<mixed>                   $params
      * @param ContainerInterface|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
-     * @param array|string|null              $partial   [optional] partial view script to use.
+     * @param array<int, string>|string|null $partial   [optional] partial view script to use.
      *                                                  Default is to use the partial registered in the helper. If an array
      *                                                  is given, the first value is used for the partial view script.
-     * @param array                          $params
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string;
 
@@ -107,8 +102,6 @@ interface MenuInterface extends ViewHelperInterface
      *                                               element. Default is to use the value from {@link getUlClass()}.
      *
      * @throws Exception\InvalidArgumentException
-     *
-     * @return string
      */
     public function renderSubMenu(
         ?ContainerInterface $container = null,
@@ -127,8 +120,6 @@ interface MenuInterface extends ViewHelperInterface
      * @param PageInterface $page               page to generate HTML for
      * @param bool          $escapeLabel        Whether or not to escape the label
      * @param bool          $addClassToListItem Whether or not to add the page class to the list item
-     *
-     * @return string
      */
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string;
 
@@ -138,6 +129,7 @@ interface MenuInterface extends ViewHelperInterface
      * @param bool $flag [optional] escape labels
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function escapeLabels(bool $flag = true);
 
@@ -148,6 +140,7 @@ interface MenuInterface extends ViewHelperInterface
      *                   is true
      *
      * @return self fluent interface, returns self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setAddClassToListItem(bool $flag = true);
 
@@ -166,6 +159,7 @@ interface MenuInterface extends ViewHelperInterface
      * @param bool $flag [optional] render only active branch
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setOnlyActiveBranch(bool $flag = true);
 
@@ -174,25 +168,24 @@ interface MenuInterface extends ViewHelperInterface
      *
      * By default, this value is false, meaning the entire menu will be
      * be rendered.
-     *
-     * @return bool
      */
     public function getOnlyActiveBranch(): bool;
 
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array|string|null $partial partial view script or null. If an array
-     *                                   is given, the first value is used for the partial view script.
+     * @param array<int, string>|string|null $partial partial view script or null. If an array
+     *                                                is given, the first value is used for the partial view script.
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setPartial($partial);
 
     /**
      * Returns partial view script to use for rendering menu.
      *
-     * @return array|string|null
+     * @return array<int, string>|string|null
      */
     public function getPartial();
 
@@ -204,6 +197,7 @@ interface MenuInterface extends ViewHelperInterface
      * @param bool $flag [optional] render parents when rendering active branch
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setRenderParents(bool $flag = true);
 
@@ -211,8 +205,6 @@ interface MenuInterface extends ViewHelperInterface
      * Returns flag indicating whether parents should be rendered when rendering only the active branch.
      *
      * By default, this value is true.
-     *
-     * @return bool
      */
     public function getRenderParents(): bool;
 
@@ -222,13 +214,12 @@ interface MenuInterface extends ViewHelperInterface
      * @param string $ulClass CSS class to set
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setUlClass(string $ulClass);
 
     /**
      * Returns CSS class to use for the first 'ul' element when rendering.
-     *
-     * @return string
      */
     public function getUlClass(): string;
 
@@ -238,13 +229,12 @@ interface MenuInterface extends ViewHelperInterface
      * @param string $liClass CSS class to set
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setLiClass(string $liClass);
 
     /**
      * Returns CSS class to use for the 'li' elements when rendering.
-     *
-     * @return string
      */
     public function getLiClass(): string;
 
@@ -254,13 +244,12 @@ interface MenuInterface extends ViewHelperInterface
      * @param string $liActiveClass CSS class to set
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setLiActiveClass(string $liActiveClass);
 
     /**
      * Returns CSS class to use for the active 'li' element when rendering.
-     *
-     * @return string
      */
     public function getLiActiveClass(): string;
 }

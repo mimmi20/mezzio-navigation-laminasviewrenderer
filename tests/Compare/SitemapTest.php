@@ -9,22 +9,39 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
 use DOMDocument;
+use DOMElement;
+use ErrorException;
+use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Laminas\Uri\Uri;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Page\PageFactory;
+use PHPUnit\Framework\Exception;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\UriInterface;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
+use function date_default_timezone_get;
+use function date_default_timezone_set;
+use function get_class;
+use function sprintf;
+use function trim;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap
@@ -35,39 +52,33 @@ use Psr\Http\Message\UriInterface;
  */
 final class SitemapTest extends AbstractTest
 {
-    /** @var array */
-    private $oldServer = [];
-
     /**
      * Class name for view helper to test
-     *
-     * @var string
      */
-    protected $helperName = Sitemap::class;
+    protected string $helperName = Sitemap::class;
 
     /**
      * View helper
      *
      * @var Sitemap
      */
-    protected $helper;
+    protected ViewHelperInterface $helper;
+
+    /** @var array<string, int|string> */
+    private array $oldServer = [];
 
     /**
      * Stores the original set timezone
-     *
-     * @var string
      */
-    private $originalTimezone;
+    private string $originalTimezone;
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
-     * @throws \Laminas\Config\Exception\RuntimeException
-     *
-     * @return void
+     * @throws RuntimeException
      */
     protected function setUp(): void
     {
@@ -92,31 +103,13 @@ final class SitemapTest extends AbstractTest
 
         parent::setUp();
 
-        $logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emerg');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::never())
-            ->method('err');
-        $logger->expects(self::never())
-            ->method('warn');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
 
+        $this->serviceManager->get(LaminasViewRenderer::class);
+
         $baseUrlHelper = $this->serviceManager->get(BaseServerUrlHelper::class);
-        \assert(
+        assert(
             $baseUrlHelper instanceof BaseServerUrlHelper,
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
@@ -126,83 +119,53 @@ final class SitemapTest extends AbstractTest
         );
 
         $uri = new class() implements UriInterface {
-            /** @var string */
-            private $schema = 'http';
+            private string $schema = 'http';
 
-            /** @var string */
-            private $host = 'localhost';
+            private string $host = 'localhost';
 
-            /** @var int|null */
-            private $port = 80;
+            private ?int $port = 80;
 
-            /** @var string */
-            private $path = '/';
+            private string $path = '/';
 
-            /** @var string */
-            private $query = '';
+            private string $query = '';
 
-            /** @var string */
-            private $fragment = '';
+            private string $fragment = '';
 
-            /**
-             * @return string
-             */
             public function getScheme(): string
             {
                 return $this->schema;
             }
 
-            /**
-             * @return string
-             */
             public function getAuthority(): string
             {
                 return '';
             }
 
-            /**
-             * @return string
-             */
             public function getUserInfo(): string
             {
                 return '';
             }
 
-            /**
-             * @return string
-             */
             public function getHost(): string
             {
                 return $this->host;
             }
 
-            /**
-             * @return int|null
-             */
             public function getPort(): ?int
             {
                 return $this->port;
             }
 
-            /**
-             * @return string
-             */
             public function getPath(): string
             {
                 return $this->path;
             }
 
-            /**
-             * @return string
-             */
             public function getQuery(): string
             {
                 return $this->query;
             }
 
-            /**
-             * @return string
-             */
             public function getFragment(): string
             {
                 return $this->fragment;
@@ -211,9 +174,10 @@ final class SitemapTest extends AbstractTest
             /**
              * @param string $scheme the scheme to use with the new instance
              *
-             * @throws \InvalidArgumentException for invalid or unsupported schemes
-             *
              * @return static a new instance with the specified scheme
+             *
+             * @throws \InvalidArgumentException for invalid or unsupported schemes
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withScheme($scheme)
             {
@@ -228,6 +192,8 @@ final class SitemapTest extends AbstractTest
              * @param string|null $password the password associated with $user
              *
              * @return static a new instance with the specified user information
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
              */
             public function withUserInfo($user, $password = null)
             {
@@ -237,9 +203,10 @@ final class SitemapTest extends AbstractTest
             /**
              * @param string $host the hostname to use with the new instance
              *
-             * @throws \InvalidArgumentException for invalid hostnames
-             *
              * @return static a new instance with the specified host
+             *
+             * @throws \InvalidArgumentException for invalid hostnames
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withHost($host)
             {
@@ -253,9 +220,10 @@ final class SitemapTest extends AbstractTest
              * @param int|null $port the port to use with the new instance; a null value
              *                       removes the port information
              *
-             * @throws \InvalidArgumentException for invalid ports
-             *
              * @return static a new instance with the specified port
+             *
+             * @throws \InvalidArgumentException for invalid ports
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withPort($port)
             {
@@ -268,9 +236,10 @@ final class SitemapTest extends AbstractTest
             /**
              * @param string $path the path to use with the new instance
              *
-             * @throws \InvalidArgumentException for invalid paths
-             *
              * @return static a new instance with the specified path
+             *
+             * @throws \InvalidArgumentException for invalid paths
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withPath($path)
             {
@@ -283,9 +252,10 @@ final class SitemapTest extends AbstractTest
             /**
              * @param string $query the query string to use with the new instance
              *
-             * @throws \InvalidArgumentException for invalid query strings
-             *
              * @return static a new instance with the specified query string
+             *
+             * @throws \InvalidArgumentException for invalid query strings
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withQuery($query)
             {
@@ -299,6 +269,7 @@ final class SitemapTest extends AbstractTest
              * @param string $fragment the fragment to use with the new instance
              *
              * @return static a new instance with the specified fragment
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withFragment($fragment)
             {
@@ -310,8 +281,6 @@ final class SitemapTest extends AbstractTest
 
             /**
              * @throws \Laminas\Uri\Exception\InvalidArgumentException
-             *
-             * @return string
              */
             public function __toString(): string
             {
@@ -333,7 +302,7 @@ final class SitemapTest extends AbstractTest
         $baseUrlHelper->setUri($uri);
 
         $serverUrlHelper = $plugin->get(ServerUrlHelper::class);
-        \assert(
+        assert(
             $serverUrlHelper instanceof ServerUrlHelper,
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
@@ -343,7 +312,7 @@ final class SitemapTest extends AbstractTest
         );
 
         $basePathHelper = $plugin->get(BasePath::class);
-        \assert(
+        assert(
             $basePathHelper instanceof BasePath,
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
@@ -357,7 +326,7 @@ final class SitemapTest extends AbstractTest
         // create helper
         $this->helper = new Sitemap(
             $this->serviceManager,
-            $logger,
+            $this->serviceManager->get(Logger::class),
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $basePathHelper,
@@ -372,10 +341,8 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     protected function tearDown(): void
     {
@@ -387,39 +354,33 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
         $returned = $this->helper->__invoke();
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav1, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
         $returned = $this->helper->__invoke($this->nav2);
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav2, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testNullingOutNavigation(): void
     {
@@ -428,41 +389,35 @@ final class SitemapTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSettingMaxDepth(): void
     {
         $this->helper->setMaxDepth(0);
 
         $expected = $this->getExpected('sitemap/depth1.xml');
-        self::assertEquals(trim($expected), $this->helper->render());
+        self::assertSame(trim($expected), $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSettingMinDepth(): void
     {
         $this->helper->setMinDepth(1);
 
         $expected = $this->getExpected('sitemap/depth2.xml');
-        self::assertEquals(trim($expected), $this->helper->render());
+        self::assertSame(trim($expected), $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSettingBothDepths(): void
     {
@@ -470,32 +425,28 @@ final class SitemapTest extends AbstractTest
         $this->helper->setMaxDepth(2);
 
         $expected = $this->getExpected('sitemap/depth3.xml');
-        self::assertEquals(trim($expected), $this->helper->render());
+        self::assertSame(trim($expected), $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testDropXmlDeclaration(): void
     {
         $this->helper->setUseXmlDeclaration(false);
 
         $expected = $this->getExpected('sitemap/nodecl.xml');
-        self::assertEquals(trim($expected), $this->helper->render($this->nav2));
+        self::assertSame(trim($expected), $this->helper->render($this->nav2));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function testDisablingValidators(): void
     {
@@ -512,34 +463,30 @@ final class SitemapTest extends AbstractTest
         $expectedDom->loadXML($expected);
         $receivedDom->loadXML($this->helper->render($nav));
 
-        self::assertInstanceOf(\DOMElement::class, $expectedDom->documentElement);
-        self::assertInstanceOf(\DOMElement::class, $receivedDom->documentElement);
+        self::assertInstanceOf(DOMElement::class, $expectedDom->documentElement);
+        self::assertInstanceOf(DOMElement::class, $receivedDom->documentElement);
 
         self::markTestIncomplete('need to wait for replacement of function "assertEqualXMLStructure"');
         //self::assertEqualXMLStructure($expectedDom->documentElement, $receivedDom->documentElement);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetServerUrlWithSchemeAndHost(): void
     {
         $this->helper->setServerUrl('http://sub.example.org');
 
         $expected = $this->getExpected('sitemap/serverurl1.xml');
-        self::assertEquals(trim($expected), $this->helper->render());
+        self::assertSame(trim($expected), $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      *
      * @group test-123
      */
@@ -548,14 +495,12 @@ final class SitemapTest extends AbstractTest
         $this->helper->setServerUrl('http://sub.example.org:8080/foo/');
 
         $expected = $this->getExpected('sitemap/serverurl2.xml');
-        self::assertEquals(trim($expected), $this->helper->render());
+        self::assertSame(trim($expected), $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testGetUserSchemaValidation(): void
     {

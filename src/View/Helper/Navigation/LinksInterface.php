@@ -9,9 +9,12 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use ErrorException;
 use Laminas\View\Exception;
+use Mezzio\Navigation\Exception\ExceptionInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mezzio\Navigation\Page\PageInterface;
 
@@ -49,14 +52,13 @@ interface LinksInterface extends ViewHelperInterface
      * $h->findRelFoo($page);     // $h->findRelation($page, 'rel', 'foo');
      * </code>
      *
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @throws Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \ErrorException
+     * @param array<mixed> $arguments
      *
      * @return mixed
+     *
+     * @throws Exception\ExceptionInterface
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function __call(string $method, array $arguments = []);
 
@@ -74,8 +76,6 @@ interface LinksInterface extends ViewHelperInterface
      *                                subsection
      *
      * @throws Exception\DomainException
-     *
-     * @return string
      */
     public function renderLink(PageInterface $page, string $attrib, string $relation): string;
 
@@ -102,11 +102,10 @@ interface LinksInterface extends ViewHelperInterface
      * </code>
      *
      * @param PageInterface $page page to find links for
-     * @param int|null      $flag
+     *
+     * @return array<string, array<int|string, array<int|string, PageInterface>>>
      *
      * @throws InvalidArgumentException
-     *
-     * @return array
      */
     public function findAllRelations(PageInterface $page, ?int $flag = null): array;
 
@@ -120,10 +119,10 @@ interface LinksInterface extends ViewHelperInterface
      * @param string        $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
+     * @return array<PageInterface>|PageInterface|null
+     *
      * @throws Exception\DomainException if $rel is not "rel" or "rev"
      * @throws InvalidArgumentException
-     *
-     * @return array|PageInterface|null
      */
     public function findRelation(PageInterface $page, string $rel, string $type);
 
@@ -137,10 +136,6 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to the first document in a collection of documents. This link type
      * tells search engines which document is considered by the author to be the
      * starting point of the collection.
-     *
-     * @param PageInterface $page
-     *
-     * @return PageInterface|null
      */
     public function searchRelStart(PageInterface $page): ?PageInterface;
 
@@ -152,10 +147,6 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to the next document in a linear sequence of documents. User
      * agents may choose to preload the "next" document, to reduce the perceived
      * load time.
-     *
-     * @param PageInterface $page
-     *
-     * @return PageInterface|null
      */
     public function searchRelNext(PageInterface $page): ?PageInterface;
 
@@ -166,10 +157,6 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to the previous document in an ordered series of documents. Some
      * user agents also support the synonym "Previous".
-     *
-     * @param PageInterface $page
-     *
-     * @return PageInterface|null
      */
     public function searchRelPrev(PageInterface $page): ?PageInterface;
 
@@ -180,12 +167,10 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a chapter in a collection of documents.
      *
-     * @param PageInterface $page
+     * @return array<PageInterface>|PageInterface|null
      *
      * @throws Exception\DomainException
      * @throws InvalidArgumentException
-     *
-     * @return array|PageInterface|null
      */
     public function searchRelChapter(PageInterface $page);
 
@@ -196,9 +181,7 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
      *
-     * @param PageInterface $page
-     *
-     * @return array|PageInterface|null
+     * @return array<PageInterface>|PageInterface|null
      */
     public function searchRelSection(PageInterface $page);
 
@@ -210,9 +193,7 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to a document serving as a subsection in a collection of
      * documents.
      *
-     * @param PageInterface $page
-     *
-     * @return array|PageInterface|null
+     * @return array<PageInterface>|PageInterface|null
      */
     public function searchRelSubsection(PageInterface $page);
 
@@ -222,10 +203,6 @@ interface LinksInterface extends ViewHelperInterface
      *
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
-     *
-     * @param PageInterface $page
-     *
-     * @return PageInterface|null
      */
     public function searchRevSection(PageInterface $page): ?PageInterface;
 
@@ -236,10 +213,6 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a subsection in a collection of
      * documents.
-     *
-     * @param PageInterface $page
-     *
-     * @return PageInterface|null
      */
     public function searchRevSubsection(PageInterface $page): ?PageInterface;
 
@@ -270,16 +243,13 @@ interface LinksInterface extends ViewHelperInterface
      * Note that custom relations can also be rendered directly using the
      * {@link renderLink()} method.
      *
-     * @param int $renderFlag
-     *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setRenderFlag(int $renderFlag);
 
     /**
      * Returns the helper's render flag
-     *
-     * @return int
      */
     public function getRenderFlag(): int;
 }

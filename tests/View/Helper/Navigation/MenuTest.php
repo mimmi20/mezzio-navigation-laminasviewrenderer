@@ -9,11 +9,13 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtmlAttr;
@@ -25,22 +27,27 @@ use Mezzio\Navigation\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\FindActiveInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function get_class;
+use function sprintf;
+
+use const PHP_EOL;
 
 final class MenuTest extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -49,10 +56,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMaxDepth(): void
     {
@@ -110,13 +115,13 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
 
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getMaxDepth());
@@ -127,10 +132,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMinDepth(): void
     {
@@ -186,12 +189,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame(0, $helper->getMinDepth());
@@ -218,10 +221,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRenderInvisible(): void
     {
@@ -277,12 +278,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertFalse($helper->getRenderInvisible());
@@ -293,10 +294,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRole(): void
     {
@@ -355,12 +354,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getRole());
@@ -378,10 +377,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseAuthorization(): void
     {
@@ -437,12 +434,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertTrue($helper->getUseAuthorization());
@@ -457,10 +454,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetAuthorization(): void
     {
@@ -519,24 +514,24 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $defaultAuth */
+        assert($defaultAuth instanceof AuthorizationInterface);
         Menu::setDefaultAuthorization($defaultAuth);
 
         self::assertSame($defaultAuth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($auth, $helper->getAuthorization());
@@ -544,10 +539,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetView(): void
     {
@@ -605,17 +598,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getView());
 
-        /* @var RendererInterface $view */
+        assert($view instanceof RendererInterface);
         $helper->setView($view);
 
         self::assertSame($view, $helper->getView());
@@ -623,11 +616,9 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainer(): void
     {
@@ -687,19 +678,18 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $container1 = $helper->getContainer();
 
         self::assertInstanceOf(Navigation::class, $container1);
 
-        /* @var AuthorizationInterface $auth */
         $helper->setContainer();
 
         $container2 = $helper->getContainer();
@@ -713,10 +703,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -776,12 +764,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $this->expectException(InvalidArgumentException::class);
@@ -792,11 +780,9 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -857,12 +843,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
@@ -871,11 +857,9 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotAccept(): void
     {
@@ -977,30 +961,35 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertFalse($helper->accept($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testHtmlify(): void
     {
@@ -1091,12 +1080,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
@@ -1109,18 +1098,23 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetIndent(): void
     {
@@ -1176,12 +1170,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('', $helper->getIndent());
@@ -1196,12 +1190,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -1327,29 +1319,27 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -1480,17 +1470,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1502,11 +1492,9 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -1599,17 +1587,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -1618,12 +1606,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
@@ -1754,17 +1740,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1779,12 +1765,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -1896,17 +1880,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -1915,12 +1899,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2047,17 +2029,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2069,12 +2051,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -2206,17 +2186,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2225,12 +2205,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -2361,17 +2339,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setMinDepth(-1);
@@ -2383,10 +2361,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testEscapeLabels(): void
     {
@@ -2442,12 +2418,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertTrue($helper->getEscapeLabels());
@@ -2458,10 +2434,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetAddClassToListItem(): void
     {
@@ -2517,12 +2491,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertFalse($helper->getAddClassToListItem());
@@ -2533,10 +2507,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetOnlyActiveBranch(): void
     {
@@ -2592,12 +2564,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertFalse($helper->getOnlyActiveBranch());
@@ -2608,10 +2580,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetPartial(): void
     {
@@ -2667,12 +2637,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertNull($helper->getPartial());
@@ -2687,10 +2657,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRenderParents(): void
     {
@@ -2746,12 +2714,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertTrue($helper->getRenderParents());
@@ -2762,10 +2730,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUlClass(): void
     {
@@ -2821,12 +2787,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('navigation', $helper->getUlClass());
@@ -2837,10 +2803,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetLiClass(): void
     {
@@ -2896,12 +2860,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('', $helper->getLiClass());
@@ -2912,10 +2876,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetLiActiveClass(): void
     {
@@ -2971,12 +2933,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         self::assertSame('active', $helper->getLiActiveClass());
@@ -2987,11 +2949,9 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -3076,24 +3036,22 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($container);
 
-        self::assertEquals('', $helper->render());
+        self::assertSame('', $helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRenderPartialWithoutPartial(): void
     {
@@ -3155,12 +3113,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $role = 'testRole';
@@ -3173,7 +3131,7 @@ final class MenuTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
@@ -3182,7 +3140,7 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         $this->expectException(RuntimeException::class);
@@ -3193,10 +3151,8 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRenderPartialWithWrongPartial(): void
     {
@@ -3258,12 +3214,12 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $role = 'testRole';
@@ -3276,7 +3232,7 @@ final class MenuTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
@@ -3285,7 +3241,7 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         $helper->setPartial(['a', 'b', 'c']);
@@ -3298,12 +3254,10 @@ final class MenuTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartial(): void
     {
@@ -3403,17 +3357,17 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $container])
             ->willReturn($expected);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setPartial($partial);
@@ -3426,19 +3380,17 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialNoActivePage(): void
     {
@@ -3528,17 +3480,17 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $container])
             ->willReturn($expected);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setPartial($partial);
@@ -3551,19 +3503,17 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithArrayPartial(): void
     {
@@ -3661,17 +3611,17 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $container])
             ->willReturn($expected);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setContainer($container);
@@ -3684,19 +3634,17 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial(null, [$partial, 'test']));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithArrayPartialRenderingPage(): void
     {
@@ -3749,7 +3697,14 @@ final class MenuTest extends TestCase
         $subPage->expects(self::never())
             ->method('isActive');
 
-        /* @var PageInterface $subPage */
+        assert(
+            $subPage instanceof PageInterface,
+            sprintf(
+                '$subPage should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($subPage)
+            )
+        );
         $page->addPage($subPage);
         $parentPage->addPage($page);
 
@@ -3800,17 +3755,17 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $parentPage])
             ->willReturn($expected);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setContainer($parentPage);
@@ -3823,18 +3778,16 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial(null, [$partial, 'test']));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotRenderMenuIfNoPageIsActive(): void
     {
@@ -3919,26 +3872,24 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($container);
 
-        self::assertEquals('', $helper->renderMenu());
+        self::assertSame('', $helper->renderMenu());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderMenuNoActivePage(): void
     {
@@ -4066,17 +4017,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = '';
@@ -4090,19 +4041,17 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderMenu($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderMenu(): void
     {
@@ -4287,17 +4236,17 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtmlAttr);
-        \assert($renderer instanceof LaminasViewRenderer);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
         $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = '<ul class="navigation-escaped">' . PHP_EOL . '    <li class="active-escaped">' . PHP_EOL . '        <a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>' . PHP_EOL . '        <ul>' . PHP_EOL . '            <li class="active-escaped">' . PHP_EOL . '                <a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>' . PHP_EOL . '            </li>' . PHP_EOL . '        </ul>' . PHP_EOL . '    </li>' . PHP_EOL . '</ul>';
@@ -4310,7 +4259,7 @@ final class MenuTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderMenu($name));

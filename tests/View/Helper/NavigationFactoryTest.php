@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
@@ -20,26 +21,24 @@ use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
 
 final class NavigationFactoryTest extends TestCase
 {
-    /** @var NavigationFactory */
-    private $factory;
+    private NavigationFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->factory = new NavigationFactory();
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testInvocation(): void
     {
@@ -83,7 +82,7 @@ final class NavigationFactoryTest extends TestCase
             ->withConsecutive([HelperPluginManager::class], [Logger::class], [Navigation\PluginManager::class])
             ->willReturnOnConsecutiveCalls($helperPluginManager, $logger, $navigationPluginManager);
 
-        \assert($container instanceof ContainerInterface);
+        assert($container instanceof ContainerInterface);
         $navigation = ($this->factory)($container);
 
         self::assertInstanceOf(Navigation::class, $navigation);

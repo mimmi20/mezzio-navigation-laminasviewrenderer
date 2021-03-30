@@ -9,8 +9,10 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
+use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtml;
@@ -20,8 +22,22 @@ use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageFactory;
+use PHPUnit\Framework\Exception;
+use Psr\Container\ContainerExceptionInterface;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
+use function get_class;
+use function mb_strlen;
+use function mb_substr;
+use function sprintf;
+use function str_replace;
+use function trim;
+
+use const PHP_EOL;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs.
@@ -34,57 +50,36 @@ final class BreadcrumbsTest extends AbstractTest
 {
     /**
      * Class name for view helper to test.
-     *
-     * @var string
      */
-    protected $helperName = Breadcrumbs::class;
+    protected string $helperName = Breadcrumbs::class;
 
     /**
-     * View helper.
+     * View helper
      *
      * @var Breadcrumbs
      */
-    protected $helper;
+    protected ViewHelperInterface $helper;
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
-     * @throws \Laminas\Config\Exception\RuntimeException
-     *
-     * @return void
+     * @throws RuntimeException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emerg');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::never())
-            ->method('err');
-        $logger->expects(self::never())
-            ->method('warn');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
 
+        $renderer = $this->serviceManager->get(LaminasViewRenderer::class);
+        assert($renderer instanceof LaminasViewRenderer);
+
         $escapeHelper = $plugin->get(EscapeHtml::class);
-        \assert(
+        assert(
             $escapeHelper instanceof EscapeHtml,
             sprintf(
                 '$escapeHelper should be an Instance of %s, but was %s',
@@ -93,13 +88,12 @@ final class BreadcrumbsTest extends AbstractTest
             )
         );
 
-        $renderer   = $this->serviceManager->get(LaminasViewRenderer::class);
         $translator = null;
 
         // create helper
         $this->helper = new Breadcrumbs(
             $this->serviceManager,
-            $logger,
+            $this->serviceManager->get(Logger::class),
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $escapeHelper,
@@ -112,40 +106,34 @@ final class BreadcrumbsTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
         $returned = $this->helper->__invoke();
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav1, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
         $returned = $this->helper->__invoke($this->nav2);
 
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav2, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testNullOutContainer(): void
     {
@@ -157,11 +145,9 @@ final class BreadcrumbsTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetSeparator(): void
     {
@@ -170,15 +156,13 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = $this->getExpected('bc/separator.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetMaxDepth(): void
     {
@@ -187,15 +171,13 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = $this->getExpected('bc/maxdepth.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetMinDepth(): void
     {
@@ -204,15 +186,13 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = '';
         $actual   = $this->helper->render($this->nav2);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testLinkLastElement(): void
     {
@@ -221,15 +201,13 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = $this->getExpected('bc/linklast.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetIndent(): void
     {
@@ -238,15 +216,13 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = '        <a';
         $actual   = mb_substr($this->helper->render(), 0, mb_strlen($expected));
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderSuppliedContainerWithoutInterfering(): void
     {
@@ -268,16 +244,14 @@ final class BreadcrumbsTest extends AbstractTest
             'registered_again' => $this->helper->render(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testUseAclResourceFromPages(): void
     {
@@ -286,58 +260,50 @@ final class BreadcrumbsTest extends AbstractTest
         $this->helper->setRole($acl['role']);
 
         $expected = $this->getExpected('bc/acl.html');
-        self::assertEquals($expected, $this->helper->render());
+        self::assertSame($expected, $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartial(): void
     {
         $this->helper->setPartial('test::bc');
 
         $expected = $this->getExpected('bc/partial.html');
-        self::assertEquals($expected, $this->helper->render());
+        self::assertSame($expected, $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartialWithSeparator(): void
     {
         $this->helper->setPartial('test::bc-separator')->setSeparator(' / ');
 
         $expected = trim($this->getExpected('bc/partialwithseparator.html'));
-        self::assertEquals($expected, $this->helper->render());
+        self::assertSame($expected, $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartialBySpecifyingAnArrayAsPartial(): void
     {
         $this->helper->setPartial(['test::bc', 'application']);
 
         $expected = $this->getExpected('bc/partial.html');
-        self::assertEquals($expected, $this->helper->render());
+        self::assertSame($expected, $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     *
-     * @return void
+     * @throws Exception
      */
     public function testRenderingPartialShouldFailOnInvalidPartialArray(): void
     {
@@ -354,11 +320,9 @@ final class BreadcrumbsTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartialWithParams(): void
     {
@@ -367,16 +331,14 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = $this->getExpected('bc/partial_with_params.html');
         $actual   = $this->helper->renderPartialWithParams(['variable' => 'test value']);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testLastBreadcrumbShouldBeEscaped(): void
     {
@@ -395,15 +357,11 @@ final class BreadcrumbsTest extends AbstractTest
         $expected = 'Live &amp; Learn';
         $actual   = $this->helper->setMinDepth(0)->render($container);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * Returns the contens of the expected $file, normalizes newlines.
-     *
-     * @param string $file
-     *
-     * @return string
      */
     protected function getExpected(string $file): string
     {

@@ -9,22 +9,25 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerExceptionInterface;
+
+use function is_array;
 
 final class PluginManagerFactory implements FactoryInterface
 {
     /**
-     * @param ContainerInterface $container
-     * @param string             $name
-     * @param array|null         $options
+     * @param string            $name
+     * @param array<mixed>|null $options
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     *
-     * @return \Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager
+     * @throws ContainerExceptionInterface
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     public function __invoke(ContainerInterface $container, $name, ?array $options = null): PluginManager
     {

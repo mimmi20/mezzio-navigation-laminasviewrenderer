@@ -13,6 +13,7 @@ declare(strict_types = 1);
 /**
  * @see       https://github.com/laminas/laminas-view for the canonical source repository
  */
+
 namespace MezzioTest\Navigation\LaminasView\Compare\TestAsset;
 
 use Laminas\I18n\Translator;
@@ -20,8 +21,8 @@ use Laminas\I18n\Translator\TextDomain;
 
 final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
 {
-    /** @var array */
-    public $translations;
+    /** @var array<string> */
+    public array $translations;
 
     /**
      * Load translations from a file.
@@ -29,7 +30,8 @@ final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
      * @param string $locale
      * @param string $filename
      *
-     * @return TextDomain|null
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     public function load($filename, $locale): ?TextDomain
     {

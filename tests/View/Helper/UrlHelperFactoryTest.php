@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
@@ -16,25 +17,24 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
+use function sprintf;
 
 final class UrlHelperFactoryTest extends TestCase
 {
-    /** @var UrlHelperFactory */
-    private $factory;
+    private UrlHelperFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->factory = new UrlHelperFactory();
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     *
-     * @return void
+     * @throws Exception
      */
     public function testInvocationException(): void
     {
@@ -55,15 +55,13 @@ final class UrlHelperFactoryTest extends TestCase
         );
         $this->expectExceptionCode(0);
 
-        /* @var ContainerInterface $container */
+        assert($container instanceof ContainerInterface);
         ($this->factory)($container);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testInvocation(): void
     {
@@ -81,7 +79,7 @@ final class UrlHelperFactoryTest extends TestCase
             ->with(BaseUrlHelper::class)
             ->willReturn($baseHelper);
 
-        \assert($container instanceof ContainerInterface);
+        assert($container instanceof ContainerInterface);
         $urlHelper = ($this->factory)($container);
 
         self::assertInstanceOf(UrlHelper::class, $urlHelper);

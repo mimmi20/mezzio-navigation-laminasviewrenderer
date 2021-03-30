@@ -9,8 +9,10 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use DOMDocument;
 use Laminas\Uri\UriInterface;
 use Laminas\View\Exception;
 use Mezzio\Navigation\ContainerInterface;
@@ -48,6 +50,8 @@ interface SitemapInterface extends ViewHelperInterface
      *                                                  null value means no maximum
      *                                                  depth required.
      *
+     * @return DOMDocument DOM representation of the container
+     *
      * @throws Exception\RuntimeException         if schema validation is on
      *                                            and the sitemap is invalid
      *                                            according to the sitemap
@@ -55,33 +59,24 @@ interface SitemapInterface extends ViewHelperInterface
      *                                            validators are used and the
      *                                            loc element fails validation
      * @throws Exception\InvalidArgumentException
-     *
-     * @return \DOMDocument DOM representation of the container
      */
-    public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): \DOMDocument;
+    public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): DOMDocument;
 
     /**
      * Returns an escaped absolute URL for the given page
-     *
-     * @param PageInterface $page
-     *
-     * @return string
      */
     public function url(PageInterface $page): string;
 
     /**
      * Sets whether XML output should be formatted
      *
-     * @param bool $formatOutput
-     *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setFormatOutput(bool $formatOutput = true);
 
     /**
      * Returns whether XML output should be formatted
-     *
-     * @return bool
      */
     public function getFormatOutput(): bool;
 
@@ -95,61 +90,51 @@ interface SitemapInterface extends ViewHelperInterface
      * @throws Exception\InvalidArgumentException
      *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setServerUrl($serverUrl);
 
     /**
      * Returns server URL
-     *
-     * @return string
      */
     public function getServerUrl(): string;
 
     /**
      * Sets whether sitemap should be validated using Laminas\Validate\Sitemap_*
      *
-     * @param bool $useSitemapValidators
-     *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setUseSitemapValidators(bool $useSitemapValidators);
 
     /**
      * Returns whether sitemap should be validated using Laminas\Validate\Sitemap_*
-     *
-     * @return bool
      */
     public function getUseSitemapValidators(): bool;
 
     /**
      * Sets whether sitemap should be schema validated when generated
      *
-     * @param bool $schemaValidation
-     *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setUseSchemaValidation(bool $schemaValidation);
 
     /**
      * Returns true if sitemap should be schema validated when generated
-     *
-     * @return bool
      */
     public function getUseSchemaValidation(): bool;
 
     /**
      * Sets whether the XML declaration should be used in output
      *
-     * @param bool $useXmlDecl
-     *
      * @return self
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setUseXmlDeclaration(bool $useXmlDecl);
 
     /**
      * Returns whether the XML declaration should be used in output
-     *
-     * @return bool
      */
     public function getUseXmlDeclaration(): bool;
 }

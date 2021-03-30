@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
@@ -20,22 +21,23 @@ use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Psr\Container\ContainerExceptionInterface;
+
+use function assert;
+use function get_class;
+use function sprintf;
 
 final class MenuFactory
 {
     /**
      * Create and return a navigation view helper instance.
      *
-     * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     *
-     * @return Menu
+     * @throws ContainerExceptionInterface
      */
     public function __invoke(ContainerInterface $container): Menu
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
-        \assert(
+        assert(
             $helperPluginManager instanceof PluginManagerInterface,
             sprintf(
                 '$helperPluginManager should be an Instance of %s, but was %s',
@@ -45,7 +47,7 @@ final class MenuFactory
         );
 
         $plugin = $container->get(ViewHelperPluginManager::class);
-        \assert(
+        assert(
             $plugin instanceof ViewHelperPluginManager,
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',

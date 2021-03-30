@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
@@ -21,22 +22,23 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Psr\Container\ContainerExceptionInterface;
+
+use function assert;
+use function get_class;
+use function sprintf;
 
 final class SitemapFactory
 {
     /**
      * Create and return a navigation view helper instance.
      *
-     * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     *
-     * @return ViewHelperInterface
+     * @throws ContainerExceptionInterface
      */
     public function __invoke(ContainerInterface $container): ViewHelperInterface
     {
         $helperPluginManager = $container->get(HelperPluginManager::class);
-        \assert(
+        assert(
             $helperPluginManager instanceof PluginManagerInterface,
             sprintf(
                 '$helperPluginManager should be an Instance of %s, but was %s',
@@ -46,7 +48,7 @@ final class SitemapFactory
         );
 
         $plugin = $container->get(ViewHelperPluginManager::class);
-        \assert(
+        assert(
             $plugin instanceof ViewHelperPluginManager,
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
@@ -56,7 +58,7 @@ final class SitemapFactory
         );
 
         $serverUrlHelper = $plugin->get(ServerUrlHelper::class);
-        \assert(
+        assert(
             $serverUrlHelper instanceof ServerUrlHelper,
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
@@ -66,7 +68,7 @@ final class SitemapFactory
         );
 
         $basePathHelper = $plugin->get(BasePath::class);
-        \assert(
+        assert(
             $basePathHelper instanceof BasePath,
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
