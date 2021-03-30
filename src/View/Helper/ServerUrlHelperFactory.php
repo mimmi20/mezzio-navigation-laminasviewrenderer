@@ -9,23 +9,23 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
+use Psr\Container\ContainerExceptionInterface;
+
+use function sprintf;
 
 final class ServerUrlHelperFactory
 {
     /**
      * Create and return a navigation view helper instance.
      *
-     * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     *
-     * @return ServerUrlHelper
+     * @throws ContainerExceptionInterface
      */
     public function __invoke(ContainerInterface $container): ServerUrlHelper
     {

@@ -9,8 +9,11 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use DOMDocument;
+use ErrorException;
 use Laminas\Log\Logger;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\Uri;
@@ -34,6 +37,21 @@ use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
 
+use function assert;
+use function date;
+use function get_class;
+use function in_array;
+use function is_int;
+use function is_string;
+use function mb_substr;
+use function preg_match;
+use function rtrim;
+use function sprintf;
+use function strtotime;
+use function trim;
+
+use const PHP_EOL;
+
 /**
  * Helper for printing sitemaps
  *
@@ -45,79 +63,52 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Whether XML output should be formatted
-     *
-     * @var bool
      */
-    private $formatOutput = false;
+    private bool $formatOutput = false;
 
     /**
      * Server url
-     *
-     * @var string|null
      */
-    private $serverUrl;
+    private ?string $serverUrl = null;
 
     /**
      * List of urls in the sitemap
      *
-     * @var array
+     * @var array<int, string>
      */
-    private $urls = [];
+    private array $urls = [];
 
     /**
      * Whether sitemap should be validated using Laminas\Validate\Sitemap\*
-     *
-     * @var bool
      */
-    private $useSitemapValidators = true;
+    private bool $useSitemapValidators = true;
 
     /**
      * Whether sitemap should be schema validated when generated
-     *
-     * @var bool
      */
-    private $useSchemaValidation = false;
+    private bool $useSchemaValidation = false;
 
     /**
      * Whether the XML declaration should be included in XML output
-     *
-     * @var bool
      */
-    private $useXmlDeclaration = true;
+    private bool $useXmlDeclaration = true;
 
-    /** @var \Laminas\View\Helper\BasePath */
-    private $basePathHelper;
+    private BasePath $basePathHelper;
 
-    /** @var \Laminas\View\Helper\EscapeHtml */
-    private $escaper;
+    private EscapeHtml $escaper;
 
-    /** @var \Mezzio\LaminasView\ServerUrlHelper */
-    private $serverUrlHelper;
+    private ServerUrlHelper $serverUrlHelper;
 
-    /** @var \DOMDocument */
-    private $dom;
+    private DOMDocument $dom;
 
-    /** @var Loc */
-    private $locValidator;
+    private Loc $locValidator;
 
-    /** @var Lastmod */
-    private $lastmodValidator;
+    private Lastmod $lastmodValidator;
 
-    /** @var Priority */
-    private $priorityValidator;
+    private Priority $priorityValidator;
 
-    /** @var Changefreq */
-    private $changefreqValidator;
+    private Changefreq $changefreqValidator;
 
-    /**
-     * @param \Interop\Container\ContainerInterface $serviceLocator
-     * @param Logger                                $logger
-     * @param HtmlifyInterface                      $htmlify
-     * @param ContainerParserInterface              $containerParser
-     * @param BasePath                              $basePathHelper
-     * @param EscapeHtml                            $escaper
-     * @param ServerUrlHelper                       $serverUrlHelper
-     */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
@@ -134,6 +125,12 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         $this->basePathHelper  = $basePathHelper;
         $this->escaper         = $escaper;
         $this->serverUrlHelper = $serverUrlHelper;
+
+        $this->dom                 = new DOMDocument('1.0', 'UTF-8');
+        $this->locValidator        = new Loc();
+        $this->lastmodValidator    = new Lastmod();
+        $this->priorityValidator   = new Priority();
+        $this->changefreqValidator = new Changefreq();
     }
 
     /**
@@ -148,8 +145,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
-     *
-     * @return string
      */
     public function render($container = null): string
     {
@@ -181,6 +176,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                  null value means no maximum
      *                                                  depth required.
      *
+     * @return DOMDocument DOM representation of the container
+     *
      * @throws Exception\RuntimeException         if schema validation is on
      *                                            and the sitemap is invalid
      *                                            according to the sitemap
@@ -188,10 +185,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                            validators are used and the
      *                                            loc element fails validation
      * @throws Exception\InvalidArgumentException
-     *
-     * @return \DOMDocument DOM representation of the container
      */
-    public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): \DOMDocument
+    public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): DOMDocument
     {
         // Reset the urls
         $this->urls = [];
@@ -227,7 +222,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
         // iterate container
         foreach ($iterator as $page) {
-            \assert(
+            assert(
                 $page instanceof PageInterface,
                 sprintf(
                     '$page should be an Instance of %s, but was %s',
@@ -343,7 +338,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                 continue;
             }
 
-            $priority = $page->priority;
+            $priority = (string) $page->priority;
 
             if ($this->getUseSitemapValidators()) {
                 $priorityValidator = $this->getPriorityValidator();
@@ -374,7 +369,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
             try {
                 ErrorHandler::stop(true);
-            } catch (\ErrorException $e) {
+            } catch (ErrorException $e) {
                 throw new Exception\RuntimeException(
                     sprintf(
                         'Sitemap is invalid according to XML Schema at "%s"',
@@ -391,10 +386,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Returns an escaped absolute URL for the given page
-     *
-     * @param PageInterface $page
-     *
-     * @return string
      */
     public function url(PageInterface $page): string
     {
@@ -428,23 +419,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     }
 
     /**
-     * Escapes string for XML usage
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    private function xmlEscape(string $string): string
-    {
-        return ($this->escaper)($string);
-    }
-
-    /**
      * Sets whether XML output should be formatted
-     *
-     * @param bool $formatOutput
-     *
-     * @return self
      */
     public function setFormatOutput(bool $formatOutput = true): self
     {
@@ -455,8 +430,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Returns whether XML output should be formatted
-     *
-     * @return bool
      */
     public function getFormatOutput(): bool
     {
@@ -471,8 +444,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @param string|UriInterface $uri
      *
      * @throws Exception\InvalidArgumentException
-     *
-     * @return self
      */
     public function setServerUrl($uri): self
     {
@@ -531,8 +502,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Returns server URL
-     *
-     * @return string
      */
     public function getServerUrl(): string
     {
@@ -545,10 +514,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Sets whether sitemap should be validated using Laminas\Validate\Sitemap_*
-     *
-     * @param bool $useSitemapValidators
-     *
-     * @return self
      */
     public function setUseSitemapValidators(bool $useSitemapValidators): self
     {
@@ -559,8 +524,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Returns whether sitemap should be validated using Laminas\Validate\Sitemap_*
-     *
-     * @return bool
      */
     public function getUseSitemapValidators(): bool
     {
@@ -569,10 +532,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Sets whether sitemap should be schema validated when generated
-     *
-     * @param bool $schemaValidation
-     *
-     * @return self
      */
     public function setUseSchemaValidation(bool $schemaValidation): self
     {
@@ -583,8 +542,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Returns true if sitemap should be schema validated when generated
-     *
-     * @return bool
      */
     public function getUseSchemaValidation(): bool
     {
@@ -593,10 +550,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Sets whether the XML declaration should be used in output
-     *
-     * @param bool $useXmlDecl
-     *
-     * @return self
      */
     public function setUseXmlDeclaration(bool $useXmlDecl): self
     {
@@ -607,55 +560,29 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
     /**
      * Returns whether the XML declaration should be used in output
-     *
-     * @return bool
      */
     public function getUseXmlDeclaration(): bool
     {
         return $this->useXmlDeclaration;
     }
 
-    /**
-     * @return \DOMDocument
-     */
-    public function getDom(): \DOMDocument
+    public function getDom(): DOMDocument
     {
-        if (null === $this->dom) {
-            $this->dom = new \DOMDocument('1.0', 'UTF-8');
-        }
-
         return $this->dom;
     }
 
-    /**
-     * @param \DOMDocument $dom
-     *
-     * @return self
-     */
-    public function setDom(\DOMDocument $dom): self
+    public function setDom(DOMDocument $dom): self
     {
         $this->dom = $dom;
 
         return $this;
     }
 
-    /**
-     * @return Loc
-     */
     public function getLocValidator(): Loc
     {
-        if (null === $this->locValidator) {
-            $this->locValidator = new Loc();
-        }
-
         return $this->locValidator;
     }
 
-    /**
-     * @param Loc $locValidator
-     *
-     * @return self
-     */
     public function setLocValidator(Loc $locValidator): self
     {
         $this->locValidator = $locValidator;
@@ -663,23 +590,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /**
-     * @return Lastmod
-     */
     public function getLastmodValidator(): Lastmod
     {
-        if (null === $this->lastmodValidator) {
-            $this->lastmodValidator = new Lastmod();
-        }
-
         return $this->lastmodValidator;
     }
 
-    /**
-     * @param Lastmod $lastmodValidator
-     *
-     * @return self
-     */
     public function setLastmodValidator(Lastmod $lastmodValidator): self
     {
         $this->lastmodValidator = $lastmodValidator;
@@ -687,23 +602,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /**
-     * @return Priority
-     */
     public function getPriorityValidator(): Priority
     {
-        if (null === $this->priorityValidator) {
-            $this->priorityValidator = new Priority();
-        }
-
         return $this->priorityValidator;
     }
 
-    /**
-     * @param Priority $priorityValidator
-     *
-     * @return self
-     */
     public function setPriorityValidator(Priority $priorityValidator): self
     {
         $this->priorityValidator = $priorityValidator;
@@ -711,27 +614,23 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /**
-     * @return Changefreq
-     */
     public function getChangefreqValidator(): Changefreq
     {
-        if (null === $this->changefreqValidator) {
-            $this->changefreqValidator = new Changefreq();
-        }
-
         return $this->changefreqValidator;
     }
 
-    /**
-     * @param Changefreq $changefreqValidator
-     *
-     * @return self
-     */
     public function setChangefreqValidator(Changefreq $changefreqValidator): self
     {
         $this->changefreqValidator = $changefreqValidator;
 
         return $this;
+    }
+
+    /**
+     * Escapes string for XML usage
+     */
+    private function xmlEscape(string $string): string
+    {
+        return ($this->escaper)($string);
     }
 }

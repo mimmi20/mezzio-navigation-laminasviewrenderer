@@ -9,12 +9,14 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\HelperPluginManager;
@@ -31,15 +33,18 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function get_class;
+use function sprintf;
 
 final class NavigationTest extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -48,10 +53,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetPluginManager(): void
     {
@@ -80,7 +83,7 @@ final class NavigationTest extends TestCase
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $pluginManager->expects(self::exactly(2))
+        $pluginManager->expects(self::once())
             ->method('setRenderer')
             ->with($view);
 
@@ -104,30 +107,25 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
-        /* @var RendererInterface $view */
+        assert($view instanceof RendererInterface);
         $helper->setView($view);
-
-        /* @var Navigation\PluginManager $pluginManager */
-        $helper->setPluginManager($pluginManager);
 
         self::assertSame($view, $helper->getView());
         self::assertSame($serviceLocator, $helper->getServiceLocator());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetInjectAuthorization(): void
     {
@@ -171,10 +169,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertTrue($helper->getInjectAuthorization());
@@ -189,10 +187,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetDefaultProxy(): void
     {
@@ -236,10 +232,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame('menu', $helper->getDefaultProxy());
@@ -250,11 +246,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelperWithoutPluginManager(): void
     {
@@ -300,10 +294,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->findHelper($proxy, false));
@@ -316,11 +310,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelperNotInPluginManager(): void
     {
@@ -366,10 +358,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -380,7 +372,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn(false);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertNull($helper->findHelper($proxy, false));
@@ -393,11 +385,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelperNotInPluginManager2(): void
     {
@@ -443,10 +433,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -457,7 +447,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn(false);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertNull($helper->findHelper($proxy, false));
@@ -470,11 +460,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelperExceptionInPluginManager(): void
     {
@@ -522,10 +510,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -540,7 +528,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willThrowException($exception);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertNull($helper->findHelper($proxy, false));
@@ -553,11 +541,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelperExceptionInPluginManager2(): void
     {
@@ -605,10 +591,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -623,7 +609,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willThrowException($exception);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertNull($helper->findHelper($proxy, false));
@@ -636,11 +622,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelper(): void
     {
@@ -686,10 +670,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
@@ -720,7 +704,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn($menu);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertSame($menu, $helper->findHelper($proxy, false));
@@ -729,11 +713,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindHelperWithRule(): void
     {
@@ -780,10 +762,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
@@ -817,7 +799,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn($menu);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
         $helper->setRole($role);
 
@@ -827,11 +809,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testRenderExceptionInPluginManager(): void
     {
@@ -877,10 +857,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -895,18 +875,16 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willThrowException(new ServiceNotFoundException('test'));
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertSame('', $helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testRender(): void
     {
@@ -954,10 +932,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
@@ -992,16 +970,14 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn($menu);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertSame($rendered, $helper->render($container));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     *
-     * @return void
+     * @throws Exception
      */
     public function testCallExceptionInPluginManager(): void
     {
@@ -1047,10 +1023,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -1065,7 +1041,7 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willThrowException(new ServiceNotFoundException('test'));
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         $this->expectException(BadMethodCallException::class);
@@ -1076,10 +1052,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testCall(): void
     {
@@ -1128,10 +1102,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\MenuInterface::class)
@@ -1166,17 +1140,15 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn($menu);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertSame($rendered, $helper->{$proxy}($arguments));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMaxDepth(): void
     {
@@ -1222,10 +1194,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getMaxDepth());
@@ -1236,10 +1208,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMinDepth(): void
     {
@@ -1283,10 +1253,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame(0, $helper->getMinDepth());
@@ -1313,10 +1283,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRenderInvisible(): void
     {
@@ -1360,10 +1328,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertFalse($helper->getRenderInvisible());
@@ -1374,10 +1342,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRole(): void
     {
@@ -1424,10 +1390,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getRole());
@@ -1445,10 +1411,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseAuthorization(): void
     {
@@ -1492,10 +1456,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertTrue($helper->getUseAuthorization());
@@ -1510,10 +1474,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetAuthorization(): void
     {
@@ -1560,22 +1522,22 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $defaultAuth */
+        assert($defaultAuth instanceof AuthorizationInterface);
         Navigation::setDefaultAuthorization($defaultAuth);
 
         self::assertSame($defaultAuth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($auth, $helper->getAuthorization());
@@ -1583,10 +1545,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetView(): void
     {
@@ -1632,26 +1592,24 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertNull($helper->getView());
 
-        /* @var RendererInterface $view */
+        assert($view instanceof RendererInterface);
         $helper->setView($view);
 
         self::assertSame($view, $helper->getView());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainer(): void
     {
@@ -1699,10 +1657,10 @@ final class NavigationTest extends TestCase
             ->withConsecutive([null], [$container])
             ->willReturnOnConsecutiveCalls(null, $container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $container1 = $helper->getContainer();
@@ -1710,7 +1668,6 @@ final class NavigationTest extends TestCase
         self::assertInstanceOf(\Mezzio\Navigation\Navigation::class, $container1);
         self::assertTrue($helper->hasContainer());
 
-        /* @var AuthorizationInterface $auth */
         $helper->setContainer();
 
         $container2 = $helper->getContainer();
@@ -1726,10 +1683,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetInjectContainer(): void
     {
@@ -1773,10 +1728,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertTrue($helper->getInjectContainer());
@@ -1791,10 +1746,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -1842,10 +1795,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $this->expectException(InvalidArgumentException::class);
@@ -1856,11 +1809,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -1909,10 +1860,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
@@ -1921,11 +1872,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotAccept(): void
     {
@@ -2015,28 +1964,33 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertFalse($helper->accept($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testHtmlify(): void
     {
@@ -2115,10 +2069,10 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
@@ -2131,18 +2085,23 @@ final class NavigationTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetIndent(): void
     {
@@ -2186,10 +2145,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         self::assertSame('', $helper->getIndent());
@@ -2204,12 +2163,10 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -2323,27 +2280,25 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -2462,15 +2417,15 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2482,11 +2437,9 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -2567,15 +2520,15 @@ final class NavigationTest extends TestCase
             ->with(null)
             ->willReturn(null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2584,12 +2537,10 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
@@ -2708,15 +2659,15 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2731,12 +2682,10 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -2836,15 +2785,15 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2853,12 +2802,10 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2973,15 +2920,15 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2993,12 +2940,10 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -3118,15 +3063,15 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -3135,12 +3080,10 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -3259,15 +3202,15 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setMinDepth(-1);
@@ -3279,10 +3222,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testInvoke(): void
     {
@@ -3330,10 +3271,10 @@ final class NavigationTest extends TestCase
             ->with($container)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $container1 = $helper->getContainer();
@@ -3348,10 +3289,8 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testToStringExceptionInPluginManager(): void
     {
@@ -3398,10 +3337,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
@@ -3416,17 +3355,15 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willThrowException(new ServiceNotFoundException('test'));
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
         self::assertSame('', (string) $helper);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testToStringExceptionInRenderer(): void
     {
@@ -3476,10 +3413,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
@@ -3514,20 +3451,18 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn($menu);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame('', (string) $helper);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testToString(): void
     {
@@ -3576,10 +3511,10 @@ final class NavigationTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $menu = $this->getMockBuilder(Navigation\ViewHelperInterface::class)
@@ -3614,10 +3549,10 @@ final class NavigationTest extends TestCase
             ->with($proxy)
             ->willReturn($menu);
 
-        /* @var Navigation\PluginManager $pluginManager */
+        assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($rendered, (string) $helper($container));

@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\Log\Logger;
@@ -28,6 +29,10 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 
+use function call_user_func_array;
+use function spl_object_hash;
+use function sprintf;
+
 /**
  * Proxy helper for retrieving navigational helpers and forwarding calls
  *
@@ -44,34 +49,23 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
 
     /**
      * Default proxy to use in {@link render()}
-     *
-     * @var string
      */
-    private $defaultProxy = 'menu';
+    private string $defaultProxy = 'menu';
 
     /**
      * Indicates whether or not a given helper has been injected
      *
-     * @var array
+     * @var array<string, bool>
      */
-    private $injected = [];
+    private array $injected = [];
 
     /**
      * Whether ACL should be injected when proxying
-     *
-     * @var bool
      */
-    private $injectAuthorization = true;
+    private bool $injectAuthorization = true;
 
-    /** @var ViewHelperPluginManager|null */
-    private $pluginManager;
+    private ?ViewHelperPluginManager $pluginManager = null;
 
-    /**
-     * @param \Interop\Container\ContainerInterface $serviceLocator
-     * @param Logger                                $logger
-     * @param HtmlifyInterface                      $htmlify
-     * @param ContainerParserInterface              $containerParser
-     */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
@@ -99,8 +93,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * $blogPages = $this->navigation()->findAllByRoute('blog');
      * </code>
      *
-     * @param string $method    helper name or method name in container
-     * @param array  $arguments [optional] arguments to pass
+     * @param string       $method    helper name or method name in container
+     * @param array<mixed> $arguments [optional] arguments to pass
      *
      * @return mixed returns what the proxied call returns
      */
@@ -123,8 +117,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Renders helper
      *
      * @param ContainerInterface|string|null $container
-     *
-     * @return string
      */
     public function render($container = null): string
     {
@@ -150,9 +142,9 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *                       thrown if something goes
      *                       wrong. Default is true.
      *
-     * @throws RuntimeException if $strict is true and helper cannot be found
-     *
      * @return ViewHelperInterface|null helper instance
+     *
+     * @throws RuntimeException if $strict is true and helper cannot be found
      */
     public function findHelper(string $proxy, bool $strict = true): ?ViewHelperInterface
     {
@@ -161,6 +153,73 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         }
 
         return $this->findHelperNonStrict($proxy);
+    }
+
+    /**
+     * Sets the default proxy to use in {@link render()}
+     *
+     * @param string $proxy default proxy
+     */
+    public function setDefaultProxy(string $proxy): void
+    {
+        $this->defaultProxy = $proxy;
+    }
+
+    /**
+     * Returns the default proxy to use in {@link render()}
+     */
+    public function getDefaultProxy(): string
+    {
+        return $this->defaultProxy;
+    }
+
+    /**
+     * Sets whether Authorization should be injected when proxying
+     */
+    public function setInjectAuthorization(bool $injectAuthorization = true): void
+    {
+        $this->injectAuthorization = $injectAuthorization;
+    }
+
+    /**
+     * Returns whether Authorization should be injected when proxying
+     */
+    public function getInjectAuthorization(): bool
+    {
+        return $this->injectAuthorization;
+    }
+
+    /**
+     * Set manager for retrieving navigation helpers
+     */
+    public function setPluginManager(ViewHelperPluginManager $pluginManager): void
+    {
+        $renderer = $this->getView();
+
+        if ($renderer) {
+            $pluginManager->setRenderer($renderer);
+        }
+
+        $this->pluginManager = $pluginManager;
+    }
+
+    public function getPluginManager(): ?ViewHelperPluginManager
+    {
+        return $this->pluginManager;
+    }
+
+    /**
+     * Set the View object
+     */
+    public function setView(Renderer $view): self
+    {
+        parent::setView($view);
+
+        if ($this->pluginManager) {
+            $this->pluginManager->setRenderer($view);
+        }
+
+        return $this;
     }
 
     /**
@@ -204,9 +263,9 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @param string $proxy helper name
      *
-     * @throws RuntimeException if helper cannot be found
-     *
      * @return ViewHelperInterface helper instance
+     *
+     * @throws RuntimeException if helper cannot be found
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
@@ -237,11 +296,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         return $helper;
     }
 
-    /**
-     * @param ViewHelperInterface $helper
-     *
-     * @return void
-     */
     private function prepareHelper(ViewHelperInterface $helper): void
     {
         $container = $this->getContainer();
@@ -263,8 +317,6 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * helper is configured to do so
      *
      * @param ViewHelperInterface $helper helper instance
-     *
-     * @return void
      */
     private function inject(ViewHelperInterface $helper): void
     {
@@ -283,93 +335,5 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         }
 
         $helper->setRole($role);
-    }
-
-    /**
-     * Sets the default proxy to use in {@link render()}
-     *
-     * @param string $proxy default proxy
-     *
-     * @return void
-     */
-    public function setDefaultProxy(string $proxy): void
-    {
-        $this->defaultProxy = $proxy;
-    }
-
-    /**
-     * Returns the default proxy to use in {@link render()}
-     *
-     * @return string
-     */
-    public function getDefaultProxy(): string
-    {
-        return $this->defaultProxy;
-    }
-
-    /**
-     * Sets whether Authorization should be injected when proxying
-     *
-     * @param bool $injectAuthorization
-     *
-     * @return void
-     */
-    public function setInjectAuthorization(bool $injectAuthorization = true): void
-    {
-        $this->injectAuthorization = $injectAuthorization;
-    }
-
-    /**
-     * Returns whether Authorization should be injected when proxying
-     *
-     * @return bool
-     */
-    public function getInjectAuthorization(): bool
-    {
-        return $this->injectAuthorization;
-    }
-
-    /**
-     * Set manager for retrieving navigation helpers
-     *
-     * @param ViewHelperPluginManager $pluginManager
-     *
-     * @return void
-     */
-    public function setPluginManager(ViewHelperPluginManager $pluginManager): void
-    {
-        $renderer = $this->getView();
-
-        if ($renderer) {
-            $pluginManager->setRenderer($renderer);
-        }
-
-        $this->pluginManager = $pluginManager;
-    }
-
-    /**
-     * @return ViewHelperPluginManager|null
-     */
-    public function getPluginManager(): ?ViewHelperPluginManager
-    {
-        return $this->pluginManager;
-    }
-
-    /**
-     * Set the View object
-     *
-     * @param Renderer $view
-     *
-     * @return self
-     */
-    public function setView(Renderer $view): self
-    {
-        parent::setView($view);
-
-        if ($this->pluginManager) {
-            $this->pluginManager->setRenderer($view);
-        }
-
-        return $this;
     }
 }

@@ -13,11 +13,12 @@
   ],
   "require": {
     "php": "^7.4.0 || ^8.0.0",
+    "ext-mbstring": "*",
     "laminas/laminas-log": "^2.13.1",
     "laminas/laminas-stdlib": "^3.3.1",
     "mezzio/mezzio-laminasviewrenderer": "^2.2.0",
     "mimmi20/mezzio-navigation": "^2.0.1",
-    "mimmi20/mezzio-navigation-helpers": "^1.0.3",
+    "mimmi20/mezzio-navigation-helpers": "^1.0.4",
     "psr/container": "^1.1.1"
   },
   "conflict": {
@@ -26,6 +27,8 @@
     "mezzio/mezzio-authorization-acl": "*"
   },
   "require-dev": {
+    "ext-dom": "*",
+    "ext-intl": "*",
     "infection/infection": "^0.21.4",
     "laminas/laminas-config": "^3.5.0",
     "laminas/laminas-i18n": "^2.11.0",
@@ -35,9 +38,9 @@
     "laminas/laminas-validator": "^2.14.4",
     "mezzio/mezzio-authentication": "^1.2.1",
     "mezzio/mezzio-router": "^3.3.0",
-    "mimmi20/coding-standard": "^2.0.1",
-    "mimmi20/mezzio-generic-authorization": "^2.0.0",
-    "mimmi20/mezzio-generic-authorization-acl": "^2.0.0",
+    "mimmi20/coding-standard": "^2.1.0",
+    "mimmi20/mezzio-generic-authorization": "^2.0.1",
+    "mimmi20/mezzio-generic-authorization-acl": "^2.0.1",
     "pepakriz/phpstan-exception-rules": "^0.11.6",
     "phpstan/extension-installer": "^1.1.0",
     "phpstan/phpstan": "^0.12.82",
@@ -47,8 +50,9 @@
   },
   "suggest": {
     "ext-dom": "required to use the Sitemap ViewHelper",
+    "ext-intl": "required to use the Translator",
     "laminas/laminas-config": "^3.5.0, to provide page configuration (optional, as arrays and Traversables are also allowed)",
-    "laminas/laminas-i18n": "^2.11.0, required to use the Menu ViewHelper or the Breadcrumbs ViewHelper",
+    "laminas/laminas-i18n": "^2.11.0, required to use the Translator",
     "laminas/laminas-servicemanager": "^3.6.4, to use the navigation factories",
     "laminas/laminas-uri": "^2.7.1 || ^2.8.0, required to use the Sitemap ViewHelper",
     "laminas/laminas-validator": "^2.13.5 || ^2.14.0, required to use the Sitemap ViewHelper",

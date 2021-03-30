@@ -9,15 +9,18 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
 use Laminas\Config\Config;
+use Laminas\Config\Exception\RuntimeException;
 use Laminas\Config\Factory as ConfigFactory;
 use Laminas\I18n\Translator\Translator;
 use Laminas\Log\Logger;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Role\GenericRole;
+use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -33,6 +36,7 @@ use Mezzio\Navigation\Config\NavigationConfig;
 use Mezzio\Navigation\Config\NavigationConfigInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Helper\PluginManagerFactory;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
@@ -43,69 +47,60 @@ use Mezzio\Navigation\Service\ConstructedNavigationFactory;
 use Mezzio\Navigation\Service\DefaultNavigationFactory;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function file_get_contents;
+use function sprintf;
 
 /**
  * Base class for navigation view helper tests
  */
 abstract class AbstractTest extends TestCase
 {
-    /** @var ServiceManager */
-    protected $serviceManager;
+    protected ServiceManager $serviceManager;
 
     /**
      * Path to files needed for test
-     *
-     * @var string
      */
-    protected $files;
+    protected string $files;
 
     /**
      * Class name for view helper to test
-     *
-     * @var string
      */
-    protected $helperName;
+    protected string $helperName;
 
     /**
      * View helper
-     *
-     * @var \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface
      */
-    protected $helper;
+    protected ViewHelperInterface $helper;
 
     /**
      * The first container in the config file (files/navigation.xml)
-     *
-     * @var Navigation
      */
-    protected $nav1;
+    protected Navigation $nav1;
 
     /**
      * The second container in the config file (files/navigation.xml)
-     *
-     * @var Navigation
      */
-    protected $nav2;
+    protected Navigation $nav2;
 
     /**
      * The third container in the config file (files/navigation.xml)
-     *
-     * @var Navigation
      */
-    protected $nav3;
+    protected Navigation $nav3;
 
     /**
      * Prepares the environment before running a test
      *
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
-     * @throws \Laminas\Config\Exception\RuntimeException
-     *
-     * @return void
+     * @throws RuntimeException
      */
     protected function setUp(): void
     {
@@ -115,7 +110,7 @@ abstract class AbstractTest extends TestCase
         $this->files = $cwd . '/_files';
         $config      = ConfigFactory::fromFile($this->files . '/navigation.xml', true);
 
-        self::assertInstanceOf(Config::class, $config);
+        static::assertInstanceOf(Config::class, $config);
 
         $sm = $this->serviceManager = new ServiceManager();
         $sm->setAllowOverride(true);
@@ -134,7 +129,7 @@ abstract class AbstractTest extends TestCase
                     $this->createMock(MiddlewareInterface::class)
                 );
 
-                $pages = $config->toArray();
+                $pages            = $config->toArray();
                 $pages['default'] = $pages['nav_test1'];
 
                 $navConfig = new NavigationConfig();
@@ -155,40 +150,38 @@ abstract class AbstractTest extends TestCase
         $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
         $sm->setFactory(
             'config',
-            static function () use ($config): array {
-                return [
-                    'navigation' => [
-                        'default' => $config->get('nav_test1'),
+            static fn (): array => [
+                'navigation' => [
+                    'default' => $config->get('nav_test1'),
+                ],
+                'view_helpers' => [
+                    'aliases' => [
+                        'navigation' => \Mezzio\Navigation\LaminasView\View\Helper\Navigation::class,
+                        'Navigation' => Navigation::class,
+                        BaseServerUrlHelper::class => ServerUrlHelper::class,
+                        'serverurl' => ServerUrlHelper::class,
+                        'serverUrl' => ServerUrlHelper::class,
+                        'ServerUrl' => ServerUrlHelper::class,
+                        BaseUrlHelper::class => UrlHelper::class,
+                        'url' => UrlHelper::class,
+                        'Url' => UrlHelper::class,
                     ],
-                    'view_helpers' => [
-                        'aliases' => [
-                            'navigation' => \Mezzio\Navigation\LaminasView\View\Helper\Navigation::class,
-                            'Navigation' => Navigation::class,
-                            BaseServerUrlHelper::class => ServerUrlHelper::class,
-                            'serverurl' => ServerUrlHelper::class,
-                            'serverUrl' => ServerUrlHelper::class,
-                            'ServerUrl' => ServerUrlHelper::class,
-                            BaseUrlHelper::class => UrlHelper::class,
-                            'url' => UrlHelper::class,
-                            'Url' => UrlHelper::class,
-                        ],
-                        'factories' => [
-                            Navigation::class => NavigationFactory::class,
-                            UrlHelper::class => UrlHelperFactory::class,
-                            ServerUrlHelper::class => ServerUrlHelperFactory::class,
-                        ],
+                    'factories' => [
+                        Navigation::class => NavigationFactory::class,
+                        UrlHelper::class => UrlHelperFactory::class,
+                        ServerUrlHelper::class => ServerUrlHelperFactory::class,
                     ],
-                    'templates' => [
-                        'map' => [
-                            'test::menu' => __DIR__ . '/_files/mvc/views/menu.phtml',
-                            'test::menu-with-partials' => __DIR__ . '/_files/mvc/views/menu_with_partial_params.phtml',
-                            'test::bc' => __DIR__ . '/_files/mvc/views/bc.phtml',
-                            'test::bc-separator' => __DIR__ . '/_files/mvc/views/bc_separator.phtml',
-                            'test::bc-with-partials' => __DIR__ . '/_files/mvc/views/bc_with_partial_params.phtml',
-                        ],
+                ],
+                'templates' => [
+                    'map' => [
+                        'test::menu' => __DIR__ . '/_files/mvc/views/menu.phtml',
+                        'test::menu-with-partials' => __DIR__ . '/_files/mvc/views/menu_with_partial_params.phtml',
+                        'test::bc' => __DIR__ . '/_files/mvc/views/bc.phtml',
+                        'test::bc-separator' => __DIR__ . '/_files/mvc/views/bc_separator.phtml',
+                        'test::bc-with-partials' => __DIR__ . '/_files/mvc/views/bc_with_partial_params.phtml',
                     ],
-                ];
-            }
+                ],
+            ]
         );
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
@@ -197,21 +190,21 @@ abstract class AbstractTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('emerg');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('alert');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('crit');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('err');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('warn');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('notice');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('info');
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('debug');
 
         $sm->setService(Logger::class, $logger);
@@ -230,18 +223,14 @@ abstract class AbstractTest extends TestCase
     /**
      * Returns the contens of the expected $file
      *
-     * @param string $file
-     *
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return string
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     protected function getExpected(string $file): string
     {
         $content = file_get_contents($this->files . '/expected/' . $file);
 
-        self::assertIsString($content, sprintf('could not load file %s', $this->files . '/expected/' . $file));
+        static::assertIsString($content, sprintf('could not load file %s', $this->files . '/expected/' . $file));
 
         return $content;
     }
@@ -249,9 +238,9 @@ abstract class AbstractTest extends TestCase
     /**
      * Sets up ACL
      *
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
+     * @return array<string, LaminasAcl|string>
      *
-     * @return array
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     protected function getAcl(): array
     {
@@ -279,9 +268,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Returns translator
      *
-     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
-     *
-     * @return Translator
+     * @throws ContainerModificationsNotAllowedException
      */
     protected function getTranslator(): Translator
     {
@@ -295,7 +282,7 @@ abstract class AbstractTest extends TestCase
             'Home' => 'Hjem',
             'Go home' => 'Gå hjem',
         ];
-        $translator = new Translator();
+        $translator           = new Translator();
         $translator->getPluginManager()->setService('default', $loader);
         $translator->addTranslationFile('default', null);
 
@@ -305,9 +292,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Returns translator with text domain
      *
-     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
-     *
-     * @return Translator
+     * @throws ContainerModificationsNotAllowedException
      */
     protected function getTranslatorWithTextDomain(): Translator
     {

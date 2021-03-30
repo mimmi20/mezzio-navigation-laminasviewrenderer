@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
@@ -23,26 +24,24 @@ use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
 
 final class SitemapFactoryTest extends TestCase
 {
-    /** @var SitemapFactory */
-    private $factory;
+    private SitemapFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->factory = new SitemapFactory();
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testInvocation(): void
     {
@@ -96,7 +95,7 @@ final class SitemapFactoryTest extends TestCase
             ->withConsecutive([HelperPluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
             ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
 
-        \assert($container instanceof ContainerInterface);
+        assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Sitemap::class, $helper);

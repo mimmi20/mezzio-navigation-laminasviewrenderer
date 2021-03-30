@@ -9,17 +9,20 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\View\Exception\BadMethodCallException;
 use Laminas\View\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\Navigation\Exception\ExceptionInterface;
 use Mezzio\Navigation\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\FindActiveInterface;
@@ -34,15 +37,18 @@ use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Route;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function get_class;
+use function sprintf;
 
 final class LinksTest extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -51,11 +57,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetMaxDepth(): void
     {
@@ -115,12 +119,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -138,11 +142,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetMinDepth(): void
     {
@@ -200,12 +202,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -239,11 +241,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetRenderInvisible(): void
     {
@@ -301,12 +301,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -324,11 +324,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetRole(): void
     {
@@ -389,12 +387,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -419,11 +417,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetUseAuthorization(): void
     {
@@ -481,12 +477,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -508,11 +504,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetAuthorization(): void
     {
@@ -573,12 +567,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -591,13 +585,13 @@ final class LinksTest extends TestCase
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $defaultAuth */
+        assert($defaultAuth instanceof AuthorizationInterface);
         Links::setDefaultAuthorization($defaultAuth);
 
         self::assertSame($defaultAuth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($auth, $helper->getAuthorization());
@@ -605,11 +599,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetView(): void
     {
@@ -669,12 +661,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -686,7 +678,7 @@ final class LinksTest extends TestCase
 
         self::assertNull($helper->getView());
 
-        /* @var RendererInterface $view */
+        assert($view instanceof RendererInterface);
         $helper->setView($view);
 
         self::assertSame($view, $helper->getView());
@@ -694,12 +686,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetContainer(): void
     {
@@ -761,12 +751,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -780,7 +770,6 @@ final class LinksTest extends TestCase
 
         self::assertInstanceOf(Navigation::class, $container1);
 
-        /* @var AuthorizationInterface $auth */
         $helper->setContainer();
 
         $container2 = $helper->getContainer();
@@ -794,11 +783,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -860,12 +847,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -883,12 +870,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -951,12 +936,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -972,12 +957,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testDoNotAccept(): void
     {
@@ -1081,12 +1064,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1099,20 +1082,25 @@ final class LinksTest extends TestCase
         $helper->setContainer($name);
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertFalse($helper->accept($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testHtmlify(): void
     {
@@ -1205,12 +1193,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1230,19 +1218,24 @@ final class LinksTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetIndent(): void
     {
@@ -1300,12 +1293,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1327,13 +1320,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -1461,12 +1452,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1478,20 +1469,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -1624,12 +1613,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1641,7 +1630,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1653,12 +1642,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -1753,12 +1740,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1770,7 +1757,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -1779,13 +1766,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
@@ -1918,12 +1903,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1935,7 +1920,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1950,13 +1935,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -2070,12 +2053,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2087,7 +2070,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2096,13 +2079,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2231,12 +2212,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2248,7 +2229,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2260,13 +2241,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -2400,12 +2379,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2417,7 +2396,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2426,13 +2405,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -2565,12 +2542,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2582,7 +2559,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setMinDepth(-1);
@@ -2594,11 +2571,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSetRenderFlag(): void
     {
@@ -2656,12 +2631,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2679,11 +2654,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSearchRevSubsectionWithoutParent(): void
     {
@@ -2741,12 +2714,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2763,17 +2736,22 @@ final class LinksTest extends TestCase
             ->method('getParent')
             ->willReturn(null);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertNull($helper->searchRevSubsection($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRevSubsectionWithParent(): void
     {
@@ -2818,7 +2796,14 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn(false);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         $parentPage->addPage($page);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -2849,12 +2834,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2868,12 +2853,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRevSubsectionWithDeepParent(): void
     {
@@ -2918,7 +2901,14 @@ final class LinksTest extends TestCase
         $page->expects(self::never())
             ->method('hasPage');
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
         $parentParentParentPage->addPage($parentParentPage);
@@ -2951,12 +2941,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2970,11 +2960,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSearchRevSectionWithoutParent(): void
     {
@@ -3032,12 +3020,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3054,17 +3042,22 @@ final class LinksTest extends TestCase
             ->method('getParent')
             ->willReturn(null);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertNull($helper->searchRevSection($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRevSectionWithParent(): void
     {
@@ -3107,7 +3100,14 @@ final class LinksTest extends TestCase
         $page->expects(self::never())
             ->method('hasPage');
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         $parentPage->addPage($page);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -3138,12 +3138,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3157,12 +3157,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRevSectionWithDeepParent(): void
     {
@@ -3206,7 +3204,14 @@ final class LinksTest extends TestCase
         $page->expects(self::never())
             ->method('hasPage');
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
 
@@ -3238,12 +3243,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3257,11 +3262,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithoutParent(): void
     {
@@ -3319,12 +3322,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3341,17 +3344,22 @@ final class LinksTest extends TestCase
             ->method('hasPages')
             ->willReturn(false);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertNull($helper->searchRelSubsection($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithParent(): void
     {
@@ -3416,12 +3424,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3431,17 +3439,22 @@ final class LinksTest extends TestCase
             $headLink
         );
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertNull($helper->searchRelSubsection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithDeepParent(): void
     {
@@ -3543,12 +3556,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3560,19 +3573,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($page, $helper->searchRelSubsection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithDeepParent2(): void
     {
@@ -3676,12 +3687,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3693,19 +3704,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($page2, $helper->searchRelSubsection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithDeepParent3(): void
     {
@@ -3811,12 +3820,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3828,18 +3837,16 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([$page2, $page3], $helper->searchRelSubsection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithoutParent(): void
     {
@@ -3897,12 +3904,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3919,17 +3926,22 @@ final class LinksTest extends TestCase
             ->method('hasPages')
             ->willReturn(false);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertNull($helper->searchRelSection($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithParent(): void
     {
@@ -3994,12 +4006,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4013,12 +4025,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent(): void
     {
@@ -4118,12 +4128,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4135,19 +4145,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($page, $helper->searchRelSection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent2(): void
     {
@@ -4251,12 +4259,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4268,19 +4276,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($page, $helper->searchRelSection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent3(): void
     {
@@ -4382,12 +4388,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4399,19 +4405,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($page2, $helper->searchRelSection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent4(): void
     {
@@ -4515,12 +4519,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4532,19 +4536,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([$page2, $page3], $helper->searchRelSection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent5(): void
     {
@@ -4644,12 +4646,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4661,20 +4663,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertNull($helper->searchRelSection($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelChapterWithoutParent(): void
     {
@@ -4763,12 +4763,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4782,13 +4782,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelChapterWithParent(): void
     {
@@ -4904,12 +4902,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4921,20 +4919,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($page, $helper->searchRelChapter($parentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelChapterWithDeepParent(): void
     {
@@ -5052,12 +5048,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5069,20 +5065,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelChapterWithDeepParent2(): void
     {
@@ -5212,12 +5206,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5229,20 +5223,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelChapterWithDeepParent3(): void
     {
@@ -5372,12 +5364,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5389,20 +5381,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertNull($helper->searchRelChapter($parentParentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelChapterWithDeepParent4(): void
     {
@@ -5532,12 +5522,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5549,19 +5539,17 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([$parentPage2, $parentPage], $helper->searchRelChapter($parentParentPage));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelPrevWithoutParent(): void
     {
@@ -5623,12 +5611,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5642,12 +5630,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelPrevWithParent(): void
     {
@@ -5747,12 +5733,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5764,7 +5750,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertNull($helper->searchRelPrev($page1));
@@ -5772,12 +5758,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelPrevWithParent2(): void
     {
@@ -5881,12 +5865,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5898,7 +5882,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertNull($helper->searchRelPrev($page1));
@@ -5907,12 +5891,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelNextWithoutParent(): void
     {
@@ -5974,12 +5956,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5993,12 +5975,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelNextWithParent(): void
     {
@@ -6098,12 +6078,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6115,7 +6095,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertNull($helper->searchRelNext($page2));
@@ -6123,12 +6103,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelStartWithoutParent(): void
     {
@@ -6190,12 +6168,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6209,12 +6187,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelStartWithParent(): void
     {
@@ -6314,12 +6290,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6331,7 +6307,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($parentPage, $helper->searchRelStart($page1));
@@ -6339,12 +6315,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
      */
     public function testSearchRelStartWithParent2(): void
     {
@@ -6453,12 +6427,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6470,7 +6444,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($parentPage, $helper->searchRelStart($page1));
@@ -6478,12 +6452,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindRelationWithError(): void
     {
@@ -6556,12 +6528,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6573,7 +6545,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'test';
@@ -6586,13 +6558,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindNullRelationFromProperty(): void
     {
@@ -6705,12 +6675,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6722,7 +6692,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -6731,13 +6701,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindPageRelationFromProperty(): void
     {
@@ -6863,12 +6831,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6880,7 +6848,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -6889,13 +6857,12 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      *
-     * @return void
      * @group Render2
      */
     public function testFindContainerRelationFromProperty(): void
@@ -7012,12 +6979,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7029,7 +6996,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -7038,13 +7005,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindStringRelationFromProperty(): void
     {
@@ -7162,12 +7127,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7179,7 +7144,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -7188,13 +7153,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindStringRelationFromPropertyWithError(): void
     {
@@ -7310,12 +7273,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7327,7 +7290,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -7336,13 +7299,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindConfigRelationFromProperty(): void
     {
@@ -7455,12 +7416,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7472,7 +7433,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -7481,13 +7442,11 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testFindConfigRelationFromPropertyWithError(): void
     {
@@ -7599,12 +7558,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7616,7 +7575,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -7625,11 +7584,9 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
-     *
-     * @return void
+     * @throws Exception
+     * @throws BadMethodCallException
+     * @throws DomainException
      */
     public function testRenderLinkWithError(): void
     {
@@ -7721,12 +7678,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7738,7 +7695,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'test';
@@ -7751,12 +7708,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
+     * @throws Exception
+     * @throws BadMethodCallException
+     * @throws DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testRenderLinkWithoutHref(): void
     {
@@ -7849,12 +7804,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7866,7 +7821,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $rel = 'rel';
@@ -7875,12 +7830,10 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\DomainException
+     * @throws Exception
+     * @throws BadMethodCallException
+     * @throws DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testRenderLinkWithHref(): void
     {
@@ -7991,12 +7944,12 @@ final class LinksTest extends TestCase
             ->with($params)
             ->willReturn($expected);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -8008,20 +7961,18 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($expected, $helper->renderLink($page, $attrib, $relation));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws DomainException
+     * @throws BadMethodCallException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -8113,12 +8064,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -8130,18 +8081,16 @@ final class LinksTest extends TestCase
 
         $helper->setContainer($container);
 
-        self::assertEquals('', $helper->render());
+        self::assertSame('', $helper->render());
     }
 
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \PHPUnit\Framework\Exception
-     *
-     * @return void
+     * @throws DomainException
+     * @throws BadMethodCallException
+     * @throws ExceptionInterface
+     * @throws Exception
      */
     public function testRender(): void
     {
@@ -8759,12 +8708,12 @@ final class LinksTest extends TestCase
             ->with((object) ['rel' => 'start', 'href' => $parentUri, 'title' => $parentLabel])
             ->willReturn($expected);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -8776,7 +8725,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
@@ -8787,7 +8736,7 @@ final class LinksTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->render($name));
@@ -8796,12 +8745,10 @@ final class LinksTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\DomainException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \PHPUnit\Framework\Exception
-     *
-     * @return void
+     * @throws DomainException
+     * @throws BadMethodCallException
+     * @throws ExceptionInterface
+     * @throws Exception
      */
     public function testRender2(): void
     {
@@ -9409,12 +9356,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -9426,7 +9373,7 @@ final class LinksTest extends TestCase
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $view = $this->getMockBuilder(PhpRenderer::class)
@@ -9437,18 +9384,16 @@ final class LinksTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->render($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\BadMethodCallException
-     *
-     * @return void
+     * @throws BadMethodCallException
      */
     public function testToStringExceptionInRenderer(): void
     {
@@ -9515,12 +9460,12 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($rootFinder instanceof FindRootInterface);
-        \assert($headLink instanceof HeadLink);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($rootFinder instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -9530,7 +9475,7 @@ final class LinksTest extends TestCase
             $headLink
         );
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame('', (string) $helper);

@@ -9,9 +9,11 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
+use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Exception;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -24,6 +26,13 @@ use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
 use Psr\Container\ContainerExceptionInterface;
 
+use function assert;
+use function call_user_func_array;
+use function get_class;
+use function is_int;
+use function sprintf;
+use function str_repeat;
+
 /**
  * Base class for navigational helpers.
  *
@@ -33,92 +42,66 @@ trait HelperTrait
 {
     /**
      * ContainerInterface to operate on by default
-     *
-     * @var \Mezzio\Navigation\ContainerInterface|null
      */
-    private $container;
+    private ?\Mezzio\Navigation\ContainerInterface $container = null;
 
-    /** @var string|null */
-    private $navigation;
+    private ?string $navigation = null;
 
-    /** @var \Laminas\Log\Logger */
-    private $logger;
+    private Logger $logger;
 
-    /** @var HtmlifyInterface */
-    private $htmlify;
+    private HtmlifyInterface $htmlify;
 
-    /** @var ContainerParserInterface */
-    private $containerParser;
+    private ContainerParserInterface $containerParser;
 
     /**
      * The minimum depth a page must have to be included when rendering
-     *
-     * @var int|null
      */
-    private $minDepth;
+    private ?int $minDepth = null;
 
     /**
      * The maximum depth a page can have to be included when rendering
-     *
-     * @var int|null
      */
-    private $maxDepth;
+    private ?int $maxDepth = null;
 
     /**
      * Indentation string
-     *
-     * @var string
      */
-    private $indent = '';
+    private string $indent = '';
 
     /**
      * Authorization to use when iterating pages
-     *
-     * @var \Mezzio\GenericAuthorization\AuthorizationInterface|null
      */
-    private $authorization;
+    private ?AuthorizationInterface $authorization = null;
 
     /**
      * Whether invisible items should be rendered by this helper
-     *
-     * @var bool
      */
-    private $renderInvisible = false;
+    private bool $renderInvisible = false;
 
     /**
      * Authorization role to use when iterating pages
-     *
-     * @var string|null
      */
-    private $role;
+    private ?string $role = null;
 
-    /** @var ContainerInterface */
-    private $serviceLocator;
+    private ContainerInterface $serviceLocator;
 
     /**
      * Whether container should be injected when proxying
-     *
-     * @var bool
      */
-    private $injectContainer = true;
+    private bool $injectContainer = true;
 
     /**
      * Whether Authorization should be used for filtering out pages
-     *
-     * @var bool
      */
-    private $useAuthorization = true;
+    private bool $useAuthorization = true;
 
     /**
      * Default Authorization role to use when iterating pages if not explicitly set in the
      * instance by calling {@link setRole()}
-     *
-     * @var string|null
      */
-    private static $defaultRole;
+    private static ?string $defaultRole = null;
 
-    /** @var AuthorizationInterface|null */
-    private static $defaultAuthorization;
+    private static ?AuthorizationInterface $defaultAuthorization = null;
 
     /**
      * Helper entry point
@@ -126,8 +109,6 @@ trait HelperTrait
      * @param Navigation\ContainerInterface|string|null $container container to operate on
      *
      * @throws Exception\InvalidArgumentException
-     *
-     * @return self
      */
     final public function __invoke($container = null): self
     {
@@ -139,6 +120,41 @@ trait HelperTrait
     }
 
     /**
+     * Magic overload: Proxy calls to the navigation container
+     *
+     * @param string       $method    method name in container
+     * @param array<mixed> $arguments rguments to pass
+     *
+     * @return mixed
+     */
+    public function __call(string $method, array $arguments = [])
+    {
+        return call_user_func_array(
+            [$this->getContainer(), $method],
+            $arguments
+        );
+    }
+
+    /**
+     * Magic overload: Proxy to {@link render()}.
+     *
+     * This method will trigger an E_USER_ERROR if rendering the helper causes
+     * an exception to be thrown.
+     *
+     * Implements {@link ViewHelperInterface::__toString()}.
+     */
+    final public function __toString(): string
+    {
+        try {
+            return $this->render();
+        } catch (Exception\ExceptionInterface $e) {
+            $this->logger->err($e);
+
+            return '';
+        }
+    }
+
+    /**
      * Sets navigation container the helper operates on by default
      *
      * Implements {@link ViewHelperInterface::setContainer()}.
@@ -146,8 +162,6 @@ trait HelperTrait
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
      * @throws Exception\InvalidArgumentException
-     *
-     * @return self
      */
     final public function setContainer($container = null): self
     {
@@ -177,10 +191,6 @@ trait HelperTrait
 
     /**
      * Sets whether container should be injected when proxying
-     *
-     * @param bool $injectContainer
-     *
-     * @return self
      */
     public function setInjectContainer(bool $injectContainer = true): self
     {
@@ -191,49 +201,10 @@ trait HelperTrait
 
     /**
      * Returns whether container should be injected when proxying
-     *
-     * @return bool
      */
-    public function getInjectContainer()
+    public function getInjectContainer(): bool
     {
         return $this->injectContainer;
-    }
-
-    /**
-     * Magic overload: Proxy calls to the navigation container
-     *
-     * @param string $method    method name in container
-     * @param array  $arguments rguments to pass
-     *
-     * @return mixed
-     */
-    public function __call(string $method, array $arguments = [])
-    {
-        return call_user_func_array(
-            [$this->getContainer(), $method],
-            $arguments
-        );
-    }
-
-    /**
-     * Magic overload: Proxy to {@link render()}.
-     *
-     * This method will trigger an E_USER_ERROR if rendering the helper causes
-     * an exception to be thrown.
-     *
-     * Implements {@link ViewHelperInterface::__toString()}.
-     *
-     * @return string
-     */
-    final public function __toString(): string
-    {
-        try {
-            return $this->render();
-        } catch (Exception\ExceptionInterface $e) {
-            $this->logger->err($e);
-
-            return '';
-        }
     }
 
     /**
@@ -253,10 +224,10 @@ trait HelperTrait
      *                                                             null value means no maximum
      *                                                             depth required.
      *
-     * @throws Exception\InvalidArgumentException
+     * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page',
+     *                       or an empty array if not found
      *
-     * @return array an associative array with the values 'depth' and 'page',
-     *               or an empty array if not found
+     * @throws Exception\InvalidArgumentException
      */
     final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
     {
@@ -276,7 +247,7 @@ trait HelperTrait
 
         try {
             $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
-            \assert(
+            assert(
                 $helperPluginManager instanceof PluginManagerInterface,
                 sprintf(
                     '$helperPluginManager should be an Instance of %s, but was %s',
@@ -299,7 +270,7 @@ trait HelperTrait
             return [];
         }
 
-        \assert($acceptHelper instanceof FindActiveInterface);
+        assert($acceptHelper instanceof FindActiveInterface);
 
         return $acceptHelper->find($container, $minDepth, $maxDepth);
     }
@@ -329,7 +300,7 @@ trait HelperTrait
     {
         try {
             $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
-            \assert(
+            assert(
                 $helperPluginManager instanceof PluginManagerInterface,
                 sprintf(
                     '$helperPluginManager should be an Instance of %s, but was %s',
@@ -352,27 +323,9 @@ trait HelperTrait
             return false;
         }
 
-        \assert($acceptHelper instanceof AcceptHelperInterface);
+        assert($acceptHelper instanceof AcceptHelperInterface);
 
         return $acceptHelper->accept($page, $recursive);
-    }
-
-    // Util methods:
-
-    /**
-     * Retrieve whitespace representation of $indent
-     *
-     * @param int|string $indent
-     *
-     * @return string
-     */
-    private function getWhitespace($indent): string
-    {
-        if (is_int($indent)) {
-            $indent = str_repeat(' ', $indent);
-        }
-
-        return (string) $indent;
     }
 
     /**
@@ -392,8 +345,6 @@ trait HelperTrait
      * Implements {@link ViewHelperInterface::setAuthorization()}.
      *
      * @param AuthorizationInterface|null $authorization AuthorizationInterface object
-     *
-     * @return self
      */
     final public function setAuthorization(?AuthorizationInterface $authorization = null): self
     {
@@ -423,8 +374,6 @@ trait HelperTrait
      * Checks if the helper has an Authorization instance
      *
      * Implements {@link ViewHelperInterface::hasAuthorization()}.
-     *
-     * @return bool
      */
     final public function hasAuthorization(): bool
     {
@@ -436,8 +385,6 @@ trait HelperTrait
      * Checks if the helper has a container
      *
      * Implements {@link ViewHelperInterface::hasContainer()}.
-     *
-     * @return bool
      */
     final public function hasContainer(): bool
     {
@@ -449,8 +396,6 @@ trait HelperTrait
      * number of spaces to indent with
      *
      * @param int|string $indent
-     *
-     * @return self
      */
     final public function setIndent($indent): self
     {
@@ -461,8 +406,6 @@ trait HelperTrait
 
     /**
      * Returns indentation
-     *
-     * @return string
      */
     final public function getIndent(): string
     {
@@ -473,8 +416,6 @@ trait HelperTrait
      * Sets the maximum depth a page can have to be included when rendering
      *
      * @param int $maxDepth default is null, which sets no maximum depth
-     *
-     * @return self
      */
     final public function setMaxDepth(int $maxDepth): self
     {
@@ -485,8 +426,6 @@ trait HelperTrait
 
     /**
      * Returns maximum depth a page can have to be included when rendering
-     *
-     * @return int|null
      */
     final public function getMaxDepth(): ?int
     {
@@ -497,8 +436,6 @@ trait HelperTrait
      * Sets the minimum depth a page must have to be included when rendering
      *
      * @param int $minDepth default is null, which sets no minimum depth
-     *
-     * @return self
      */
     final public function setMinDepth(int $minDepth): self
     {
@@ -509,8 +446,6 @@ trait HelperTrait
 
     /**
      * Returns minimum depth a page must have to be included when rendering
-     *
-     * @return int|null
      */
     final public function getMinDepth(): ?int
     {
@@ -523,10 +458,6 @@ trait HelperTrait
 
     /**
      * Render invisible items?
-     *
-     * @param bool $renderInvisible
-     *
-     * @return self
      */
     final public function setRenderInvisible(bool $renderInvisible = true): self
     {
@@ -537,8 +468,6 @@ trait HelperTrait
 
     /**
      * Return renderInvisible flag
-     *
-     * @return bool
      */
     final public function getRenderInvisible(): bool
     {
@@ -551,8 +480,6 @@ trait HelperTrait
      * Implements {@link ViewHelperInterface::setRole()}.
      *
      * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
-     *
-     * @return self
      */
     final public function setRole(string $role): self
     {
@@ -566,8 +493,6 @@ trait HelperTrait
      * using {@link setRole()} or {@link setDefaultRole()}
      *
      * Implements {@link ViewHelperInterface::getRole()}.
-     *
-     * @return string|null
      */
     final public function getRole(): ?string
     {
@@ -582,8 +507,6 @@ trait HelperTrait
      * Checks if the helper has an Authorization role
      *
      * Implements {@link ViewHelperInterface::hasRole()}.
-     *
-     * @return bool
      */
     final public function hasRole(): bool
     {
@@ -594,10 +517,6 @@ trait HelperTrait
     /**
      * Sets whether Authorization should be used
      * Implements {@link ViewHelperInterface::setUseAuthorization()}.
-     *
-     * @param bool $useAuthorization
-     *
-     * @return self
      */
     final public function setUseAuthorization(bool $useAuthorization = true): self
     {
@@ -609,17 +528,12 @@ trait HelperTrait
     /**
      * Returns whether Authorization should be used
      * Implements {@link ViewHelperInterface::getUseAuthorization()}.
-     *
-     * @return bool
      */
     final public function getUseAuthorization(): bool
     {
         return $this->useAuthorization;
     }
 
-    /**
-     * @return \Interop\Container\ContainerInterface
-     */
     final public function getServiceLocator(): ContainerInterface
     {
         return $this->serviceLocator;
@@ -630,10 +544,8 @@ trait HelperTrait
     /**
      * Sets default Authorization to use if another Authorization is not explicitly set
      *
-     * @param \Mezzio\GenericAuthorization\AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which
-     *                                                                                sets no Authorization object.
-     *
-     * @return void
+     * @param AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which
+     *                                                   sets no Authorization object.
      */
     final public static function setDefaultAuthorization(?AuthorizationInterface $authorization = null): void
     {
@@ -646,11 +558,25 @@ trait HelperTrait
      *
      * @param string|null $role [optional] role to set. Expects null or string. Default is null, which
      *                          sets no default role.
-     *
-     * @return void
      */
     final public static function setDefaultRole(?string $role = null): void
     {
         static::$defaultRole = $role;
+    }
+
+    // Util methods:
+
+    /**
+     * Retrieve whitespace representation of $indent
+     *
+     * @param int|string $indent
+     */
+    private function getWhitespace($indent): string
+    {
+        if (is_int($indent)) {
+            $indent = str_repeat(' ', $indent);
+        }
+
+        return (string) $indent;
     }
 }

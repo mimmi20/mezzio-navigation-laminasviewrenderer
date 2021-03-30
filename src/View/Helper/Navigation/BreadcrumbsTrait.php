@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\View\Helper\Translate;
@@ -22,6 +23,17 @@ use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
+use function array_merge;
+use function array_reverse;
+use function assert;
+use function count;
+use function get_class;
+use function is_array;
+use function is_int;
+use function is_string;
+use function mb_strlen;
+use function sprintf;
+
 /**
  * Helper for printing breadcrumbs.
  */
@@ -29,43 +41,27 @@ trait BreadcrumbsTrait
 {
     /**
      * Whether last page in breadcrumb should be hyperlinked.
-     *
-     * @var bool
      */
-    private $linkLast = false;
+    private bool $linkLast = false;
 
     /**
      * Partial view script to use for rendering menu.
      *
-     * @var array|ModelInterface|string|null
+     * @var array<int, string>|ModelInterface|string|null
      */
     private $partial;
 
     /**
      * Breadcrumbs separator string.
-     *
-     * @var string
      */
-    private $separator = ' &gt; ';
+    private string $separator = ' &gt; ';
 
-    /** @var Translate|null */
-    private $translator;
+    private ?Translate $translator = null;
 
-    /** @var EscapeHtml */
-    private $escaper;
+    private EscapeHtml $escaper;
 
-    /** @var LaminasViewRenderer */
-    private $renderer;
+    private LaminasViewRenderer $renderer;
 
-    /**
-     * @param \Interop\Container\ContainerInterface    $serviceLocator
-     * @param Logger                                   $logger
-     * @param HtmlifyInterface                         $htmlify
-     * @param ContainerParserInterface                 $containerParser
-     * @param EscapeHtml                               $escaper
-     * @param LaminasViewRenderer                      $renderer
-     * @param \Laminas\I18n\View\Helper\Translate|null $translator
-     */
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
         Logger $logger,
@@ -96,8 +92,6 @@ trait BreadcrumbsTrait
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
-     *
-     * @return string
      */
     public function render($container = null): string
     {
@@ -117,16 +111,14 @@ trait BreadcrumbsTrait
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|string|null   $container [optional] container to pass to view
-     *                                                    script. Default is to use the container registered in the helper.
-     * @param array|ModelInterface|string|null $partial   [optional] partial view script to use.
-     *                                                    Default is to use the partial registered in the helper. If an array
-     *                                                    is given, the first value is used for the partial view script.
+     * @param ContainerInterface|string|null                $container [optional] container to pass to view
+     *                                                                 script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                                 Default is to use the partial registered in the helper. If an array
+     *                                                                 is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     public function renderPartial($container = null, $partial = null): string
     {
@@ -142,17 +134,15 @@ trait BreadcrumbsTrait
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param ContainerInterface|string|null   $container [optional] container to pass to view
-     *                                                    script. Default is to use the container registered in the helper.
-     * @param array|ModelInterface|string|null $partial   [optional] partial view script to use.
-     *                                                    Default is to use the partial registered in the helper. If an array
-     *                                                    is given, the first value is used for the partial view script.
-     * @param array                            $params
+     * @param array<mixed>                                  $params
+     * @param ContainerInterface|string|null                $container [optional] container to pass to view
+     *                                                                 script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                                 Default is to use the partial registered in the helper. If an array
+     *                                                                 is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
     {
@@ -167,8 +157,6 @@ trait BreadcrumbsTrait
      *                                                  to render the container registered in the helper.
      *
      * @throws Exception\InvalidArgumentException
-     *
-     * @return string
      */
     public function renderStraight($container = null): string
     {
@@ -186,6 +174,15 @@ trait BreadcrumbsTrait
         }
 
         $active = $active['page'];
+
+        assert(
+            $active instanceof PageInterface,
+            sprintf(
+                '$active should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($active)
+            )
+        );
 
         // put the deepest active page last in breadcrumbs
         if ($this->getLinkLast()) {
@@ -217,7 +214,7 @@ trait BreadcrumbsTrait
                     $parent->getLiClass() ?? '',
                     $parent->isActive()
                 );
-                $html = $entry . $this->getSeparator() . $html;
+                $html  = $entry . $this->getSeparator() . $html;
             }
 
             if ($parent === $container) {
@@ -235,8 +232,6 @@ trait BreadcrumbsTrait
      * Sets whether last page in breadcrumbs should be hyperlinked.
      *
      * @param bool $linkLast whether last page should be hyperlinked
-     *
-     * @return self
      */
     public function setLinkLast(bool $linkLast): self
     {
@@ -247,8 +242,6 @@ trait BreadcrumbsTrait
 
     /**
      * Returns whether last page in breadcrumbs should be hyperlinked.
-     *
-     * @return bool
      */
     public function getLinkLast(): bool
     {
@@ -258,10 +251,8 @@ trait BreadcrumbsTrait
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array|ModelInterface|string|null $partial partial view script or null. If an array is
-     *                                                  given, the first value is used for the partial view script.
-     *
-     * @return self
+     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is
+     *                                                               given, the first value is used for the partial view script.
      */
     public function setPartial($partial): self
     {
@@ -275,7 +266,7 @@ trait BreadcrumbsTrait
     /**
      * Returns partial view script to use for rendering menu.
      *
-     * @return array|ModelInterface|string|null
+     * @return array<int, string>|ModelInterface|string|null
      */
     public function getPartial()
     {
@@ -286,8 +277,6 @@ trait BreadcrumbsTrait
      * Sets breadcrumb separator.
      *
      * @param string $separator separator string
-     *
-     * @return self
      */
     public function setSeparator(string $separator): self
     {
@@ -307,16 +296,26 @@ trait BreadcrumbsTrait
     }
 
     /**
+     * Returns minimum depth a page must have to be included when rendering
+     */
+    public function getMinDepth(): ?int
+    {
+        if (!is_int($this->minDepth) || 0 > $this->minDepth) {
+            return 1;
+        }
+
+        return $this->minDepth;
+    }
+
+    /**
      * Render a partial with the given "model".
      *
-     * @param array                            $params
-     * @param ContainerInterface|string|null   $container
-     * @param array|ModelInterface|string|null $partial
+     * @param array<mixed>                                  $params
+     * @param ContainerInterface|string|null                $container
+     * @param array<int, string>|ModelInterface|string|null $partial
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     *
-     * @return string
      */
     private function renderPartialModel(array $params, $container, $partial): string
     {
@@ -351,7 +350,17 @@ trait BreadcrumbsTrait
         $active = $this->findActive($container);
 
         if ([] !== $active) {
-            $active           = $active['page'];
+            $active = $active['page'];
+
+            assert(
+                $active instanceof PageInterface,
+                sprintf(
+                    '$active should be an Instance of %s, but was %s',
+                    PageInterface::class,
+                    get_class($active)
+                )
+            );
+
             $model['pages'][] = $active;
 
             while ($parent = $active->getParent()) {
@@ -373,19 +382,5 @@ trait BreadcrumbsTrait
         }
 
         return $this->renderer->render($partial, $model);
-    }
-
-    /**
-     * Returns minimum depth a page must have to be included when rendering
-     *
-     * @return int|null
-     */
-    public function getMinDepth(): ?int
-    {
-        if (!is_int($this->minDepth) || 0 > $this->minDepth) {
-            return 1;
-        }
-
-        return $this->minDepth;
     }
 }

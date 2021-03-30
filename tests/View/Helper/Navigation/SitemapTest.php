@@ -9,8 +9,11 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
+use DOMDocument;
+use DOMElement;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
@@ -21,6 +24,7 @@ use Laminas\Validator\Sitemap\Changefreq;
 use Laminas\Validator\Sitemap\Lastmod;
 use Laminas\Validator\Sitemap\Loc;
 use Laminas\Validator\Sitemap\Priority;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\BasePath;
@@ -40,15 +44,20 @@ use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function date;
+use function get_class;
+use function sprintf;
+use function time;
 
 final class SitemapTest extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -57,10 +66,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMaxDepth(): void
     {
@@ -124,13 +131,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertNull($helper->getMaxDepth());
@@ -141,10 +148,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMinDepth(): void
     {
@@ -206,13 +211,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame(0, $helper->getMinDepth());
@@ -239,10 +244,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRenderInvisible(): void
     {
@@ -304,13 +307,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertFalse($helper->getRenderInvisible());
@@ -321,10 +324,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRole(): void
     {
@@ -389,13 +390,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertNull($helper->getRole());
@@ -413,10 +414,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseAuthorization(): void
     {
@@ -478,13 +477,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertTrue($helper->getUseAuthorization());
@@ -499,10 +498,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetAuthorization(): void
     {
@@ -567,25 +564,25 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $defaultAuth */
+        assert($defaultAuth instanceof AuthorizationInterface);
         Sitemap::setDefaultAuthorization($defaultAuth);
 
         self::assertSame($defaultAuth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($auth, $helper->getAuthorization());
@@ -593,10 +590,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetView(): void
     {
@@ -660,18 +655,18 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertNull($helper->getView());
 
-        /* @var RendererInterface $view */
+        assert($view instanceof RendererInterface);
         $helper->setView($view);
 
         self::assertSame($view, $helper->getView());
@@ -679,11 +674,9 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainer(): void
     {
@@ -749,20 +742,19 @@ final class SitemapTest extends TestCase
             ->withConsecutive([null], [$container])
             ->willReturnOnConsecutiveCalls(null, $container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $container1 = $helper->getContainer();
 
         self::assertInstanceOf(Navigation::class, $container1);
 
-        /* @var AuthorizationInterface $auth */
         $helper->setContainer();
 
         $container2 = $helper->getContainer();
@@ -776,10 +768,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -845,13 +835,13 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $this->expectException(InvalidArgumentException::class);
@@ -862,11 +852,9 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -933,13 +921,13 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setContainer($name);
@@ -948,11 +936,9 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotAccept(): void
     {
@@ -1060,31 +1046,36 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setContainer($name);
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertFalse($helper->accept($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testHtmlify(): void
     {
@@ -1181,13 +1172,13 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setContainer($name);
@@ -1200,18 +1191,23 @@ final class SitemapTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetIndent(): void
     {
@@ -1273,13 +1269,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame('', $helper->getIndent());
@@ -1294,12 +1290,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -1431,30 +1425,28 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -1591,18 +1583,18 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1614,11 +1606,9 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -1717,18 +1707,18 @@ final class SitemapTest extends TestCase
             ->with(null)
             ->willReturn(null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -1737,12 +1727,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
@@ -1882,18 +1870,18 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1908,12 +1896,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -2031,18 +2017,18 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2051,12 +2037,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2189,18 +2173,18 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2212,12 +2196,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -2355,18 +2337,18 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2375,12 +2357,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -2517,18 +2497,18 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setMinDepth(-1);
@@ -2540,10 +2520,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseXmlDeclaration(): void
     {
@@ -2605,13 +2583,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertTrue($helper->getUseXmlDeclaration());
@@ -2622,10 +2600,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseSchemaValidation(): void
     {
@@ -2687,13 +2663,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertFalse($helper->getUseSchemaValidation());
@@ -2704,10 +2680,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseSitemapValidators(): void
     {
@@ -2769,13 +2743,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertTrue($helper->getUseSitemapValidators());
@@ -2786,10 +2760,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetInvalidServerUrl(): void
     {
@@ -2851,13 +2823,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $uri = 'ftp://test.org';
@@ -2870,10 +2842,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetInvalidTypeOfServerUrl(): void
     {
@@ -2935,13 +2905,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $this->expectException(InvalidArgumentException::class);
@@ -2952,10 +2922,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetServerUrlWithInvalidFragment(): void
     {
@@ -3017,13 +2985,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $uri = $this->getMockBuilder(UriInterface::class)
@@ -3046,15 +3014,13 @@ final class SitemapTest extends TestCase
         $this->expectExceptionMessage('Invalid server URL');
         $this->expectExceptionCode(0);
 
-        /* @var UriInterface $uri */
+        assert($uri instanceof UriInterface);
         $helper->setServerUrl($uri);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetServerUrlWithInvalidUri(): void
     {
@@ -3116,13 +3082,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $uri = $this->getMockBuilder(UriInterface::class)
@@ -3147,15 +3113,13 @@ final class SitemapTest extends TestCase
         $this->expectExceptionMessage('Invalid server URL');
         $this->expectExceptionCode(0);
 
-        /* @var UriInterface $uri */
+        assert($uri instanceof UriInterface);
         $helper->setServerUrl($uri);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetServerUrlWithError(): void
     {
@@ -3217,13 +3181,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $uri = $this->getMockBuilder(UriInterface::class)
@@ -3249,16 +3213,14 @@ final class SitemapTest extends TestCase
         $this->expectExceptionMessage('Invalid server URL');
         $this->expectExceptionCode(0);
 
-        /* @var UriInterface $uri */
+        assert($uri instanceof UriInterface);
         $helper->setServerUrl($uri);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetServerUrl(): void
     {
@@ -3320,13 +3282,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $serverUrl = 'ftp://test.org';
@@ -3350,17 +3312,15 @@ final class SitemapTest extends TestCase
             ->method('isValid')
             ->willReturn(true);
 
-        /* @var UriInterface $uri */
+        assert($uri instanceof UriInterface);
         $helper->setServerUrl($uri);
 
         self::assertSame($serverUrl, $helper->getServerUrl());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetFormatOutput(): void
     {
@@ -3422,13 +3382,13 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertFalse($helper->getFormatOutput());
@@ -3439,10 +3399,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testGetServerUrl(): void
     {
@@ -3507,23 +3465,21 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame($serverUrl, $helper->getServerUrl());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testUrlWithoutPageHref(): void
     {
@@ -3592,23 +3548,21 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn('');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame('', $helper->url($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testUrlWithRelativePageHref(): void
     {
@@ -3683,23 +3637,21 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame($serverUrl . '/' . $uri, $helper->url($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testUrlWithAbsolutePageHref(): void
     {
@@ -3772,13 +3724,13 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame($uri . '/', $helper->url($page));
@@ -3786,10 +3738,8 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testUrlWithRelativePageHref2(): void
     {
@@ -3867,23 +3817,21 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         self::assertSame($serverUrl . '/' . $baseUri . '/' . $uri, $helper->url($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetDomDocument(): void
     {
@@ -3945,30 +3893,28 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
-        $dom = $this->createMock(\DOMDocument::class);
+        $dom = $this->createMock(DOMDocument::class);
 
-        self::assertInstanceOf(\DOMDocument::class, $helper->getDom());
+        self::assertInstanceOf(DOMDocument::class, $helper->getDom());
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         self::assertSame($dom, $helper->getDom());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetLocValidator(): void
     {
@@ -4030,30 +3976,28 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $locValidator = $this->createMock(Loc::class);
 
         self::assertInstanceOf(Loc::class, $helper->getLocValidator());
 
-        /* @var Loc $locValidator */
+        assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
         self::assertSame($locValidator, $helper->getLocValidator());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetLastmodValidator(): void
     {
@@ -4115,30 +4059,28 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $lastmodValidator = $this->createMock(Lastmod::class);
 
         self::assertInstanceOf(Lastmod::class, $helper->getLastmodValidator());
 
-        /* @var Lastmod $lastmodValidator */
+        assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
         self::assertSame($lastmodValidator, $helper->getLastmodValidator());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetPriorityValidator(): void
     {
@@ -4200,30 +4142,28 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $priorityValidator = $this->createMock(Priority::class);
 
         self::assertInstanceOf(Priority::class, $helper->getPriorityValidator());
 
-        /* @var Priority $priorityValidator */
+        assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
         self::assertSame($priorityValidator, $helper->getPriorityValidator());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetChangefreqValidator(): void
     {
@@ -4285,32 +4225,30 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $changefreqValidator = $this->createMock(Changefreq::class);
 
         self::assertInstanceOf(Changefreq::class, $helper->getChangefreqValidator());
 
-        /* @var Changefreq $changefreqValidator */
+        assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
         self::assertSame($changefreqValidator, $helper->getChangefreqValidator());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testGetDomSitemapOneActivePageRecursive(): void
     {
@@ -4361,7 +4299,14 @@ final class SitemapTest extends TestCase
         $page->expects(self::never())
             ->method('getHref');
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         $parentPage->addPage($page);
 
         $container = new Navigation();
@@ -4446,41 +4391,41 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
         $helper->setMinDepth(0);
         $helper->setMaxDepth(0);
 
-        $urlLoc = $this->createMock(\DOMElement::class);
+        $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(3))
@@ -4499,19 +4444,17 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlSet);
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         self::assertSame($dom, $helper->getDomSitemap());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testGetDomSitemapOneActivePageRecursiveWithSchemaValidation(): void
     {
@@ -4562,7 +4505,14 @@ final class SitemapTest extends TestCase
         $page->expects(self::never())
             ->method('getHref');
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         $parentPage->addPage($page);
 
         $container = new Navigation();
@@ -4647,18 +4597,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -4666,23 +4616,23 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(0);
         $helper->setUseSchemaValidation(true);
 
-        $urlLoc = $this->createMock(\DOMElement::class);
+        $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(3))
@@ -4705,19 +4655,17 @@ final class SitemapTest extends TestCase
             ->with(SitemapInterface::SITEMAP_XSD)
             ->willReturn(true);
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         self::assertSame($dom, $helper->getDomSitemap());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testGetDomSitemapOneActivePageRecursiveDeep(): void
     {
@@ -4763,10 +4711,24 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        /* @var PageInterface $page1 */
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
         $parentPage->addPage($page1);
 
-        /* @var PageInterface $page2 */
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -4850,18 +4812,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -4869,23 +4831,23 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlLoc = $this->createMock(\DOMElement::class);
+        $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(3))
@@ -4906,18 +4868,16 @@ final class SitemapTest extends TestCase
         $dom->expects(self::never())
             ->method('schemaValidate');
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         self::assertSame($dom, $helper->getDomSitemap());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidation(): void
     {
@@ -4963,10 +4923,24 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        /* @var PageInterface $page1 */
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
         $parentPage->addPage($page1);
 
-        /* @var PageInterface $page2 */
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -5050,18 +5024,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -5069,20 +5043,20 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::never())
             ->method('appendChild');
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(2))
@@ -5101,7 +5075,7 @@ final class SitemapTest extends TestCase
         $dom->expects(self::never())
             ->method('schemaValidate');
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         $locValidator = $this->getMockBuilder(Loc::class)
@@ -5112,7 +5086,7 @@ final class SitemapTest extends TestCase
             ->with($serverUrl . 'test' . $parentUri)
             ->willReturn(false);
 
-        /* @var Loc $locValidator */
+        assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
         $this->expectException(RuntimeException::class);
@@ -5123,12 +5097,10 @@ final class SitemapTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmod(): void
     {
@@ -5159,7 +5131,7 @@ final class SitemapTest extends TestCase
 
         $time       = time();
         $changefreq = 'never';
-        $priority   = 0.9;
+        $priority   = '0.9';
 
         $parentPage = new Uri();
         $parentPage->setVisible(true);
@@ -5181,10 +5153,24 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        /* @var PageInterface $page1 */
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
         $parentPage->addPage($page1);
 
-        /* @var PageInterface $page2 */
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -5268,18 +5254,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -5287,26 +5273,26 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlLoc        = $this->createMock(\DOMElement::class);
-        $urlLastMod    = $this->createMock(\DOMElement::class);
-        $urlChangefreq = $this->createMock(\DOMElement::class);
-        $urlPriority   = $this->createMock(\DOMElement::class);
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlLastMod    = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
+        $urlPriority   = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::exactly(4))
             ->method('appendChild')
             ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq], [$urlPriority]);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(6))
@@ -5333,7 +5319,7 @@ final class SitemapTest extends TestCase
         $dom->expects(self::never())
             ->method('schemaValidate');
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         $locValidator = $this->getMockBuilder(Loc::class)
@@ -5344,7 +5330,7 @@ final class SitemapTest extends TestCase
             ->with($serverUrl . 'test' . $parentUri)
             ->willReturn(true);
 
-        /* @var Loc $locValidator */
+        assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
         $lastmodValidator = $this->getMockBuilder(Lastmod::class)
@@ -5355,7 +5341,7 @@ final class SitemapTest extends TestCase
             ->with(date('c', $time))
             ->willReturn(true);
 
-        /* @var Lastmod $lastmodValidator */
+        assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
         $changefreqValidator = $this->getMockBuilder(Changefreq::class)
@@ -5366,7 +5352,7 @@ final class SitemapTest extends TestCase
             ->with($changefreq)
             ->willReturn(true);
 
-        /* @var Changefreq $changefreqValidator */
+        assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
         $priorityValidator = $this->getMockBuilder(Priority::class)
@@ -5377,19 +5363,17 @@ final class SitemapTest extends TestCase
             ->with($priority)
             ->willReturn(true);
 
-        /* @var Priority $priorityValidator */
+        assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
         self::assertSame($dom, $helper->getDomSitemap());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithoutPriority(): void
     {
@@ -5442,10 +5426,24 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        /* @var PageInterface $page1 */
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
         $parentPage->addPage($page1);
 
-        /* @var PageInterface $page2 */
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -5529,18 +5527,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -5548,25 +5546,25 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlLoc        = $this->createMock(\DOMElement::class);
-        $urlLastMod    = $this->createMock(\DOMElement::class);
-        $urlChangefreq = $this->createMock(\DOMElement::class);
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlLastMod    = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::exactly(3))
             ->method('appendChild')
             ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq]);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(5))
@@ -5591,7 +5589,7 @@ final class SitemapTest extends TestCase
         $dom->expects(self::never())
             ->method('schemaValidate');
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         $locValidator = $this->getMockBuilder(Loc::class)
@@ -5602,7 +5600,7 @@ final class SitemapTest extends TestCase
             ->with($serverUrl . 'test' . $parentUri)
             ->willReturn(true);
 
-        /* @var Loc $locValidator */
+        assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
         $lastmodValidator = $this->getMockBuilder(Lastmod::class)
@@ -5613,7 +5611,7 @@ final class SitemapTest extends TestCase
             ->with(date('c', $time))
             ->willReturn(true);
 
-        /* @var Lastmod $lastmodValidator */
+        assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
         $changefreqValidator = $this->getMockBuilder(Changefreq::class)
@@ -5624,7 +5622,7 @@ final class SitemapTest extends TestCase
             ->with($changefreq)
             ->willReturn(true);
 
-        /* @var Changefreq $changefreqValidator */
+        assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
         $priorityValidator = $this->getMockBuilder(Priority::class)
@@ -5635,19 +5633,17 @@ final class SitemapTest extends TestCase
             ->with($priority)
             ->willReturn(false);
 
-        /* @var Priority $priorityValidator */
+        assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
         self::assertSame($dom, $helper->getDomSitemap());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testRenderWithXmlDeclaration(): void
     {
@@ -5701,10 +5697,24 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        /* @var PageInterface $page1 */
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
         $parentPage->addPage($page1);
 
-        /* @var PageInterface $page2 */
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -5788,18 +5798,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -5807,25 +5817,25 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlLoc        = $this->createMock(\DOMElement::class);
-        $urlLastMod    = $this->createMock(\DOMElement::class);
-        $urlChangefreq = $this->createMock(\DOMElement::class);
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlLastMod    = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::exactly(3))
             ->method('appendChild')
             ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq]);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(5))
@@ -5854,7 +5864,7 @@ final class SitemapTest extends TestCase
             ->with(null)
             ->willReturn($xml);
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         $locValidator = $this->getMockBuilder(Loc::class)
@@ -5865,7 +5875,7 @@ final class SitemapTest extends TestCase
             ->with($serverUrl . 'test' . $parentUri)
             ->willReturn(true);
 
-        /* @var Loc $locValidator */
+        assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
         $lastmodValidator = $this->getMockBuilder(Lastmod::class)
@@ -5876,7 +5886,7 @@ final class SitemapTest extends TestCase
             ->with(date('c', $time))
             ->willReturn(true);
 
-        /* @var Lastmod $lastmodValidator */
+        assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
         $changefreqValidator = $this->getMockBuilder(Changefreq::class)
@@ -5887,7 +5897,7 @@ final class SitemapTest extends TestCase
             ->with($changefreq)
             ->willReturn(true);
 
-        /* @var Changefreq $changefreqValidator */
+        assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
         $priorityValidator = $this->getMockBuilder(Priority::class)
@@ -5898,19 +5908,17 @@ final class SitemapTest extends TestCase
             ->with($priority)
             ->willReturn(false);
 
-        /* @var Priority $priorityValidator */
+        assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
         self::assertSame($xml, $helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testToStringWithXmlDeclaration(): void
     {
@@ -5964,10 +5972,24 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        /* @var PageInterface $page1 */
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
         $parentPage->addPage($page1);
 
-        /* @var PageInterface $page2 */
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -6051,18 +6073,18 @@ final class SitemapTest extends TestCase
             ->withConsecutive([$container], [null])
             ->willReturnOnConsecutiveCalls($container, null);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
         $helper->setFormatOutput(true);
@@ -6070,25 +6092,25 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlLoc        = $this->createMock(\DOMElement::class);
-        $urlLastMod    = $this->createMock(\DOMElement::class);
-        $urlChangefreq = $this->createMock(\DOMElement::class);
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlLastMod    = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(\DOMElement::class)
+        $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlNode->expects(self::exactly(3))
             ->method('appendChild')
             ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq]);
 
-        $urlSet = $this->getMockBuilder(\DOMElement::class)
+        $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(\DOMDocument::class)
+        $dom = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dom->expects(self::exactly(5))
@@ -6117,7 +6139,7 @@ final class SitemapTest extends TestCase
             ->with(null)
             ->willReturn($xml);
 
-        /* @var \DOMDocument $dom */
+        assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
         $locValidator = $this->getMockBuilder(Loc::class)
@@ -6128,7 +6150,7 @@ final class SitemapTest extends TestCase
             ->with($serverUrl . 'test' . $parentUri)
             ->willReturn(true);
 
-        /* @var Loc $locValidator */
+        assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
         $lastmodValidator = $this->getMockBuilder(Lastmod::class)
@@ -6139,7 +6161,7 @@ final class SitemapTest extends TestCase
             ->with(date('c', $time))
             ->willReturn(true);
 
-        /* @var Lastmod $lastmodValidator */
+        assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
         $changefreqValidator = $this->getMockBuilder(Changefreq::class)
@@ -6150,7 +6172,7 @@ final class SitemapTest extends TestCase
             ->with($changefreq)
             ->willReturn(true);
 
-        /* @var Changefreq $changefreqValidator */
+        assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
         $priorityValidator = $this->getMockBuilder(Priority::class)
@@ -6161,17 +6183,15 @@ final class SitemapTest extends TestCase
             ->with($priority)
             ->willReturn(false);
 
-        /* @var Priority $priorityValidator */
+        assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
         self::assertSame($xml, (string) $helper);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testInvoke(): void
     {
@@ -6237,13 +6257,13 @@ final class SitemapTest extends TestCase
             ->with($container)
             ->willReturn($container);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        /** @var BasePath $basePath */
-        /** @var EscapeHtml $escaper */
-        /** @var ServerUrlHelper $serverUrlHelper */
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
         $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
 
         $container1 = $helper->getContainer();

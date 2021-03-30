@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
@@ -22,26 +23,24 @@ use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\MenuFactory;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
 
 final class MenuFactoryTest extends TestCase
 {
-    /** @var MenuFactory */
-    private $factory;
+    private MenuFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->factory = new MenuFactory();
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testInvocation(): void
     {
@@ -94,7 +93,7 @@ final class MenuFactoryTest extends TestCase
             ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class], [LaminasViewRenderer::class])
             ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger, $renderer);
 
-        \assert($container instanceof ContainerInterface);
+        assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Menu::class, $helper);

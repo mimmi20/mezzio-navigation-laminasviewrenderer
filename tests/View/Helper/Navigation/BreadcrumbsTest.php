@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use Interop\Container\ContainerInterface;
@@ -16,6 +17,7 @@ use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtml;
@@ -27,22 +29,25 @@ use Mezzio\Navigation\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\FindActiveInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+
+use function assert;
+use function get_class;
+use function sprintf;
 
 final class BreadcrumbsTest extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
@@ -51,10 +56,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMaxDepth(): void
     {
@@ -118,13 +121,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertNull($helper->getMaxDepth());
@@ -135,10 +138,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetMinDepth(): void
     {
@@ -200,13 +201,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertSame(1, $helper->getMinDepth());
@@ -233,10 +234,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRenderInvisible(): void
     {
@@ -298,13 +297,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertFalse($helper->getRenderInvisible());
@@ -315,10 +314,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetRole(): void
     {
@@ -383,13 +380,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertNull($helper->getRole());
@@ -407,10 +404,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetUseAuthorization(): void
     {
@@ -472,13 +467,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertTrue($helper->getUseAuthorization());
@@ -493,10 +488,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetAuthorization(): void
     {
@@ -561,25 +554,25 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $defaultAuth */
+        assert($defaultAuth instanceof AuthorizationInterface);
         Breadcrumbs::setDefaultAuthorization($defaultAuth);
 
         self::assertSame($defaultAuth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame($auth, $helper->getAuthorization());
@@ -587,10 +580,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetView(): void
     {
@@ -654,18 +645,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertNull($helper->getView());
 
-        /* @var RendererInterface $view */
+        assert($view instanceof RendererInterface);
         $helper->setView($view);
 
         self::assertSame($view, $helper->getView());
@@ -673,11 +664,9 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainer(): void
     {
@@ -743,20 +732,19 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $container1 = $helper->getContainer();
 
         self::assertInstanceOf(Navigation::class, $container1);
 
-        /* @var AuthorizationInterface $auth */
         $helper->setContainer();
 
         $container2 = $helper->getContainer();
@@ -770,10 +758,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -839,13 +825,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $this->expectException(InvalidArgumentException::class);
@@ -856,11 +842,9 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -927,13 +911,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setContainer($name);
@@ -942,11 +926,9 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotAccept(): void
     {
@@ -1054,31 +1036,36 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setContainer($name);
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertFalse($helper->accept($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testDoNotAcceptWithException(): void
     {
@@ -1181,31 +1168,36 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setContainer($name);
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertFalse($helper->accept($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testHtmlify(): void
     {
@@ -1302,13 +1294,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setContainer($name);
@@ -1321,18 +1313,23 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        /* @var PageInterface $page */
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetIndent(): void
     {
@@ -1394,13 +1391,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertSame('', $helper->getIndent());
@@ -1415,12 +1412,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -1552,30 +1547,28 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -1712,18 +1705,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -1735,11 +1728,9 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -1838,18 +1829,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -1858,12 +1849,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveNoActivePageWithoutDepth(): void
     {
@@ -1981,18 +1970,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2004,12 +1993,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -2127,18 +2114,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2147,12 +2134,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2285,18 +2270,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [
@@ -2308,12 +2293,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -2451,18 +2434,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected = [];
@@ -2471,12 +2454,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -2613,18 +2594,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setMinDepth(-1);
@@ -2636,10 +2617,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetPartial(): void
     {
@@ -2701,13 +2680,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertNull($helper->getPartial());
@@ -2722,10 +2701,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetLinkLast(): void
     {
@@ -2787,13 +2764,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertFalse($helper->getLinkLast());
@@ -2808,10 +2785,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testSetSeparator(): void
     {
@@ -2873,13 +2848,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         self::assertSame(' &gt; ', $helper->getSeparator());
@@ -2890,10 +2865,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRenderPartialWithParamsWithoutPartial(): void
     {
@@ -2957,13 +2930,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $role = 'testRole';
@@ -2976,7 +2949,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator('/');
@@ -2988,7 +2961,7 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         $this->expectException(RuntimeException::class);
@@ -2999,10 +2972,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRenderPartialWithParamsWithWrongPartial(): void
     {
@@ -3066,13 +3037,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $role = 'testRole';
@@ -3085,7 +3056,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator('/');
@@ -3097,7 +3068,7 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         $helper->setPartial(['a', 'b', 'c']);
@@ -3110,12 +3081,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithParams(): void
     {
@@ -3253,18 +3222,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -3279,19 +3248,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartialWithParams(['abc' => 'test'], $name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithParamsAndArrayPartial(): void
     {
@@ -3427,18 +3394,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -3453,19 +3420,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartialWithParams(['abc' => 'test'], null, [$partial, 'test']));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithParamsAndArrayPartialRenderingPage(): void
     {
@@ -3519,7 +3484,14 @@ final class BreadcrumbsTest extends TestCase
         $subPage->expects(self::never())
             ->method('isActive');
 
-        /* @var PageInterface $subPage */
+        assert(
+            $subPage instanceof PageInterface,
+            sprintf(
+                '$subPage should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($subPage)
+            )
+        );
         $page->addPage($subPage);
         $parentPage->addPage($page);
 
@@ -3607,18 +3579,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -3633,19 +3605,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartialWithParams(['abc' => 'test'], null, [$partial, 'test']));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithParamsNoActivePage(): void
     {
@@ -3767,18 +3737,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -3793,17 +3763,15 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartialWithParams(['abc' => 'test'], $name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRenderPartialWithoutPartial(): void
     {
@@ -3867,13 +3835,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $role = 'testRole';
@@ -3886,7 +3854,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator('/');
@@ -3898,7 +3866,7 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         $this->expectException(RuntimeException::class);
@@ -3909,10 +3877,8 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRenderPartialWithWrongPartial(): void
     {
@@ -3976,13 +3942,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $role = 'testRole';
@@ -3995,7 +3961,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator('/');
@@ -4007,7 +3973,7 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         $helper->setPartial(['a', 'b', 'c']);
@@ -4020,12 +3986,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartial(): void
     {
@@ -4163,18 +4127,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -4189,19 +4153,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialNoActivePage(): void
     {
@@ -4323,18 +4285,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -4349,19 +4311,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithArrayPartial(): void
     {
@@ -4497,18 +4457,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -4523,19 +4483,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial(null, [$partial, 'test']));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderPartialWithArrayPartialRenderingPage(): void
     {
@@ -4589,7 +4547,14 @@ final class BreadcrumbsTest extends TestCase
         $subPage->expects(self::never())
             ->method('isActive');
 
-        /* @var PageInterface $subPage */
+        assert(
+            $subPage instanceof PageInterface,
+            sprintf(
+                '$subPage should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($subPage)
+            )
+        );
         $page->addPage($subPage);
         $parentPage->addPage($page);
 
@@ -4677,18 +4642,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -4703,19 +4668,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderPartial(null, [$partial, 'test']));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderStraightNoActivePage(): void
     {
@@ -4831,18 +4794,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected  = '';
@@ -4859,19 +4822,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('plugin');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderStraight($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderStraight(): void
     {
@@ -5031,18 +4992,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected  = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>/<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
@@ -5059,19 +5020,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderStraight($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderStraightWithoutLinkAtEnd(): void
     {
@@ -5238,19 +5197,19 @@ final class BreadcrumbsTest extends TestCase
             ->with($label, $textDomain)
             ->willReturn($tranalatedLabel);
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
         $helper->setContainer($container);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected  = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>/testLabelTranslatedAndEscaped';
@@ -5267,19 +5226,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->renderStraight());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderWithoutPartial(): void
     {
@@ -5438,18 +5395,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $expected  = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>/<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
@@ -5466,19 +5423,17 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->render($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testRenderWithPartial(): void
     {
@@ -5600,18 +5555,18 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
 
-        /* @var AuthorizationInterface $auth */
+        assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
         $helper->setSeparator($seperator);
@@ -5626,18 +5581,16 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, $helper->render($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testToStringWithPartial(): void
     {
@@ -5646,7 +5599,7 @@ final class BreadcrumbsTest extends TestCase
             ->getMock();
         $auth->expects(self::never())
             ->method('isGranted');
-        \assert($auth instanceof AuthorizationInterface);
+        assert($auth instanceof AuthorizationInterface);
 
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
@@ -5760,13 +5713,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setRole($role);
@@ -5783,17 +5736,15 @@ final class BreadcrumbsTest extends TestCase
         $view->expects(self::never())
             ->method('getHelperPluginManager');
 
-        /* @var PhpRenderer $view */
+        assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
         self::assertSame($expected, (string) $helper($name));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
      */
     public function testInvoke(): void
     {
@@ -5859,13 +5810,13 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $container1 = $helper->getContainer();
@@ -5878,12 +5829,10 @@ final class BreadcrumbsTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
+     * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -5989,17 +5938,17 @@ final class BreadcrumbsTest extends TestCase
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        \assert($serviceLocator instanceof ContainerInterface);
-        \assert($logger instanceof Logger);
-        \assert($htmlify instanceof HtmlifyInterface);
-        \assert($containerParser instanceof ContainerParserInterface);
-        \assert($escapePlugin instanceof EscapeHtml);
-        \assert($renderer instanceof LaminasViewRenderer);
-        \assert($translatePlugin instanceof Translate);
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapePlugin instanceof EscapeHtml);
+        assert($renderer instanceof LaminasViewRenderer);
+        assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
         $helper->setContainer($container);
 
-        self::assertEquals('', $helper->render());
+        self::assertSame('', $helper->render());
     }
 }

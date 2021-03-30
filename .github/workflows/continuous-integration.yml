@@ -7,7 +7,7 @@ on:
 name: "Continuous Integration"
 
 env:
-  PHP_EXTENSIONS: "opcache, intl"
+  PHP_EXTENSIONS: "opcache, intl, mbstring, dom"
   PHP_INI_VALUES: "opcache.enable=1, opcache.enable_cli=1, zend.assertions=1, assert.exception=On"
 
 jobs:

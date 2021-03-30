@@ -9,12 +9,18 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
+use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
@@ -22,6 +28,14 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Navigation as Container;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\Uri;
+use PHPUnit\Framework\Exception;
+use Psr\Container\ContainerExceptionInterface;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function spl_object_hash;
+use function str_replace;
+
+use const PHP_EOL;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation
@@ -34,58 +48,36 @@ final class NavigationTest extends AbstractTest
 {
     /**
      * Class name for view helper to test
-     *
-     * @var string
      */
-    protected $helperName = Navigation::class;
+    protected string $helperName = Navigation::class;
 
     /**
      * View helper
      *
-     * @var \Mezzio\Navigation\LaminasView\View\Helper\Navigation
+     * @var Navigation
      */
-    protected $helper;
+    protected Navigation\ViewHelperInterface $helper;
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
-     * @throws \Laminas\Config\Exception\RuntimeException
-     *
-     * @return void
+     * @throws RuntimeException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emerg');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::never())
-            ->method('err');
-        $logger->expects(self::never())
-            ->method('warn');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
+        $this->serviceManager->get(ViewHelperPluginManager::class);
+        $this->serviceManager->get(LaminasViewRenderer::class);
 
         // create helper
         $this->helper = new Navigation(
             $this->serviceManager,
-            $logger,
+            $this->serviceManager->get(Logger::class),
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class)
         );
@@ -96,10 +88,8 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     protected function tearDown(): void
     {
@@ -108,40 +98,34 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
         $returned = $this->helper->__invoke();
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav1, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
         $returned = $this->helper->__invoke($this->nav2);
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav2, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testAcceptAclShouldReturnGracefullyWithUnknownResource(): void
     {
@@ -163,11 +147,9 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testShouldProxyToMenuHelperByDefault(): void
     {
@@ -177,15 +159,13 @@ final class NavigationTest extends AbstractTest
         $expected = $this->getExpected('menu/default1.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHasContainer(): void
     {
@@ -196,11 +176,9 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testInjectingContainer(): void
     {
@@ -210,22 +188,20 @@ final class NavigationTest extends AbstractTest
             'menu' => $this->getExpected('menu/default2.html'),
             'breadcrumbs' => $this->getExpected('bc/default.html'),
         ];
-        $actual = [];
+        $actual   = [];
 
         // result
         $actual['menu'] = $this->helper->render();
         $this->helper->setContainer($this->nav1);
         $actual['breadcrumbs'] = $this->helper->breadcrumbs()->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testDisablingContainerInjection(): void
     {
@@ -240,20 +216,18 @@ final class NavigationTest extends AbstractTest
             'menu' => '',
             'breadcrumbs' => '',
         ];
-        $actual = [
+        $actual   = [
             'menu' => $this->helper->render(),
             'breadcrumbs' => $this->helper->breadcrumbs()->render(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testMultipleNavigationsAndOneMenuDisplayedTwoTimes(): void
     {
@@ -261,16 +235,14 @@ final class NavigationTest extends AbstractTest
         $this->helper->setContainer($this->nav2)->menu()->getContainer();
         $actual = $this->helper->setContainer($this->nav1)->menu()->getContainer();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws ContainerModificationsNotAllowedException
      */
     public function testServiceManagerIsUsedToRetrieveContainer(): void
     {
@@ -281,16 +253,14 @@ final class NavigationTest extends AbstractTest
 
         $expected = $this->helper->getContainer();
         $actual   = $container;
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testInjectingAuthorization(): void
     {
@@ -302,16 +272,14 @@ final class NavigationTest extends AbstractTest
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testDisablingInjectAuthorization(): void
     {
@@ -324,15 +292,13 @@ final class NavigationTest extends AbstractTest
         $expected = $this->getExpected('menu/default1.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSpecifyingDefaultProxy(): void
     {
@@ -340,7 +306,7 @@ final class NavigationTest extends AbstractTest
             'breadcrumbs' => $this->getExpected('bc/default.html'),
             'menu' => $this->getExpected('menu/default1.html'),
         ];
-        $actual = [];
+        $actual   = [];
 
         // result
         $this->helper->setDefaultProxy('breadcrumbs');
@@ -348,14 +314,12 @@ final class NavigationTest extends AbstractTest
         $this->helper->setDefaultProxy('menu');
         $actual['menu'] = $this->helper->render($this->nav1);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testgetAuthorizationReturnsNullIfNoAuthorizationInstance(): void
     {
@@ -363,23 +327,19 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
         $acl = $this->createMock(AuthorizationInterface::class);
         $this->helper->setAuthorization($acl);
-        self::assertEquals($acl, $this->helper->getAuthorization());
+        self::assertSame($acl, $this->helper->getAuthorization());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetDefaultAuthorization(): void
     {
@@ -387,14 +347,12 @@ final class NavigationTest extends AbstractTest
         Navigation::setDefaultAuthorization($acl);
         $actual = $this->helper->getAuthorization();
         Navigation::setDefaultAuthorization(null);
-        self::assertEquals($acl, $actual);
+        self::assertSame($acl, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testsetDefaultAuthorizationAcceptsNull(): void
     {
@@ -405,10 +363,8 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testsetDefaultAuthorizationAcceptsNoParam(): void
     {
@@ -419,25 +375,21 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testSetRoleAcceptsString(): void
     {
         $this->helper->setRole('member');
-        self::assertEquals('member', $this->helper->getRole());
+        self::assertSame('member', $this->helper->getRole());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testPageIdShouldBeNormalized(): void
     {
@@ -476,17 +428,15 @@ final class NavigationTest extends AbstractTest
 
         $actual = $this->helper->render($container);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      *
      * @group Laminas-6854
      */
@@ -527,31 +477,27 @@ final class NavigationTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testMultipleNavigations(): void
     {
         $menu     = ($this->helper)('nav1')->menu();
         $actual   = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($this->nav1, $menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($this->nav1, $menu->getContainer());
+        self::assertSame($expected, $actual);
 
         $menu     = ($this->helper)('nav2')->menu();
         $actual   = spl_object_hash($this->nav2);
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($this->nav2, $menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($this->nav2, $menu->getContainer());
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      *
      * @group #3859
      */
@@ -560,23 +506,21 @@ final class NavigationTest extends AbstractTest
         $menu     = ($this->helper)('nav1')->menu();
         $actual   = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $breadcrumbs = ($this->helper)('nav2')->breadcrumbs();
         $actual      = spl_object_hash($this->nav2);
         $expected    = spl_object_hash($breadcrumbs->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $links    = ($this->helper)()->links();
         $expected = spl_object_hash($links->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      *
      * @group #3859
      */
@@ -586,22 +530,20 @@ final class NavigationTest extends AbstractTest
         $menu     = ($this->helper)('nav1')->menu();
         $actual   = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $breadcrumbs = ($this->helper)('nav1')->breadcrumbs();
         $expected    = spl_object_hash($breadcrumbs->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $links    = ($this->helper)()->links();
         $expected = spl_object_hash($links->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      *
      * @group #3859
      */
@@ -611,22 +553,20 @@ final class NavigationTest extends AbstractTest
         $menu     = ($this->helper)('nav1')->menu();
         $actual   = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $menu     = ($this->helper)('nav1')->menu();
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $menu     = ($this->helper)()->menu();
         $expected = spl_object_hash($menu->getContainer());
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testSetPluginManagerAndView(): void
     {
@@ -636,15 +576,11 @@ final class NavigationTest extends AbstractTest
         $this->helper->setPluginManager($pluginManager);
         $this->helper->setView($view);
 
-        self::assertEquals($view, $pluginManager->getRenderer());
+        self::assertSame($view, $pluginManager->getRenderer());
     }
 
     /**
      * Returns the contens of the expected $file, normalizes newlines
-     *
-     * @param string $file
-     *
-     * @return string
      */
     protected function getExpected(string $file): string
     {

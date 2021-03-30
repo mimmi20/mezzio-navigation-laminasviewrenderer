@@ -9,20 +9,38 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
+use ErrorException;
+use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\Navigation\Exception\BadMethodCallException;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Exception;
+use Psr\Container\ContainerExceptionInterface;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
+use function get_class;
+use function rtrim;
+use function sprintf;
+use function str_replace;
+use function trim;
+
+use const PHP_EOL;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu.
@@ -35,57 +53,36 @@ final class MenuTest extends AbstractTest
 {
     /**
      * Class name for view helper to test.
-     *
-     * @var string
      */
-    protected $helperName = Menu::class;
+    protected string $helperName = Menu::class;
 
     /**
-     * View helper.
+     * View helper
      *
      * @var Menu
      */
-    protected $helper;
+    protected ViewHelperInterface $helper;
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
-     * @throws \Laminas\Config\Exception\RuntimeException
-     *
-     * @return void
+     * @throws RuntimeException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emerg');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::never())
-            ->method('err');
-        $logger->expects(self::never())
-            ->method('warn');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
 
+        $renderer = $this->serviceManager->get(LaminasViewRenderer::class);
+        assert($renderer instanceof LaminasViewRenderer);
+
         $baseUrlHelper = $this->serviceManager->get(BaseServerUrlHelper::class);
-        \assert(
+        assert(
             $baseUrlHelper instanceof BaseServerUrlHelper,
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
@@ -94,12 +91,10 @@ final class MenuTest extends AbstractTest
             )
         );
 
-        $renderer = $this->serviceManager->get(LaminasViewRenderer::class);
-
         // create helper
         $this->helper = new Menu(
             $this->serviceManager,
-            $logger,
+            $this->serviceManager->get(Logger::class),
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $plugin->get(EscapeHtmlAttr::class),
@@ -111,26 +106,22 @@ final class MenuTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testCanRenderMenuFromServiceAlias(): void
     {
         $returned = $this->helper->renderMenu('Navigation');
         $expected = $this->getExpected('menu/default1.html');
 
-        self::assertEquals($expected, $returned);
+        self::assertSame($expected, $returned);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testCanRenderPartialFromServiceAlias(): void
     {
@@ -139,43 +130,37 @@ final class MenuTest extends AbstractTest
         $returned = $this->helper->renderPartial('Navigation');
         $expected = $this->getExpected('menu/partial.html');
 
-        self::assertEquals($expected, $returned);
+        self::assertSame($expected, $returned);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
         $returned = $this->helper->__invoke();
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav1, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
         $returned = $this->helper->__invoke($this->nav2);
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav2, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testNullingOutContainerInHelper(): void
     {
@@ -184,11 +169,9 @@ final class MenuTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetIndentAndOverrideInRenderMenu(): void
     {
@@ -204,15 +187,13 @@ final class MenuTest extends AbstractTest
             'indent8' => rtrim($this->helper->renderMenu(), PHP_EOL),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderSuppliedContainerWithoutInterfering(): void
     {
@@ -230,16 +211,14 @@ final class MenuTest extends AbstractTest
             'registered_again' => $this->helper->render(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testUseAclRoleAsString(): void
     {
@@ -250,16 +229,14 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/acl_string.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testFilterOutPagesBasedOnAcl(): void
     {
@@ -270,16 +247,14 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     *
-     * @return void
      */
     public function testDisablingAcl(): void
     {
@@ -291,15 +266,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/default1.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetUlCssClass(): void
     {
@@ -308,15 +281,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/css.html');
         $actual   = $this->helper->render($this->nav2);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetLiActiveCssClass(): void
     {
@@ -325,16 +296,14 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/css2.html');
         $actual   = $this->helper->render($this->nav2);
 
-        self::assertEquals(trim($expected), $actual);
+        self::assertSame(trim($expected), $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testOptionEscapeLabelsAsTrue(): void
     {
@@ -353,16 +322,14 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/escapelabels_as_true.html');
         $actual   = $this->helper->renderMenu($nav2, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testOptionEscapeLabelsAsFalse(): void
     {
@@ -381,15 +348,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/escapelabels_as_false.html');
         $actual   = $this->helper->renderMenu($nav2, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartial(): void
     {
@@ -398,15 +363,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/partial.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartialBySpecifyingAnArrayAsPartial(): void
     {
@@ -415,15 +378,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/partial.html');
         $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderingPartialWithParams(): void
     {
@@ -432,13 +393,11 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/partial_with_params.html');
         $actual   = $this->helper->renderPartialWithParams(['variable' => 'test value']);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\AssertionFailedError
-     *
-     * @return void
+     * @throws AssertionFailedError
      */
     public function testRenderingPartialShouldFailOnInvalidPartialArray(): void
     {
@@ -452,11 +411,9 @@ final class MenuTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetMaxDepth(): void
     {
@@ -465,15 +422,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/maxdepth.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetMinDepth(): void
     {
@@ -482,15 +437,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/mindepth.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetBothDepts(): void
     {
@@ -499,15 +452,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/bothdepts.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetOnlyActiveBranch(): void
     {
@@ -516,15 +467,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetRenderParents(): void
     {
@@ -533,15 +482,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetOnlyActiveBranchAndMinDepth(): void
     {
@@ -550,15 +497,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_mindepth.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOnlyActiveBranchAndMaxDepth(): void
     {
@@ -567,15 +512,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_maxdepth.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOnlyActiveBranchAndBothDepthsSpecified(): void
     {
@@ -584,15 +527,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_bothdepts.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOnlyActiveBranchNoParentsAndBothDepthsSpecified(): void
     {
@@ -604,37 +545,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_np_bd.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @param string $label
-     *
-     * @return void
-     */
-    private function setActive(string $label): void
-    {
-        $container = $this->helper->getContainer();
-
-        foreach ($container->findAllByActive(true) as $page) {
-            $page->setActive(false);
-        }
-
-        $p = $container->findOneByLabel($label);
-
-        if (!$p) {
-            return;
-        }
-
-        $p->setActive(true);
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOnlyActiveBranchNoParentsActiveOneBelowMinDepth(): void
     {
@@ -648,15 +565,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_np_bd2.html');
         $actual   = $this->helper->renderMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testRenderSubMenuShouldOverrideOptions(): void
     {
@@ -668,15 +583,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
         $actual   = $this->helper->renderSubMenu();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionMaxDepth(): void
     {
@@ -685,15 +598,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/maxdepth.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionMinDepth(): void
     {
@@ -702,15 +613,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/mindepth.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionBothDepts(): void
     {
@@ -722,15 +631,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/bothdepts.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionOnlyActiveBranch(): void
     {
@@ -739,15 +646,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionOnlyActiveBranchNoParents(): void
     {
@@ -759,15 +664,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionOnlyActiveBranchAndMinDepth(): void
     {
@@ -779,15 +682,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_mindepth.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionOnlyActiveBranchAndMaxDepth(): void
     {
@@ -799,15 +700,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_maxdepth.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionOnlyActiveBranchAndBothDepthsSpecified(): void
     {
@@ -820,15 +719,13 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_bothdepts.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testOptionOnlyActiveBranchNoParentsAndBothDepthsSpecified(): void
     {
@@ -842,16 +739,14 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/onlyactivebranch_np_bd.html');
         $actual   = $this->helper->renderMenu(null, $options);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testRenderingWithoutPageClassToLi(): void
     {
@@ -869,16 +764,14 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/addclasstolistitem_as_false.html');
         $actual   = $this->helper->renderMenu($nav2);
 
-        self::assertEquals(trim($expected), trim($actual));
+        self::assertSame(trim($expected), trim($actual));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
+     * @throws ExceptionInterface
      */
     public function testRenderingWithPageClassToLi(): void
     {
@@ -897,17 +790,15 @@ final class MenuTest extends AbstractTest
         $expected = $this->getExpected('menu/addclasstolistitem_as_true.html');
         $actual   = $this->helper->renderMenu($nav2, $options);
 
-        self::assertEquals(trim($expected), trim($actual));
+        self::assertSame(trim($expected), trim($actual));
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\BadMethodCallException
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws BadMethodCallException
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function testRenderDeepestMenuWithPageClassToLi(): void
     {
@@ -920,25 +811,46 @@ final class MenuTest extends AbstractTest
         $nav2 = clone $this->nav2;
 
         $page = $nav2->findOneByLabel('Site 2');
-        \assert($page instanceof PageInterface);
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page)
+            )
+        );
+
         self::assertInstanceOf(PageInterface::class, $page);
         $page->setClass('foobar');
 
         $expected = $this->getExpected('menu/onlyactivebranch_addclasstolistitem.html');
         $actual   = $this->helper->renderMenu($nav2, $options);
 
-        self::assertEquals(trim($expected), trim($actual));
+        self::assertSame(trim($expected), trim($actual));
     }
 
     /**
      * Returns the contens of the expected $file, normalizes newlines.
-     *
-     * @param string $file
-     *
-     * @return string
      */
     protected function getExpected(string $file): string
     {
         return str_replace(["\r\n", "\n", "\r", '##lb##'], ['##lb##', '##lb##', '##lb##', PHP_EOL], parent::getExpected($file));
+    }
+
+    private function setActive(string $label): void
+    {
+        $container = $this->helper->getContainer();
+
+        foreach ($container->findAllByActive(true) as $page) {
+            $page->setActive(false);
+        }
+
+        $p = $container->findOneByLabel($label);
+
+        if (!$p) {
+            return;
+        }
+
+        $p->setActive(true);
     }
 }

@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace Mezzio\Navigation\LaminasView;
 
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
@@ -25,9 +26,9 @@ final class ConfigProvider
     /**
      * Return general-purpose laminas-navigation configuration.
      *
-     * @return array
+     * @return array<string, array<string, array<string, string>>>
      */
-    public function __invoke()
+    public function __invoke(): array
     {
         return [
             'view_helpers' => $this->getViewHelperConfig(),
@@ -38,9 +39,9 @@ final class ConfigProvider
     /**
      * Return application-level dependency configuration.
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
-    public function getViewHelperConfig()
+    public function getViewHelperConfig(): array
     {
         return [
             'aliases' => [
@@ -65,9 +66,9 @@ final class ConfigProvider
     /**
      * Return application-level dependency configuration.
      *
-     * @return array
+     * @return array<string, array<string, string>>
      */
-    public function getDependencyConfig()
+    public function getDependencyConfig(): array
     {
         return [
             'factories' => [

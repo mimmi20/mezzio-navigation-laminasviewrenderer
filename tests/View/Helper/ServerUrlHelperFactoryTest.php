@@ -9,6 +9,7 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
 use Interop\Container\ContainerInterface;
@@ -16,25 +17,24 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function assert;
+use function sprintf;
 
 final class ServerUrlHelperFactoryTest extends TestCase
 {
-    /** @var ServerUrlHelperFactory */
-    private $factory;
+    private ServerUrlHelperFactory $factory;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->factory = new ServerUrlHelperFactory();
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     *
-     * @return void
+     * @throws Exception
      */
     public function testInvocationException(): void
     {
@@ -55,15 +55,13 @@ final class ServerUrlHelperFactoryTest extends TestCase
         );
         $this->expectExceptionCode(0);
 
-        /* @var ContainerInterface $container */
+        assert($container instanceof ContainerInterface);
         ($this->factory)($container);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testInvocation(): void
     {
@@ -81,7 +79,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
             ->with(BaseServerUrlHelper::class)
             ->willReturn($baseHelper);
 
-        \assert($container instanceof ContainerInterface);
+        assert($container instanceof ContainerInterface);
         $serverUrlHelper = ($this->factory)($container);
 
         self::assertInstanceOf(ServerUrlHelper::class, $serverUrlHelper);

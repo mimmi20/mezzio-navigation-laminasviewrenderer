@@ -9,30 +9,27 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView;
 
 use Mezzio\Navigation\LaminasView\ConfigProvider;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class ConfigProviderTest extends TestCase
 {
-    /** @var ConfigProvider */
-    private $provider;
+    private ConfigProvider $provider;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->provider = new ConfigProvider();
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testProviderDefinesExpectedFactoryServices(): void
     {
@@ -52,10 +49,8 @@ final class ConfigProviderTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @return void
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function testInvocationReturnsArrayWithDependencies(): void
     {

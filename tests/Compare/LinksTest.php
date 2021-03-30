@@ -9,9 +9,12 @@
  */
 
 declare(strict_types = 1);
+
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
+use ErrorException;
 use Laminas\Config\Config;
+use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\GenericResource;
@@ -21,14 +24,31 @@ use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
+use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\Navigation\Exception\ExceptionInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\FindRootInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
+use PHPUnit\Framework\Exception;
+use Psr\Container\ContainerExceptionInterface;
+use RecursiveIteratorIterator;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function array_key_exists;
+use function assert;
+use function count;
+use function get_class;
+use function is_array;
+use function sprintf;
+use function str_replace;
+
+use const PHP_EOL;
 
 /**
  * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links
@@ -41,59 +61,38 @@ final class LinksTest extends AbstractTest
 {
     /**
      * Class name for view helper to test
-     *
-     * @var string
      */
-    protected $helperName = Navigation\Links::class;
+    protected string $helperName = Navigation\Links::class;
 
     /**
      * View helper
      *
      * @var Navigation\Links
      */
-    protected $helper;
+    protected ViewHelperInterface $helper;
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
-     * @throws \Laminas\Config\Exception\RuntimeException
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws RuntimeException
+     * @throws ErrorException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $logger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emerg');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::never())
-            ->method('err');
-        $logger->expects(self::never())
-            ->method('warn');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
+        assert($plugin instanceof ViewHelperPluginManager);
+
+        $this->serviceManager->get(LaminasViewRenderer::class);
 
         $baseUrlHelper = $this->serviceManager->get(BaseServerUrlHelper::class);
-        \assert(
+        assert(
             $baseUrlHelper instanceof BaseServerUrlHelper,
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
@@ -103,7 +102,7 @@ final class LinksTest extends AbstractTest
         );
 
         $headLinkHelper = $plugin->get(HeadLink::class);
-        \assert(
+        assert(
             $headLinkHelper instanceof HeadLink,
             sprintf(
                 '$headLinkHelper should be an Instance of %s, but was %s',
@@ -112,10 +111,12 @@ final class LinksTest extends AbstractTest
             )
         );
 
+        assert(null !== $headLinkHelper->getView(), 'View was not set into Headlink Helper');
+
         // create helper
         $this->helper = new Navigation\Links(
             $this->serviceManager,
-            $logger,
+            $this->serviceManager->get(Logger::class),
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $helperPluginManager->get(FindRootInterface::class),
@@ -132,53 +133,45 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
         $returned = $this->helper->__invoke();
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav1, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
         $returned = $this->helper->__invoke($this->nav2);
-        self::assertEquals($this->helper, $returned);
-        self::assertEquals($this->nav2, $returned->getContainer());
+        self::assertSame($this->helper, $returned);
+        self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     *
-     * @return void
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
-        self::assertEquals('', $this->helper->render());
+        self::assertSame('', $this->helper->render());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function testDetectRelationFromStringPropertyOfActivePage(): void
     {
@@ -204,17 +197,15 @@ final class LinksTest extends AbstractTest
             'label' => $found->getLabel(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function testDetectRelationFromPageInstancePropertyOfActivePage(): void
     {
@@ -243,17 +234,15 @@ final class LinksTest extends AbstractTest
             'label' => $found->getLabel(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDetectRelationFromArrayPropertyOfActivePage(): void
     {
@@ -282,17 +271,15 @@ final class LinksTest extends AbstractTest
             'label' => $found->getLabel(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDetectRelationFromConfigInstancePropertyOfActivePage(): void
     {
@@ -321,17 +308,15 @@ final class LinksTest extends AbstractTest
             'label' => $found->getLabel(),
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testExtractingRelationsFromPageProperties(): void
     {
@@ -381,17 +366,15 @@ final class LinksTest extends AbstractTest
             $active->removeRel($type);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindStartPageByTraversal(): void
     {
@@ -401,17 +384,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Home';
         $actual   = $this->helper->findRelStart($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDoNotFindStartWhenGivenPageIsTheFirstPage(): void
     {
@@ -424,13 +405,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindNextPageByTraversalShouldFindChildPage(): void
     {
@@ -440,17 +419,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Page 2.1';
         $actual   = $this->helper->findRelNext($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindNextPageByTraversalShouldFindSiblingPage(): void
     {
@@ -460,17 +437,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Page 2.2';
         $actual   = $this->helper->findRelNext($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindNextPageByTraversalShouldWrap(): void
     {
@@ -480,17 +455,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Page 2.3';
         $actual   = $this->helper->findRelNext($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindPrevPageByTraversalShouldFindParentPage(): void
     {
@@ -500,17 +473,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Page 2';
         $actual   = $this->helper->findRelPrev($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindPrevPageByTraversalShouldFindSiblingPage(): void
     {
@@ -520,17 +491,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Page 2.1';
         $actual   = $this->helper->findRelPrev($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindPrevPageByTraversalShouldWrap(): void
     {
@@ -540,17 +509,15 @@ final class LinksTest extends AbstractTest
 
         $expected = 'Page 2.2.2';
         $actual   = $this->helper->findRelPrev($active)->getLabel();
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testShouldFindChaptersFromFirstLevelOfPagesInContainer(): void
     {
@@ -566,17 +533,15 @@ final class LinksTest extends AbstractTest
             $actual[] = $page->getLabel();
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindingChaptersShouldExcludeSelfIfChapter(): void
     {
@@ -592,17 +557,15 @@ final class LinksTest extends AbstractTest
             $actual[] = $page->getLabel();
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindSectionsWhenActiveChapterPage(): void
     {
@@ -617,17 +580,15 @@ final class LinksTest extends AbstractTest
             $actual[] = $page->getLabel();
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDoNotFindSectionsWhenActivePageIsASection(): void
     {
@@ -640,13 +601,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDoNotFindSectionsWhenActivePageIsASubsection(): void
     {
@@ -659,13 +618,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindSubsectionWhenActivePageIsSection(): void
     {
@@ -681,17 +638,15 @@ final class LinksTest extends AbstractTest
             $actual[] = $page->getLabel();
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDoNotFindSubsectionsWhenActivePageIsASubSubsection(): void
     {
@@ -704,13 +659,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testDoNotFindSubsectionsWhenActivePageIsAChapter(): void
     {
@@ -723,13 +676,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindRevSectionWhenPageIsSection(): void
     {
@@ -738,17 +689,15 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRevSection($active);
-        self::assertEquals('Page 2', $found->getLabel());
+        self::assertSame('Page 2', $found->getLabel());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindRevSubsectionWhenPageIsSubsection(): void
     {
@@ -757,18 +706,16 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRevSubsection($active);
-        self::assertEquals('Page 2.2', $found->getLabel());
+        self::assertSame('Page 2.2', $found->getLabel());
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testAclFiltersAwayPagesFromPageProperty(): void
     {
@@ -810,7 +757,7 @@ final class LinksTest extends AbstractTest
             'help' => false,
             'bookmark' => false,
         ];
-        $actual = [];
+        $actual   = [];
 
         foreach ($expected as $type => $discard) {
             $active->addRel($type, $samplePage);
@@ -826,18 +773,16 @@ final class LinksTest extends AbstractTest
             }
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testAclFiltersAwayPagesFromContainerSearch(): void
     {
@@ -851,9 +796,9 @@ final class LinksTest extends AbstractTest
         $this->helper->setRole('member');
 
         $container = $this->helper->getContainer();
-        $iterator  = new \RecursiveIteratorIterator(
+        $iterator  = new RecursiveIteratorIterator(
             $container,
-            \RecursiveIteratorIterator::SELF_FIRST
+            RecursiveIteratorIterator::SELF_FIRST
         );
         foreach ($iterator as $page) {
             $page->resource = 'protected';
@@ -895,17 +840,15 @@ final class LinksTest extends AbstractTest
             }
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindRelationMustSpecifyRelOrRev(): void
     {
@@ -923,13 +866,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testRenderLinkMustSpecifyRelOrRev(): void
     {
@@ -948,13 +889,11 @@ final class LinksTest extends AbstractTest
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testFindAllRelations(): void
     {
@@ -1001,51 +940,34 @@ final class LinksTest extends AbstractTest
         }
 
         // build actual result
-        $actual = $this->helper->findAllRelations($active);
+        $allRelations = $this->helper->findAllRelations($active);
+        $actual       = [];
 
-        foreach ($actual as $attrib => $relations) {
+        foreach ($allRelations as $attrib => $relations) {
+            if (!array_key_exists($attrib, $actual)) {
+                $actual[$attrib] = [];
+            }
+
             foreach ($relations as $type => $pages) {
+                if (!array_key_exists($type, $actual[$attrib])) {
+                    $actual[$attrib][$type] = [];
+                }
+
                 foreach ($pages as $key => $page) {
                     $actual[$attrib][$type][$key] = $page->getLabel();
                 }
             }
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @return array
-     */
-    private function getFlags(): array
-    {
-        return [
-            Navigation\Links::RENDER_ALTERNATE => 'alternate',
-            Navigation\Links::RENDER_STYLESHEET => 'stylesheet',
-            Navigation\Links::RENDER_START => 'start',
-            Navigation\Links::RENDER_NEXT => 'next',
-            Navigation\Links::RENDER_PREV => 'prev',
-            Navigation\Links::RENDER_CONTENTS => 'contents',
-            Navigation\Links::RENDER_INDEX => 'index',
-            Navigation\Links::RENDER_GLOSSARY => 'glossary',
-            Navigation\Links::RENDER_CHAPTER => 'chapter',
-            Navigation\Links::RENDER_SECTION => 'section',
-            Navigation\Links::RENDER_SUBSECTION => 'subsection',
-            Navigation\Links::RENDER_APPENDIX => 'appendix',
-            Navigation\Links::RENDER_HELP => 'help',
-            Navigation\Links::RENDER_BOOKMARK => 'bookmark',
-            Navigation\Links::RENDER_CUSTOM => 'canonical',
-        ];
-    }
-
-    /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testSingleRenderFlags(): void
     {
@@ -1067,13 +989,11 @@ final class LinksTest extends AbstractTest
             $this->helper->setRenderFlag($newFlag);
             $expectedOutput = '<link '
                               . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
-                              . 'rel="' . $type . '" '
-                              . '/>' . PHP_EOL
+                              . 'rel="' . $type . '">' . PHP_EOL
                             . '<link '
                               . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
-                              . 'rev="' . $type . '" '
-                              . '/>';
-            $actualOutput = $this->helper->render();
+                              . 'rev="' . $type . '">';
+            $actualOutput   = $this->helper->render();
 
             $expected[$type] = $expectedOutput;
             $actual[$type]   = $actualOutput;
@@ -1083,17 +1003,15 @@ final class LinksTest extends AbstractTest
             $active->removeRev($type);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function testRenderFlagBitwiseOr(): void
     {
@@ -1107,22 +1025,20 @@ final class LinksTest extends AbstractTest
         $active->setActive(true);
 
         // test data
-        $expected = '<link href="page2" rel="next" title="Page&#x20;2" />'
+        $expected = '<link href="page2" rel="next" title="Page&#x20;2">'
                   . PHP_EOL
-                  . '<link href="page1" rel="prev" title="Page&#x20;1" />';
-        $actual = $this->helper->render();
+                  . '<link href="page1" rel="prev" title="Page&#x20;1">';
+        $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ExceptionInterface
+     * @throws ErrorException
      */
     public function testIndenting(): void
     {
@@ -1137,22 +1053,20 @@ final class LinksTest extends AbstractTest
         $active->setActive(true);
 
         // build expected and actual result
-        $expected = '  <link href="page2" rel="next" title="Page&#x20;2" />'
+        $expected = '  <link href="page2" rel="next" title="Page&#x20;2">'
                   . PHP_EOL
-                  . '  <link href="page1" rel="prev" title="Page&#x20;1" />';
-        $actual = $this->helper->render();
+                  . '  <link href="page1" rel="prev" title="Page&#x20;1">';
+        $actual   = $this->helper->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testSetMaxDepth(): void
     {
@@ -1160,20 +1074,18 @@ final class LinksTest extends AbstractTest
         $this->helper->findOneByLabel('Page 2.3.3')->setActive(); // level 2
         $flag = Navigation\Links::RENDER_NEXT;
 
-        $expected = '<link href="page2&#x2F;page2_3&#x2F;page2_3_1" rel="next" title="Page&#x20;2.3.1" />';
+        $expected = '<link href="page2&#x2F;page2_3&#x2F;page2_3_1" rel="next" title="Page&#x20;2.3.1">';
         $actual   = $this->helper->setRenderFlag($flag)->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \ErrorException
-     *
-     * @return void
+     * @throws ErrorException
      */
     public function testSetMinDepth(): void
     {
@@ -1184,18 +1096,38 @@ final class LinksTest extends AbstractTest
         $expected = '';
         $actual   = $this->helper->setRenderFlag($flag)->render();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * Returns the contens of the expected $file, normalizes newlines
-     *
-     * @param string $file
-     *
-     * @return string
      */
     protected function getExpected(string $file): string
     {
         return str_replace("\n", PHP_EOL, parent::getExpected($file));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getFlags(): array
+    {
+        return [
+            Navigation\Links::RENDER_ALTERNATE => 'alternate',
+            Navigation\Links::RENDER_STYLESHEET => 'stylesheet',
+            Navigation\Links::RENDER_START => 'start',
+            Navigation\Links::RENDER_NEXT => 'next',
+            Navigation\Links::RENDER_PREV => 'prev',
+            Navigation\Links::RENDER_CONTENTS => 'contents',
+            Navigation\Links::RENDER_INDEX => 'index',
+            Navigation\Links::RENDER_GLOSSARY => 'glossary',
+            Navigation\Links::RENDER_CHAPTER => 'chapter',
+            Navigation\Links::RENDER_SECTION => 'section',
+            Navigation\Links::RENDER_SUBSECTION => 'subsection',
+            Navigation\Links::RENDER_APPENDIX => 'appendix',
+            Navigation\Links::RENDER_HELP => 'help',
+            Navigation\Links::RENDER_BOOKMARK => 'bookmark',
+            Navigation\Links::RENDER_CUSTOM => 'canonical',
+        ];
     }
 }
