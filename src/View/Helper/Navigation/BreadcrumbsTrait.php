@@ -28,8 +28,10 @@ use function array_reverse;
 use function assert;
 use function count;
 use function get_class;
+use function gettype;
 use function is_array;
 use function is_int;
+use function is_object;
 use function is_string;
 use function mb_strlen;
 use function sprintf;
@@ -180,7 +182,7 @@ trait BreadcrumbsTrait
             sprintf(
                 '$active should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($active)
+                is_object($active) ? get_class($active) : gettype($active)
             )
         );
 
@@ -357,7 +359,7 @@ trait BreadcrumbsTrait
                 sprintf(
                     '$active should be an Instance of %s, but was %s',
                     PageInterface::class,
-                    get_class($active)
+                    is_object($active) ? get_class($active) : gettype($active)
                 )
             );
 
@@ -379,6 +381,11 @@ trait BreadcrumbsTrait
             }
 
             $model['pages'] = array_reverse($model['pages']);
+        }
+
+        if ($partial instanceof ModelInterface) {
+            $model   = $partial->setVariables($model);
+            $partial = $model->getTemplate();
         }
 
         return $this->renderer->render($partial, $model);

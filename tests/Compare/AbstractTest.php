@@ -282,7 +282,8 @@ abstract class AbstractTest extends TestCase
             'Home' => 'Hjem',
             'Go home' => 'Gå hjem',
         ];
-        $translator           = new Translator();
+
+        $translator = new Translator();
         $translator->getPluginManager()->setService('default', $loader);
         $translator->addTranslationFile('default', null);
 

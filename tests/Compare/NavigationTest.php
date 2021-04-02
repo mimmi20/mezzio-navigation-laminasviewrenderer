@@ -32,6 +32,8 @@ use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
+use function assert;
+use function is_string;
 use function spl_object_hash;
 use function str_replace;
 
@@ -131,7 +133,9 @@ final class NavigationTest extends AbstractTest
     {
         // setup
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole($acl['role']);
 
         $accepted = $this->helper->accept(
@@ -266,7 +270,9 @@ final class NavigationTest extends AbstractTest
     {
         // setup
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole($acl['role']);
 
         $expected = $this->getExpected('menu/acl.html');
@@ -285,7 +291,9 @@ final class NavigationTest extends AbstractTest
     {
         // setup
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole($acl['role']);
         $this->helper->setInjectAuthorization(false);
 
@@ -333,6 +341,7 @@ final class NavigationTest extends AbstractTest
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
         $acl = $this->createMock(AuthorizationInterface::class);
+        assert($acl instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl);
         self::assertSame($acl, $this->helper->getAuthorization());
     }
