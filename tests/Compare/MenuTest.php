@@ -18,6 +18,7 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\Exception\BadMethodCallException;
@@ -35,6 +36,7 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function assert;
 use function get_class;
+use function is_string;
 use function rtrim;
 use function sprintf;
 use function str_replace;
@@ -223,7 +225,9 @@ final class MenuTest extends AbstractTest
     public function testUseAclRoleAsString(): void
     {
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole('member');
 
         $expected = $this->getExpected('menu/acl_string.html');
@@ -241,7 +245,9 @@ final class MenuTest extends AbstractTest
     public function testFilterOutPagesBasedOnAcl(): void
     {
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole($acl['role']);
 
         $expected = $this->getExpected('menu/acl.html');
@@ -259,7 +265,9 @@ final class MenuTest extends AbstractTest
     public function testDisablingAcl(): void
     {
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole($acl['role']);
         $this->helper->setUseAuthorization(false);
 

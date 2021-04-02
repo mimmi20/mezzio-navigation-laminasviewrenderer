@@ -17,6 +17,7 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
+use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
@@ -31,6 +32,7 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function assert;
 use function get_class;
+use function is_string;
 use function mb_strlen;
 use function mb_substr;
 use function sprintf;
@@ -256,7 +258,9 @@ final class BreadcrumbsTest extends AbstractTest
     public function testUseAclResourceFromPages(): void
     {
         $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
         $this->helper->setRole($acl['role']);
 
         $expected = $this->getExpected('bc/acl.html');

@@ -33,6 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 
 use function array_diff;
+use function array_key_exists;
 use function array_keys;
 use function array_merge;
 use function array_search;
@@ -43,6 +44,7 @@ use function get_class;
 use function in_array;
 use function is_array;
 use function is_int;
+use function is_string;
 use function mb_strlen;
 use function mb_strtolower;
 use function method_exists;
@@ -172,7 +174,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         $active = $this->findActive($container);
 
-        if ([] === $active) {
+        if (!array_key_exists('page', $active) || !$active['page'] instanceof PageInterface) {
             // no active page
             return '';
         }
@@ -193,7 +195,15 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         }
 
         foreach ($result as $attrib => $types) {
+            if (!is_string($attrib)) {
+                continue;
+            }
+
             foreach ($types as $relation => $pages) {
+                if (!is_string($relation)) {
+                    continue;
+                }
+
                 foreach ($pages as $page) {
                     $r = $this->renderLink($page, $attrib, $relation);
 
@@ -251,6 +261,22 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             'href' => $href,
             'title' => $page->getLabel(),
         ];
+
+        $otherAttributes = ['type', 'hreflang', 'charset', 'lang', 'media'];
+
+        foreach ($otherAttributes as $otherAttributeName) {
+            try {
+                $otherAttributeValue = $page->get($otherAttributeName);
+            } catch (InvalidArgumentException $e) {
+                continue;
+            }
+
+            if (null === $otherAttributeValue) {
+                continue;
+            }
+
+            $attribs[$otherAttributeName] = $otherAttributeValue;
+        }
 
         return $this->headLink->itemToString((object) $attribs);
     }

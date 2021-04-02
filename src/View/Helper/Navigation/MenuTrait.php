@@ -15,6 +15,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtmlAttr;
+use Laminas\View\Model\ModelInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
@@ -51,7 +52,7 @@ trait MenuTrait
     /**
      * Partial view script to use for rendering menu.
      *
-     * @var array<int, string>|string|null
+     * @var array<int, string>|ModelInterface|string|null
      */
     private $partial;
 
@@ -133,11 +134,11 @@ trait MenuTrait
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|string|null $partial   [optional] partial view script to use.
-     *                                                  Default is to use the partial registered in the helper. If an array
-     *                                                  is given, the first value is used for the partial view script.
+     * @param ContainerInterface|string|null                $container [optional] container to pass to view
+     *                                                                 script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
+     *                                                                 Default is to use the partial registered in the helper. If an array
+     *                                                                 is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -256,12 +257,12 @@ trait MenuTrait
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array<int, string>|string|null $partial partial view script or null. If an array
-     *                                                is given, the first value is used for the partial view script.
+     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array
+     *                                                               is given, the first value is used for the partial view script.
      */
     public function setPartial($partial): self
     {
-        if (null === $partial || is_string($partial) || is_array($partial)) {
+        if (null === $partial || is_string($partial) || is_array($partial) || $partial instanceof ModelInterface) {
             $this->partial = $partial;
         }
 
@@ -271,7 +272,7 @@ trait MenuTrait
     /**
      * Returns partial view script to use for rendering menu.
      *
-     * @return array<int, string>|string|null
+     * @return array<int, string>|ModelInterface|string|null
      */
     public function getPartial()
     {
@@ -365,13 +366,14 @@ trait MenuTrait
     /**
      * Normalizes given render options.
      *
-     * @param array<string, int|string> $options [optional] options to normalize
+     * @param array<string, bool|int|string|null> $options [optional] options to normalize
      *
      * @return array<string, bool|int|string|null>
      */
     private function normalizeOptions(array $options = []): array
     {
         if (isset($options['indent'])) {
+            assert(is_int($options['indent']) || is_string($options['indent']));
             $options['indent'] = $this->getWhitespace($options['indent']);
         } else {
             $options['indent'] = $this->getIndent();
@@ -437,9 +439,9 @@ trait MenuTrait
     /**
      * Render a partial with the given "model".
      *
-     * @param array<mixed>                   $params
-     * @param ContainerInterface|string|null $container
-     * @param array<int, string>|string|null $partial
+     * @param array<mixed>                                  $params
+     * @param ContainerInterface|string|null                $container
+     * @param array<int, string>|ModelInterface|string|null $partial
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -475,15 +477,20 @@ trait MenuTrait
 
         $model = array_merge($params, ['container' => $container]);
 
+        if ($partial instanceof ModelInterface) {
+            $model   = $partial->setVariables($model);
+            $partial = $model->getTemplate();
+        }
+
         return $this->renderer->render($partial, $model);
     }
 
     /**
-     * @param array<string, int|PageInterface> $found
+     * @param array<string, int|PageInterface|null> $found
      */
     private function isActiveBranch(array $found, PageInterface $page, ?int $maxDepth): bool
     {
-        if ($found) {
+        if (array_key_exists('page', $found) && $found['page'] instanceof PageInterface) {
             $foundPage = $found['page'];
 
             assert(

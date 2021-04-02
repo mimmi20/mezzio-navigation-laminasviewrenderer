@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Exception;
+use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 
@@ -174,8 +175,8 @@ interface MenuInterface extends ViewHelperInterface
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array<int, string>|string|null $partial partial view script or null. If an array
-     *                                                is given, the first value is used for the partial view script.
+     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array
+     *                                                               is given, the first value is used for the partial view script.
      *
      * @return self
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint

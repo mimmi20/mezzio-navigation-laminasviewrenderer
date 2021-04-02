@@ -20,8 +20,12 @@ use RecursiveIteratorIterator;
 
 use function assert;
 use function get_class;
+use function gettype;
 use function implode;
+use function is_bool;
 use function is_int;
+use function is_object;
+use function is_string;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
@@ -60,6 +64,16 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         }
 
         $options = $this->normalizeOptions($options);
+
+        assert(is_string($options['ulClass']));
+        assert(is_string($options['liClass']));
+        assert(is_string($options['indent']));
+        assert(is_int($options['minDepth']));
+        assert(is_int($options['maxDepth']) || null === $options['maxDepth']);
+        assert(is_bool($options['onlyActiveBranch']));
+        assert(is_bool($options['escapeLabels']));
+        assert(is_bool($options['addClassToListItem']));
+        assert(is_string($options['liActiveClass']));
 
         if ($options['onlyActiveBranch'] && !$options['renderParents']) {
             return $this->renderDeepestMenu(
@@ -181,7 +195,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             sprintf(
                 '$active[\'page\'] should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($active['page'])
+                is_object($active['page']) ? get_class($active['page']) : gettype($active['page'])
             )
         );
 
@@ -208,7 +222,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             sprintf(
                 '$active[\'page\'] should be an Instance of %s, but was %s',
                 ContainerInterface::class,
-                get_class($active['page'])
+                is_object($active['page']) ? get_class($active['page']) : gettype($active['page'])
             )
         );
 

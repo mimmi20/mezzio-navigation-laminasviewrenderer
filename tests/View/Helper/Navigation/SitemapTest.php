@@ -5674,7 +5674,7 @@ final class SitemapTest extends TestCase
 
         $time       = time();
         $changefreq = 'never';
-        $priority   = 0.9;
+        $priority   = '0.9';
         $xml        = '<xml />';
 
         $parentPage = new Uri();
@@ -5949,7 +5949,7 @@ final class SitemapTest extends TestCase
 
         $time       = time();
         $changefreq = 'never';
-        $priority   = 0.9;
+        $priority   = '0.9';
         $xml        = '<xml />';
 
         $parentPage = new Uri();

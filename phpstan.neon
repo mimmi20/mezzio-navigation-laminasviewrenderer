@@ -16,12 +16,18 @@ parameters:
   checkGenericClassInNonGenericObjectType: false
   checkMissingIterableValueType: false
   treatPhpDocTypesAsCertain: false
-  excludes_analyse:
-    - */tests/*/data/*
+#  excludes_analyse:
+#    - */tests/*
   ignoreErrors:
     - '~is not subtype of Throwable~'
     - '~PHPDoc tag @throws with type .* is not compatible with parent~'
-    - '~Parameter .* of (method|function) .* expects .*, .* given~'
     - '~Call to an undefined method .*::find(All|One)By.*\(\)~'
     - '~Call to an undefined method .*::find(Rel|Rev).*\(\)~'
     - '~Call to (static )?(method|function) .* with .* will always evaluate to (true|false)~'
+    - '~Parameter #1 \$uri of method Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Sitemap::setServerUrl\(\) expects Laminas\\Uri\\UriInterface\|string, array given~'
+    - '~Parameter #1 \$partial of method Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\(Breadcrumbs|Menu)::setPartial\(\) expects array<int, string>\|Laminas\\View\\Model\\ModelInterface\|string\|null, int given~'
+    - '~Parameter #1 \$configOrContainerInstance of method Laminas\\View\\HelperPluginManager::__construct\(\) expects Interop\\Container\\ContainerInterface\|Laminas\\View\\ConfigInterface\|null, Interop\\Container\\ContainerInterface\|Laminas\\ServiceManager\\ConfigInterface\|null given~'
+    - '~Parameter #1 \$message of method Laminas\\Log\\Logger::.* expects string, .*(Exception|Throwable) given~'
+    - '~Parameter #1 \$value of method Laminas\\Validator\\Sitemap\\Lastmod::isValid\(\) expects string, string\|false given~'
+    - '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, array\(.*, string\) given~'
+    - '~Parameter #2 \$filename of method Laminas\\I18n\\Translator\\Translator::addTranslationFile\(\) expects string, null given~'
