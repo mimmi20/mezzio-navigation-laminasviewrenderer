@@ -17,6 +17,7 @@ use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 
+use function array_key_exists;
 use function is_array;
 
 final class PluginManagerFactory implements FactoryInterface
@@ -46,12 +47,12 @@ final class PluginManagerFactory implements FactoryInterface
 
         $config = $container->get('config');
 
-        // If we do not have novum-interface configuration, nothing more to do
-        if (!isset($config['navigation_helpers']) || !is_array($config['navigation_helpers'])) {
+        // If we do not have navigation helper configuration, nothing more to do
+        if (!array_key_exists('navigation_helpers', $config) || !is_array($config['navigation_helpers'])) {
             return $pluginManager;
         }
 
-        // Wire service configuration for identity-interfaces
+        // Wire service configuration for navigation helpers
         (new Config($config['navigation_helpers']))->configureServiceManager($pluginManager);
 
         return $pluginManager;

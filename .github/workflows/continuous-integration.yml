@@ -7,7 +7,7 @@ on:
 name: "Continuous Integration"
 
 env:
-  PHP_EXTENSIONS: "opcache, intl, mbstring, dom"
+  PHP_EXTENSIONS: "opcache, intl, libxml, mbstring, dom"
   PHP_INI_VALUES: "opcache.enable=1, opcache.enable_cli=1, zend.assertions=1, assert.exception=On"
 
 jobs:
@@ -396,4 +396,4 @@ jobs:
           flags: "phpunit,php-${{ matrix.php-version }},${{ matrix.coverage-drivers }}"
 
       - name: "Run mutation tests with infection/infection"
-        run: "vendor/bin/infection --min-covered-msi=78 --min-msi=78 --coverage=.build/coverage"
+        run: "vendor/bin/infection --min-covered-msi=84 --min-msi=80 --coverage=.build/coverage"

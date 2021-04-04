@@ -110,7 +110,7 @@ trait HelperTrait
      *
      * @throws Exception\InvalidArgumentException
      */
-    final public function __invoke($container = null): self
+    public function __invoke($container = null): self
     {
         if (null !== $container) {
             $this->setContainer($container);
@@ -143,7 +143,7 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::__toString()}.
      */
-    final public function __toString(): string
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -163,7 +163,7 @@ trait HelperTrait
      *
      * @throws Exception\InvalidArgumentException
      */
-    final public function setContainer($container = null): self
+    public function setContainer($container = null): self
     {
         $this->container = $this->containerParser->parseContainer($container);
 
@@ -180,7 +180,7 @@ trait HelperTrait
      *
      * @return Navigation\ContainerInterface navigation container
      */
-    final public function getContainer(): Navigation\ContainerInterface
+    public function getContainer(): Navigation\ContainerInterface
     {
         if (null === $this->container) {
             $this->container = new Navigation\Navigation();
@@ -229,7 +229,7 @@ trait HelperTrait
      *
      * @throws Exception\InvalidArgumentException
      */
-    final public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
+    public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
     {
         $container = $this->containerParser->parseContainer($container);
 
@@ -256,7 +256,7 @@ trait HelperTrait
                 )
             );
 
-            $acceptHelper = $helperPluginManager->build(
+            $findActiveHelper = $helperPluginManager->build(
                 FindActiveInterface::class,
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
@@ -270,9 +270,9 @@ trait HelperTrait
             return [];
         }
 
-        assert($acceptHelper instanceof FindActiveInterface);
+        assert($findActiveHelper instanceof FindActiveInterface);
 
-        return $acceptHelper->find($container, $minDepth, $maxDepth);
+        return $findActiveHelper->find($container, $minDepth, $maxDepth);
     }
 
     // Iterator filter methods:
@@ -296,7 +296,7 @@ trait HelperTrait
      *
      * @return bool Whether page should be accepted
      */
-    final public function accept(PageInterface $page, bool $recursive = true): bool
+    public function accept(PageInterface $page, bool $recursive = true): bool
     {
         try {
             $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
@@ -346,7 +346,7 @@ trait HelperTrait
      *
      * @param AuthorizationInterface|null $authorization AuthorizationInterface object
      */
-    final public function setAuthorization(?AuthorizationInterface $authorization = null): self
+    public function setAuthorization(?AuthorizationInterface $authorization = null): self
     {
         $this->authorization = $authorization;
 
@@ -361,7 +361,7 @@ trait HelperTrait
      *
      * @return AuthorizationInterface|null AuthorizationInterface object or null
      */
-    final public function getAuthorization(): ?AuthorizationInterface
+    public function getAuthorization(): ?AuthorizationInterface
     {
         if (null === $this->authorization && null !== static::$defaultAuthorization) {
             return static::$defaultAuthorization;
@@ -375,7 +375,7 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::hasAuthorization()}.
      */
-    final public function hasAuthorization(): bool
+    public function hasAuthorization(): bool
     {
         return $this->authorization instanceof AuthorizationInterface
             || static::$defaultAuthorization instanceof AuthorizationInterface;
@@ -386,7 +386,7 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::hasContainer()}.
      */
-    final public function hasContainer(): bool
+    public function hasContainer(): bool
     {
         return null !== $this->container;
     }
@@ -397,7 +397,7 @@ trait HelperTrait
      *
      * @param int|string $indent
      */
-    final public function setIndent($indent): self
+    public function setIndent($indent): self
     {
         $this->indent = $this->getWhitespace($indent);
 
@@ -407,7 +407,7 @@ trait HelperTrait
     /**
      * Returns indentation
      */
-    final public function getIndent(): string
+    public function getIndent(): string
     {
         return $this->indent;
     }
@@ -417,7 +417,7 @@ trait HelperTrait
      *
      * @param int $maxDepth default is null, which sets no maximum depth
      */
-    final public function setMaxDepth(int $maxDepth): self
+    public function setMaxDepth(int $maxDepth): self
     {
         $this->maxDepth = $maxDepth;
 
@@ -427,7 +427,7 @@ trait HelperTrait
     /**
      * Returns maximum depth a page can have to be included when rendering
      */
-    final public function getMaxDepth(): ?int
+    public function getMaxDepth(): ?int
     {
         return $this->maxDepth;
     }
@@ -437,7 +437,7 @@ trait HelperTrait
      *
      * @param int $minDepth default is null, which sets no minimum depth
      */
-    final public function setMinDepth(int $minDepth): self
+    public function setMinDepth(int $minDepth): self
     {
         $this->minDepth = $minDepth;
 
@@ -447,7 +447,7 @@ trait HelperTrait
     /**
      * Returns minimum depth a page must have to be included when rendering
      */
-    final public function getMinDepth(): ?int
+    public function getMinDepth(): ?int
     {
         if (!is_int($this->minDepth) || 0 > $this->minDepth) {
             return 0;
@@ -459,7 +459,7 @@ trait HelperTrait
     /**
      * Render invisible items?
      */
-    final public function setRenderInvisible(bool $renderInvisible = true): self
+    public function setRenderInvisible(bool $renderInvisible = true): self
     {
         $this->renderInvisible = $renderInvisible;
 
@@ -469,7 +469,7 @@ trait HelperTrait
     /**
      * Return renderInvisible flag
      */
-    final public function getRenderInvisible(): bool
+    public function getRenderInvisible(): bool
     {
         return $this->renderInvisible;
     }
@@ -481,7 +481,7 @@ trait HelperTrait
      *
      * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
      */
-    final public function setRole(string $role): self
+    public function setRole(string $role): self
     {
         $this->role = $role;
 
@@ -494,7 +494,7 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::getRole()}.
      */
-    final public function getRole(): ?string
+    public function getRole(): ?string
     {
         if (null === $this->role && null !== static::$defaultRole) {
             return static::$defaultRole;
@@ -508,7 +508,7 @@ trait HelperTrait
      *
      * Implements {@link ViewHelperInterface::hasRole()}.
      */
-    final public function hasRole(): bool
+    public function hasRole(): bool
     {
         return null !== $this->role
             || null !== static::$defaultRole;
@@ -518,7 +518,7 @@ trait HelperTrait
      * Sets whether Authorization should be used
      * Implements {@link ViewHelperInterface::setUseAuthorization()}.
      */
-    final public function setUseAuthorization(bool $useAuthorization = true): self
+    public function setUseAuthorization(bool $useAuthorization = true): self
     {
         $this->useAuthorization = $useAuthorization;
 
@@ -529,12 +529,12 @@ trait HelperTrait
      * Returns whether Authorization should be used
      * Implements {@link ViewHelperInterface::getUseAuthorization()}.
      */
-    final public function getUseAuthorization(): bool
+    public function getUseAuthorization(): bool
     {
         return $this->useAuthorization;
     }
 
-    final public function getServiceLocator(): ContainerInterface
+    public function getServiceLocator(): ContainerInterface
     {
         return $this->serviceLocator;
     }
@@ -547,7 +547,7 @@ trait HelperTrait
      * @param AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which
      *                                                   sets no Authorization object.
      */
-    final public static function setDefaultAuthorization(?AuthorizationInterface $authorization = null): void
+    public static function setDefaultAuthorization(?AuthorizationInterface $authorization = null): void
     {
         static::$defaultAuthorization = $authorization;
     }
@@ -559,7 +559,7 @@ trait HelperTrait
      * @param string|null $role [optional] role to set. Expects null or string. Default is null, which
      *                          sets no default role.
      */
-    final public static function setDefaultRole(?string $role = null): void
+    public static function setDefaultRole(?string $role = null): void
     {
         static::$defaultRole = $role;
     }

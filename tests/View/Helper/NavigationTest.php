@@ -127,6 +127,77 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
+    public function testSetPluginManager2(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $view = $this->createMock(RendererInterface::class);
+
+        $pluginManager = $this->getMockBuilder(HelperPluginManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pluginManager->expects(self::once())
+            ->method('setRenderer')
+            ->with($view);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
+
+        assert($view instanceof RendererInterface);
+        $helper->setView($view);
+
+        assert($pluginManager instanceof HelperPluginManager);
+        $helper->setPluginManager($pluginManager);
+
+        self::assertSame($view, $helper->getView());
+        self::assertSame($serviceLocator, $helper->getServiceLocator());
+    }
+
+    /**
+     * @throws Exception
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testSetInjectAuthorization(): void
     {
         $logger = $this->getMockBuilder(Logger::class)
