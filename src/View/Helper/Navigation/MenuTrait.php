@@ -411,23 +411,23 @@ trait MenuTrait
             $options['maxDepth'] = $this->getMaxDepth();
         }
 
-        if (!isset($options['onlyActiveBranch'])) {
+        if (!array_key_exists('onlyActiveBranch', $options)) {
             $options['onlyActiveBranch'] = $this->getOnlyActiveBranch();
         }
 
-        if (!isset($options['escapeLabels'])) {
-            $options['escapeLabels'] = $this->escapeLabels;
+        if (!array_key_exists('escapeLabels', $options)) {
+            $options['escapeLabels'] = $this->getEscapeLabels();
         }
 
-        if (!isset($options['renderParents'])) {
+        if (!array_key_exists('renderParents', $options)) {
             $options['renderParents'] = $this->getRenderParents();
         }
 
-        if (!isset($options['addClassToListItem'])) {
+        if (!array_key_exists('addClassToListItem', $options)) {
             $options['addClassToListItem'] = $this->getAddClassToListItem();
         }
 
-        if (isset($options['liActiveClass']) && null !== $options['liActiveClass']) {
+        if (array_key_exists('liActiveClass', $options) && null !== $options['liActiveClass']) {
             $options['liActiveClass'] = (string) $options['liActiveClass'];
         } else {
             $options['liActiveClass'] = $this->getLiActiveClass();

@@ -5100,6 +5100,228 @@ final class SitemapTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidationException(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($parentPage)
+            ->willReturn(true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::once())
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::once())
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . 'test' . $parentUri);
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlNode = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::never())
+            ->method('appendChild');
+
+        $urlSet = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom = $this->getMockBuilder(DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::exactly(2))
+            ->method('createElementNS')
+            ->withConsecutive(
+                [SitemapInterface::SITEMAP_NS, 'urlset'],
+                [SitemapInterface::SITEMAP_NS, 'url']
+            )
+            ->willReturnOnConsecutiveCalls(
+                $urlSet,
+                $urlNode
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->getMockBuilder(Loc::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . 'test' . $parentUri)
+            ->willThrowException(new \Laminas\Validator\Exception\RuntimeException('test'));
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('An error occured while validating an URL for Sitemap XML: "%s"', $serverUrl . 'test' . $parentUri));
+        $this->expectExceptionCode(0);
+
+        $helper->getDomSitemap();
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmod(): void
@@ -5362,6 +5584,1084 @@ final class SitemapTest extends TestCase
             ->method('isValid')
             ->with($priority)
             ->willReturn(true);
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::assertSame($dom, $helper->getDomSitemap());
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmod(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = '0.9';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(3))
+            ->method('accept')
+            ->withConsecutive([$parentPage], [$page1], [$page2])
+            ->willReturnOnConsecutiveCalls(true, false, true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(3))
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(3))
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . 'test' . $parentUri);
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
+        $urlPriority   = $this->createMock(DOMElement::class);
+
+        $urlNode = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::exactly(3))
+            ->method('appendChild')
+            ->withConsecutive([$urlLoc], [$urlChangefreq], [$urlPriority]);
+
+        $urlSet = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom = $this->getMockBuilder(DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::exactly(5))
+            ->method('createElementNS')
+            ->withConsecutive(
+                [SitemapInterface::SITEMAP_NS, 'urlset'],
+                [SitemapInterface::SITEMAP_NS, 'url'],
+                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
+                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq],
+                [SitemapInterface::SITEMAP_NS, 'priority', $priority]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $urlSet,
+                $urlNode,
+                $urlLoc,
+                $urlChangefreq,
+                $urlPriority
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->getMockBuilder(Loc::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . 'test' . $parentUri)
+            ->willReturn(true);
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lastmodValidator->expects(self::once())
+            ->method('isValid')
+            ->with(date('c', $time))
+            ->willReturn(false);
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $changefreqValidator->expects(self::once())
+            ->method('isValid')
+            ->with($changefreq)
+            ->willReturn(true);
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->getMockBuilder(Priority::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $priorityValidator->expects(self::once())
+            ->method('isValid')
+            ->with($priority)
+            ->willReturn(true);
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::assertSame($dom, $helper->getDomSitemap());
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmodException(): void
+    {
+        $exception = new \Laminas\Validator\Exception\RuntimeException('test');
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::once())
+            ->method('err')
+            ->with($exception);
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = '0.9';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(3))
+            ->method('accept')
+            ->withConsecutive([$parentPage], [$page1], [$page2])
+            ->willReturnOnConsecutiveCalls(true, false, true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(3))
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(3))
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . 'test' . $parentUri);
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
+        $urlPriority   = $this->createMock(DOMElement::class);
+
+        $urlNode = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::exactly(3))
+            ->method('appendChild')
+            ->withConsecutive([$urlLoc], [$urlChangefreq], [$urlPriority]);
+
+        $urlSet = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom = $this->getMockBuilder(DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::exactly(5))
+            ->method('createElementNS')
+            ->withConsecutive(
+                [SitemapInterface::SITEMAP_NS, 'urlset'],
+                [SitemapInterface::SITEMAP_NS, 'url'],
+                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
+                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq],
+                [SitemapInterface::SITEMAP_NS, 'priority', $priority]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $urlSet,
+                $urlNode,
+                $urlLoc,
+                $urlChangefreq,
+                $urlPriority
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->getMockBuilder(Loc::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . 'test' . $parentUri)
+            ->willReturn(true);
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lastmodValidator->expects(self::once())
+            ->method('isValid')
+            ->with(date('c', $time))
+            ->willThrowException($exception);
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $changefreqValidator->expects(self::once())
+            ->method('isValid')
+            ->with($changefreq)
+            ->willReturn(true);
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->getMockBuilder(Priority::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $priorityValidator->expects(self::once())
+            ->method('isValid')
+            ->with($priority)
+            ->willReturn(true);
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::assertSame($dom, $helper->getDomSitemap());
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmodAndChangeFreq(): void
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::never())
+            ->method('err');
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = '0.9';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(3))
+            ->method('accept')
+            ->withConsecutive([$parentPage], [$page1], [$page2])
+            ->willReturnOnConsecutiveCalls(true, false, true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(3))
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(3))
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . 'test' . $parentUri);
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlLoc = $this->createMock(DOMElement::class);
+
+        $urlNode = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::once())
+            ->method('appendChild')
+            ->with($urlLoc);
+
+        $urlSet = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom = $this->getMockBuilder(DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::exactly(3))
+            ->method('createElementNS')
+            ->withConsecutive(
+                [SitemapInterface::SITEMAP_NS, 'urlset'],
+                [SitemapInterface::SITEMAP_NS, 'url'],
+                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $urlSet,
+                $urlNode,
+                $urlLoc
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->getMockBuilder(Loc::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . 'test' . $parentUri)
+            ->willReturn(true);
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lastmodValidator->expects(self::once())
+            ->method('isValid')
+            ->with(date('c', $time))
+            ->willReturn(false);
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $changefreqValidator->expects(self::once())
+            ->method('isValid')
+            ->with($changefreq)
+            ->willReturn(false);
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->getMockBuilder(Priority::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $priorityValidator->expects(self::once())
+            ->method('isValid')
+            ->with($priority)
+            ->willReturn(false);
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::assertSame($dom, $helper->getDomSitemap());
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmodExceptionAndChangeFreqException(): void
+    {
+        $exception1 = new \Laminas\Validator\Exception\RuntimeException('test');
+        $exception2 = new \Laminas\Validator\Exception\RuntimeException('test');
+        $exception3 = new \Laminas\Validator\Exception\RuntimeException('test');
+
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger->expects(self::never())
+            ->method('emerg');
+        $logger->expects(self::never())
+            ->method('alert');
+        $logger->expects(self::never())
+            ->method('crit');
+        $logger->expects(self::exactly(3))
+            ->method('err')
+            ->withConsecutive([$exception1], [$exception2], [$exception3]);
+        $logger->expects(self::never())
+            ->method('warn');
+        $logger->expects(self::never())
+            ->method('notice');
+        $logger->expects(self::never())
+            ->method('info');
+        $logger->expects(self::never())
+            ->method('debug');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = '0.9';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page1)
+            )
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                get_class($page2)
+            )
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $acceptHelper->expects(self::exactly(3))
+            ->method('accept')
+            ->withConsecutive([$parentPage], [$page1], [$page2])
+            ->willReturnOnConsecutiveCalls(true, false, true);
+
+        $auth = $this->getMockBuilder(AuthorizationInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $helperPluginManager->expects(self::exactly(3))
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ]
+            )
+            ->willReturn($acceptHelper);
+
+        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::exactly(3))
+            ->method('get')
+            ->with(PluginManager::class)
+            ->willReturn($helperPluginManager);
+
+        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->getMockBuilder(BasePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . 'test' . $parentUri);
+
+        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerParser->expects(self::exactly(2))
+            ->method('parseContainer')
+            ->withConsecutive([$container], [null])
+            ->willReturnOnConsecutiveCalls($container, null);
+
+        assert($serviceLocator instanceof ContainerInterface);
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($basePath instanceof BasePath);
+        assert($escaper instanceof EscapeHtml);
+        assert($serverUrlHelper instanceof ServerUrlHelper);
+        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlLoc        = $this->createMock(DOMElement::class);
+        $urlChangefreq = $this->createMock(DOMElement::class);
+        $urlPriority   = $this->createMock(DOMElement::class);
+
+        $urlNode = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlNode->expects(self::once())
+            ->method('appendChild')
+            ->with($urlLoc);
+
+        $urlSet = $this->getMockBuilder(DOMElement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom = $this->getMockBuilder(DOMDocument::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dom->expects(self::exactly(3))
+            ->method('createElementNS')
+            ->withConsecutive(
+                [SitemapInterface::SITEMAP_NS, 'urlset'],
+                [SitemapInterface::SITEMAP_NS, 'url'],
+                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $urlSet,
+                $urlNode,
+                $urlLoc
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->getMockBuilder(Loc::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . 'test' . $parentUri)
+            ->willReturn(true);
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $lastmodValidator->expects(self::once())
+            ->method('isValid')
+            ->with(date('c', $time))
+            ->willThrowException($exception1);
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $changefreqValidator->expects(self::once())
+            ->method('isValid')
+            ->with($changefreq)
+            ->willThrowException($exception2);
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->getMockBuilder(Priority::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $priorityValidator->expects(self::once())
+            ->method('isValid')
+            ->with($priority)
+            ->willThrowException($exception3);
 
         assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);

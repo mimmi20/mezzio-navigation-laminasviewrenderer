@@ -13,9 +13,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
-use ErrorException;
 use Laminas\Log\Logger;
-use Laminas\Stdlib\ErrorHandler;
 use Laminas\Uri;
 use Laminas\Uri\Exception\InvalidArgumentException;
 use Laminas\Uri\Exception\InvalidUriException;
@@ -40,9 +38,13 @@ use RecursiveIteratorIterator;
 use function assert;
 use function date;
 use function get_class;
+use function implode;
 use function in_array;
 use function is_int;
 use function is_string;
+use function libxml_clear_errors;
+use function libxml_get_errors;
+use function libxml_use_internal_errors;
 use function mb_substr;
 use function preg_match;
 use function rtrim;
@@ -50,6 +52,9 @@ use function sprintf;
 use function strtotime;
 use function trim;
 
+use const LIBXML_ERR_ERROR;
+use const LIBXML_ERR_FATAL;
+use const LIBXML_ERR_WARNING;
 use const PHP_EOL;
 
 /**
@@ -126,11 +131,18 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         $this->escaper         = $escaper;
         $this->serverUrlHelper = $serverUrlHelper;
 
+        libxml_use_internal_errors(true);
+
         $this->dom                 = new DOMDocument('1.0', 'UTF-8');
         $this->locValidator        = new Loc();
         $this->lastmodValidator    = new Lastmod();
         $this->priorityValidator   = new Priority();
         $this->changefreqValidator = new Changefreq();
+    }
+
+    public function __destruct()
+    {
+        libxml_clear_errors();
     }
 
     /**
@@ -363,22 +375,44 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
         // validate using schema if specified
         if ($this->getUseSchemaValidation()) {
-            ErrorHandler::start();
-
             $dom->schemaValidate(SitemapInterface::SITEMAP_XSD);
 
-            try {
-                ErrorHandler::stop(true);
-            } catch (ErrorException $e) {
+            $errors = libxml_get_errors();
+
+            // @codeCoverageIgnoreStart
+
+            $validationMessages = [];
+
+            foreach ($errors as $error) {
+                switch ($error->level) {
+                    case LIBXML_ERR_FATAL:
+                        $message = sprintf('FATAL ERROR [%s]', $error->code);
+                        break;
+                    case LIBXML_ERR_ERROR:
+                        $message = sprintf('ERROR [%s]', $error->code);
+                        break;
+                    case LIBXML_ERR_WARNING:
+                        $message = sprintf('WARNING [%s]', $error->code);
+                        break;
+                    default:
+                        $message = sprintf('NOTICE [%s]', $error->code);
+                }
+
+                $message .= trim($error->message) . sprintf(' Line: %d Column: %d', $error->line, $error->column);
+
+                $validationMessages[] = $message;
+            }
+
+            if ([] !== $validationMessages) {
                 throw new Exception\RuntimeException(
                     sprintf(
-                        'Sitemap is invalid according to XML Schema at "%s"',
-                        SitemapInterface::SITEMAP_XSD
-                    ),
-                    0,
-                    $e
+                        'Sitemap is invalid according to XML Schema at "%s": %s',
+                        SitemapInterface::SITEMAP_XSD,
+                        implode(' ', $validationMessages)
+                    )
                 );
             }
+            // @codeCoverageIgnoreEnd
         }
 
         return $dom;

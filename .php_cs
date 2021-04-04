@@ -41,6 +41,7 @@ return PhpCsFixer\Config::create()
                     'separate' => 'bottom',
                 ],
                 'final_public_method_for_abstract_class' => false,
+                'comment_to_phpdoc' => false,
             ]
         )
     )
