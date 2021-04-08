@@ -32,7 +32,7 @@
     "ext-libxml": "*",
     "infection/infection": "^0.21.5",
     "laminas/laminas-config": "^3.5.0",
-    "laminas/laminas-i18n": "^2.11.0",
+    "laminas/laminas-i18n": "^2.11.1",
     "laminas/laminas-json": "^3.2.0",
     "laminas/laminas-servicemanager": "^3.6.4",
     "laminas/laminas-uri": "^2.8.1",
