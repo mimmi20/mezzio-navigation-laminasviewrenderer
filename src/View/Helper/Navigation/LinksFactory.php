@@ -25,6 +25,8 @@ use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
 use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 
 final class LinksFactory
@@ -42,7 +44,7 @@ final class LinksFactory
             sprintf(
                 '$helperPluginManager should be an Instance of %s, but was %s',
                 HelperPluginManager::class,
-                get_class($helperPluginManager)
+                is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
             )
         );
 
@@ -52,7 +54,7 @@ final class LinksFactory
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
                 ViewHelperPluginManager::class,
-                get_class($plugin)
+                is_object($plugin) ? get_class($plugin) : gettype($plugin)
             )
         );
 

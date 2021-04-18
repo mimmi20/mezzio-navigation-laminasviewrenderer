@@ -27,6 +27,8 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
+use Mezzio\LaminasView\Helper\PluginManager as LvhPluginManager;
+use Mezzio\LaminasView\Helper\PluginManagerFactory as LvhPluginManagerFactory;
 use Mezzio\LaminasView\HelperPluginManagerFactory;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
@@ -148,6 +150,7 @@ abstract class AbstractTest extends TestCase
         $sm->setFactory(PageFactory::class, InvokableFactory::class);
         $sm->setAlias(PageFactoryInterface::class, PageFactory::class);
         $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
+        $sm->setFactory(LvhPluginManager::class, LvhPluginManagerFactory::class);
         $sm->setFactory(
             'config',
             static fn (): array => [

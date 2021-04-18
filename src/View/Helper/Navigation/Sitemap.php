@@ -38,9 +38,11 @@ use RecursiveIteratorIterator;
 use function assert;
 use function date;
 use function get_class;
+use function gettype;
 use function implode;
 use function in_array;
 use function is_int;
+use function is_object;
 use function is_string;
 use function libxml_clear_errors;
 use function libxml_get_errors;
@@ -239,7 +241,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                 sprintf(
                     '$page should be an Instance of %s, but was %s',
                     PageInterface::class,
-                    get_class($page)
+                    is_object($page) ? get_class($page) : gettype($page)
                 )
             );
 

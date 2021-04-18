@@ -314,7 +314,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 sprintf(
                     '$page should be an Instance of %s, but was %s',
                     PageInterface::class,
-                    get_class($page)
+                    is_object($page) ? get_class($page) : gettype($page)
                 )
             );
 

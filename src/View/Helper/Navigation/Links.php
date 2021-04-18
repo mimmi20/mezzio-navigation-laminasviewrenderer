@@ -41,9 +41,11 @@ use function array_values;
 use function assert;
 use function count;
 use function get_class;
+use function gettype;
 use function in_array;
 use function is_array;
 use function is_int;
+use function is_object;
 use function is_string;
 use function mb_strlen;
 use function mb_strtolower;
@@ -738,7 +740,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                 sprintf(
                     '$helperPluginManager should be an Instance of %s, but was %s',
                     HelperPluginManager::class,
-                    get_class($helperPluginManager)
+                    is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
                 )
             );
 

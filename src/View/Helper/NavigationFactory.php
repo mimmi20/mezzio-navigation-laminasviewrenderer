@@ -22,6 +22,8 @@ use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
 use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 
 final class NavigationFactory
@@ -39,7 +41,7 @@ final class NavigationFactory
             sprintf(
                 '$helperPluginManager should be an Instance of %s, but was %s',
                 HelperPluginManager::class,
-                get_class($helperPluginManager)
+                is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
             )
         );
 

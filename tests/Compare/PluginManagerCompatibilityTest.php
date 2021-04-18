@@ -23,6 +23,8 @@ use Laminas\View\Exception\InvalidHelperException;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
+use Mezzio\LaminasView\Helper\PluginManager as LvhPluginManager;
+use Mezzio\LaminasView\Helper\PluginManagerFactory as LvhPluginManagerFactory;
 use Mezzio\LaminasView\HelperPluginManagerFactory;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
@@ -99,6 +101,7 @@ final class PluginManagerCompatibilityTest extends TestCase
             ]
         );
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
+        $sm->setFactory(LvhPluginManager::class, LvhPluginManagerFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
         $sm->setFactory(Logger::class, InvokableFactory::class);
@@ -151,6 +154,7 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setAlias(PageFactoryInterface::class, PageFactory::class);
         $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
+        $sm->setFactory(LvhPluginManager::class, LvhPluginManagerFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
         $sm->setFactory(Logger::class, InvokableFactory::class);
