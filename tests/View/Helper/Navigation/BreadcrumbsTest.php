@@ -25,7 +25,7 @@ use Laminas\View\Model\ModelInterface;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\LaminasView\Helper\PartialRendererInterface;
 use Mezzio\Navigation\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\FindActiveInterface;
@@ -110,7 +110,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -127,7 +127,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -190,7 +190,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -207,7 +207,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -286,7 +286,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -303,7 +303,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -369,7 +369,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -386,7 +386,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -456,7 +456,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -473,7 +473,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -543,7 +543,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -560,7 +560,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -634,7 +634,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -651,7 +651,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -721,7 +721,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -738,7 +738,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -814,7 +814,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -831,7 +831,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -900,7 +900,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -917,7 +917,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1025,7 +1025,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1042,7 +1042,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1157,7 +1157,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1174,7 +1174,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1283,7 +1283,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1300,7 +1300,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1380,7 +1380,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1397,7 +1397,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1536,7 +1536,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1553,7 +1553,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1694,7 +1694,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1711,7 +1711,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1818,7 +1818,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1835,7 +1835,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -1959,7 +1959,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -1976,7 +1976,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2103,7 +2103,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2120,7 +2120,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2259,7 +2259,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2276,7 +2276,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2423,7 +2423,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2440,7 +2440,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2583,7 +2583,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2600,7 +2600,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2732,7 +2732,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2749,7 +2749,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2818,7 +2818,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2835,7 +2835,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2902,7 +2902,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -2919,7 +2919,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -2986,7 +2986,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -3003,7 +3003,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3068,7 +3068,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -3085,7 +3085,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3175,7 +3175,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -3192,7 +3192,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3358,7 +3358,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -3377,7 +3377,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3530,7 +3530,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -3549,7 +3549,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3715,7 +3715,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -3734,7 +3734,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3873,7 +3873,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -3892,7 +3892,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -3973,7 +3973,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -3990,7 +3990,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -4080,7 +4080,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -4097,7 +4097,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -4263,7 +4263,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -4282,7 +4282,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -4421,7 +4421,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -4440,7 +4440,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -4593,7 +4593,7 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -4612,7 +4612,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -4778,7 +4778,7 @@ final class BreadcrumbsTest extends TestCase
         $partial   = 'testPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -4797,7 +4797,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -4962,24 +4962,22 @@ final class BreadcrumbsTest extends TestCase
         $expected  = 'renderedPartial';
         $partial   = 'testPartial';
         $seperator = '/';
+        $data      = ['pages' => [$parentPage, $subPage], 'separator' => $seperator];
 
         $model = $this->getMockBuilder(ModelInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $model->expects(self::once())
-            ->method('setVariables')
-            ->with(['pages' => [$parentPage, $subPage], 'separator' => $seperator])
-            ->willReturnSelf();
-        $model->expects(self::once())
-            ->method('getTemplate')
-            ->willReturn($partial);
+        $model->expects(self::never())
+            ->method('setVariables');
+        $model->expects(self::never())
+            ->method('getTemplate');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
             ->method('render')
-            ->with($partial, $model)
+            ->with($model, $data)
             ->willReturn($expected);
 
         $translatePlugin = $this->getMockBuilder(Translate::class)
@@ -4993,7 +4991,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -5128,7 +5126,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -5145,7 +5143,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -5326,7 +5324,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -5343,7 +5341,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -5529,7 +5527,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($tranalatedLabel)
             ->willReturn($escapedTranalatedLabel);
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -5548,7 +5546,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -5729,7 +5727,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -5746,7 +5744,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -5887,7 +5885,7 @@ final class BreadcrumbsTest extends TestCase
         $partial   = 'testPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -5906,7 +5904,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -6045,7 +6043,7 @@ final class BreadcrumbsTest extends TestCase
         $partial   = 'testPartial';
         $seperator = '/';
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::once())
@@ -6064,7 +6062,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -6144,7 +6142,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -6161,7 +6159,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 
@@ -6272,7 +6270,7 @@ final class BreadcrumbsTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->getMockBuilder(LaminasViewRenderer::class)
+        $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderer->expects(self::never())
@@ -6289,7 +6287,7 @@ final class BreadcrumbsTest extends TestCase
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapePlugin instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($renderer instanceof PartialRendererInterface);
         assert($translatePlugin instanceof Translate);
         $helper = new Breadcrumbs($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer, $translatePlugin);
 

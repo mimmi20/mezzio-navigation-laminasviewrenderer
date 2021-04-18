@@ -17,7 +17,7 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Model\ModelInterface;
-use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\LaminasView\Helper\PartialRendererInterface;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
@@ -62,7 +62,7 @@ trait BreadcrumbsTrait
 
     private EscapeHtml $escaper;
 
-    private LaminasViewRenderer $renderer;
+    private PartialRendererInterface $renderer;
 
     public function __construct(
         \Interop\Container\ContainerInterface $serviceLocator,
@@ -70,7 +70,7 @@ trait BreadcrumbsTrait
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         EscapeHtml $escaper,
-        LaminasViewRenderer $renderer,
+        PartialRendererInterface $renderer,
         ?Translate $translator = null
     ) {
         $this->serviceLocator  = $serviceLocator;
@@ -381,11 +381,6 @@ trait BreadcrumbsTrait
             }
 
             $model['pages'] = array_reverse($model['pages']);
-        }
-
-        if ($partial instanceof ModelInterface) {
-            $model   = $partial->setVariables($model);
-            $partial = $model->getTemplate();
         }
 
         return $this->renderer->render($partial, $model);

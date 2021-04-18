@@ -29,7 +29,9 @@ use Psr\Container\ContainerExceptionInterface;
 use function assert;
 use function call_user_func_array;
 use function get_class;
+use function gettype;
 use function is_int;
+use function is_object;
 use function sprintf;
 use function str_repeat;
 
@@ -252,7 +254,7 @@ trait HelperTrait
                 sprintf(
                     '$helperPluginManager should be an Instance of %s, but was %s',
                     HelperPluginManager::class,
-                    get_class($helperPluginManager)
+                    is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
                 )
             );
 
@@ -305,7 +307,7 @@ trait HelperTrait
                 sprintf(
                     '$helperPluginManager should be an Instance of %s, but was %s',
                     HelperPluginManager::class,
-                    get_class($helperPluginManager)
+                    is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
                 )
             );
 
@@ -323,7 +325,14 @@ trait HelperTrait
             return false;
         }
 
-        assert($acceptHelper instanceof AcceptHelperInterface);
+        assert(
+            $acceptHelper instanceof AcceptHelperInterface,
+            sprintf(
+                '$acceptHelper should be an Instance of %s, but was %s',
+                AcceptHelperInterface::class,
+                is_object($acceptHelper) ? get_class($acceptHelper) : gettype($acceptHelper)
+            )
+        );
 
         return $acceptHelper->accept($page, $recursive);
     }

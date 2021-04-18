@@ -26,6 +26,8 @@ use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
 use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 
 final class SitemapFactory
@@ -43,7 +45,7 @@ final class SitemapFactory
             sprintf(
                 '$helperPluginManager should be an Instance of %s, but was %s',
                 HelperPluginManager::class,
-                get_class($helperPluginManager)
+                is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
             )
         );
 
@@ -53,7 +55,7 @@ final class SitemapFactory
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
                 ViewHelperPluginManager::class,
-                get_class($plugin)
+                is_object($plugin) ? get_class($plugin) : gettype($plugin)
             )
         );
 
@@ -63,7 +65,7 @@ final class SitemapFactory
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
                 ServerUrlHelper::class,
-                get_class($serverUrlHelper)
+                is_object($serverUrlHelper) ? get_class($serverUrlHelper) : gettype($serverUrlHelper)
             )
         );
 
@@ -73,7 +75,7 @@ final class SitemapFactory
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
                 BasePath::class,
-                get_class($basePathHelper)
+                is_object($basePathHelper) ? get_class($basePathHelper) : gettype($basePathHelper)
             )
         );
 

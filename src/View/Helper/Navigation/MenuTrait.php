@@ -16,7 +16,7 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Model\ModelInterface;
-use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\LaminasView\Helper\PartialRendererInterface;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
@@ -76,7 +76,7 @@ trait MenuTrait
      */
     private string $liActiveClass = 'active';
 
-    private LaminasViewRenderer $renderer;
+    private PartialRendererInterface $renderer;
 
     private EscapeHtmlAttr $escaper;
 
@@ -86,7 +86,7 @@ trait MenuTrait
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         EscapeHtmlAttr $escaper,
-        LaminasViewRenderer $renderer
+        PartialRendererInterface $renderer
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
@@ -448,12 +448,6 @@ trait MenuTrait
      */
     private function renderPartialModel(array $params, $container, $partial): string
     {
-        $container = $this->containerParser->parseContainer($container);
-
-        if (null === $container) {
-            $container = $this->getContainer();
-        }
-
         if (null === $partial) {
             $partial = $this->getPartial();
         }
@@ -475,14 +469,16 @@ trait MenuTrait
             $partial = $partial[0];
         }
 
-        $model = array_merge($params, ['container' => $container]);
+        $container = $this->containerParser->parseContainer($container);
 
-        if ($partial instanceof ModelInterface) {
-            $model   = $partial->setVariables($model);
-            $partial = $model->getTemplate();
+        if (null === $container) {
+            $container = $this->getContainer();
         }
 
-        return $this->renderer->render($partial, $model);
+        return $this->renderer->render(
+            $partial,
+            array_merge($params, ['container' => $container])
+        );
     }
 
     /**

@@ -20,7 +20,8 @@ use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
-use Mezzio\LaminasView\LaminasViewRenderer;
+use Mezzio\LaminasView\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\Helper\PluginManager as LvhPluginManager;
 use Mezzio\Navigation\Exception\BadMethodCallException;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
@@ -79,9 +80,17 @@ final class MenuTest extends AbstractTest
 
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
+        $lvhPluginManager    = $this->serviceManager->get(LvhPluginManager::class);
 
-        $renderer = $this->serviceManager->get(LaminasViewRenderer::class);
-        assert($renderer instanceof LaminasViewRenderer);
+        $renderer = $lvhPluginManager->get(PartialRendererInterface::class);
+        assert(
+            $renderer instanceof PartialRendererInterface,
+            sprintf(
+                '$renderer should be an Instance of %s, but was %s',
+                PartialRendererInterface::class,
+                get_class($renderer)
+            )
+        );
 
         $baseUrlHelper = $this->serviceManager->get(BaseServerUrlHelper::class);
         assert(
