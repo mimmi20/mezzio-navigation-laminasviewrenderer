@@ -25,7 +25,7 @@ use Laminas\View\Model\ModelInterface;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\LaminasView\Helper\PartialRendererInterface;
+use Mezzio\LaminasViewHelper\Helper\PartialRendererInterface;
 use Mezzio\Navigation\Helper\AcceptHelperInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\FindActiveInterface;
