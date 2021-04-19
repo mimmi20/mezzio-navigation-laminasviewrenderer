@@ -16,7 +16,7 @@ use Laminas\Log\Logger;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Model\ModelInterface;
-use Mezzio\LaminasView\Helper\PartialRendererInterface;
+use Mezzio\LaminasViewHelper\Helper\PartialRendererInterface;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
