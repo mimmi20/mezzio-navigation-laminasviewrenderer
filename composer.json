@@ -16,7 +16,7 @@
     "ext-mbstring": "*",
     "laminas/laminas-log": "^2.13.1",
     "laminas/laminas-stdlib": "^3.3.1",
-    "mezzio/mezzio-laminasviewrenderer": "^2.2.0",
+    "mezzio/mezzio-laminasviewrenderer": "^2.3.0",
     "mimmi20/mezzio-laminasviewrenderer-helpers": "^1.0.3",
     "mimmi20/mezzio-navigation": "^2.0.3",
     "mimmi20/mezzio-navigation-helpers": "^1.0.10",
