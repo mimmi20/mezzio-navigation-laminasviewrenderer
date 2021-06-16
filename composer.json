@@ -19,7 +19,7 @@
     "mezzio/mezzio-laminasviewrenderer": "^2.3.0",
     "mimmi20/mezzio-laminasviewrenderer-helpers": "^1.0.5",
     "mimmi20/mezzio-navigation": "^2.0.4",
-    "mimmi20/mezzio-navigation-helpers": "^1.0.10",
+    "mimmi20/mezzio-navigation-helpers": "^1.0.11",
     "psr/container": "^1.1.1 || ^2.0.1"
   },
   "conflict": {
