@@ -18,6 +18,7 @@ use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use RecursiveIteratorIterator;
 
+use function array_key_exists;
 use function assert;
 use function get_class;
 use function gettype;
@@ -49,9 +50,10 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      *
      * Available $options:
      *
-     * @param ContainerInterface|string|null $container [optional] container to create menu from.
-     *                                                  Default is to use the container retrieved from {@link getContainer()}.
-     * @param array<mixed>                   $options   [optional] options for controlling rendering
+     * @param ContainerInterface|string|null      $container [optional] container to create menu from.
+     *                                                       Default is to use the container retrieved from {@link getContainer()}.
+     * @param array<string, bool|int|string|null> $options   [optional] options for controlling rendering
+     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
      * @throws Exception\InvalidArgumentException
      */
@@ -69,7 +71,6 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         assert(is_string($options['liClass']));
         assert(is_string($options['indent']));
         assert(is_int($options['minDepth']));
-        assert(is_int($options['maxDepth']) || null === $options['maxDepth']);
         assert(is_bool($options['onlyActiveBranch']));
         assert(is_bool($options['escapeLabels']));
         assert(is_bool($options['addClassToListItem']));
@@ -186,47 +187,38 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
     ): string {
         $active = $this->findActive($container, $minDepth - 1, $maxDepth);
 
-        if (!$active) {
+        if (!array_key_exists('page', $active) || !($active['page'] instanceof PageInterface)) {
             return '';
         }
 
-        assert(
-            $active['page'] instanceof PageInterface,
-            sprintf(
-                '$active[\'page\'] should be an Instance of %s, but was %s',
-                PageInterface::class,
-                is_object($active['page']) ? get_class($active['page']) : gettype($active['page'])
-            )
-        );
-
-        assert(is_int($active['depth']));
+        $activePage = $active['page'];
 
         // special case if active page is one below minDepth
-        if ($active['depth'] < $minDepth) {
-            if (!$active['page']->hasPages(!$this->renderInvisible)) {
+        if (!array_key_exists('depth', $active) || $active['depth'] < $minDepth) {
+            if (!$activePage->hasPages(!$this->renderInvisible)) {
                 return '';
             }
         } elseif (!$active['page']->hasPages(!$this->renderInvisible)) {
             // found pages has no children; render siblings
-            $active['page'] = $active['page']->getParent();
+            $activePage = $active['page']->getParent();
         } elseif (is_int($maxDepth) && $active['depth'] + 1 > $maxDepth) {
             // children are below max depth; render siblings
-            $active['page'] = $active['page']->getParent();
+            $activePage = $active['page']->getParent();
         }
 
         $ulClass = $ulClass ? ' class="' . ($this->escaper)($ulClass) . '"' : '';
         $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
 
         assert(
-            $active['page'] instanceof ContainerInterface,
+            $activePage instanceof ContainerInterface,
             sprintf(
-                '$active[\'page\'] should be an Instance of %s, but was %s',
+                '$activePage should be an Instance of %s, but was %s',
                 ContainerInterface::class,
-                is_object($active['page']) ? get_class($active['page']) : gettype($active['page'])
+                is_object($activePage) ? get_class($activePage) : gettype($activePage)
             )
         );
 
-        foreach ($active['page'] as $subPage) {
+        foreach ($activePage as $subPage) {
             if (!$this->accept($subPage)) {
                 continue;
             }
