@@ -25,6 +25,7 @@ use Mezzio\Navigation\Page\PageInterface;
 
 use function array_merge;
 use function array_reverse;
+use function array_unshift;
 use function assert;
 use function count;
 use function get_class;
@@ -33,7 +34,6 @@ use function is_array;
 use function is_int;
 use function is_object;
 use function is_string;
-use function mb_strlen;
 use function sprintf;
 
 /**
@@ -186,9 +186,11 @@ trait BreadcrumbsTrait
             )
         );
 
+        $html = [];
+
         // put the deepest active page last in breadcrumbs
         if ($this->getLinkLast()) {
-            $html = $this->renderBreadcrumbItem(
+            $html[] = $this->renderBreadcrumbItem(
                 $this->htmlify->toHtml(self::class, $active),
                 $active->getLiClass() ?? '',
                 $active->isActive()
@@ -200,7 +202,7 @@ trait BreadcrumbsTrait
                 $label = ($this->translator)($label, $active->getTextDomain());
             }
 
-            $html = $this->renderBreadcrumbItem(
+            $html[] = $this->renderBreadcrumbItem(
                 ($this->escaper)($label),
                 $active->getLiClass() ?? '',
                 $active->isActive()
@@ -216,7 +218,7 @@ trait BreadcrumbsTrait
                     $parent->getLiClass() ?? '',
                     $parent->isActive()
                 );
-                $html  = $entry . $this->getSeparator() . $html;
+                array_unshift($html, $entry);
             }
 
             if ($parent === $container) {
@@ -227,7 +229,7 @@ trait BreadcrumbsTrait
             $active = $parent;
         }
 
-        return mb_strlen($html) ? $this->getIndent() . $html : '';
+        return $this->combineRendered($html);
     }
 
     /**
