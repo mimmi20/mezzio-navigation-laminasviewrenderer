@@ -1162,6 +1162,8 @@ final class LinksTest extends TestCase
             ->method('getHref');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('get');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7635,6 +7637,8 @@ final class LinksTest extends TestCase
             ->method('getHref');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('get');
 
         $role = 'testRole';
 
@@ -7761,6 +7765,8 @@ final class LinksTest extends TestCase
             ->willReturn('');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('get');
 
         $role = 'testRole';
 
@@ -7834,6 +7840,7 @@ final class LinksTest extends TestCase
      * @throws BadMethodCallException
      * @throws DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testRenderLinkWithHref(): void
     {
@@ -7887,6 +7894,20 @@ final class LinksTest extends TestCase
             ->willReturn($href);
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::exactly(5))
+            ->method('get')
+            ->withConsecutive(['type'], ['hreflang'], ['charset'], ['lang'], ['media'])
+            ->willReturnCallback(static function (string $param): ?string {
+                if ('type' === $param || 'media' === $param) {
+                    return null;
+                }
+
+                if ('hreflang' === $param || 'lang' === $param) {
+                    return 'de';
+                }
+
+                throw new \Mezzio\Navigation\Exception\InvalidArgumentException('fail');
+            });
 
         $role = 'testRole';
 
@@ -7932,6 +7953,8 @@ final class LinksTest extends TestCase
             $attrib => $relation,
             'href' => $href,
             'title' => $label,
+            'hreflang' => 'de',
+            'lang' => 'de',
         ];
 
         $headLink = $this->getMockBuilder(HeadLink::class)
@@ -8161,6 +8184,8 @@ final class LinksTest extends TestCase
             ->method('getHref');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('get');
 
         $parentPage->addPage($page);
 
@@ -8820,6 +8845,8 @@ final class LinksTest extends TestCase
             ->willReturn($uri);
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('get');
 
         $parentPage->addPage($page);
 
