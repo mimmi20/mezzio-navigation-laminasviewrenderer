@@ -14,6 +14,8 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Helper\AbstractHtmlElement;
 
+use function implode;
+
 /**
  * Helper for printing breadcrumbs.
  */
@@ -29,5 +31,18 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     private function renderBreadcrumbItem(string $html, string $liClass = '', bool $active = false): string
     {
         return $html;
+    }
+
+    private function renderSeparator(): string
+    {
+        return $this->getSeparator();
+    }
+
+    /**
+     * @param array<string> $html
+     */
+    private function combineRendered(array $html): string
+    {
+        return [] !== $html ? $this->getIndent() . implode($this->renderSeparator(), $html) : '';
     }
 }
