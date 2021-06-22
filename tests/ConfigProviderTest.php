@@ -12,6 +12,8 @@ declare(strict_types = 1);
 
 namespace MezzioTest\Navigation\LaminasView;
 
+use Mezzio\LaminasView\ServerUrlHelper;
+use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Navigation\LaminasView\ConfigProvider;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use PHPUnit\Framework\Exception;
@@ -35,17 +37,39 @@ final class ConfigProviderTest extends TestCase
     {
         $viewHelperConfig = $this->provider->getViewHelperConfig();
         self::assertIsArray($viewHelperConfig);
+        self::assertCount(2, $viewHelperConfig);
 
         self::assertArrayHasKey('factories', $viewHelperConfig);
         $factories = $viewHelperConfig['factories'];
         self::assertIsArray($factories);
+        self::assertCount(3, $factories);
         self::assertArrayHasKey(Navigation::class, $factories);
+        self::assertArrayHasKey(UrlHelper::class, $factories);
+        self::assertArrayHasKey(ServerUrlHelper::class, $factories);
 
         self::assertArrayHasKey('aliases', $viewHelperConfig);
         $aliases = $viewHelperConfig['aliases'];
         self::assertIsArray($aliases);
+        self::assertCount(9, $aliases);
         self::assertArrayHasKey('Navigation', $aliases);
         self::assertArrayHasKey('navigation', $aliases);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    public function testProviderDefinesExpectedFactoryServices2(): void
+    {
+        $dependencyConfig = $this->provider->getDependencyConfig();
+        self::assertIsArray($dependencyConfig);
+        self::assertCount(1, $dependencyConfig);
+
+        self::assertArrayHasKey('factories', $dependencyConfig);
+        $factories = $dependencyConfig['factories'];
+        self::assertIsArray($factories);
+        self::assertCount(1, $factories);
+        self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
     }
 
     /**
@@ -57,21 +81,37 @@ final class ConfigProviderTest extends TestCase
         $config = ($this->provider)();
 
         self::assertIsArray($config);
+        self::assertCount(2, $config);
         self::assertArrayHasKey('view_helpers', $config);
         self::assertArrayHasKey('dependencies', $config);
 
         $viewHelperConfig = $config['view_helpers'];
         self::assertIsArray($viewHelperConfig);
+        self::assertCount(2, $viewHelperConfig);
 
         self::assertArrayHasKey('factories', $viewHelperConfig);
         $factories = $viewHelperConfig['factories'];
         self::assertIsArray($factories);
+        self::assertCount(3, $factories);
         self::assertArrayHasKey(Navigation::class, $factories);
+        self::assertArrayHasKey(UrlHelper::class, $factories);
+        self::assertArrayHasKey(ServerUrlHelper::class, $factories);
 
         self::assertArrayHasKey('aliases', $viewHelperConfig);
         $aliases = $viewHelperConfig['aliases'];
         self::assertIsArray($aliases);
+        self::assertCount(9, $aliases);
         self::assertArrayHasKey('Navigation', $aliases);
         self::assertArrayHasKey('navigation', $aliases);
+
+        $dependencyConfig = $config['dependencies'];
+        self::assertIsArray($dependencyConfig);
+        self::assertCount(1, $dependencyConfig);
+
+        self::assertArrayHasKey('factories', $dependencyConfig);
+        $factories = $dependencyConfig['factories'];
+        self::assertIsArray($factories);
+        self::assertCount(1, $factories);
+        self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
     }
 }

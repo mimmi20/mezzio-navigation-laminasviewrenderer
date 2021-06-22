@@ -735,11 +735,20 @@ final class NavigationTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
+        $container1 = $this->getMockBuilder(\Mezzio\Navigation\ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $container2 = $this->getMockBuilder(\Mezzio\Navigation\ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::never())
-            ->method('parseContainer');
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($container1)
+            ->willReturn($container2);
 
         assert($serviceLocator instanceof ContainerInterface);
         assert($logger instanceof Logger);
@@ -752,7 +761,7 @@ final class NavigationTest extends TestCase
             ->getMock();
         $menu->expects(self::exactly(4))
             ->method('setContainer')
-            ->withConsecutive([null], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)], [new IsInstanceOf(\Mezzio\Navigation\Navigation::class)]);
+            ->withConsecutive([null], [$container2], [$container2], [$container2]);
         $menu->expects(self::once())
             ->method('hasAuthorization')
             ->willReturn(false);
@@ -777,6 +786,7 @@ final class NavigationTest extends TestCase
 
         assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
+        $helper->setContainer($container1);
 
         self::assertSame($menu, $helper->findHelper($proxy, false));
         self::assertSame($menu, $helper->findHelper($proxy, true));
