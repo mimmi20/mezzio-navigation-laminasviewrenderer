@@ -27,9 +27,10 @@ interface MenuInterface extends ViewHelperInterface
      *
      * Available $options:
      *
-     * @param ContainerInterface|string|null $container [optional] container to create menu from.
-     *                                                  Default is to use the container retrieved from {@link getContainer()}.
-     * @param array<mixed>                   $options   [optional] options for controlling rendering
+     * @param ContainerInterface|string|null      $container [optional] container to create menu from.
+     *                                                       Default is to use the container retrieved from {@link getContainer()}.
+     * @param array<string, bool|int|string|null> $options   [optional] options for controlling rendering
+     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
      * @throws Exception\InvalidArgumentException
      */

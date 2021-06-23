@@ -45,7 +45,7 @@ trait HelperTrait
     /**
      * ContainerInterface to operate on by default
      */
-    private ?\Mezzio\Navigation\ContainerInterface $container = null;
+    private ?Navigation\ContainerInterface $container = null;
 
     private ?string $navigation = null;
 
@@ -226,8 +226,8 @@ trait HelperTrait
      *                                                             null value means no maximum
      *                                                             depth required.
      *
-     * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page',
-     *                       or an empty array if not found
+     * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page', or an empty array if not found
+     * @phpstan-return array{page?: PageInterface|null, depth?: int|null}
      *
      * @throws Exception\InvalidArgumentException
      */

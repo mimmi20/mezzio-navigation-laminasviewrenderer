@@ -26,11 +26,9 @@ use function array_key_exists;
 use function array_merge;
 use function assert;
 use function count;
-use function get_class;
 use function is_array;
 use function is_int;
 use function is_string;
-use function sprintf;
 
 trait MenuTrait
 {
@@ -366,9 +364,11 @@ trait MenuTrait
     /**
      * Normalizes given render options.
      *
-     * @param array<string, bool|int|string|null> $options [optional] options to normalize
+     * @param array<string, bool|int|string|null> $options [optional] options for controlling rendering
+     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
      * @return array<string, bool|int|string|null>
+     * @phpstan-return array{indent: string, ulClass: string, liClass: string, minDepth: int|null, maxDepth: int|null, onlyActiveBranch: bool, renderParents: bool, escapeLabels: bool, addClassToListItem: bool, liActiveClass: string}
      */
     private function normalizeOptions(array $options = []): array
     {
@@ -483,31 +483,16 @@ trait MenuTrait
 
     /**
      * @param array<string, int|PageInterface|null> $found
+     * @phpstan-param array{page?: PageInterface|null, depth?: int|null} $found
      */
     private function isActiveBranch(array $found, PageInterface $page, ?int $maxDepth): bool
     {
-        if (array_key_exists('page', $found) && $found['page'] instanceof PageInterface) {
-            $foundPage = $found['page'];
-
-            assert(
-                $foundPage instanceof PageInterface,
-                sprintf(
-                    '$foundPage should be an Instance of %s, but was %s',
-                    PageInterface::class,
-                    get_class($foundPage)
-                )
-            );
-
-            $foundDepth = $found['depth'];
-            assert(is_int($foundDepth));
-        } else {
-            $foundPage  = null;
-            $foundDepth = 0;
-        }
-
-        if (!$foundPage) {
+        if (!array_key_exists('page', $found) || !($found['page'] instanceof PageInterface)) {
             return false;
         }
+
+        $foundPage  = $found['page'];
+        $foundDepth = $found['depth'] ?? 0;
 
         $accept = false;
 
