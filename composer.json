@@ -37,7 +37,7 @@
     "laminas/laminas-json": "^3.2.0",
     "laminas/laminas-servicemanager": "^3.6.4",
     "laminas/laminas-uri": "^2.8.1",
-    "laminas/laminas-validator": "^2.14.4",
+    "laminas/laminas-validator": "^2.14.5",
     "mezzio/mezzio-authentication": "^1.2.1",
     "mezzio/mezzio-router": "^3.4.0",
     "mimmi20/coding-standard": "^2.2.3",
