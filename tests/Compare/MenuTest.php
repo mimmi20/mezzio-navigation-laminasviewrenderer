@@ -20,8 +20,6 @@ use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
-use Mezzio\LaminasViewHelper\Helper\PartialRendererInterface;
-use Mezzio\LaminasViewHelper\Helper\PluginManager as LvhPluginManager;
 use Mezzio\Navigation\Exception\BadMethodCallException;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
@@ -30,6 +28,7 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -80,9 +79,8 @@ final class MenuTest extends AbstractTest
 
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
-        $lvhPluginManager    = $this->serviceManager->get(LvhPluginManager::class);
 
-        $renderer = $lvhPluginManager->get(PartialRendererInterface::class);
+        $renderer = $this->serviceManager->get(PartialRendererInterface::class);
         assert(
             $renderer instanceof PartialRendererInterface,
             sprintf(

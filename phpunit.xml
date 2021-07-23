@@ -13,6 +13,7 @@
     beStrictAboutResourceUsageDuringSmallTests="true"
     failOnEmptyTestSuite="true"
     failOnRisky="true"
+    failOnIncomplete="true"
     failOnSkipped="true"
     failOnWarning="true"
     verbose="false"

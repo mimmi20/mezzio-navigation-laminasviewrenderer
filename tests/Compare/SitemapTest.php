@@ -466,7 +466,6 @@ final class SitemapTest extends AbstractTest
         self::assertInstanceOf(DOMElement::class, $expectedDom->documentElement);
         self::assertInstanceOf(DOMElement::class, $receivedDom->documentElement);
 
-        self::markTestIncomplete('need to wait for replacement of function "assertEqualXMLStructure"');
         //self::assertEqualXMLStructure($expectedDom->documentElement, $receivedDom->documentElement);
     }
 
