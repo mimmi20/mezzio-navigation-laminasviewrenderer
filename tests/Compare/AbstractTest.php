@@ -32,8 +32,6 @@ use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\LaminasViewHelper\Helper\PluginManager as LvhPluginManager;
-use Mezzio\LaminasViewHelper\Helper\PluginManagerFactory as LvhPluginManagerFactory;
 use Mezzio\Navigation\Config\NavigationConfig;
 use Mezzio\Navigation\Config\NavigationConfigInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
@@ -49,6 +47,10 @@ use Mezzio\Navigation\Service\ConstructedNavigationFactory;
 use Mezzio\Navigation\Service\DefaultNavigationFactory;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
+use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
+use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
+use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererFactory;
+use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -150,7 +152,8 @@ abstract class AbstractTest extends TestCase
         $sm->setFactory(PageFactory::class, InvokableFactory::class);
         $sm->setAlias(PageFactoryInterface::class, PageFactory::class);
         $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
-        $sm->setFactory(LvhPluginManager::class, LvhPluginManagerFactory::class);
+        $sm->setFactory(PartialRendererInterface::class, PartialRendererFactory::class);
+        $sm->setFactory(HtmlElementInterface::class, HtmlElementFactory::class);
         $sm->setFactory(
             'config',
             static fn (): array => [

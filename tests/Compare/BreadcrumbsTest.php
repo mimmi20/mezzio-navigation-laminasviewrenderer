@@ -18,8 +18,6 @@ use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\LaminasViewHelper\Helper\PartialRendererInterface;
-use Mezzio\LaminasViewHelper\Helper\PluginManager as LvhPluginManager;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
@@ -27,6 +25,7 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageFactory;
+use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -77,9 +76,8 @@ final class BreadcrumbsTest extends AbstractTest
 
         $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
-        $lvhPluginManager    = $this->serviceManager->get(LvhPluginManager::class);
 
-        $renderer = $lvhPluginManager->get(PartialRendererInterface::class);
+        $renderer = $this->serviceManager->get(PartialRendererInterface::class);
         assert(
             $renderer instanceof PartialRendererInterface,
             sprintf(

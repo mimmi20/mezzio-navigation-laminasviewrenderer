@@ -17,13 +17,12 @@ use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\LaminasViewHelper\Helper\PartialRendererInterface;
-use Mezzio\LaminasViewHelper\Helper\PluginManager as LvhPluginManager;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\MenuFactory;
+use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -86,21 +85,13 @@ final class MenuFactoryTest extends TestCase
             ->with(EscapeHtmlAttr::class)
             ->willReturn($escapePlugin);
 
-        $lvhPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $lvhPluginManager->expects(self::once())
-            ->method('get')
-            ->with(PartialRendererInterface::class)
-            ->willReturn($renderer);
-
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $container->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [LvhPluginManager::class], [Logger::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $lvhPluginManager, $logger);
+            ->withConsecutive([PluginManager::class], [ViewHelperPluginManager::class], [Logger::class], [PartialRendererInterface::class])
+            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger, $renderer);
 
         assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);

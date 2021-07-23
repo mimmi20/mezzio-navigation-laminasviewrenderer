@@ -18,11 +18,10 @@ use Laminas\Log\Logger;
 use Laminas\ServiceManager\PluginManagerInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\LaminasViewHelper\Helper\PartialRendererInterface;
-use Mezzio\LaminasViewHelper\Helper\PluginManager as LvhPluginManager;
 use Mezzio\Navigation\Helper\ContainerParserInterface;
 use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
+use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
@@ -60,16 +59,6 @@ final class BreadcrumbsFactory
             )
         );
 
-        $lvhPluginManager = $container->get(LvhPluginManager::class);
-        assert(
-            $lvhPluginManager instanceof PluginManagerInterface,
-            sprintf(
-                '$lvhPluginManager should be an Instance of %s, but was %s',
-                LvhPluginManager::class,
-                is_object($lvhPluginManager) ? get_class($lvhPluginManager) : gettype($lvhPluginManager)
-            )
-        );
-
         $translator = null;
 
         if ($plugin->has(Translate::class)) {
@@ -82,7 +71,7 @@ final class BreadcrumbsFactory
             $helperPluginManager->get(HtmlifyInterface::class),
             $helperPluginManager->get(ContainerParserInterface::class),
             $plugin->get(EscapeHtml::class),
-            $lvhPluginManager->get(PartialRendererInterface::class),
+            $container->get(PartialRendererInterface::class),
             $translator
         );
     }
