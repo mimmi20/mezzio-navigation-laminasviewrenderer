@@ -40,7 +40,7 @@
     "laminas/laminas-validator": "^2.14.5",
     "mezzio/mezzio-authentication": "^1.2.1",
     "mezzio/mezzio-router": "^3.6.0",
-    "mimmi20/coding-standard": "^2.2.3",
+    "mimmi20/coding-standard": "^2.3.0",
     "mimmi20/mezzio-generic-authorization": "^2.0.3",
     "mimmi20/mezzio-generic-authorization-acl": "^2.0.3",
     "pepakriz/phpstan-exception-rules": "^0.11.7",
