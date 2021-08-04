@@ -18,7 +18,7 @@
     "laminas/laminas-stdlib": "^3.4.0",
     "mezzio/mezzio-laminasviewrenderer": "^2.3.0",
     "mimmi20/laminasviewrenderer-helper-partialrenderer": "^1.0.0",
-    "mimmi20/mezzio-navigation": "^2.0.5",
+    "mimmi20/mezzio-navigation": "^2.0.6",
     "mimmi20/mezzio-navigation-helpers": "^1.0.16",
     "psr/container": "^1.1.1 || ^2.0.1"
   },
