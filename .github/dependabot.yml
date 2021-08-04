@@ -6,7 +6,8 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "thursday"
       time: "04:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 10
@@ -55,7 +56,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "thursday"
       time: "04:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 10
