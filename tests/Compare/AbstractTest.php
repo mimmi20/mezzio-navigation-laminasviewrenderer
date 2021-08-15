@@ -34,8 +34,6 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Navigation\Config\NavigationConfig;
 use Mezzio\Navigation\Config\NavigationConfigInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
-use Mezzio\Navigation\Helper\PluginManagerFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
@@ -51,6 +49,20 @@ use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererFactory;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mimmi20\NavigationHelper\Accept\AcceptHelperFactory;
+use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserFactory;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesFactory;
+use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
+use Mimmi20\NavigationHelper\FindActive\FindActiveFactory;
+use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
+use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyFactory;
+use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
+use Mimmi20\NavigationHelper\FindRoot\FindRoot;
+use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -151,9 +163,16 @@ abstract class AbstractTest extends TestCase
         );
         $sm->setFactory(PageFactory::class, InvokableFactory::class);
         $sm->setAlias(PageFactoryInterface::class, PageFactory::class);
-        $sm->setFactory(HelperPluginManager::class, PluginManagerFactory::class);
         $sm->setFactory(PartialRendererInterface::class, PartialRendererFactory::class);
         $sm->setFactory(HtmlElementInterface::class, HtmlElementFactory::class);
+        $sm->setFactory(HtmlifyInterface::class, HtmlifyFactory::class);
+        $sm->setFactory(ContainerParserInterface::class, ContainerParserFactory::class);
+        $sm->setAlias(FindRootInterface::class, FindRoot::class);
+        $sm->setFactory(FindRoot::class, InvokableFactory::class);
+        $sm->setFactory(AcceptHelperInterface::class, AcceptHelperFactory::class);
+        $sm->setFactory(FindActiveInterface::class, FindActiveFactory::class);
+        $sm->setFactory(FindFromPropertyInterface::class, FindFromPropertyFactory::class);
+        $sm->setFactory(ConvertToPagesInterface::class, ConvertToPagesFactory::class);
         $sm->setFactory(
             'config',
             static fn (): array => [

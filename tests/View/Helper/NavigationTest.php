@@ -15,7 +15,8 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
@@ -24,14 +25,13 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation\Exception\BadMethodCallException;
-use Mezzio\Navigation\Helper\AcceptHelperInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\FindActiveInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
+use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -42,10 +42,6 @@ use function sprintf;
 
 final class NavigationTest extends TestCase
 {
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
     protected function tearDown(): void
     {
         Navigation::setDefaultAuthorization(null);
@@ -87,7 +83,7 @@ final class NavigationTest extends TestCase
             ->method('setRenderer')
             ->with($view);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -158,7 +154,7 @@ final class NavigationTest extends TestCase
             ->method('setRenderer')
             ->with($view);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -220,7 +216,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -283,7 +279,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -345,7 +341,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -409,7 +405,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -484,7 +480,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -561,7 +557,7 @@ final class NavigationTest extends TestCase
             ->method('debug')
             ->with($exception);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -642,7 +638,7 @@ final class NavigationTest extends TestCase
             ->method('debug')
             ->with($exception);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -696,6 +692,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindHelper(): void
     {
@@ -721,7 +718,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -823,7 +820,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -893,11 +890,13 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderExceptionInPluginManager(): void
     {
         $proxy          = 'menu';
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -966,6 +965,8 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRender(): void
     {
@@ -993,7 +994,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1063,7 +1064,7 @@ final class NavigationTest extends TestCase
     public function testCallExceptionInPluginManager(): void
     {
         $proxy          = 'menu';
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1163,7 +1164,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1255,7 +1256,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1314,7 +1315,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1389,7 +1390,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1451,7 +1452,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1517,7 +1518,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1583,7 +1584,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1653,7 +1654,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1691,6 +1692,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainer(): void
     {
@@ -1716,7 +1718,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1789,7 +1791,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1829,6 +1831,7 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -1854,7 +1857,7 @@ final class NavigationTest extends TestCase
 
         $name = 'default';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1893,6 +1896,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -1919,7 +1923,7 @@ final class NavigationTest extends TestCase
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -1956,6 +1960,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
@@ -2006,10 +2011,14 @@ final class NavigationTest extends TestCase
 
         $role = 'testRole';
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -2020,16 +2029,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2045,10 +2044,6 @@ final class NavigationTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $logger, $htmlify, $containerParser);
 
         $helper->setContainer($name);
@@ -2057,14 +2052,6 @@ final class NavigationTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        assert(
-            $page instanceof PageInterface,
-            sprintf(
-                '$page should be an Instance of %s, but was %s',
-                PageInterface::class,
-                get_class($page)
-            )
-        );
         self::assertFalse($helper->accept($page));
     }
 
@@ -2072,6 +2059,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHtmlify(): void
     {
@@ -2100,7 +2088,7 @@ final class NavigationTest extends TestCase
         $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -2206,7 +2194,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -2248,6 +2236,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -2322,10 +2311,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2336,16 +2329,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2380,6 +2363,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -2459,10 +2443,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2473,16 +2461,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2521,6 +2499,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -2562,10 +2541,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2576,16 +2559,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2622,6 +2595,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
@@ -2701,10 +2675,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2715,16 +2693,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2767,6 +2735,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -2827,10 +2796,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2841,16 +2814,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2887,6 +2850,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2962,10 +2926,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2976,16 +2944,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3025,6 +2983,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -3105,10 +3064,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -3119,16 +3082,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3165,6 +3118,7 @@ final class NavigationTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -3244,10 +3198,14 @@ final class NavigationTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -3258,16 +3216,6 @@ final class NavigationTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3330,7 +3278,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -3377,7 +3325,7 @@ final class NavigationTest extends TestCase
     {
         $proxy = 'menu';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -3453,7 +3401,7 @@ final class NavigationTest extends TestCase
         $auth      = $this->createMock(AuthorizationInterface::class);
         $exception = new RuntimeException('test');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
@@ -3572,7 +3520,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())

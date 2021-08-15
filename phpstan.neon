@@ -10,17 +10,21 @@ parameters:
     - %currentWorkingDirectory%/vendor/autoload.php
     - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/autoload.php
     - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src/Util/Tokens.php
-  exceptionRules:
-    reportUnusedCatchesOfUncheckedExceptions: true
-    uncheckedExceptions: []
   checkGenericClassInNonGenericObjectType: false
   checkMissingIterableValueType: false
   treatPhpDocTypesAsCertain: false
+  implicitThrows: false
+  exceptions:
+    checkedExceptionRegexes:
+      - '#Exception#'
+      - '#Throwable#'
+    check:
+      missingCheckedExceptionInThrows: true
+      tooWideThrowType: true
 #  excludes_analyse:
 #    - */tests/*
   ignoreErrors:
     - '~is not subtype of Throwable~'
-    - '~PHPDoc tag @throws with type .* is not compatible with parent~'
     - '~Call to an undefined method .*::find(All|One)By.*\(\)~'
     - '~Call to an undefined method .*::find(Rel|Rev).*\(\)~'
     - '~Call to (static )?(method|function) .* with .* will always evaluate to (true|false)~'
@@ -32,3 +36,5 @@ parameters:
     - '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, array\(.*, string\) given~'
     - '~Parameter #2 \$filename of method Laminas\\I18n\\Translator\\Translator::addTranslationFile\(\) expects string, null given~'
     - '~Parameter #1 \$exception of method PHPUnit\\Framework\\TestCase::expectException\(\) expects class-string<Throwable>, string given~'
+    - '~Laminas\\Navigation\\Page\\AbstractPage~'
+    - '~Laminas\\Navigation\\AbstractContainer~'

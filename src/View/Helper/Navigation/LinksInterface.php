@@ -119,12 +119,12 @@ interface LinksInterface extends ViewHelperInterface
      * @param string        $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      *
      * @throws Exception\DomainException if $rel is not "rel" or "rev"
      * @throws InvalidArgumentException
      */
-    public function findRelation(PageInterface $page, string $rel, string $type);
+    public function findRelation(PageInterface $page, string $rel, string $type): array;
 
     // Search methods:
 
@@ -167,12 +167,12 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a chapter in a collection of documents.
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      *
      * @throws Exception\DomainException
      * @throws InvalidArgumentException
      */
-    public function searchRelChapter(PageInterface $page);
+    public function searchRelChapter(PageInterface $page): array;
 
     /**
      * Searches the root container for forward 'section' relations of the given
@@ -181,9 +181,9 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      */
-    public function searchRelSection(PageInterface $page);
+    public function searchRelSection(PageInterface $page): array;
 
     /**
      * Searches the root container for forward 'subsection' relations of the
@@ -193,9 +193,9 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to a document serving as a subsection in a collection of
      * documents.
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      */
-    public function searchRelSubsection(PageInterface $page);
+    public function searchRelSubsection(PageInterface $page): array;
 
     /**
      * Searches the root container for the reverse 'section' relation of the

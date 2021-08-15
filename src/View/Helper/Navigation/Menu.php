@@ -12,7 +12,7 @@ declare(strict_types = 1);
 
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\View\Exception;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Page\PageInterface;
@@ -55,7 +55,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param array<string, bool|int|string|null> $options   [optional] options for controlling rendering
      * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function renderMenu($container = null, array $options = []): string
     {
@@ -76,6 +76,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         assert(is_bool($options['addClassToListItem']));
         assert(is_string($options['liActiveClass']));
 
+        assert($container instanceof ContainerInterface);
         if ($options['onlyActiveBranch'] && !$options['renderParents']) {
             return $this->renderDeepestMenu(
                 $container,
@@ -133,7 +134,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param string|null             $liActiveClass [optional] CSS class to use for UL
      *                                               element. Default is to use the value from {@link getUlClass()}.
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function renderSubMenu(
         ?ContainerInterface $container = null,
@@ -172,7 +173,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param bool               $addClassToListItem Whether or not page class applied to <li> element
      * @param string             $liActiveClass      CSS class for active LI
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function renderDeepestMenu(
         ContainerInterface $container,
@@ -269,7 +270,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
      * @param bool               $addClassToListItem Whether or not page class applied to <li> element
      * @param string             $liActiveClass      CSS class for active LI
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function renderNormalMenu(
         ContainerInterface $container,

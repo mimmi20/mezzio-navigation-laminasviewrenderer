@@ -12,23 +12,21 @@ declare(strict_types = 1);
 
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
+use AssertionError;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
-
-use function assert;
 
 final class SitemapFactoryTest extends TestCase
 {
@@ -71,14 +69,6 @@ final class SitemapFactoryTest extends TestCase
         $escaper         = $this->createMock(EscapeHtml::class);
         $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
-            ->method('get')
-            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class])
-            ->willReturn($htmlify, $containerParser);
-
         $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -87,17 +77,34 @@ final class SitemapFactoryTest extends TestCase
             ->withConsecutive([ServerUrlHelper::class], [BasePath::class], [EscapeHtml::class])
             ->willReturnOnConsecutiveCalls($serverUrlHelper, $basePath, $escaper);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
+        $container = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(3))
+        $container->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [ViewHelperPluginManager::class], [Logger::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $viewHelperPluginManager, $logger);
+            ->withConsecutive([ViewHelperPluginManager::class], [Logger::class], [HtmlifyInterface::class], [ContainerParserInterface::class])
+            ->willReturnOnConsecutiveCalls($viewHelperPluginManager, $logger, $htmlify, $containerParser);
 
-        assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Sitemap::class, $helper);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInvocationWithAssertionError(): void
+    {
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $container->expects(self::never())
+            ->method('get');
+
+        $this->expectException(AssertionError::class);
+        $this->expectExceptionCode(1);
+        $this->expectExceptionMessage('assert($container instanceof ServiceLocatorInterface)');
+
+        ($this->factory)($container);
     }
 }

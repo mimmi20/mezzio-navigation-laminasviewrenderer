@@ -14,7 +14,6 @@ namespace MezzioTest\Navigation\LaminasView\Compare;
 
 use DOMDocument;
 use DOMElement;
-use ErrorException;
 use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Laminas\Uri\Uri;
@@ -25,12 +24,11 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Page\PageFactory;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\UriInterface;
@@ -79,6 +77,7 @@ final class SitemapTest extends AbstractTest
      * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
      * @throws RuntimeException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     protected function setUp(): void
     {
@@ -103,8 +102,7 @@ final class SitemapTest extends AbstractTest
 
         parent::setUp();
 
-        $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
-        $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
+        $plugin = $this->serviceManager->get(ViewHelperPluginManager::class);
 
         $this->serviceManager->get(LaminasViewRenderer::class);
 
@@ -176,7 +174,6 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified scheme
              *
-             * @throws \InvalidArgumentException for invalid or unsupported schemes
              * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withScheme($scheme)
@@ -205,7 +202,6 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified host
              *
-             * @throws \InvalidArgumentException for invalid hostnames
              * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withHost($host)
@@ -222,7 +218,6 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified port
              *
-             * @throws \InvalidArgumentException for invalid ports
              * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withPort($port)
@@ -238,7 +233,6 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified path
              *
-             * @throws \InvalidArgumentException for invalid paths
              * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withPath($path)
@@ -254,7 +248,6 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified query string
              *
-             * @throws \InvalidArgumentException for invalid query strings
              * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
              */
             public function withQuery($query)
@@ -327,8 +320,8 @@ final class SitemapTest extends AbstractTest
         $this->helper = new Sitemap(
             $this->serviceManager,
             $this->serviceManager->get(Logger::class),
-            $helperPluginManager->get(HtmlifyInterface::class),
-            $helperPluginManager->get(ContainerParserInterface::class),
+            $this->serviceManager->get(HtmlifyInterface::class),
+            $this->serviceManager->get(ContainerParserInterface::class),
             $basePathHelper,
             $plugin->get(EscapeHtml::class),
             $serverUrlHelper
@@ -340,10 +333,6 @@ final class SitemapTest extends AbstractTest
         $this->helper->setFormatOutput(true);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
     protected function tearDown(): void
     {
         foreach ($this->oldServer as $key => $value) {
@@ -357,6 +346,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
@@ -369,6 +359,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
@@ -381,6 +372,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testNullingOutNavigation(): void
     {
@@ -392,6 +384,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSettingMaxDepth(): void
     {
@@ -405,6 +398,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSettingMinDepth(): void
     {
@@ -418,6 +412,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSettingBothDepths(): void
     {
@@ -432,6 +427,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDropXmlDeclaration(): void
     {
@@ -446,7 +442,7 @@ final class SitemapTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDisablingValidators(): void
     {
@@ -473,6 +469,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetServerUrlWithSchemeAndHost(): void
     {
@@ -486,6 +483,7 @@ final class SitemapTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @group test-123
      */

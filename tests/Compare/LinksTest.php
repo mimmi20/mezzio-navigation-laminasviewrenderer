@@ -12,7 +12,6 @@ declare(strict_types = 1);
 
 namespace MezzioTest\Navigation\LaminasView\Compare;
 
-use ErrorException;
 use Laminas\Config\Config;
 use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
@@ -26,15 +25,14 @@ use Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\Navigation\Exception\ExceptionInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\FindRootInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Uri;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
@@ -44,7 +42,6 @@ use function array_key_exists;
 use function assert;
 use function count;
 use function get_class;
-use function is_array;
 use function sprintf;
 use function str_replace;
 
@@ -79,14 +76,13 @@ final class LinksTest extends AbstractTest
      * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
      * @throws RuntimeException
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
-        $plugin              = $this->serviceManager->get(ViewHelperPluginManager::class);
+        $plugin = $this->serviceManager->get(ViewHelperPluginManager::class);
         assert($plugin instanceof ViewHelperPluginManager);
 
         $this->serviceManager->get(LaminasViewRenderer::class);
@@ -117,9 +113,9 @@ final class LinksTest extends AbstractTest
         $this->helper = new Navigation\Links(
             $this->serviceManager,
             $this->serviceManager->get(Logger::class),
-            $helperPluginManager->get(HtmlifyInterface::class),
-            $helperPluginManager->get(ContainerParserInterface::class),
-            $helperPluginManager->get(FindRootInterface::class),
+            $this->serviceManager->get(HtmlifyInterface::class),
+            $this->serviceManager->get(ContainerParserInterface::class),
+            $this->serviceManager->get(FindRootInterface::class),
             $headLinkHelper
         );
 
@@ -136,6 +132,7 @@ final class LinksTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
@@ -148,6 +145,7 @@ final class LinksTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
@@ -160,6 +158,8 @@ final class LinksTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -171,7 +171,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDetectRelationFromStringPropertyOfActivePage(): void
     {
@@ -188,13 +189,14 @@ final class LinksTest extends AbstractTest
             'label' => null,
         ];
 
-        self::assertIsObject($found);
-        self::assertInstanceOf(PageInterface::class, $found);
+        self::assertIsArray($found);
+        self::assertCount(1, $found);
+        self::assertContainsOnly(PageInterface::class, $found);
 
         $actual = [
-            'type' => get_class($found),
-            'href' => $found->getHref(),
-            'label' => $found->getLabel(),
+            'type' => get_class($found[0]),
+            'href' => $found[0]->getHref(),
+            'label' => $found[0]->getLabel(),
         ];
 
         self::assertSame($expected, $actual);
@@ -205,7 +207,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws ExceptionInterface
-     * @throws ErrorException
      */
     public function testDetectRelationFromPageInstancePropertyOfActivePage(): void
     {
@@ -219,8 +220,9 @@ final class LinksTest extends AbstractTest
         ]));
         $found = $this->helper->findRelExample($active);
 
-        self::assertIsObject($found);
-        self::assertInstanceOf(PageInterface::class, $found);
+        self::assertIsArray($found);
+        self::assertCount(1, $found);
+        self::assertContainsOnly(PageInterface::class, $found);
 
         $expected = [
             'type' => Uri::class,
@@ -229,9 +231,9 @@ final class LinksTest extends AbstractTest
         ];
 
         $actual = [
-            'type' => get_class($found),
-            'href' => $found->getHref(),
-            'label' => $found->getLabel(),
+            'type' => get_class($found[0]),
+            'href' => $found[0]->getHref(),
+            'label' => $found[0]->getLabel(),
         ];
 
         self::assertSame($expected, $actual);
@@ -242,7 +244,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testDetectRelationFromArrayPropertyOfActivePage(): void
     {
@@ -256,8 +257,9 @@ final class LinksTest extends AbstractTest
         ]);
         $found = $this->helper->findRelExample($active);
 
-        self::assertIsObject($found);
-        self::assertInstanceOf(PageInterface::class, $found);
+        self::assertIsArray($found);
+        self::assertCount(1, $found);
+        self::assertContainsOnly(PageInterface::class, $found);
 
         $expected = [
             'type' => Uri::class,
@@ -266,9 +268,9 @@ final class LinksTest extends AbstractTest
         ];
 
         $actual = [
-            'type' => get_class($found),
-            'href' => $found->getHref(),
-            'label' => $found->getLabel(),
+            'type' => get_class($found[0]),
+            'href' => $found[0]->getHref(),
+            'label' => $found[0]->getLabel(),
         ];
 
         self::assertSame($expected, $actual);
@@ -279,7 +281,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testDetectRelationFromConfigInstancePropertyOfActivePage(): void
     {
@@ -293,8 +294,9 @@ final class LinksTest extends AbstractTest
         ]));
         $found = $this->helper->findRelExample($active);
 
-        self::assertIsObject($found);
-        self::assertInstanceOf(PageInterface::class, $found);
+        self::assertIsArray($found);
+        self::assertCount(1, $found);
+        self::assertContainsOnly(PageInterface::class, $found);
 
         $expected = [
             'type' => Uri::class,
@@ -303,9 +305,9 @@ final class LinksTest extends AbstractTest
         ];
 
         $actual = [
-            'type' => get_class($found),
-            'href' => $found->getHref(),
-            'label' => $found->getLabel(),
+            'type' => get_class($found[0]),
+            'href' => $found[0]->getHref(),
+            'label' => $found[0]->getLabel(),
         ];
 
         self::assertSame($expected, $actual);
@@ -316,7 +318,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testExtractingRelationsFromPageProperties(): void
     {
@@ -357,11 +360,12 @@ final class LinksTest extends AbstractTest
             $active->addRel($type, $samplePage);
             $found = $this->helper->findRelation($active, 'rel', $type);
 
-            self::assertIsObject($found);
-            self::assertInstanceOf(PageInterface::class, $found);
+            self::assertIsArray($found);
+            self::assertCount(1, $found);
+            self::assertContainsOnly(PageInterface::class, $found);
 
             $expected[$type] = $samplePage->getLabel();
-            $actual[$type]   = $found->getLabel();
+            $actual[$type]   = $found[0]->getLabel();
 
             $active->removeRel($type);
         }
@@ -374,7 +378,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindStartPageByTraversal(): void
     {
@@ -383,7 +386,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Home';
-        $actual   = $this->helper->findRelStart($active)->getLabel();
+        $actual   = $this->helper->findRelStart($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -392,7 +395,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testDoNotFindStartWhenGivenPageIsTheFirstPage(): void
     {
@@ -401,7 +403,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $actual = $this->helper->findRelStart($active);
-        self::assertNull($actual, 'Should not find any start page');
+        self::assertSame([], $actual, 'Should not find any start page');
     }
 
     /**
@@ -409,7 +411,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindNextPageByTraversalShouldFindChildPage(): void
     {
@@ -418,7 +419,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.1';
-        $actual   = $this->helper->findRelNext($active)->getLabel();
+        $actual   = $this->helper->findRelNext($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -427,7 +428,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindNextPageByTraversalShouldFindSiblingPage(): void
     {
@@ -436,7 +436,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.2';
-        $actual   = $this->helper->findRelNext($active)->getLabel();
+        $actual   = $this->helper->findRelNext($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -445,7 +445,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindNextPageByTraversalShouldWrap(): void
     {
@@ -454,7 +453,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.3';
-        $actual   = $this->helper->findRelNext($active)->getLabel();
+        $actual   = $this->helper->findRelNext($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -463,7 +462,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindPrevPageByTraversalShouldFindParentPage(): void
     {
@@ -472,7 +470,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2';
-        $actual   = $this->helper->findRelPrev($active)->getLabel();
+        $actual   = $this->helper->findRelPrev($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -481,7 +479,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindPrevPageByTraversalShouldFindSiblingPage(): void
     {
@@ -490,7 +487,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.1';
-        $actual   = $this->helper->findRelPrev($active)->getLabel();
+        $actual   = $this->helper->findRelPrev($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -499,7 +496,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindPrevPageByTraversalShouldWrap(): void
     {
@@ -508,7 +504,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.2.2';
-        $actual   = $this->helper->findRelPrev($active)->getLabel();
+        $actual   = $this->helper->findRelPrev($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -517,7 +513,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testShouldFindChaptersFromFirstLevelOfPagesInContainer(): void
     {
@@ -541,7 +536,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindingChaptersShouldExcludeSelfIfChapter(): void
     {
@@ -565,7 +559,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindSectionsWhenActiveChapterPage(): void
     {
@@ -588,7 +581,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testDoNotFindSectionsWhenActivePageIsASection(): void
     {
@@ -597,7 +589,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRelSection($active);
-        self::assertNull($found);
+        self::assertSame([], $found);
     }
 
     /**
@@ -605,7 +597,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotFindSectionsWhenActivePageIsASubsection(): void
     {
@@ -614,7 +607,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRelation($active, 'rel', 'section');
-        self::assertNull($found);
+        self::assertSame([], $found);
     }
 
     /**
@@ -622,7 +615,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindSubsectionWhenActivePageIsSection(): void
     {
@@ -646,7 +638,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testDoNotFindSubsectionsWhenActivePageIsASubSubsection(): void
     {
@@ -655,7 +646,8 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRelSubsection($active);
-        self::assertNull($found);
+
+        self::assertSame([], $found);
     }
 
     /**
@@ -663,7 +655,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testDoNotFindSubsectionsWhenActivePageIsAChapter(): void
     {
@@ -672,7 +663,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRelSubsection($active);
-        self::assertNull($found);
+        self::assertSame([], $found);
     }
 
     /**
@@ -680,7 +671,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindRevSectionWhenPageIsSection(): void
     {
@@ -689,7 +679,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRevSection($active);
-        self::assertSame('Page 2', $found->getLabel());
+        self::assertSame('Page 2', $found[0]->getLabel());
     }
 
     /**
@@ -697,7 +687,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testFindRevSubsectionWhenPageIsSubsection(): void
     {
@@ -706,7 +695,7 @@ final class LinksTest extends AbstractTest
         self::assertInstanceOf(PageInterface::class, $active);
 
         $found = $this->helper->findRevSubsection($active);
-        self::assertSame('Page 2.2', $found->getLabel());
+        self::assertSame('Page 2.2', $found[0]->getLabel());
     }
 
     /**
@@ -715,7 +704,8 @@ final class LinksTest extends AbstractTest
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testAclFiltersAwayPagesFromPageProperty(): void
     {
@@ -764,12 +754,12 @@ final class LinksTest extends AbstractTest
 
             $found = $this->helper->findRelation($active, 'rel', $type);
 
-            if (null === $found) {
+            if ([] === $found) {
                 $actual[$type] = false;
-            } elseif (is_array($found)) {
+            } elseif (1 < count($found)) {
                 $actual[$type] = 'array(' . count($found) . ')';
             } else {
-                $actual[$type] = $found->getLabel();
+                $actual[$type] = $found[0]->getLabel();
             }
         }
 
@@ -782,7 +772,8 @@ final class LinksTest extends AbstractTest
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testAclFiltersAwayPagesFromContainerSearch(): void
     {
@@ -831,12 +822,12 @@ final class LinksTest extends AbstractTest
 
             $found = $this->helper->findRelation($active, 'rel', $type);
 
-            if (null === $found) {
+            if ([] === $found) {
                 $actual[$type] = false;
-            } elseif (is_array($found)) {
+            } elseif (1 < count($found)) {
                 $actual[$type] = 'array(' . count($found) . ')';
             } else {
-                $actual[$type] = $found->getLabel();
+                $actual[$type] = $found[0]->getLabel();
             }
         }
 
@@ -848,7 +839,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindRelationMustSpecifyRelOrRev(): void
     {
@@ -870,7 +862,6 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
      */
     public function testRenderLinkMustSpecifyRelOrRev(): void
     {
@@ -893,7 +884,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindAllRelations(): void
     {
@@ -967,7 +959,9 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     *
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSingleRenderFlags(): void
     {
@@ -1011,7 +1005,9 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws ExceptionInterface
-     * @throws ErrorException
+     *
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderFlagBitwiseOr(): void
     {
@@ -1038,7 +1034,9 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws ExceptionInterface
-     * @throws ErrorException
+     *
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testIndenting(): void
     {
@@ -1066,7 +1064,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetMaxDepth(): void
     {
@@ -1085,7 +1084,8 @@ final class LinksTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ErrorException
+     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetMinDepth(): void
     {
