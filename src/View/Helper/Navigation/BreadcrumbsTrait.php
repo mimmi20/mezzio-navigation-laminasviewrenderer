@@ -14,14 +14,16 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Model\ModelInterface;
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 
 use function array_merge;
 use function array_reverse;
@@ -65,7 +67,7 @@ trait BreadcrumbsTrait
     private PartialRendererInterface $renderer;
 
     public function __construct(
-        \Interop\Container\ContainerInterface $serviceLocator,
+        ServiceLocatorInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
@@ -94,6 +96,7 @@ trait BreadcrumbsTrait
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
+     * @throws InvalidArgumentException
      */
     public function render($container = null): string
     {
@@ -121,6 +124,7 @@ trait BreadcrumbsTrait
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws InvalidArgumentException
      */
     public function renderPartial($container = null, $partial = null): string
     {
@@ -145,6 +149,7 @@ trait BreadcrumbsTrait
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws InvalidArgumentException
      */
     public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
     {
@@ -158,7 +163,7 @@ trait BreadcrumbsTrait
      * @param ContainerInterface|string|null $container [optional] container to render. Default is
      *                                                  to render the container registered in the helper.
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function renderStraight($container = null): string
     {
@@ -320,6 +325,7 @@ trait BreadcrumbsTrait
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
+     * @throws InvalidArgumentException
      */
     private function renderPartialModel(array $params, $container, $partial): string
     {

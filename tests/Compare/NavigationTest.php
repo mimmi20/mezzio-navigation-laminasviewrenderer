@@ -16,18 +16,18 @@ use Laminas\Config\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\Navigation as Container;
 use Mezzio\Navigation\Page\PageFactory;
 use Mezzio\Navigation\Page\Uri;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -67,12 +67,12 @@ final class NavigationTest extends AbstractTest
      * @throws ContainerExceptionInterface
      * @throws \Laminas\Config\Exception\InvalidArgumentException
      * @throws RuntimeException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $helperPluginManager = $this->serviceManager->get(HelperPluginManager::class);
         $this->serviceManager->get(ViewHelperPluginManager::class);
         $this->serviceManager->get(LaminasViewRenderer::class);
 
@@ -80,8 +80,8 @@ final class NavigationTest extends AbstractTest
         $this->helper = new Navigation(
             $this->serviceManager,
             $this->serviceManager->get(Logger::class),
-            $helperPluginManager->get(HtmlifyInterface::class),
-            $helperPluginManager->get(ContainerParserInterface::class)
+            $this->serviceManager->get(HtmlifyInterface::class),
+            $this->serviceManager->get(ContainerParserInterface::class)
         );
         $this->helper->setPluginManager(new Navigation\PluginManager($this->serviceManager));
 
@@ -89,10 +89,6 @@ final class NavigationTest extends AbstractTest
         $this->helper->setContainer($this->nav1);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
     protected function tearDown(): void
     {
         Navigation::setDefaultAuthorization(null);
@@ -103,6 +99,7 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
@@ -115,6 +112,7 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
@@ -154,6 +152,8 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      */
     public function testShouldProxyToMenuHelperByDefault(): void
     {
@@ -170,6 +170,7 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHasContainer(): void
     {
@@ -183,6 +184,8 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      */
     public function testInjectingContainer(): void
     {
@@ -206,6 +209,8 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      */
     public function testDisablingContainerInjection(): void
     {
@@ -232,6 +237,7 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testMultipleNavigationsAndOneMenuDisplayedTwoTimes(): void
     {
@@ -247,6 +253,7 @@ final class NavigationTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws ContainerModificationsNotAllowedException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testServiceManagerIsUsedToRetrieveContainer(): void
     {
@@ -265,6 +272,8 @@ final class NavigationTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      */
     public function testInjectingAuthorization(): void
     {
@@ -286,6 +295,8 @@ final class NavigationTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      */
     public function testDisablingInjectAuthorization(): void
     {
@@ -307,6 +318,8 @@ final class NavigationTest extends AbstractTest
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      */
     public function testSpecifyingDefaultProxy(): void
     {
@@ -398,6 +411,7 @@ final class NavigationTest extends AbstractTest
      * @throws InvalidArgumentException
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DomainException
      * @throws ExceptionInterface
      */
     public function testPageIdShouldBeNormalized(): void

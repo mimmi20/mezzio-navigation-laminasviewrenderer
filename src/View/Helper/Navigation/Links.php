@@ -14,21 +14,20 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use ErrorException;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\ErrorHandler;
+use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception;
-use Laminas\View\Exception\DomainException;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HeadLink;
 use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\ExceptionInterface;
 use Mezzio\Navigation\Exception\InvalidArgumentException;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\FindFromPropertyInterface;
-use Mezzio\Navigation\Helper\FindRootInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
+use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 
@@ -39,13 +38,9 @@ use function array_merge;
 use function array_search;
 use function array_values;
 use function assert;
-use function count;
-use function get_class;
-use function gettype;
 use function in_array;
 use function is_array;
 use function is_int;
-use function is_object;
 use function is_string;
 use function mb_strlen;
 use function mb_strtolower;
@@ -106,7 +101,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
     private HeadLink $headLink;
 
     public function __construct(
-        \Interop\Container\ContainerInterface $serviceLocator,
+        ServiceLocatorInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
@@ -139,6 +134,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws Exception\ExceptionInterface
      * @throws ExceptionInterface
      * @throws ErrorException
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function __call(string $method, array $arguments = [])
     {
@@ -164,7 +161,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *                                                  the container returned by {@link getContainer()}.
      *
      * @throws Exception\DomainException
-     * @throws Exception\InvalidArgumentException
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function render($container = null): string
     {
@@ -309,7 +307,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @return array<string, array<int|string, array<int|string, PageInterface>>>
      *
-     * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function findAllRelations(PageInterface $page, ?int $flag = null): array
     {
@@ -345,10 +344,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                     continue;
                 }
 
-                if (!is_array($found)) {
-                    $found = [$found];
-                }
-
                 $result[$rel][$type] = $found;
             }
         }
@@ -366,12 +361,13 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      *
-     * @throws Exception\DomainException if $rel is not "rel" or "rev"
-     * @throws InvalidArgumentException
+     * @throws Exception\DomainException                          if $rel is not "rel" or "rev"
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    public function findRelation(PageInterface $page, string $rel, string $type)
+    public function findRelation(PageInterface $page, string $rel, string $type): array
     {
         if (!in_array($rel, ['rel', 'rev'], true)) {
             throw new Exception\DomainException(
@@ -386,6 +382,14 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         if (!$result) {
             $result = $this->findFromSearch($page, $rel, $type);
+
+            if (null === $result) {
+                return [];
+            }
+
+            if (!is_array($result)) {
+                $result = [$result];
+            }
         }
 
         return $result;
@@ -488,12 +492,13 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a chapter in a collection of documents.
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      *
      * @throws Exception\DomainException
-     * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    public function searchRelChapter(PageInterface $page)
+    public function searchRelChapter(PageInterface $page): array
     {
         $found = [];
 
@@ -502,10 +507,6 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         // find start page(s)
         $start = $this->findRelation($page, 'rel', 'start');
-
-        if (!is_array($start)) {
-            $start = [$start];
-        }
 
         foreach ($root as $chapter) {
             // exclude self and start page from chapters
@@ -520,16 +521,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             $found[] = $chapter;
         }
 
-        switch (count($found)) {
-            case 0:
-                return null;
-
-            case 1:
-                return $found[0];
-
-            default:
-                return $found;
-        }
+        return $found;
     }
 
     /**
@@ -539,19 +531,19 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      */
-    public function searchRelSection(PageInterface $page)
+    public function searchRelSection(PageInterface $page): array
     {
         if (!$page->hasPages()) {
-            return null;
+            return [];
         }
 
         $root = $this->rootFinder->find($page);
 
         // check if given page has pages and is a chapter page
         if (!$root->hasPage($page)) {
-            return null;
+            return [];
         }
 
         $found = [];
@@ -564,16 +556,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             $found[] = $section;
         }
 
-        switch (count($found)) {
-            case 0:
-                return null;
-
-            case 1:
-                return $found[0];
-
-            default:
-                return $found;
-        }
+        return $found;
     }
 
     /**
@@ -584,12 +567,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * Refers to a document serving as a subsection in a collection of
      * documents.
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      */
-    public function searchRelSubsection(PageInterface $page)
+    public function searchRelSubsection(PageInterface $page): array
     {
         if (!$page->hasPages()) {
-            return null;
+            return [];
         }
 
         $root  = $this->rootFinder->find($page);
@@ -611,16 +594,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             }
         }
 
-        switch (count($found)) {
-            case 0:
-                return null;
-
-            case 1:
-                return $found[0];
-
-            default:
-                return $found;
-        }
+        return $found;
     }
 
     /**
@@ -727,24 +701,15 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<PageInterface>
      *
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    private function findFromProperty(PageInterface $page, string $rel, string $type)
+    private function findFromProperty(PageInterface $page, string $rel, string $type): array
     {
         try {
-            $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
-            assert(
-                $helperPluginManager instanceof PluginManagerInterface,
-                sprintf(
-                    '$helperPluginManager should be an Instance of %s, but was %s',
-                    HelperPluginManager::class,
-                    is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
-                )
-            );
-
-            $findFromPropertyHelper = $helperPluginManager->build(
+            $findFromPropertyHelper = $this->serviceLocator->build(
                 FindFromPropertyInterface::class,
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
@@ -755,22 +720,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         } catch (ContainerExceptionInterface $e) {
             $this->logger->err($e);
 
-            return null;
+            return [];
         }
 
         assert($findFromPropertyHelper instanceof FindFromPropertyInterface);
-        $filtered = $findFromPropertyHelper->find($page, $rel, $type);
 
-        switch (count($filtered)) {
-            case 0:
-                return null;
-
-            case 1:
-                return $filtered[0];
-
-            default:
-                return $filtered;
-        }
+        return $findFromPropertyHelper->find($page, $rel, $type);
     }
 
     /**

@@ -12,30 +12,28 @@ declare(strict_types = 1);
 
 namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\PluginManagerInterface;
-use Laminas\View\Exception\BadMethodCallException;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mezzio\Navigation\ContainerInterface;
 use Mezzio\Navigation\Exception\ExceptionInterface;
-use Mezzio\Navigation\Helper\AcceptHelperInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\FindActiveInterface;
-use Mezzio\Navigation\Helper\FindFromPropertyInterface;
-use Mezzio\Navigation\Helper\FindRootInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mezzio\Navigation\Navigation;
 use Mezzio\Navigation\Page\PageInterface;
 use Mezzio\Navigation\Page\Route;
 use Mezzio\Navigation\Page\Uri;
+use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
+use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
+use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -46,10 +44,6 @@ use function sprintf;
 
 final class LinksTest extends TestCase
 {
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
     protected function tearDown(): void
     {
         Links::setDefaultAuthorization(null);
@@ -59,7 +53,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetMaxDepth(): void
     {
@@ -85,13 +78,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -119,12 +114,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -144,7 +133,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetMinDepth(): void
     {
@@ -168,13 +156,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -202,12 +192,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -243,7 +227,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetRenderInvisible(): void
     {
@@ -267,13 +250,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -301,12 +286,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -326,7 +305,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetRole(): void
     {
@@ -353,13 +331,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -387,12 +367,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -419,7 +393,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetUseAuthorization(): void
     {
@@ -443,13 +416,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -477,12 +452,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -506,7 +475,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetAuthorization(): void
     {
@@ -533,13 +501,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -567,12 +537,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -601,7 +565,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetView(): void
     {
@@ -627,13 +590,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -661,12 +626,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -688,12 +647,11 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainer(): void
     {
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $container = $this->createMock(ContainerInterface::class);
 
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
@@ -715,13 +673,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -751,12 +711,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -784,8 +738,7 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -811,13 +764,15 @@ final class LinksTest extends TestCase
 
         $name = 'default';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -847,12 +802,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -872,8 +821,7 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -897,16 +845,18 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -936,12 +886,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -959,8 +903,7 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
@@ -984,7 +927,7 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -1011,10 +954,14 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -1025,16 +972,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1064,12 +1001,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1099,8 +1030,7 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHtmlify(): void
     {
@@ -1126,16 +1056,18 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\\Navigation\\Top';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -1195,12 +1127,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1237,7 +1163,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetIndent(): void
     {
@@ -1261,13 +1186,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1295,12 +1222,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1324,9 +1245,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -1401,10 +1322,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -1415,16 +1340,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1454,12 +1369,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1480,9 +1389,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
@@ -1562,10 +1471,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -1576,16 +1489,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1615,12 +1518,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1646,8 +1543,8 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @throws BadMethodCallException
+     *
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveWithoutContainer(): void
     {
@@ -1689,10 +1586,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -1703,16 +1604,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1742,12 +1633,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1770,9 +1655,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
@@ -1852,10 +1737,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -1866,16 +1755,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -1905,12 +1784,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -1939,9 +1812,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
@@ -2002,10 +1875,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2016,16 +1893,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2055,12 +1922,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2083,9 +1944,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
@@ -2161,10 +2022,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2175,16 +2040,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2214,12 +2069,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2245,9 +2094,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
@@ -2328,10 +2177,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2342,16 +2195,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2381,12 +2224,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2409,9 +2246,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
+     *
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
@@ -2491,10 +2328,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -2505,16 +2346,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2544,12 +2375,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2575,7 +2400,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSetRenderFlag(): void
     {
@@ -2599,13 +2423,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2633,12 +2459,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2658,7 +2478,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSearchRevSubsectionWithoutParent(): void
     {
@@ -2682,13 +2501,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -2716,12 +2537,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2753,7 +2568,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRevSubsectionWithParent(): void
     {
@@ -2777,13 +2591,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $parentPage = new Route();
 
@@ -2836,12 +2652,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2858,7 +2668,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRevSubsectionWithDeepParent(): void
     {
@@ -2882,13 +2691,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $parentPage             = new Route();
         $parentParentPage       = new Route();
@@ -2943,12 +2754,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -2964,7 +2769,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSearchRevSectionWithoutParent(): void
     {
@@ -2988,13 +2792,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3022,12 +2828,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3059,7 +2859,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRevSectionWithParent(): void
     {
@@ -3083,13 +2882,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $parentPage = new Route();
 
@@ -3140,12 +2941,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3162,7 +2957,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRevSectionWithDeepParent(): void
     {
@@ -3186,13 +2980,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $parentPage       = new Route();
         $parentParentPage = new Route();
@@ -3245,12 +3041,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3266,7 +3056,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithoutParent(): void
     {
@@ -3290,13 +3079,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3324,12 +3115,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3354,14 +3139,13 @@ final class LinksTest extends TestCase
                 get_class($page)
             )
         );
-        self::assertNull($helper->searchRelSubsection($page));
+        self::assertSame([], $helper->searchRelSubsection($page));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithParent(): void
     {
@@ -3385,13 +3169,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $parentPage = new Route();
         $page       = new Route();
@@ -3426,12 +3212,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3449,14 +3229,13 @@ final class LinksTest extends TestCase
                 get_class($page)
             )
         );
-        self::assertNull($helper->searchRelSubsection($parentPage));
+        self::assertSame([], $helper->searchRelSubsection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithDeepParent(): void
     {
@@ -3505,10 +3284,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -3519,16 +3302,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3558,12 +3331,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3578,14 +3345,13 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($page, $helper->searchRelSubsection($parentPage));
+        self::assertSame([$page], $helper->searchRelSubsection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithDeepParent2(): void
     {
@@ -3636,10 +3402,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -3650,16 +3420,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3689,12 +3449,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3709,14 +3463,13 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($page2, $helper->searchRelSubsection($parentPage));
+        self::assertSame([$page2], $helper->searchRelSubsection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSubsectionWithDeepParent3(): void
     {
@@ -3769,10 +3522,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(3))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -3783,16 +3540,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(3))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3822,12 +3569,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3848,7 +3589,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithoutParent(): void
     {
@@ -3872,13 +3612,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -3906,12 +3648,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -3936,14 +3672,13 @@ final class LinksTest extends TestCase
                 get_class($page)
             )
         );
-        self::assertNull($helper->searchRelSection($page));
+        self::assertSame([], $helper->searchRelSection($page));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithParent(): void
     {
@@ -3967,13 +3702,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $parentPage = new Route();
         $page       = new Route();
@@ -4008,12 +3745,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4023,14 +3754,13 @@ final class LinksTest extends TestCase
             $headLink
         );
 
-        self::assertNull($helper->searchRelSection($parentPage));
+        self::assertSame([], $helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent(): void
     {
@@ -4077,10 +3807,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -4091,16 +3825,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4130,12 +3854,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4150,14 +3868,13 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($page, $helper->searchRelSection($parentPage));
+        self::assertSame([$page], $helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent2(): void
     {
@@ -4208,10 +3925,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -4222,16 +3943,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4261,12 +3972,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4281,14 +3986,13 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($page, $helper->searchRelSection($parentPage));
+        self::assertSame([$page], $helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent3(): void
     {
@@ -4337,10 +4041,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -4351,16 +4059,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4390,12 +4088,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4410,14 +4102,13 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($page2, $helper->searchRelSection($parentPage));
+        self::assertSame([$page2], $helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent4(): void
     {
@@ -4468,10 +4159,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(3))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -4482,16 +4177,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(3))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4521,12 +4206,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4548,7 +4227,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelSectionWithDeepParent5(): void
     {
@@ -4595,10 +4273,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -4609,16 +4291,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4648,12 +4320,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4668,7 +4334,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertNull($helper->searchRelSection($parentPage));
+        self::assertSame([], $helper->searchRelSection($parentPage));
     }
 
     /**
@@ -4676,7 +4342,8 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testSearchRelChapterWithoutParent(): void
     {
@@ -4712,10 +4379,14 @@ final class LinksTest extends TestCase
             ->with($page, 'rel', 'start')
             ->willReturn([]);
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -4726,16 +4397,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4765,12 +4426,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4780,7 +4435,7 @@ final class LinksTest extends TestCase
             $headLink
         );
 
-        self::assertNull($helper->searchRelChapter($page));
+        self::assertSame([], $helper->searchRelChapter($page));
     }
 
     /**
@@ -4788,7 +4443,8 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testSearchRelChapterWithParent(): void
     {
@@ -4839,10 +4495,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->withConsecutive(
                 [
@@ -4863,16 +4523,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $parentPage->addPage($page);
 
@@ -4904,12 +4554,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -4924,7 +4568,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($page, $helper->searchRelChapter($parentPage));
+        self::assertSame([$page], $helper->searchRelChapter($parentPage));
     }
 
     /**
@@ -4932,7 +4576,8 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testSearchRelChapterWithDeepParent(): void
     {
@@ -4987,10 +4632,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->withConsecutive(
                 [
@@ -5011,16 +4660,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -5050,12 +4689,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5070,7 +4703,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
+        self::assertSame([$parentPage], $helper->searchRelChapter($parentParentPage));
     }
 
     /**
@@ -5078,7 +4711,8 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testSearchRelChapterWithDeepParent2(): void
     {
@@ -5137,10 +4771,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(3))
             ->method('build')
             ->withConsecutive(
                 [
@@ -5170,16 +4808,6 @@ final class LinksTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper, $acceptHelper);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(3))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
-
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -5208,12 +4836,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5228,7 +4850,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertSame($parentPage, $helper->searchRelChapter($parentParentPage));
+        self::assertSame([$parentPage], $helper->searchRelChapter($parentParentPage));
     }
 
     /**
@@ -5236,7 +4858,8 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testSearchRelChapterWithDeepParent3(): void
     {
@@ -5295,10 +4918,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(3))
             ->method('build')
             ->withConsecutive(
                 [
@@ -5328,16 +4955,6 @@ final class LinksTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper, $acceptHelper);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(3))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
-
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -5366,12 +4983,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5386,7 +4997,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        self::assertNull($helper->searchRelChapter($parentParentPage));
+        self::assertSame([], $helper->searchRelChapter($parentParentPage));
     }
 
     /**
@@ -5394,7 +5005,8 @@ final class LinksTest extends TestCase
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testSearchRelChapterWithDeepParent4(): void
     {
@@ -5453,10 +5065,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(3))
             ->method('build')
             ->withConsecutive(
                 [
@@ -5486,16 +5102,6 @@ final class LinksTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper, $acceptHelper);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(3))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
-
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -5524,12 +5130,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5551,7 +5151,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelPrevWithoutParent(): void
     {
@@ -5575,13 +5174,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $page = new Route();
 
@@ -5613,12 +5214,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5635,7 +5230,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelPrevWithParent(): void
     {
@@ -5682,10 +5276,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(3))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(3))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -5696,16 +5294,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(3))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -5735,12 +5323,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5763,7 +5345,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelPrevWithParent2(): void
     {
@@ -5814,10 +5395,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(7))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(7))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -5828,16 +5413,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(7))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -5867,12 +5442,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5896,7 +5465,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelNextWithoutParent(): void
     {
@@ -5920,13 +5488,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $page = new Route();
 
@@ -5958,12 +5528,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -5980,7 +5544,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelNextWithParent(): void
     {
@@ -6027,10 +5590,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -6041,16 +5608,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6080,12 +5637,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6108,7 +5659,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelStartWithoutParent(): void
     {
@@ -6132,13 +5682,15 @@ final class LinksTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $page = new Route();
 
@@ -6170,12 +5722,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6192,7 +5738,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelStartWithParent(): void
     {
@@ -6239,10 +5784,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -6253,16 +5802,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6292,12 +5831,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6320,7 +5853,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      */
     public function testSearchRelStartWithParent2(): void
     {
@@ -6351,7 +5883,7 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
 
-        $container = $this->getMockBuilder(\Mezzio\Navigation\ContainerInterface::class)
+        $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $container->expects(self::exactly(2))
@@ -6376,10 +5908,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(2))
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -6390,16 +5926,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($acceptHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(2))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6429,12 +5955,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6456,8 +5976,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindRelationWithError(): void
     {
@@ -6496,13 +6017,15 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6530,12 +6053,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6563,8 +6080,9 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindNullRelationFromProperty(): void
     {
@@ -6626,10 +6144,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -6640,16 +6162,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6677,12 +6189,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6699,15 +6205,16 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertNull($helper->findRelation($page1, $rel, $type));
+        self::assertSame([], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindPageRelationFromProperty(): void
     {
@@ -6782,10 +6289,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -6796,16 +6307,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6833,12 +6334,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -6855,15 +6350,16 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertSame($page3, $helper->findRelation($page1, $rel, $type));
+        self::assertSame([$page3], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      *
      * @group Render2
      */
@@ -6930,10 +6426,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -6944,16 +6444,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -6981,12 +6471,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7003,15 +6487,16 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertSame($parentPage, $helper->findRelation($page1, $rel, $type));
+        self::assertSame([$parentPage], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindStringRelationFromProperty(): void
     {
@@ -7078,10 +6563,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -7092,16 +6581,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7129,12 +6608,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7151,15 +6624,16 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertSame($page3, $helper->findRelation($page1, $rel, $type));
+        self::assertSame([$page3], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindStringRelationFromPropertyWithError(): void
     {
@@ -7224,10 +6698,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -7238,16 +6716,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7275,12 +6743,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7297,15 +6759,16 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertNull($helper->findRelation($page1, $rel, $type));
+        self::assertSame([], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindConfigRelationFromProperty(): void
     {
@@ -7367,10 +6830,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -7381,16 +6848,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7418,12 +6875,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7440,15 +6891,16 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertSame($page3, $helper->findRelation($page1, $rel, $type));
+        self::assertSame([$page3], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws BadMethodCallException
      * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testFindConfigRelationFromPropertyWithError(): void
     {
@@ -7509,10 +6961,14 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindFromPropertyInterface::class,
@@ -7523,16 +6979,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findFromPropertyHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7560,12 +7006,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7582,12 +7022,11 @@ final class LinksTest extends TestCase
 
         $rel = 'rel';
 
-        self::assertNull($helper->findRelation($page1, $rel, $type));
+        self::assertSame([], $helper->findRelation($page1, $rel, $type));
     }
 
     /**
      * @throws Exception
-     * @throws BadMethodCallException
      * @throws DomainException
      */
     public function testRenderLinkWithError(): void
@@ -7648,13 +7087,15 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7682,12 +7123,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7713,7 +7148,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws BadMethodCallException
      * @throws DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
@@ -7776,13 +7210,15 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7810,12 +7246,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7837,10 +7267,8 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws BadMethodCallException
      * @throws DomainException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testRenderLinkWithHref(): void
     {
@@ -7917,13 +7345,15 @@ final class LinksTest extends TestCase
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -7967,12 +7397,6 @@ final class LinksTest extends TestCase
             ->with($params)
             ->willReturn($expected);
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -7993,9 +7417,9 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws BadMethodCallException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -8022,7 +7446,7 @@ final class LinksTest extends TestCase
         $maxDepth = null;
         $minDepth = 0;
 
-        $container = $this->createMock(\Mezzio\Navigation\ContainerInterface::class);
+        $container = $this->createMock(ContainerInterface::class);
 
         $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
             ->disableOriginalConstructor()
@@ -8032,10 +7456,14 @@ final class LinksTest extends TestCase
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::once())
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 FindActiveInterface::class,
@@ -8046,16 +7474,6 @@ final class LinksTest extends TestCase
                 ]
             )
             ->willReturn($findActiveHelper);
-
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::once())
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -8087,12 +7505,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -8109,11 +7521,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws BadMethodCallException
      * @throws ExceptionInterface
      * @throws Exception
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testRender(): void
     {
@@ -8294,10 +7706,14 @@ final class LinksTest extends TestCase
             ->withConsecutive([$parentPage], [$page], [$parentPage])
             ->willReturnOnConsecutiveCalls(true, true, true);
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(35))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(35))
             ->method('build')
             ->withConsecutive(
                 [
@@ -8686,16 +8102,6 @@ final class LinksTest extends TestCase
                 $findFromPropertyHelper
             );
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(35))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
-
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -8733,12 +8139,6 @@ final class LinksTest extends TestCase
             ->with((object) ['rel' => 'start', 'href' => $parentUri, 'title' => $parentLabel])
             ->willReturn($expected);
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -8769,11 +8169,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws BadMethodCallException
      * @throws ExceptionInterface
      * @throws Exception
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testRender2(): void
     {
@@ -8955,10 +8355,14 @@ final class LinksTest extends TestCase
             ->withConsecutive([$page], [$page])
             ->willReturnOnConsecutiveCalls(true, true);
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(34))
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::exactly(34))
             ->method('build')
             ->withConsecutive(
                 [
@@ -9338,16 +8742,6 @@ final class LinksTest extends TestCase
                 $findFromPropertyHelper
             );
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $serviceLocator->expects(self::never())
-            ->method('has');
-        $serviceLocator->expects(self::exactly(34))
-            ->method('get')
-            ->with(PluginManager::class)
-            ->willReturn($helperPluginManager);
-
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -9383,12 +8777,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,
@@ -9420,21 +8808,21 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testToStringExceptionInRenderer(): void
     {
-        $container = null;
         $auth      = $this->createMock(AuthorizationInterface::class);
         $exception = new InvalidArgumentException('test');
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
+        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
 
         $logger = $this->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
@@ -9487,12 +8875,6 @@ final class LinksTest extends TestCase
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        assert($serviceLocator instanceof ContainerInterface);
-        assert($logger instanceof Logger);
-        assert($htmlify instanceof HtmlifyInterface);
-        assert($containerParser instanceof ContainerParserInterface);
-        assert($rootFinder instanceof FindRootInterface);
-        assert($headLink instanceof HeadLink);
         $helper = new Links(
             $serviceLocator,
             $logger,

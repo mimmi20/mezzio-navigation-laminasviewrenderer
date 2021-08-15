@@ -15,13 +15,12 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Interop\Container\ContainerInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
@@ -39,15 +38,7 @@ final class BreadcrumbsFactory
      */
     public function __invoke(ContainerInterface $container): Breadcrumbs
     {
-        $helperPluginManager = $container->get(HelperPluginManager::class);
-        assert(
-            $helperPluginManager instanceof PluginManagerInterface,
-            sprintf(
-                '$helperPluginManager should be an Instance of %s, but was %s',
-                HelperPluginManager::class,
-                is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
-            )
-        );
+        assert($container instanceof ServiceLocatorInterface);
 
         $plugin = $container->get(ViewHelperPluginManager::class);
         assert(
@@ -68,8 +59,8 @@ final class BreadcrumbsFactory
         return new Breadcrumbs(
             $container,
             $container->get(Logger::class),
-            $helperPluginManager->get(HtmlifyInterface::class),
-            $helperPluginManager->get(ContainerParserInterface::class),
+            $container->get(HtmlifyInterface::class),
+            $container->get(ContainerParserInterface::class),
             $plugin->get(EscapeHtml::class),
             $container->get(PartialRendererInterface::class),
             $translator

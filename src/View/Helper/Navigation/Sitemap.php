@@ -14,6 +14,7 @@ namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Uri;
 use Laminas\Uri\Exception\InvalidArgumentException;
 use Laminas\Uri\Exception\InvalidUriException;
@@ -30,9 +31,9 @@ use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use RecursiveIteratorIterator;
 
 use function assert;
@@ -117,7 +118,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     private Changefreq $changefreqValidator;
 
     public function __construct(
-        \Interop\Container\ContainerInterface $serviceLocator,
+        ServiceLocatorInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
@@ -158,7 +159,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                  the container returned by {@link getContainer()}.
      *
      * @throws Exception\RuntimeException
-     * @throws Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function render($container = null): string
     {
@@ -192,13 +193,13 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @return DOMDocument DOM representation of the container
      *
-     * @throws Exception\RuntimeException         if schema validation is on
-     *                                            and the sitemap is invalid
-     *                                            according to the sitemap
-     *                                            schema, or if sitemap
-     *                                            validators are used and the
-     *                                            loc element fails validation
-     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException                         if schema validation is on
+     *                                                            and the sitemap is invalid
+     *                                                            according to the sitemap
+     *                                                            schema, or if sitemap
+     *                                                            validators are used and the
+     *                                                            loc element fails validation
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): DOMDocument
     {
@@ -220,6 +221,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         $dom->appendChild($urlSet);
 
         // create iterator
+        assert($container instanceof ContainerInterface);
         $iterator = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
 
         if (!is_int($minDepth)) {

@@ -12,6 +12,8 @@ declare(strict_types = 1);
 
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\Stdlib\Exception\DomainException;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\HelperInterface;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
@@ -49,7 +51,10 @@ interface ViewHelperInterface extends HelperInterface
      *
      * @return string helper output
      *
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
+     * @throws DomainException
+     * @throws InvalidArgumentException
      */
     public function render($container = null): string;
 

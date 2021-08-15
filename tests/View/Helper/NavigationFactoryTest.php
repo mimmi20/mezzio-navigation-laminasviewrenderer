@@ -12,20 +12,18 @@ declare(strict_types = 1);
 
 namespace MezzioTest\Navigation\LaminasView\View\Helper;
 
+use AssertionError;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
-
-use function assert;
 
 final class NavigationFactoryTest extends TestCase
 {
@@ -34,6 +32,24 @@ final class NavigationFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->factory = new NavigationFactory();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInvocationWithAssertionError(): void
+    {
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $container->expects(self::never())
+            ->method('get');
+
+        $this->expectException(AssertionError::class);
+        $this->expectExceptionCode(1);
+        $this->expectExceptionMessage('assert($container instanceof ServiceLocatorInterface)');
+
+        ($this->factory)($container);
     }
 
     /**
@@ -66,23 +82,14 @@ final class NavigationFactoryTest extends TestCase
         $containerParser         = $this->createMock(ContainerParserInterface::class);
         $navigationPluginManager = $this->createMock(ViewHelperPluginManager::class);
 
-        $helperPluginManager = $this->getMockBuilder(PluginManagerInterface::class)
+        $container = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $container->expects(self::exactly(4))
             ->method('get')
-            ->withConsecutive([HtmlifyInterface::class], [ContainerParserInterface::class])
-            ->willReturn($htmlify, $containerParser);
+            ->withConsecutive([Logger::class], [HtmlifyInterface::class], [ContainerParserInterface::class], [Navigation\PluginManager::class])
+            ->willReturnOnConsecutiveCalls($logger, $htmlify, $containerParser, $navigationPluginManager);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $container->expects(self::exactly(3))
-            ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [Logger::class], [Navigation\PluginManager::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $logger, $navigationPluginManager);
-
-        assert($container instanceof ContainerInterface);
         $navigation = ($this->factory)($container);
 
         self::assertInstanceOf(Navigation::class, $navigation);

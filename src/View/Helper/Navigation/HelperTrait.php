@@ -12,18 +12,18 @@ declare(strict_types = 1);
 
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\PluginManagerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Stdlib\Exception\DomainException;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\Navigation;
-use Mezzio\Navigation\Helper\AcceptHelperInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\FindActiveInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
-use Mezzio\Navigation\Helper\PluginManager as HelperPluginManager;
 use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
@@ -85,7 +85,7 @@ trait HelperTrait
      */
     private ?string $role = null;
 
-    private ContainerInterface $serviceLocator;
+    private ServiceLocatorInterface $serviceLocator;
 
     /**
      * Whether container should be injected when proxying
@@ -110,7 +110,7 @@ trait HelperTrait
      *
      * @param Navigation\ContainerInterface|string|null $container container to operate on
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __invoke($container = null): self
     {
@@ -149,7 +149,7 @@ trait HelperTrait
     {
         try {
             return $this->render();
-        } catch (Exception\ExceptionInterface $e) {
+        } catch (Exception\ExceptionInterface | InvalidArgumentException | DomainException $e) {
             $this->logger->err($e);
 
             return '';
@@ -163,7 +163,7 @@ trait HelperTrait
      *
      * @param Navigation\ContainerInterface|string|null $container default is null, meaning container will be reset
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setContainer($container = null): self
     {
@@ -229,7 +229,7 @@ trait HelperTrait
      * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page', or an empty array if not found
      * @phpstan-return array{page?: PageInterface|null, depth?: int|null}
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function findActive($container, ?int $minDepth = null, ?int $maxDepth = -1): array
     {
@@ -248,17 +248,7 @@ trait HelperTrait
         }
 
         try {
-            $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
-            assert(
-                $helperPluginManager instanceof PluginManagerInterface,
-                sprintf(
-                    '$helperPluginManager should be an Instance of %s, but was %s',
-                    HelperPluginManager::class,
-                    is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
-                )
-            );
-
-            $findActiveHelper = $helperPluginManager->build(
+            $findActiveHelper = $this->serviceLocator->build(
                 FindActiveInterface::class,
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
@@ -301,17 +291,7 @@ trait HelperTrait
     public function accept(PageInterface $page, bool $recursive = true): bool
     {
         try {
-            $helperPluginManager = $this->serviceLocator->get(HelperPluginManager::class);
-            assert(
-                $helperPluginManager instanceof PluginManagerInterface,
-                sprintf(
-                    '$helperPluginManager should be an Instance of %s, but was %s',
-                    HelperPluginManager::class,
-                    is_object($helperPluginManager) ? get_class($helperPluginManager) : gettype($helperPluginManager)
-                )
-            );
-
-            $acceptHelper = $helperPluginManager->build(
+            $acceptHelper = $this->serviceLocator->build(
                 AcceptHelperInterface::class,
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
@@ -543,7 +523,7 @@ trait HelperTrait
         return $this->useAuthorization;
     }
 
-    public function getServiceLocator(): ContainerInterface
+    public function getServiceLocator(): ServiceLocatorInterface
     {
         return $this->serviceLocator;
     }

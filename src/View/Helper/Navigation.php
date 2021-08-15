@@ -15,19 +15,22 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Stdlib\Exception\DomainException;
+use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Helper\ContainerParserInterface;
-use Mezzio\Navigation\Helper\HtmlifyInterface;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
+use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 
 use function call_user_func_array;
 use function spl_object_hash;
@@ -67,7 +70,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     private ?ViewHelperPluginManager $pluginManager = null;
 
     public function __construct(
-        \Interop\Container\ContainerInterface $serviceLocator,
+        ServiceLocatorInterface $serviceLocator,
         Logger $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser
@@ -117,6 +120,11 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Renders helper
      *
      * @param ContainerInterface|string|null $container
+     *
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws DomainException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function render($container = null): string
     {
