@@ -25,7 +25,7 @@
     "mimmi20/navigation-helper-findactive": "dev-master",
     "mimmi20/navigation-helper-findfromproperty": "dev-master",
     "mimmi20/navigation-helper-findroot": "dev-master",
-    "mimmi20/navigation-helper-htmlify":"dev-master",
+    "mimmi20/navigation-helper-htmlify": "dev-master",
     "psr/container": "^1.1.1 || ^2.0.1"
   },
   "conflict": {
