@@ -21,8 +21,6 @@ parameters:
     check:
       missingCheckedExceptionInThrows: true
       tooWideThrowType: true
-#  excludes_analyse:
-#    - */tests/*
   ignoreErrors:
     - '~is not subtype of Throwable~'
     - '~Call to an undefined method .*::find(All|One)By.*\(\)~'
