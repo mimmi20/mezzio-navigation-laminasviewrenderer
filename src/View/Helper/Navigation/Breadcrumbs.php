@@ -27,6 +27,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function renderBreadcrumbItem(string $html, string $liClass = '', bool $active = false): string
     {
@@ -40,6 +41,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
 
     /**
      * @param array<string> $html
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function combineRendered(array $html): string
     {

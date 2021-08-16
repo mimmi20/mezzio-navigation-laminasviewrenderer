@@ -16,12 +16,18 @@
     <rule ref="rulesets/codesize.xml">
         <exclude name="CyclomaticComplexity"/>
         <exclude name="NPathComplexity"/>
+        <exclude name="ExcessiveMethodLength"/>
+        <exclude name="TooManyPublicMethods"/>
+        <exclude name="ExcessiveClassComplexity"/>
+        <exclude name="ExcessiveParameterList"/>
     </rule>
 
     <rule ref="rulesets/controversial.xml"/>
-    <rule ref="rulesets/design.xml"/>
-
     <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
+
+    <rule ref="rulesets/design.xml">
+        <exclude name="CouplingBetweenObjects"/>
+    </rule>
 
     <rule ref="rulesets/unusedcode.xml">
         <exclude name="UnusedFormalParameter"/>
