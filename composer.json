@@ -39,7 +39,7 @@
     "ext-libxml": "*",
     "laminas/laminas-config": "^3.5.0",
     "laminas/laminas-dependency-plugin": "^2.1.2",
-    "laminas/laminas-i18n": "^2.11.1",
+    "laminas/laminas-i18n": "^2.11.2",
     "laminas/laminas-json": "^3.2.0",
     "laminas/laminas-servicemanager": "^3.7.0",
     "laminas/laminas-uri": "^2.8.1",
