@@ -39,7 +39,7 @@ interface LinksInterface extends ViewHelperInterface
     public const RENDER_HELP       = 0x2000;
     public const RENDER_BOOKMARK   = 0x4000;
     public const RENDER_CUSTOM     = 0x8000;
-    public const RENDER_ALL        = 0xffff;
+    public const RENDER_ALL        = 0xFFFF;
 
     /**
      * Magic overload: Proxy calls to {@link findRelation()} or container

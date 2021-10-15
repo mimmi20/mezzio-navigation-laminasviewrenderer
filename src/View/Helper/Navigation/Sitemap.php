@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
+use DOMException;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Uri;
@@ -163,7 +164,14 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     public function render($container = null): string
     {
-        $dom = $this->getDomSitemap($container);
+        try {
+            $dom = $this->getDomSitemap($container);
+        } catch (DOMException $e) {
+            $this->logger->err($e);
+
+            return '';
+        }
+
         $xml = $this->getUseXmlDeclaration() ?
             $dom->saveXML() :
             $dom->saveXML($dom->documentElement);
@@ -200,6 +208,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                            validators are used and the
      *                                                            loc element fails validation
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function getDomSitemap($container = null, ?int $minDepth = null, ?int $maxDepth = -1): DOMDocument
     {

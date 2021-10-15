@@ -14,6 +14,7 @@ namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
 use DOMElement;
+use DOMException;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Uri\Exception\InvalidUriException;
@@ -3981,6 +3982,7 @@ final class SitemapTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursive(): void
     {
@@ -4175,6 +4177,7 @@ final class SitemapTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveWithSchemaValidation(): void
     {
@@ -4374,6 +4377,7 @@ final class SitemapTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeep(): void
     {
@@ -4574,6 +4578,7 @@ final class SitemapTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidation(): void
     {
@@ -4784,6 +4789,7 @@ final class SitemapTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidationException(): void
     {
@@ -4995,6 +5001,7 @@ final class SitemapTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmod(): void
     {
@@ -5256,6 +5263,7 @@ final class SitemapTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmod(): void
     {
@@ -5514,6 +5522,7 @@ final class SitemapTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmodException(): void
     {
@@ -5775,6 +5784,7 @@ final class SitemapTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmodAndChangeFreq(): void
     {
@@ -6027,6 +6037,7 @@ final class SitemapTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmodExceptionAndChangeFreqException(): void
     {
@@ -6284,6 +6295,7 @@ final class SitemapTest extends TestCase
      * @throws \Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithoutPriority(): void
     {
