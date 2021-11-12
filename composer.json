@@ -26,7 +26,7 @@
     "mimmi20/navigation-helper-findfromproperty": "^1.0.0",
     "mimmi20/navigation-helper-findroot": "^1.0.0",
     "mimmi20/navigation-helper-htmlify": "^1.0.0",
-    "psr/container": "^1.1.1 || ^2.0.1"
+    "psr/container": "^1.1.2"
   },
   "conflict": {
     "container-interop/container-interop": "<1.2.0",
