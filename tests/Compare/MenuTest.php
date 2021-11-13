@@ -33,6 +33,8 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function assert;
 use function get_class;
+use function gettype;
+use function is_object;
 use function is_string;
 use function rtrim;
 use function sprintf;
@@ -76,6 +78,7 @@ final class MenuTest extends AbstractTest
         parent::setUp();
 
         $plugin = $this->serviceManager->get(ViewHelperPluginManager::class);
+        assert($plugin instanceof ViewHelperPluginManager);
 
         $renderer = $this->serviceManager->get(PartialRendererInterface::class);
         assert(
@@ -83,7 +86,7 @@ final class MenuTest extends AbstractTest
             sprintf(
                 '$renderer should be an Instance of %s, but was %s',
                 PartialRendererInterface::class,
-                get_class($renderer)
+                is_object($renderer) ? get_class($renderer) : gettype($renderer)
             )
         );
 
@@ -93,17 +96,35 @@ final class MenuTest extends AbstractTest
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                get_class($baseUrlHelper)
+                is_object($baseUrlHelper) ? get_class($baseUrlHelper) : gettype($baseUrlHelper)
             )
         );
+
+        $escapeHelper = $plugin->get(EscapeHtmlAttr::class);
+        assert(
+            $escapeHelper instanceof EscapeHtmlAttr,
+            sprintf(
+                '$escapeHelper should be an Instance of %s, but was %s',
+                EscapeHtmlAttr::class,
+                is_object($escapeHelper) ? get_class($escapeHelper) : gettype($escapeHelper)
+            )
+        );
+
+        $logger          = $this->serviceManager->get(Logger::class);
+        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
+        $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
         $this->helper = new Menu(
             $this->serviceManager,
-            $this->serviceManager->get(Logger::class),
-            $this->serviceManager->get(HtmlifyInterface::class),
-            $this->serviceManager->get(ContainerParserInterface::class),
-            $plugin->get(EscapeHtmlAttr::class),
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapeHelper,
             $renderer
         );
 

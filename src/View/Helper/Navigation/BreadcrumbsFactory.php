@@ -54,15 +54,29 @@ final class BreadcrumbsFactory
 
         if ($plugin->has(Translate::class)) {
             $translator = $plugin->get(Translate::class);
+
+            assert($translator instanceof Translate);
         }
+
+        $logger          = $container->get(Logger::class);
+        $htmlify         = $container->get(HtmlifyInterface::class);
+        $containerParser = $container->get(ContainerParserInterface::class);
+        $escapeHtml      = $plugin->get(EscapeHtml::class);
+        $renderer        = $container->get(PartialRendererInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapeHtml instanceof EscapeHtml);
+        assert($renderer instanceof PartialRendererInterface);
 
         return new Breadcrumbs(
             $container,
-            $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
-            $container->get(ContainerParserInterface::class),
-            $plugin->get(EscapeHtml::class),
-            $container->get(PartialRendererInterface::class),
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapeHtml,
+            $renderer,
             $translator
         );
     }

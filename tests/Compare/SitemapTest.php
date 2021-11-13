@@ -38,6 +38,8 @@ use function assert;
 use function date_default_timezone_get;
 use function date_default_timezone_set;
 use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 use function trim;
 
@@ -103,6 +105,7 @@ final class SitemapTest extends AbstractTest
         parent::setUp();
 
         $plugin = $this->serviceManager->get(ViewHelperPluginManager::class);
+        assert($plugin instanceof ViewHelperPluginManager);
 
         $this->serviceManager->get(LaminasViewRenderer::class);
 
@@ -112,7 +115,7 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                get_class($baseUrlHelper)
+                is_object($baseUrlHelper) ? get_class($baseUrlHelper) : gettype($baseUrlHelper)
             )
         );
 
@@ -300,7 +303,7 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
                 ServerUrlHelper::class,
-                get_class($serverUrlHelper)
+                is_object($serverUrlHelper) ? get_class($serverUrlHelper) : gettype($serverUrlHelper)
             )
         );
 
@@ -310,20 +313,38 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
                 BasePath::class,
-                get_class($basePathHelper)
+                is_object($basePathHelper) ? get_class($basePathHelper) : gettype($basePathHelper)
+            )
+        );
+
+        $escapeHelper = $plugin->get(EscapeHtml::class);
+        assert(
+            $escapeHelper instanceof EscapeHtml,
+            sprintf(
+                '$escapeHelper should be an Instance of %s, but was %s',
+                EscapeHtml::class,
+                is_object($escapeHelper) ? get_class($escapeHelper) : gettype($escapeHelper)
             )
         );
 
         $basePathHelper->setBasePath('');
 
+        $logger          = $this->serviceManager->get(Logger::class);
+        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
+        $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+
         // create helper
         $this->helper = new Sitemap(
             $this->serviceManager,
-            $this->serviceManager->get(Logger::class),
-            $this->serviceManager->get(HtmlifyInterface::class),
-            $this->serviceManager->get(ContainerParserInterface::class),
+            $logger,
+            $htmlify,
+            $containerParser,
             $basePathHelper,
-            $plugin->get(EscapeHtml::class),
+            $escapeHelper,
             $serverUrlHelper
         );
 

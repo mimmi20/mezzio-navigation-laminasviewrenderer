@@ -69,7 +69,11 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
+use function assert;
 use function file_get_contents;
+use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 
 /**
@@ -235,12 +239,27 @@ abstract class AbstractTest extends TestCase
         $sm->setService(Logger::class, $logger);
 
         // setup containers from config
-        $this->nav1 = $sm->get('nav_test1');
-        $this->nav2 = $sm->get('nav_test2');
-        $this->nav3 = $sm->get('nav_test3');
+        $nav1 = $sm->get('nav_test1');
+        $nav2 = $sm->get('nav_test2');
+        $nav3 = $sm->get('nav_test3');
 
-        $sm->setService('nav1', $this->nav1);
-        $sm->setService('nav2', $this->nav2);
+        assert(
+            $nav1 instanceof Navigation,
+            sprintf(
+                '$nav1 should be an Instance of %s, but was %s',
+                Navigation::class,
+                is_object($nav1) ? get_class($nav1) : gettype($nav1)
+            )
+        );
+        assert($nav2 instanceof Navigation);
+        assert($nav3 instanceof Navigation);
+
+        $this->nav1 = $nav1;
+        $this->nav2 = $nav2;
+        $this->nav3 = $nav3;
+
+        $sm->setService('nav1', $nav1);
+        $sm->setService('nav2', $nav2);
 
         $sm->setAllowOverride(false);
     }

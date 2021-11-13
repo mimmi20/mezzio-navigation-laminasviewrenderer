@@ -28,7 +28,7 @@ use function array_merge_recursive;
 final class PluginManager extends ViewHelperPluginManager implements ContainerInterface
 {
     /**
-     * @var string Valid instance types
+     * @var class-string Valid instance types
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      */
     protected $instanceOf = ViewHelperInterface::class;

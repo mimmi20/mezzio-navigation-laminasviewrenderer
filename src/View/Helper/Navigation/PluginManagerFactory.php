@@ -18,6 +18,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 
 use function array_key_exists;
+use function assert;
 use function is_array;
 
 final class PluginManagerFactory implements FactoryInterface
@@ -46,6 +47,8 @@ final class PluginManagerFactory implements FactoryInterface
         }
 
         $config = $container->get('config');
+
+        assert(is_array($config));
 
         // If we do not have navigation helper configuration, nothing more to do
         if (!array_key_exists('navigation_helpers', $config) || !is_array($config['navigation_helpers'])) {

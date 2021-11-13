@@ -42,6 +42,8 @@ use function array_key_exists;
 use function assert;
 use function count;
 use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 use function str_replace;
 
@@ -93,7 +95,7 @@ final class LinksTest extends AbstractTest
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                get_class($baseUrlHelper)
+                is_object($baseUrlHelper) ? get_class($baseUrlHelper) : gettype($baseUrlHelper)
             )
         );
 
@@ -103,19 +105,29 @@ final class LinksTest extends AbstractTest
             sprintf(
                 '$headLinkHelper should be an Instance of %s, but was %s',
                 HeadLink::class,
-                get_class($headLinkHelper)
+                is_object($headLinkHelper) ? get_class($headLinkHelper) : gettype($headLinkHelper)
             )
         );
 
         assert(null !== $headLinkHelper->getView(), 'View was not set into Headlink Helper');
 
+        $logger          = $this->serviceManager->get(Logger::class);
+        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
+        $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
+        $findRoot        = $this->serviceManager->get(FindRootInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($findRoot instanceof FindRootInterface);
+
         // create helper
         $this->helper = new Navigation\Links(
             $this->serviceManager,
-            $this->serviceManager->get(Logger::class),
-            $this->serviceManager->get(HtmlifyInterface::class),
-            $this->serviceManager->get(ContainerParserInterface::class),
-            $this->serviceManager->get(FindRootInterface::class),
+            $logger,
+            $htmlify,
+            $containerParser,
+            $findRoot,
             $headLinkHelper
         );
 

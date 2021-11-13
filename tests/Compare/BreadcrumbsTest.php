@@ -31,6 +31,8 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function assert;
 use function get_class;
+use function gettype;
+use function is_object;
 use function is_string;
 use function mb_strlen;
 use function mb_substr;
@@ -75,6 +77,7 @@ final class BreadcrumbsTest extends AbstractTest
         parent::setUp();
 
         $plugin = $this->serviceManager->get(ViewHelperPluginManager::class);
+        assert($plugin instanceof ViewHelperPluginManager);
 
         $renderer = $this->serviceManager->get(PartialRendererInterface::class);
         assert(
@@ -82,7 +85,7 @@ final class BreadcrumbsTest extends AbstractTest
             sprintf(
                 '$renderer should be an Instance of %s, but was %s',
                 PartialRendererInterface::class,
-                get_class($renderer)
+                is_object($renderer) ? get_class($renderer) : gettype($renderer)
             )
         );
 
@@ -92,18 +95,26 @@ final class BreadcrumbsTest extends AbstractTest
             sprintf(
                 '$escapeHelper should be an Instance of %s, but was %s',
                 EscapeHtml::class,
-                get_class($escapeHelper)
+                is_object($escapeHelper) ? get_class($escapeHelper) : gettype($escapeHelper)
             )
         );
 
         $translator = null;
 
+        $logger          = $this->serviceManager->get(Logger::class);
+        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
+        $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+
         // create helper
         $this->helper = new Breadcrumbs(
             $this->serviceManager,
-            $this->serviceManager->get(Logger::class),
-            $this->serviceManager->get(HtmlifyInterface::class),
-            $this->serviceManager->get(ContainerParserInterface::class),
+            $logger,
+            $htmlify,
+            $containerParser,
             $escapeHelper,
             $renderer,
             $translator
