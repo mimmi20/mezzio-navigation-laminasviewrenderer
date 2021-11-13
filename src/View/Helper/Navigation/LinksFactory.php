@@ -49,13 +49,25 @@ final class LinksFactory
             )
         );
 
+        $logger          = $container->get(Logger::class);
+        $htmlify         = $container->get(HtmlifyInterface::class);
+        $containerParser = $container->get(ContainerParserInterface::class);
+        $findRoot        = $container->get(FindRootInterface::class);
+        $headLink        = $plugin->get(HeadLink::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($findRoot instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
+
         return new Links(
             $container,
-            $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
-            $container->get(ContainerParserInterface::class),
-            $container->get(FindRootInterface::class),
-            $plugin->get(HeadLink::class)
+            $logger,
+            $htmlify,
+            $containerParser,
+            $findRoot,
+            $headLink
         );
     }
 }

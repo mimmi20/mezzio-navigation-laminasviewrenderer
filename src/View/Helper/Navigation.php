@@ -32,6 +32,7 @@ use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 
+use function assert;
 use function call_user_func_array;
 use function spl_object_hash;
 use function sprintf;
@@ -258,6 +259,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
             return null;
         }
 
+        assert($helper instanceof ViewHelperInterface);
+
         $this->prepareHelper($helper);
 
         return $helper;
@@ -298,6 +301,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
                 $e
             );
         }
+
+        assert($helper instanceof ViewHelperInterface);
 
         $this->prepareHelper($helper);
 

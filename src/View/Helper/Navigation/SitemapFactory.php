@@ -70,13 +70,23 @@ final class SitemapFactory
             )
         );
 
+        $logger          = $container->get(Logger::class);
+        $htmlify         = $container->get(HtmlifyInterface::class);
+        $containerParser = $container->get(ContainerParserInterface::class);
+        $escapeHtml      = $plugin->get(EscapeHtml::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapeHtml instanceof EscapeHtml);
+
         return new Sitemap(
             $container,
-            $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
-            $container->get(ContainerParserInterface::class),
+            $logger,
+            $htmlify,
+            $containerParser,
             $basePathHelper,
-            $plugin->get(EscapeHtml::class),
+            $escapeHtml,
             $serverUrlHelper
         );
     }

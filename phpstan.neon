@@ -13,8 +13,8 @@ parameters:
   checkGenericClassInNonGenericObjectType: false
   checkMissingIterableValueType: false
   treatPhpDocTypesAsCertain: false
-  implicitThrows: false
   exceptions:
+    implicitThrows: false
     checkedExceptionRegexes:
       - '#Exception#'
       - '#Throwable#'
@@ -31,7 +31,7 @@ parameters:
     - '~Parameter #1 \$configOrContainerInstance of method Laminas\\View\\HelperPluginManager::__construct\(\) expects Interop\\Container\\ContainerInterface\|Laminas\\View\\ConfigInterface\|null, Interop\\Container\\ContainerInterface\|Laminas\\ServiceManager\\ConfigInterface\|null given~'
     - '~Parameter #1 \$message of method Laminas\\Log\\Logger::.* expects string, .* given~'
     - '~Parameter #1 \$value of method Laminas\\Validator\\Sitemap\\Lastmod::isValid\(\) expects string, string\|false given~'
-    - '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, array\(.*, string\) given~'
+#    - '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, array\(.*, string\) given~'
     - '~Parameter #2 \$filename of method Laminas\\I18n\\Translator\\Translator::addTranslationFile\(\) expects string, null given~'
     - '~Parameter #1 \$exception of method PHPUnit\\Framework\\TestCase::expectException\(\) expects class-string<Throwable>, string given~'
     - '~Laminas\\Navigation\\Page\\AbstractPage~'

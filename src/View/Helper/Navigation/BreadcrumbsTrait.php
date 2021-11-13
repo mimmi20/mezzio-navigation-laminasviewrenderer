@@ -140,7 +140,7 @@ trait BreadcrumbsTrait
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<mixed>                                  $params
+     * @param array<string, array<mixed>|string>            $params
      * @param ContainerInterface|string|null                $container [optional] container to pass to view
      *                                                                 script. Default is to use the container registered in the helper.
      * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
@@ -205,10 +205,14 @@ trait BreadcrumbsTrait
 
             if (null !== $this->translator) {
                 $label = ($this->translator)($label, $active->getTextDomain());
+                assert(is_string($label));
             }
 
+            $label = ($this->escaper)($label);
+            assert(is_string($label));
+
             $html[] = $this->renderBreadcrumbItem(
-                ($this->escaper)($label),
+                $label,
                 $active->getLiClass() ?? '',
                 $active->isActive()
             );
@@ -319,7 +323,7 @@ trait BreadcrumbsTrait
     /**
      * Render a partial with the given "model".
      *
-     * @param array<mixed>                                  $params
+     * @param array<string, array<mixed>|string>            $params
      * @param ContainerInterface|string|null                $container
      * @param array<int, string>|ModelInterface|string|null $partial
      *
@@ -356,6 +360,7 @@ trait BreadcrumbsTrait
             $container = $this->getContainer();
         }
 
+        /** @var array<string, array<mixed>> $model */
         $model  = array_merge($params, ['pages' => []], ['separator' => $this->getSeparator()]);
         $active = $this->findActive($container);
 

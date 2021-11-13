@@ -678,6 +678,9 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      */
     private function xmlEscape(string $string): string
     {
-        return ($this->escaper)($string);
+        $escaped = ($this->escaper)($string);
+        assert(is_string($escaped));
+
+        return $escaped;
     }
 }

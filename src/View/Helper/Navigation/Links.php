@@ -188,7 +188,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         try {
             $result = $this->findAllRelations($active, $this->getRenderFlag());
-        } catch (InvalidArgumentException $e) {
+        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException $e) {
             $this->logger->err($e);
 
             return '';

@@ -83,7 +83,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 $options['ulClass'],
                 $options['liClass'],
                 $options['indent'],
-                $options['minDepth'] ?? 0,
+                $options['minDepth'],
                 $options['maxDepth'],
                 $options['escapeLabels'],
                 $options['addClassToListItem'],

@@ -76,12 +76,20 @@ final class NavigationTest extends AbstractTest
         $this->serviceManager->get(ViewHelperPluginManager::class);
         $this->serviceManager->get(LaminasViewRenderer::class);
 
+        $logger          = $this->serviceManager->get(Logger::class);
+        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
+        $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+
         // create helper
         $this->helper = new Navigation(
             $this->serviceManager,
-            $this->serviceManager->get(Logger::class),
-            $this->serviceManager->get(HtmlifyInterface::class),
-            $this->serviceManager->get(ContainerParserInterface::class)
+            $logger,
+            $htmlify,
+            $containerParser
         );
         $this->helper->setPluginManager(new Navigation\PluginManager($this->serviceManager));
 

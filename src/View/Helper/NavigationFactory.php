@@ -15,11 +15,16 @@ namespace Mezzio\Navigation\LaminasView\View\Helper;
 use Interop\Container\ContainerInterface;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
+use function get_class;
+use function gettype;
+use function is_object;
+use function sprintf;
 
 final class NavigationFactory
 {
@@ -32,14 +37,28 @@ final class NavigationFactory
     {
         assert($container instanceof ServiceLocatorInterface);
 
-        $helper = new Navigation(
-            $container,
-            $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
-            $container->get(ContainerParserInterface::class)
+        $logger          = $container->get(Logger::class);
+        $htmlify         = $container->get(HtmlifyInterface::class);
+        $containerParser = $container->get(ContainerParserInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+
+        $helper = new Navigation($container, $logger, $htmlify, $containerParser);
+
+        $plugin = $container->get(Navigation\PluginManager::class);
+
+        assert(
+            $plugin instanceof Navigation\PluginManager || $plugin instanceof ViewHelperPluginManager,
+            sprintf(
+                '$plugin should be an Instance of %s, but was %s',
+                Navigation\PluginManager::class,
+                is_object($plugin) ? get_class($plugin) : gettype($plugin)
+            )
         );
 
-        $helper->setPluginManager($container->get(Navigation\PluginManager::class));
+        $helper->setPluginManager($plugin);
 
         return $helper;
     }

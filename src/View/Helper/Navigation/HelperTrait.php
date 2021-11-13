@@ -27,7 +27,6 @@ use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 
 use function assert;
-use function call_user_func_array;
 use function get_class;
 use function gettype;
 use function is_int;
@@ -131,10 +130,7 @@ trait HelperTrait
      */
     public function __call(string $method, array $arguments = [])
     {
-        return call_user_func_array(
-            [$this->getContainer(), $method],
-            $arguments
-        );
+        return $this->getContainer()->{$method}(...$arguments);
     }
 
     /**

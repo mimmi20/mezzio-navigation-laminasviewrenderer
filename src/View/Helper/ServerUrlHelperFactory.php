@@ -18,6 +18,7 @@ use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Psr\Container\ContainerExceptionInterface;
 
+use function assert;
 use function sprintf;
 
 final class ServerUrlHelperFactory
@@ -38,6 +39,10 @@ final class ServerUrlHelperFactory
             );
         }
 
-        return new ServerUrlHelper($container->get(BaseServerUrlHelper::class));
+        $baseUrl = $container->get(BaseServerUrlHelper::class);
+
+        assert($baseUrl instanceof BaseServerUrlHelper);
+
+        return new ServerUrlHelper($baseUrl);
     }
 }

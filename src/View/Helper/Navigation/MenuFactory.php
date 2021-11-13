@@ -49,13 +49,25 @@ final class MenuFactory
             )
         );
 
+        $logger          = $container->get(Logger::class);
+        $htmlify         = $container->get(HtmlifyInterface::class);
+        $containerParser = $container->get(ContainerParserInterface::class);
+        $escapeHtmlAttr  = $plugin->get(EscapeHtmlAttr::class);
+        $renderer        = $container->get(PartialRendererInterface::class);
+
+        assert($logger instanceof Logger);
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        assert($renderer instanceof PartialRendererInterface);
+
         return new Menu(
             $container,
-            $container->get(Logger::class),
-            $container->get(HtmlifyInterface::class),
-            $container->get(ContainerParserInterface::class),
-            $plugin->get(EscapeHtmlAttr::class),
-            $container->get(PartialRendererInterface::class)
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapeHtmlAttr,
+            $renderer
         );
     }
 }
