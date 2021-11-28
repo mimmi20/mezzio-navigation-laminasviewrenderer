@@ -251,9 +251,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             $html   .= $indent . '    </li>' . PHP_EOL;
         }
 
-        $html .= $indent . '</ul>';
-
-        return $html;
+        return $html . $indent . '</ul>';
     }
 
     /**

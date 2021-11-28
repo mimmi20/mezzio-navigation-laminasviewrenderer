@@ -348,7 +348,7 @@ trait HelperTrait
      */
     public function getAuthorization(): ?AuthorizationInterface
     {
-        if (null === $this->authorization && null !== static::$defaultAuthorization) {
+        if (!$this->authorization instanceof AuthorizationInterface && null !== static::$defaultAuthorization) {
             return static::$defaultAuthorization;
         }
 

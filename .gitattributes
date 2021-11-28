@@ -16,7 +16,6 @@
 *.ini            text eol=lf
 *.sh             text eol=lf
 *.tmp            text eol=lf
-LICENSE          text eol=lf
 
 # binary files
 *.zip            -text binary
@@ -33,5 +32,6 @@ phpcs.xml            export-ignore text eol=lf
 phpmd.ruleset.xml    export-ignore text eol=lf
 phpstan.neon         export-ignore text eol=lf
 phpunit.xml          export-ignore text eol=lf
+rector.php           export-ignore text eol=lf
 /tests               export-ignore
 /.github             export-ignore

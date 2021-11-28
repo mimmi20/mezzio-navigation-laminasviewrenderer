@@ -4643,7 +4643,6 @@ final class BreadcrumbsTest extends TestCase
             ->method('__invoke');
 
         $expected  = 'renderedPartial';
-        $partial   = 'testPartial';
         $seperator = '/';
         $data      = ['pages' => [$parentPage, $subPage], 'separator' => $seperator];
 
