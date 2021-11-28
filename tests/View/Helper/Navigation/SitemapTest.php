@@ -1649,9 +1649,6 @@ final class SitemapTest extends TestCase
 
         $name = 'Mezzio\\Navigation\\Top';
 
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
-
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
             ->getMock();

@@ -39,6 +39,7 @@ use RecursiveIteratorIterator;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function array_key_exists;
+use function array_keys;
 use function assert;
 use function count;
 use function get_class;
@@ -761,7 +762,7 @@ final class LinksTest extends AbstractTest
         ];
         $actual   = [];
 
-        foreach ($expected as $type => $discard) {
+        foreach (array_keys($expected) as $type) {
             $active->addRel($type, $samplePage);
 
             $found = $this->helper->findRelation($active, 'rel', $type);
@@ -884,8 +885,7 @@ final class LinksTest extends AbstractTest
         try {
             $this->helper->renderLink($active, 'foo', 'bar');
 
-            self::fail('An invalid value was given, but a ' .
-                        'Laminas\View\Exception\InvalidArgumentException was not thrown');
+            self::fail('An invalid value was given, but a Laminas\View\Exception\InvalidArgumentException was not thrown');
         } catch (DomainException $e) {
             self::assertStringContainsString('Invalid relation attribute', $e->getMessage());
         }
@@ -938,7 +938,7 @@ final class LinksTest extends AbstractTest
         ]);
 
         // add relations to active page
-        foreach ($expectedRelations as $type => $discard) {
+        foreach (array_keys($expectedRelations) as $type) {
             $active->addRel($type, $forcedRelation);
             $active->addRev($type, $forcedRelation);
         }

@@ -6109,7 +6109,6 @@ final class LinksTest extends TestCase
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
-        $rel        = 1234;
 
         $page1 = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()

@@ -1140,7 +1140,6 @@ final class NavigationTest extends TestCase
     public function testCall(): void
     {
         $proxy     = 'menu';
-        $container = null;
         $rendered  = '';
         $arguments = [];
 
