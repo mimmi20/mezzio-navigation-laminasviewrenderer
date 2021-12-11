@@ -1,9 +1,8 @@
 {
   "name": "mimmi20/mezzio-navigation-laminasviewrenderer",
-  "type": "library",
   "description": "Provides viewhelper for Mezzio Navigation",
-  "homepage": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer",
   "license": "MIT",
+  "type": "library",
   "authors": [
     {
       "name": "Thomas Müller",
@@ -11,11 +10,16 @@
       "role": "Developer"
     }
   ],
+  "homepage": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer",
+  "support": {
+    "issues": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/issues",
+    "source": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer"
+  },
   "require": {
     "php": "^7.4.3 || ^8.0.0",
     "ext-mbstring": "*",
-    "laminas/laminas-log": "^2.13.1",
-    "laminas/laminas-stdlib": "^3.6.1",
+    "laminas/laminas-log": "^2.15.0",
+    "laminas/laminas-stdlib": "^3.6.2",
     "mezzio/mezzio-laminasviewrenderer": "^2.3.0",
     "mimmi20/laminasviewrenderer-helper-partialrenderer": "^1.0.2",
     "mimmi20/mezzio-navigation": "^2.0.7",
@@ -28,18 +32,14 @@
     "mimmi20/navigation-helper-htmlify": "^1.0.0",
     "psr/container": "^1.1.2 || ^2.0.2"
   },
-  "conflict": {
-    "container-interop/container-interop": "<1.2.0",
-    "mezzio/mezzio-authorization": "*",
-    "mezzio/mezzio-authorization-acl": "*"
-  },
   "require-dev": {
     "ext-dom": "*",
     "ext-intl": "*",
     "ext-libxml": "*",
+    "ergebnis/composer-normalize": "^2.18.0",
     "laminas/laminas-config": "^3.7.0",
     "laminas/laminas-dependency-plugin": "^2.2.0",
-    "laminas/laminas-i18n": "^2.12.0",
+    "laminas/laminas-i18n": "^2.13.0",
     "laminas/laminas-json": "^3.3.0",
     "laminas/laminas-servicemanager": "^3.10.0",
     "laminas/laminas-uri": "^2.9.1",
@@ -54,7 +54,12 @@
     "phpstan/phpstan-deprecation-rules": "^1.0.0",
     "phpstan/phpstan-phpunit": "^1.0.0",
     "phpunit/phpunit": "^9.5.10",
-    "rector/rector": "^0.12.5"
+    "rector/rector": "^0.12.7"
+  },
+  "conflict": {
+    "container-interop/container-interop": "<1.2.0",
+    "mezzio/mezzio-authorization": "*",
+    "mezzio/mezzio-authorization-acl": "*"
   },
   "suggest": {
     "ext-dom": "required to use the Sitemap ViewHelper",
@@ -67,15 +72,6 @@
     "laminas/laminas-validator": "^2.13.5 || ^2.14.0, required to use the Sitemap ViewHelper",
     "mimmi20/mezzio-generic-authorization": "^1.0.1, to use authrization roles or privileges"
   },
-  "config": {
-    "preferred-install": "dist",
-    "sort-packages": true
-  },
-  "extra": {
-    "laminas": {
-      "config-provider": "Mezzio\\Navigation\\LaminasView\\ConfigProvider"
-    }
-  },
   "autoload": {
     "psr-4": {
       "Mezzio\\Navigation\\LaminasView\\": "src/"
@@ -86,8 +82,13 @@
       "MezzioTest\\Navigation\\LaminasView\\": "tests/"
     }
   },
-  "support": {
-    "issues": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer/issues",
-    "source": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer"
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "extra": {
+    "laminas": {
+      "config-provider": "Mezzio\\Navigation\\LaminasView\\ConfigProvider"
+    }
   }
 }
