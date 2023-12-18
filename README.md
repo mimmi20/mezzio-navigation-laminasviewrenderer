@@ -7,15 +7,15 @@
 ## Code Status
 
 [![codecov](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](http://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](http://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Percentage of issues still open")
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](https://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Average time to resolve an issue")
+[![Percentage of issues still open](https://isitmaintained.com/badge/open/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](https://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Percentage of issues still open")
 
 ## Installation
 
 Run
 
-```
-$ composer require mimmi20/mezzio-navigation-laminasviewrenderer
+```shell
+composer require mimmi20/mezzio-navigation-laminasviewrenderer
 ```
 
 ### Render the navigation
@@ -112,11 +112,11 @@ The following example demonstrates rendering the navigation menus for the named
 <!-- ... -->
 
 <body>
-    <?= $this->navigation('Mezzio\Navigation\Default')->menu() ?>
+    <?= $this->navigation('Mimmi20\Mezzio\Navigation\Default')->menu() ?>
 
-    <?= $this->navigation('Mezzio\Navigation\Special')->menu() ?>
+    <?= $this->navigation('Mimmi20\Navigation\Special')->menu() ?>
 
-    <?= $this->navigation('Mezzio\Navigation\Sitemap')->menu() ?>
+    <?= $this->navigation('Mimmi20\Navigation\Sitemap')->menu() ?>
 </body>
 <!-- ... -->
 ```
@@ -141,7 +141,7 @@ There are 5 built-in helpers:
 All built-in helpers implements the interface `Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface`, which
 adds integration with
 [laminas-acl](https://docs.laminas.dev/laminas-permissions-acl/) or [laminas-rbac](https://docs.laminas.dev/laminas-permissions-rbac/) and
-[laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
+[laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mimmi20\Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
 defines the following methods:
 
 Method signature                                                       | Description
