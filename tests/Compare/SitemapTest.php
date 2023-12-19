@@ -122,49 +122,81 @@ final class SitemapTest extends AbstractTestCase
             private string $query    = '';
             private string $fragment = '';
 
-            /** @throws void */
+            /**
+             * @return string The URI scheme.
+             *
+             * @throws void
+             */
             public function getScheme(): string
             {
                 return $this->schema;
             }
 
-            /** @throws void */
+            /**
+             * @return string The URI authority, in "[user-info@]host[:port]" format.
+             *
+             * @throws void
+             */
             public function getAuthority(): string
             {
                 return '';
             }
 
-            /** @throws void */
+            /**
+             * @return string The URI user information, in "username[:password]" format.
+             *
+             * @throws void
+             */
             public function getUserInfo(): string
             {
                 return '';
             }
 
-            /** @throws void */
+            /**
+             * @return string The URI host.
+             *
+             * @throws void
+             */
             public function getHost(): string
             {
                 return $this->host;
             }
 
-            /** @throws void */
+            /**
+             * @return int|null The URI port.
+             *
+             * @throws void
+             */
             public function getPort(): int | null
             {
                 return $this->port;
             }
 
-            /** @throws void */
+            /**
+             * @return string The URI path.
+             *
+             * @throws void
+             */
             public function getPath(): string
             {
                 return $this->path;
             }
 
-            /** @throws void */
+            /**
+             * @return string The URI query string.
+             *
+             * @throws void
+             */
             public function getQuery(): string
             {
                 return $this->query;
             }
 
-            /** @throws void */
+            /**
+             * @return string The URI fragment.
+             *
+             * @throws void
+             */
             public function getFragment(): string
             {
                 return $this->fragment;
