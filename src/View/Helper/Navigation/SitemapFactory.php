@@ -24,8 +24,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 use function assert;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 
 final class SitemapFactory
@@ -45,7 +44,7 @@ final class SitemapFactory
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
                 ViewHelperPluginManager::class,
-                is_object($plugin) ? $plugin::class : gettype($plugin),
+                get_debug_type($plugin),
             ),
         );
 
@@ -55,7 +54,7 @@ final class SitemapFactory
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
                 ServerUrlHelper::class,
-                is_object($serverUrlHelper) ? $serverUrlHelper::class : gettype($serverUrlHelper),
+                get_debug_type($serverUrlHelper),
             ),
         );
 
@@ -65,7 +64,7 @@ final class SitemapFactory
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
                 BasePath::class,
-                is_object($basePathHelper) ? $basePathHelper::class : gettype($basePathHelper),
+                get_debug_type($basePathHelper),
             ),
         );
 

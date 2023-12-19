@@ -29,6 +29,7 @@ use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
@@ -42,11 +43,10 @@ use const PHP_EOL;
 
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation
- *
- * @group Compare
- * @group Laminas_View
- * @group Laminas_View_Helper
  */
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
 final class NavigationTest extends AbstractTestCase
 {
     /**
@@ -430,9 +430,8 @@ final class NavigationTest extends AbstractTestCase
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\I18n\Exception\RuntimeException
-     *
-     * @group Laminas-6854
      */
+    #[Group('Laminas-6854')]
     public function testRenderInvisibleItem(): void
     {
         $pageFactory = new PageFactory();
@@ -493,9 +492,8 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
-     * @group #3859
      */
+    #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndDifferentContainers(): void
     {
         $menu     = ($this->helper)('nav1')->menu();
@@ -517,9 +515,8 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
-     * @group #3859
      */
+    #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndSameContainer(): void
     {
         // Tests
@@ -541,9 +538,8 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
-     * @group #3859
      */
+    #[Group('#3859')]
     public function testMultipleNavigationsWithSameHelperAndSameContainer(): void
     {
         // Test

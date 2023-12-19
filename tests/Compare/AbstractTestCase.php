@@ -70,8 +70,7 @@ use Psr\Log\LoggerInterface;
 
 use function assert;
 use function file_get_contents;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 
 /**
@@ -235,7 +234,7 @@ abstract class AbstractTestCase extends TestCase
             sprintf(
                 '$nav1 should be an Instance of %s, but was %s',
                 Navigation::class,
-                is_object($nav1) ? $nav1::class : gettype($nav1),
+                get_debug_type($nav1),
             ),
         );
         assert($nav2 instanceof Navigation);

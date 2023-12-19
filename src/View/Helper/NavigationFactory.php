@@ -21,8 +21,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 use function assert;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 
 final class NavigationFactory
@@ -53,7 +52,7 @@ final class NavigationFactory
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
                 Navigation\PluginManager::class,
-                is_object($plugin) ? $plugin::class : gettype($plugin),
+                get_debug_type($plugin),
             ),
         );
 

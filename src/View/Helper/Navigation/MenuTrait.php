@@ -428,31 +428,23 @@ trait MenuTrait
             $options['indent'] = $this->getIndent();
         }
 
-        $options['ulClass'] = isset($options['ulClass']) && $options['ulClass'] !== null
-            ? (string) $options['ulClass']
-            : $this->getUlClass();
+        if (!array_key_exists('ulClass', $options) || $options['ulClass'] === null) {
+            $options['ulClass'] = $this->getUlClass();
+        }
 
-        $options['liClass'] = isset($options['liClass']) && $options['liClass'] !== null
-            ? (string) $options['liClass']
-            : $this->getLiClass();
+        if (!array_key_exists('liClass', $options) || $options['liClass'] === null) {
+            $options['liClass'] = $this->getLiClass();
+        }
 
-        if (array_key_exists('minDepth', $options)) {
-            if ($options['minDepth'] !== null) {
-                $options['minDepth'] = (int) $options['minDepth'];
-            }
-        } else {
+        if (!array_key_exists('minDepth', $options) || $options['minDepth'] === null) {
             $options['minDepth'] = $this->getMinDepth();
         }
 
-        if (0 > $options['minDepth'] || $options['minDepth'] === null) {
+        if ($options['minDepth'] < 0 || $options['minDepth'] === null) {
             $options['minDepth'] = 0;
         }
 
-        if (array_key_exists('maxDepth', $options)) {
-            if ($options['maxDepth'] !== null) {
-                $options['maxDepth'] = (int) $options['maxDepth'];
-            }
-        } else {
+        if (!array_key_exists('maxDepth', $options) || $options['maxDepth'] === null) {
             $options['maxDepth'] = $this->getMaxDepth();
         }
 
@@ -472,12 +464,9 @@ trait MenuTrait
             $options['addClassToListItem'] = $this->getAddClassToListItem();
         }
 
-        $options['liActiveClass'] = array_key_exists(
-            'liActiveClass',
-            $options,
-        ) && $options['liActiveClass'] !== null
-            ? (string) $options['liActiveClass']
-            : $this->getLiActiveClass();
+        if (!array_key_exists('liActiveClass', $options) || $options['liActiveClass'] === null) {
+            $options['liActiveClass'] = $this->getLiActiveClass();
+        }
 
         return $options;
     }

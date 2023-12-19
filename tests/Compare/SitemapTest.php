@@ -29,6 +29,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInter
 use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\UriInterface;
@@ -37,20 +38,19 @@ use Psr\Log\LoggerInterface;
 use function assert;
 use function date_default_timezone_get;
 use function date_default_timezone_set;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 use function trim;
 
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap
  *
- * @group Compare
  * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
  * phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
- * @group Laminas_View
- * @group Laminas_View_Helper
  */
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
 final class SitemapTest extends AbstractTestCase
 {
     /**
@@ -110,7 +110,7 @@ final class SitemapTest extends AbstractTestCase
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                is_object($baseUrlHelper) ? $baseUrlHelper::class : gettype($baseUrlHelper),
+                get_debug_type($baseUrlHelper),
             ),
         );
 
@@ -186,7 +186,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @param string      $user     the user name to use for authority
+             * @param string      $user     the username to use for authority
              * @param string|null $password the password associated with $user
              *
              * @return static a new instance with the specified user information
@@ -303,7 +303,7 @@ final class SitemapTest extends AbstractTestCase
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
                 ServerUrlHelper::class,
-                is_object($serverUrlHelper) ? $serverUrlHelper::class : gettype($serverUrlHelper),
+                get_debug_type($serverUrlHelper),
             ),
         );
 
@@ -313,7 +313,7 @@ final class SitemapTest extends AbstractTestCase
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
                 BasePath::class,
-                is_object($basePathHelper) ? $basePathHelper::class : gettype($basePathHelper),
+                get_debug_type($basePathHelper),
             ),
         );
 
@@ -323,7 +323,7 @@ final class SitemapTest extends AbstractTestCase
             sprintf(
                 '$escapeHelper should be an Instance of %s, but was %s',
                 EscapeHtml::class,
-                is_object($escapeHelper) ? $escapeHelper::class : gettype($escapeHelper),
+                get_debug_type($escapeHelper),
             ),
         );
 
@@ -496,9 +496,8 @@ final class SitemapTest extends AbstractTestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
-     * @group test-123
      */
+    #[Group('test-123')]
     public function testSetServerUrlWithSchemeAndPortAndHostAndPath(): void
     {
         $this->helper->setServerUrl('http://sub.example.org:8080/foo/');

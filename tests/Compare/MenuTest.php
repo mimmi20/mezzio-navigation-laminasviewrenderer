@@ -27,13 +27,13 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 use function assert;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function is_string;
 use function rtrim;
 use function sprintf;
@@ -44,11 +44,10 @@ use const PHP_EOL;
 
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu.
- *
- * @group Compare
- * @group Laminas_View
- * @group Laminas_View_Helper
  */
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
 final class MenuTest extends AbstractTestCase
 {
     /**
@@ -79,7 +78,7 @@ final class MenuTest extends AbstractTestCase
             sprintf(
                 '$renderer should be an Instance of %s, but was %s',
                 PartialRendererInterface::class,
-                is_object($renderer) ? $renderer::class : gettype($renderer),
+                get_debug_type($renderer),
             ),
         );
 
@@ -89,7 +88,7 @@ final class MenuTest extends AbstractTestCase
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                is_object($baseUrlHelper) ? $baseUrlHelper::class : gettype($baseUrlHelper),
+                get_debug_type($baseUrlHelper),
             ),
         );
 
@@ -99,7 +98,7 @@ final class MenuTest extends AbstractTestCase
             sprintf(
                 '$escapeHelper should be an Instance of %s, but was %s',
                 EscapeHtmlAttr::class,
-                is_object($escapeHelper) ? $escapeHelper::class : gettype($escapeHelper),
+                get_debug_type($escapeHelper),
             ),
         );
 

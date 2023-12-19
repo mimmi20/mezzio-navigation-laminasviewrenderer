@@ -52,6 +52,9 @@ updates:
       - dependency-name: "psr/container"
         versions:
           - ">= 0"
+      - dependency-name: "psr/http-message"
+        versions:
+          - ">= 0"
 #      - dependency-name: phpunit/phpunit
 #        versions:
 #          - ">= 0"

@@ -39,11 +39,10 @@ use RecursiveIteratorIterator;
 
 use function assert;
 use function date;
-use function gettype;
+use function get_debug_type;
 use function implode;
 use function in_array;
 use function is_int;
-use function is_object;
 use function is_string;
 use function libxml_clear_errors;
 use function libxml_get_errors;
@@ -112,9 +111,9 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
-        private BasePath $basePathHelper,
-        private EscapeHtml $escaper,
-        private ServerUrlHelper $serverUrlHelper,
+        private readonly BasePath $basePathHelper,
+        private readonly EscapeHtml $escaper,
+        private readonly ServerUrlHelper $serverUrlHelper,
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
@@ -244,7 +243,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                 sprintf(
                     '$page should be an Instance of %s, but was %s',
                     PageInterface::class,
-                    is_object($page) ? $page::class : gettype($page),
+                    get_debug_type($page),
                 ),
             );
 
@@ -388,22 +387,12 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             $validationMessages = [];
 
             foreach ($errors as $error) {
-                switch ($error->level) {
-                    case LIBXML_ERR_FATAL:
-                        $message = sprintf('FATAL ERROR [%s]', $error->code);
-
-                        break;
-                    case LIBXML_ERR_ERROR:
-                        $message = sprintf('ERROR [%s]', $error->code);
-
-                        break;
-                    case LIBXML_ERR_WARNING:
-                        $message = sprintf('WARNING [%s]', $error->code);
-
-                        break;
-                    default:
-                        $message = sprintf('NOTICE [%s]', $error->code);
-                }
+                $message = match ($error->level) {
+                    LIBXML_ERR_FATAL => sprintf('FATAL ERROR [%s]', $error->code),
+                    LIBXML_ERR_ERROR => sprintf('ERROR [%s]', $error->code),
+                    LIBXML_ERR_WARNING => sprintf('WARNING [%s]', $error->code),
+                    default => sprintf('NOTICE [%s]', $error->code),
+                };
 
                 $message .= trim($error->message) . sprintf(
                     ' Line: %d Column: %d',

@@ -93,25 +93,19 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     private int $renderFlag = LinksInterface::RENDER_ALL;
 
-    /**
-     * FindRoot helper
-     */
-    private FindRootInterface $rootFinder;
-
     /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
         LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
-        FindRootInterface $rootFinder,
-        private HeadLink $headLink,
+        private readonly FindRootInterface $rootFinder,
+        private readonly HeadLink $headLink,
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
         $this->htmlify         = $htmlify;
         $this->containerParser = $containerParser;
-        $this->rootFinder      = $rootFinder;
     }
 
     /**
@@ -330,7 +324,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                     $relFlag = self::RENDER_CUSTOM;
                 }
 
-                if (!((int) $flag & (int) $relFlag)) {
+                if (!($flag & (int) $relFlag)) {
                     continue;
                 }
 

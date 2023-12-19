@@ -21,11 +21,10 @@ use RecursiveIteratorIterator;
 
 use function array_key_exists;
 use function assert;
-use function gettype;
+use function get_debug_type;
 use function implode;
 use function is_bool;
 use function is_int;
-use function is_object;
 use function is_string;
 use function rtrim;
 use function sprintf;
@@ -76,6 +75,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         assert(is_string($options['indent']));
         assert(is_int($options['minDepth']));
         assert(is_bool($options['onlyActiveBranch']));
+        assert(is_bool($options['renderParents']));
         assert(is_bool($options['escapeLabels']));
         assert(is_bool($options['addClassToListItem']));
         assert(is_string($options['liActiveClass']));
@@ -150,18 +150,19 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
         int | string | null $indent = null,
         string | null $liActiveClass = null,
     ): string {
+        $this->setMaxDepth(null);
+        $this->setMinDepth(null);
+        $this->setRenderParents(false);
+        $this->setAddClassToListItem(false);
+
         return $this->renderMenu(
             $container,
             [
                 'indent' => $indent,
                 'ulClass' => $ulClass,
                 'liClass' => $liClass,
-                'minDepth' => null,
-                'maxDepth' => null,
                 'onlyActiveBranch' => true,
-                'renderParents' => false,
                 'escapeLabels' => true,
-                'addClassToListItem' => false,
                 'liActiveClass' => $liActiveClass,
             ],
         );
@@ -224,7 +225,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
             sprintf(
                 '$activePage should be an Instance of %s, but was %s',
                 ContainerInterface::class,
-                is_object($activePage) ? $activePage::class : gettype($activePage),
+                get_debug_type($activePage),
             ),
         );
 
@@ -321,7 +322,7 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
                 sprintf(
                     '$page should be an Instance of %s, but was %s',
                     PageInterface::class,
-                    is_object($page) ? $page::class : gettype($page),
+                    get_debug_type($page),
                 ),
             );
 

@@ -25,13 +25,13 @@ use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 use function assert;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function is_string;
 use function mb_strlen;
 use function mb_substr;
@@ -43,11 +43,10 @@ use const PHP_EOL;
 
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs.
- *
- * @group Compare
- * @group Laminas_View
- * @group Laminas_View_Helper
  */
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
 final class BreadcrumbsTest extends AbstractTestCase
 {
     /**
@@ -78,7 +77,7 @@ final class BreadcrumbsTest extends AbstractTestCase
             sprintf(
                 '$renderer should be an Instance of %s, but was %s',
                 PartialRendererInterface::class,
-                is_object($renderer) ? $renderer::class : gettype($renderer),
+                get_debug_type($renderer),
             ),
         );
 
@@ -88,7 +87,7 @@ final class BreadcrumbsTest extends AbstractTestCase
             sprintf(
                 '$escapeHelper should be an Instance of %s, but was %s',
                 EscapeHtml::class,
-                is_object($escapeHelper) ? $escapeHelper::class : gettype($escapeHelper),
+                get_debug_type($escapeHelper),
             ),
         );
 

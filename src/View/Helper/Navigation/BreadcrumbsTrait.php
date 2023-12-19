@@ -31,10 +31,9 @@ use function array_reverse;
 use function array_unshift;
 use function assert;
 use function count;
-use function gettype;
+use function get_debug_type;
 use function is_array;
 use function is_int;
-use function is_object;
 use function is_string;
 use function sprintf;
 
@@ -187,7 +186,7 @@ trait BreadcrumbsTrait
             sprintf(
                 '$active should be an Instance of %s, but was %s',
                 PageInterface::class,
-                is_object($active) ? $active::class : gettype($active),
+                get_debug_type($active),
             ),
         );
 
@@ -396,7 +395,7 @@ trait BreadcrumbsTrait
                 sprintf(
                     '$active should be an Instance of %s, but was %s',
                     PageInterface::class,
-                    is_object($active) ? $active::class : gettype($active),
+                    get_debug_type($active),
                 ),
             );
 

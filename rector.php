@@ -11,6 +11,7 @@
 declare(strict_types = 1);
 
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
@@ -41,4 +42,10 @@ return static function (RectorConfig $rectorConfig): void {
             RemoveParentCallWithoutParentRector::class,
         ],
     );
+
+    $rectorConfig->skip([
+        RemoveUnusedPrivateMethodParameterRector::class => [
+            __DIR__ . '/src/View/Helper/Navigation/Breadcrumbs.php',
+        ],
+    ]);
 };

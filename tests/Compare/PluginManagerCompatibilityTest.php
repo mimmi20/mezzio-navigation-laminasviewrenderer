@@ -57,6 +57,7 @@ use Mimmi20\NavigationHelper\FindRoot\FindRoot;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -66,10 +67,8 @@ use Throwable;
 
 use function method_exists;
 
-/**
- * @group Compare
- * @group Laminas_View
- */
+#[Group('Compare')]
+#[Group('Laminas_View')]
 final class PluginManagerCompatibilityTest extends TestCase
 {
     use CommonPluginManagerTrait;

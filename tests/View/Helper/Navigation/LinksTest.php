@@ -34,6 +34,7 @@ use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
 use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -6491,9 +6492,8 @@ final class LinksTest extends TestCase
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\DomainException
-     *
-     * @group Render2
      */
+    #[Group('Render2')]
     public function testFindContainerRelationFromProperty(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)

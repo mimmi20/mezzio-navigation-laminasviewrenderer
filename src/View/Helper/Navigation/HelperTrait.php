@@ -28,9 +28,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 use function assert;
-use function gettype;
+use function get_debug_type;
 use function is_int;
-use function is_object;
 use function sprintf;
 use function str_repeat;
 
@@ -319,7 +318,7 @@ trait HelperTrait
             sprintf(
                 '$acceptHelper should be an Instance of %s, but was %s',
                 AcceptHelperInterface::class,
-                is_object($acceptHelper) ? $acceptHelper::class : gettype($acceptHelper),
+                get_debug_type($acceptHelper),
             ),
         );
 
@@ -429,11 +428,11 @@ trait HelperTrait
     /**
      * Sets the maximum depth a page can have to be included when rendering
      *
-     * @param int $maxDepth default is null, which sets no maximum depth
+     * @param int|null $maxDepth default is null, which sets no maximum depth
      *
      * @throws void
      */
-    public function setMaxDepth(int $maxDepth): self
+    public function setMaxDepth(int | null $maxDepth): self
     {
         $this->maxDepth = $maxDepth;
 
@@ -453,11 +452,11 @@ trait HelperTrait
     /**
      * Sets the minimum depth a page must have to be included when rendering
      *
-     * @param int $minDepth default is null, which sets no minimum depth
+     * @param int|null $minDepth default is null, which sets no minimum depth
      *
      * @throws void
      */
-    public function setMinDepth(int $minDepth): self
+    public function setMinDepth(int | null $minDepth): self
     {
         $this->minDepth = $minDepth;
 
@@ -618,6 +617,6 @@ trait HelperTrait
             $indent = str_repeat(' ', $indent);
         }
 
-        return (string) $indent;
+        return $indent;
     }
 }

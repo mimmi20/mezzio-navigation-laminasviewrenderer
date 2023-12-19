@@ -33,6 +33,7 @@ use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
@@ -42,9 +43,7 @@ use function array_key_exists;
 use function array_keys;
 use function assert;
 use function count;
-use function get_class;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 use function str_replace;
 
@@ -52,11 +51,10 @@ use const PHP_EOL;
 
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links
- *
- * @group Compare
- * @group Laminas_View
- * @group Laminas_View_Helper
  */
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
 final class LinksTest extends AbstractTestCase
 {
     /**
@@ -90,7 +88,7 @@ final class LinksTest extends AbstractTestCase
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                is_object($baseUrlHelper) ? $baseUrlHelper::class : gettype($baseUrlHelper),
+                get_debug_type($baseUrlHelper),
             ),
         );
 
@@ -100,7 +98,7 @@ final class LinksTest extends AbstractTestCase
             sprintf(
                 '$headLinkHelper should be an Instance of %s, but was %s',
                 HeadLink::class,
-                is_object($headLinkHelper) ? $headLinkHelper::class : gettype($headLinkHelper),
+                get_debug_type($headLinkHelper),
             ),
         );
 
@@ -197,7 +195,7 @@ final class LinksTest extends AbstractTestCase
         self::assertContainsOnly(PageInterface::class, $found);
 
         $actual = [
-            'type' => get_class($found[0]),
+            'type' => $found[0]::class,
             'href' => $found[0]->getHref(),
             'label' => $found[0]->getLabel(),
         ];
@@ -233,7 +231,7 @@ final class LinksTest extends AbstractTestCase
         ];
 
         $actual = [
-            'type' => get_class($found[0]),
+            'type' => $found[0]::class,
             'href' => $found[0]->getHref(),
             'label' => $found[0]->getLabel(),
         ];
@@ -269,7 +267,7 @@ final class LinksTest extends AbstractTestCase
         ];
 
         $actual = [
-            'type' => get_class($found[0]),
+            'type' => $found[0]::class,
             'href' => $found[0]->getHref(),
             'label' => $found[0]->getLabel(),
         ];
@@ -305,7 +303,7 @@ final class LinksTest extends AbstractTestCase
         ];
 
         $actual = [
-            'type' => get_class($found[0]),
+            'type' => $found[0]::class,
             'href' => $found[0]->getHref(),
             'label' => $found[0]->getLabel(),
         ];
