@@ -123,7 +123,7 @@ final class SitemapTest extends AbstractTestCase
             private string $fragment = '';
 
             /**
-             * @return string The URI scheme.
+             * @return string the URI scheme
              *
              * @throws void
              */
@@ -133,7 +133,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return string The URI authority, in "[user-info@]host[:port]" format.
+             * @return string the URI authority, in "[user-info@]host[:port]" format
              *
              * @throws void
              */
@@ -143,7 +143,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return string The URI user information, in "username[:password]" format.
+             * @return string the URI user information, in "username[:password]" format
              *
              * @throws void
              */
@@ -153,7 +153,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return string The URI host.
+             * @return string the URI host
              *
              * @throws void
              */
@@ -163,7 +163,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return int|null The URI port.
+             * @return int|null the URI port
              *
              * @throws void
              */
@@ -173,7 +173,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return string The URI path.
+             * @return string the URI path
              *
              * @throws void
              */
@@ -183,7 +183,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return string The URI query string.
+             * @return string the URI query string
              *
              * @throws void
              */
@@ -193,7 +193,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /**
-             * @return string The URI fragment.
+             * @return string the URI fragment
              *
              * @throws void
              */
