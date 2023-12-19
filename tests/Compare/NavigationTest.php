@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,27 +10,29 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\Compare;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
+use Laminas\Config\Exception\InvalidArgumentException;
 use Laminas\Config\Exception\RuntimeException;
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
-use Mezzio\Navigation\Navigation as Container;
-use Mezzio\Navigation\Page\PageFactory;
-use Mezzio\Navigation\Page\Uri;
+use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use Mimmi20\Mezzio\Navigation\Navigation as Container;
+use Mimmi20\Mezzio\Navigation\Page\PageFactory;
+use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 use function assert;
 use function is_string;
@@ -40,32 +42,25 @@ use function str_replace;
 use const PHP_EOL;
 
 /**
- * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation
- *
- * @group Laminas_View
- * @group Laminas_View_Helper
- * @group Compare
+ * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation
  */
-final class NavigationTest extends AbstractTest
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
+final class NavigationTest extends AbstractTestCase
 {
-    /**
-     * Class name for view helper to test
-     */
-    protected string $helperName = Navigation::class;
-
     /**
      * View helper
      *
      * @var Navigation
      */
-    protected Navigation\ViewHelperInterface $helper;
+    private Navigation\ViewHelperInterface $helper;
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
-     * @throws \Laminas\Config\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -76,27 +71,23 @@ final class NavigationTest extends AbstractTest
         $this->serviceManager->get(ViewHelperPluginManager::class);
         $this->serviceManager->get(LaminasViewRenderer::class);
 
-        $logger          = $this->serviceManager->get(Logger::class);
+        $logger          = $this->serviceManager->get(LoggerInterface::class);
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
 
-        assert($logger instanceof Logger);
+        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
-        $this->helper = new Navigation(
-            $this->serviceManager,
-            $logger,
-            $htmlify,
-            $containerParser
-        );
+        $this->helper = new Navigation($this->serviceManager, $logger, $htmlify, $containerParser);
         $this->helper->setPluginManager(new Navigation\PluginManager($this->serviceManager));
 
         // set nav1 in helper as default
         $this->helper->setContainer($this->nav1);
     }
 
+    /** @throws void */
     protected function tearDown(): void
     {
         Navigation::setDefaultAuthorization(null);
@@ -105,34 +96,31 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
-        $returned = $this->helper->__invoke();
+        $returned = ($this->helper)();
         self::assertSame($this->helper, $returned);
         self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
-        $returned = $this->helper->__invoke($this->nav2);
+        $returned = ($this->helper)($this->nav2);
         self::assertSame($this->helper, $returned);
         self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testAcceptAclShouldReturnGracefullyWithUnknownResource(): void
@@ -149,8 +137,8 @@ final class NavigationTest extends AbstractTest
                 [
                     'resource' => 'unknownresource',
                     'privilege' => 'someprivilege',
-                ]
-            )
+                ],
+            ),
         );
 
         self::assertFalse($accepted);
@@ -158,7 +146,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
@@ -176,7 +163,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -190,10 +176,10 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testInjectingContainer(): void
     {
@@ -215,10 +201,10 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDisablingContainerInjection(): void
     {
@@ -243,7 +229,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -258,7 +243,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws ContainerModificationsNotAllowedException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -277,7 +261,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -300,7 +283,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -324,7 +306,6 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
@@ -346,19 +327,13 @@ final class NavigationTest extends AbstractTest
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testgetAuthorizationReturnsNullIfNoAuthorizationInstance(): void
     {
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
         $acl = $this->createMock(AuthorizationInterface::class);
@@ -367,10 +342,7 @@ final class NavigationTest extends AbstractTest
         self::assertSame($acl, $this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetDefaultAuthorization(): void
     {
         $acl = $this->createMock(AuthorizationInterface::class);
@@ -380,10 +352,7 @@ final class NavigationTest extends AbstractTest
         self::assertSame($acl, $actual);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testsetDefaultAuthorizationAcceptsNull(): void
     {
         $acl = $this->createMock(AuthorizationInterface::class);
@@ -392,10 +361,7 @@ final class NavigationTest extends AbstractTest
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testsetDefaultAuthorizationAcceptsNoParam(): void
     {
         $acl = $this->createMock(AuthorizationInterface::class);
@@ -404,10 +370,7 @@ final class NavigationTest extends AbstractTest
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRoleAcceptsString(): void
     {
         $this->helper->setRole('member');
@@ -416,8 +379,7 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
@@ -434,14 +396,14 @@ final class NavigationTest extends AbstractTest
                     'label' => 'Page 1',
                     'id' => 'p1',
                     'uri' => 'p1',
-                ]
+                ],
             ),
             $pageFactory->factory(
                 [
                     'label' => 'Page 2',
                     'id' => 'p2',
                     'uri' => 'p2',
-                ]
+                ],
             ),
         ];
 
@@ -464,13 +426,12 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws ExceptionInterface
-     *
-     * @group Laminas-6854
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
+    #[Group('Laminas-6854')]
     public function testRenderInvisibleItem(): void
     {
         $pageFactory = new PageFactory();
@@ -481,7 +442,7 @@ final class NavigationTest extends AbstractTest
                     'label' => 'Page 1',
                     'id' => 'p1',
                     'uri' => 'p1',
-                ]
+                ],
             ),
             $pageFactory->factory(
                 [
@@ -489,7 +450,7 @@ final class NavigationTest extends AbstractTest
                     'id' => 'p2',
                     'uri' => 'p2',
                     'visible' => false,
-                ]
+                ],
             ),
         ];
 
@@ -509,7 +470,8 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testMultipleNavigations(): void
     {
@@ -528,10 +490,10 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     *
-     * @group #3859
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndDifferentContainers(): void
     {
         $menu     = ($this->helper)('nav1')->menu();
@@ -551,10 +513,10 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     *
-     * @group #3859
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndSameContainer(): void
     {
         // Tests
@@ -574,10 +536,10 @@ final class NavigationTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     *
-     * @group #3859
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Group('#3859')]
     public function testMultipleNavigationsWithSameHelperAndSameContainer(): void
     {
         // Test
@@ -595,12 +557,10 @@ final class NavigationTest extends AbstractTest
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetPluginManagerAndView(): void
     {
+        /** @var Navigation\PluginManager<HelperInterface> $pluginManager */
         $pluginManager = new Navigation\PluginManager(new ServiceManager());
         $view          = new PhpRenderer();
 
@@ -612,6 +572,8 @@ final class NavigationTest extends AbstractTest
 
     /**
      * Returns the contens of the expected $file, normalizes newlines
+     *
+     * @throws Exception
      */
     protected function getExpected(string $file): string
     {

@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,25 +10,25 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtmlAttr;
+use Laminas\View\Helper\Escaper\AbstractHelper;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
-use Mezzio\Navigation\Navigation;
-use Mezzio\Navigation\Page\PageInterface;
-use Mezzio\Navigation\Page\Uri;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mimmi20\Mezzio\Navigation\Navigation;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
@@ -36,42 +36,40 @@ use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 use function assert;
-use function get_class;
 use function sprintf;
 
 use const PHP_EOL;
 
 final class MenuTest extends TestCase
 {
+    /** @throws void */
     protected function tearDown(): void
     {
         Menu::setDefaultAuthorization(null);
         Menu::setDefaultRole(null);
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -113,7 +111,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertNull($helper->getMaxDepth());
 
@@ -122,25 +127,22 @@ final class MenuTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetMinDepth(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -182,7 +184,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -207,25 +216,22 @@ final class MenuTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -267,7 +273,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -276,28 +289,25 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRole(): void
     {
         $role        = 'testRole';
         $defaultRole = 'testDefaultRole';
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -339,7 +349,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -355,25 +372,22 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->hasRole());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -415,7 +429,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -428,28 +449,25 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->getUseAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetAuthorization(): void
     {
         $auth        = $this->createMock(AuthorizationInterface::class);
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -491,7 +509,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -509,27 +534,24 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetView(): void
     {
         $view = $this->createMock(RendererInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -571,7 +593,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertNull($helper->getView());
 
@@ -584,7 +613,6 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -592,19 +620,19 @@ final class MenuTest extends TestCase
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -631,10 +659,22 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([null], [$container])
-            ->willReturnOnConsecutiveCalls(null, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => null,
+                        default => $container,
+                    };
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -648,7 +688,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $container1 = $helper->getContainer();
 
@@ -673,19 +720,19 @@ final class MenuTest extends TestCase
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -731,7 +778,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
@@ -742,25 +796,24 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -807,7 +860,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setContainer($name);
 
@@ -816,25 +876,24 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -908,7 +967,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -938,7 +997,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setContainer($name);
         $helper->setRole($role);
@@ -951,35 +1017,35 @@ final class MenuTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertFalse($helper->accept($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testHtmlify(): void
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1062,7 +1128,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setContainer($name);
 
@@ -1082,31 +1155,28 @@ final class MenuTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetIndent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1148,7 +1218,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertSame('', $helper->getIndent());
 
@@ -1163,26 +1240,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1296,7 +1372,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1326,7 +1402,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -1338,26 +1421,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1452,7 +1534,7 @@ final class MenuTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1476,7 +1558,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1506,7 +1588,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -1523,25 +1612,24 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveWithoutContainer(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1582,7 +1670,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1612,7 +1700,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -1626,26 +1721,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1740,7 +1834,7 @@ final class MenuTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1764,7 +1858,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1794,7 +1888,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -1814,26 +1915,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1913,7 +2013,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1943,7 +2043,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -1957,26 +2064,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2047,7 +2153,7 @@ final class MenuTest extends TestCase
                 [
                     'page' => $parentPage,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -2071,7 +2177,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2101,7 +2207,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -2118,26 +2231,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2217,7 +2329,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2247,7 +2359,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -2261,26 +2380,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2359,7 +2477,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2389,7 +2507,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -2406,29 +2531,28 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveException(): void
     {
         $exception = new ServiceNotFoundException('test');
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::once())
-            ->method('err')
+            ->method('error')
             ->with($exception);
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2499,7 +2623,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willThrowException($exception);
 
@@ -2529,7 +2653,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -2544,25 +2675,22 @@ final class MenuTest extends TestCase
         self::assertSame($expected, $helper->findActive($name));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testEscapeLabels(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2604,7 +2732,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertTrue($helper->getEscapeLabels());
 
@@ -2613,25 +2748,22 @@ final class MenuTest extends TestCase
         self::assertFalse($helper->getEscapeLabels());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetAddClassToListItem(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2673,7 +2805,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertFalse($helper->getAddClassToListItem());
 
@@ -2682,25 +2821,22 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->getAddClassToListItem());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetOnlyActiveBranch(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2742,7 +2878,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertFalse($helper->getOnlyActiveBranch());
 
@@ -2751,25 +2894,22 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->getOnlyActiveBranch());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetPartial(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2811,7 +2951,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertNull($helper->getPartial());
 
@@ -2824,25 +2971,22 @@ final class MenuTest extends TestCase
         self::assertSame('test', $helper->getPartial());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRenderParents(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2884,7 +3028,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertTrue($helper->getRenderParents());
 
@@ -2893,25 +3044,22 @@ final class MenuTest extends TestCase
         self::assertFalse($helper->getRenderParents());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUlClass(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2953,7 +3101,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertSame('navigation', $helper->getUlClass());
 
@@ -2962,25 +3117,22 @@ final class MenuTest extends TestCase
         self::assertSame('test', $helper->getUlClass());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetLiClass(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3022,7 +3174,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertSame('', $helper->getLiClass());
 
@@ -3031,25 +3190,22 @@ final class MenuTest extends TestCase
         self::assertSame('test', $helper->getLiClass());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetLiActiveClass(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3091,7 +3247,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         self::assertSame('active', $helper->getLiActiveClass());
 
@@ -3102,25 +3265,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3153,7 +3316,7 @@ final class MenuTest extends TestCase
                     'authorization' => null,
                     'renderInvisible' => false,
                     'role' => null,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -3166,10 +3329,22 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(3))
+        $matcher         = self::exactly(3);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null], [$container])
-            ->willReturnOnConsecutiveCalls($container, null, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -3183,7 +3358,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setContainer($container);
 
@@ -3197,19 +3379,19 @@ final class MenuTest extends TestCase
      */
     public function testRenderPartialWithoutPartial(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3253,7 +3435,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $role = 'testRole';
 
@@ -3291,19 +3480,19 @@ final class MenuTest extends TestCase
      */
     public function testRenderPartialWithWrongPartial(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3347,7 +3536,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $role = 'testRole';
 
@@ -3374,7 +3570,9 @@ final class MenuTest extends TestCase
         $helper->setPartial(['a', 'b', 'c']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unable to render menu: A view partial supplied as an array must contain one value: the partial view script');
+        $this->expectExceptionMessage(
+            'Unable to render menu: A view partial supplied as an array must contain one value: the partial view script',
+        );
         $this->expectExceptionCode(0);
 
         $helper->renderPartial($name);
@@ -3382,26 +3580,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderPartial(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3507,7 +3704,14 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $container])
             ->willReturn($expected);
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -3532,26 +3736,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderPartialNoActivePage(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3647,7 +3850,14 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $container])
             ->willReturn($expected);
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -3672,26 +3882,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderPartialWithArrayPartial(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3773,10 +3982,22 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -3795,7 +4016,14 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $container])
             ->willReturn($expected);
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -3820,26 +4048,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderPartialWithArrayPartialRenderingPage(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3901,8 +4128,8 @@ final class MenuTest extends TestCase
             sprintf(
                 '$subPage should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($subPage)
-            )
+                $subPage::class,
+            ),
         );
         $page->addPage($subPage);
         $parentPage->addPage($page);
@@ -3934,10 +4161,22 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$parentPage], [null])
-            ->willReturnOnConsecutiveCalls($parentPage, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $parentPage): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($parentPage, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $parentPage,
+                    };
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -3956,7 +4195,14 @@ final class MenuTest extends TestCase
             ->with($partial, ['container' => $parentPage])
             ->willReturn($expected);
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -3981,26 +4227,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderPartialWithPartialModel(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4062,8 +4307,8 @@ final class MenuTest extends TestCase
             sprintf(
                 '$subPage should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($subPage)
-            )
+                $subPage::class,
+            ),
         );
         $page->addPage($subPage);
         $parentPage->addPage($page);
@@ -4095,10 +4340,22 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$parentPage], [null])
-            ->willReturnOnConsecutiveCalls($parentPage, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $parentPage): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($parentPage, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $parentPage,
+                    };
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -4125,7 +4382,14 @@ final class MenuTest extends TestCase
             ->with($model, $data)
             ->willReturn($expected);
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -4150,25 +4414,25 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDoNotRenderMenuIfNoPageIsActive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4201,7 +4465,7 @@ final class MenuTest extends TestCase
                     'authorization' => null,
                     'renderInvisible' => false,
                     'role' => null,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -4214,10 +4478,22 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(3))
+        $matcher         = self::exactly(3);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null], [$container])
-            ->willReturnOnConsecutiveCalls($container, null, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -4231,7 +4507,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setContainer($container);
 
@@ -4240,26 +4523,26 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenuNoActivePage(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4339,27 +4622,31 @@ final class MenuTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($findActiveHelper, $acceptHelper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4370,10 +4657,19 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturnOnConsecutiveCalls($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -4387,7 +4683,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -4413,26 +4716,26 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4513,16 +4816,27 @@ final class MenuTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, bool $recursive = true) use ($matcher, $parentPage, $page): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return true;
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -4537,38 +4851,30 @@ final class MenuTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $findActiveHelper,
-                $acceptHelper,
-                $acceptHelper
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
             );
 
         $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
@@ -4577,26 +4883,83 @@ final class MenuTest extends TestCase
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $htmlify->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $htmlify->expects($matcher)
             ->method('toHtml')
-            ->withConsecutive([Menu::class, $parentPage], [Menu::class, $page])
-            ->willReturnOnConsecutiveCalls($expected1, $expected2);
+            ->willReturnCallback(
+                static function (
+                    string $prefix,
+                    PageInterface $pageParam,
+                    bool $escapeLabel = true,
+                    bool $addClassToListItem = false,
+                    array $attributes = [],
+                    bool $convertToButton = false,
+                ) use (
+                    $matcher,
+                    $parentPage,
+                    $page,
+                    $expected1,
+                    $expected2,
+                ): string {
+                    self::assertSame(Menu::class, $prefix);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($escapeLabel);
+                    self::assertFalse($addClassToListItem);
+                    self::assertSame([], $attributes);
+                    self::assertFalse($convertToButton);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $expected1,
+                        default => $expected2,
+                    };
+                },
+            );
 
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturn($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapePlugin->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $escapePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive(['navigation'], ['active'], ['active li-class-active'])
-            ->willReturnOnConsecutiveCalls('navigation-escaped', 'active-escaped', 'active-escaped2 li-class-active-escaped2');
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('navigation', $value),
+                        2 => self::assertSame('active', $value),
+                        default => self::assertSame('active li-class-active', $value),
+                    };
+
+                    self::assertSame(0, $recurse);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => 'navigation-escaped',
+                        2 => 'active-escaped',
+                        default => 'active-escaped2 li-class-active-escaped2',
+                    };
+                },
+            );
 
         $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
@@ -4604,7 +4967,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -4629,26 +4999,26 @@ final class MenuTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4734,16 +5104,27 @@ final class MenuTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, bool $recursive = true) use ($matcher, $parentPage, $page): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return true;
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -4758,38 +5139,30 @@ final class MenuTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $findActiveHelper,
-                $acceptHelper,
-                $acceptHelper
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
             );
 
         $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
@@ -4798,26 +5171,86 @@ final class MenuTest extends TestCase
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $htmlify->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $htmlify->expects($matcher)
             ->method('toHtml')
-            ->withConsecutive([Menu::class, $parentPage], [Menu::class, $page])
-            ->willReturnOnConsecutiveCalls($expected1, $expected2);
+            ->willReturnCallback(
+                static function (
+                    string $prefix,
+                    PageInterface $pageParam,
+                    bool $escapeLabel = true,
+                    bool $addClassToListItem = false,
+                    array $attributes = [],
+                    bool $convertToButton = false,
+                ) use (
+                    $matcher,
+                    $parentPage,
+                    $page,
+                    $expected1,
+                    $expected2,
+                ): string {
+                    self::assertSame(Menu::class, $prefix);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($escapeLabel);
+                    self::assertFalse($addClassToListItem);
+                    self::assertSame([], $attributes);
+                    self::assertFalse($convertToButton);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $expected1,
+                        default => $expected2,
+                    };
+                },
+            );
 
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturn($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapePlugin->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $escapePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$ulClass], [$liActiveClass . ' ' . $liClass], [$liActiveClass . ' ' . $liClass . ' li-class-active'])
-            ->willReturnOnConsecutiveCalls('ul-class-escaped', 'li-active-escaped li-class-escaped', 'li-active-escaped2 li-class-escaped2 li-class-active-escaped2');
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher, $ulClass, $liActiveClass, $liClass): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($ulClass, $value),
+                        2 => self::assertSame($liActiveClass . ' ' . $liClass, $value),
+                        default => self::assertSame(
+                            $liActiveClass . ' ' . $liClass . ' li-class-active',
+                            $value,
+                        ),
+                    };
+
+                    self::assertSame(0, $recurse);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => 'ul-class-escaped',
+                        2 => 'li-active-escaped li-class-escaped',
+                        default => 'li-active-escaped2 li-class-escaped2 li-class-active-escaped2',
+                    };
+                },
+            );
 
         $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
@@ -4825,7 +5258,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -4845,31 +5285,37 @@ final class MenuTest extends TestCase
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        self::assertSame($expected, $helper->renderMenu($name, ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass]));
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass],
+            ),
+        );
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4953,16 +5399,27 @@ final class MenuTest extends TestCase
                 [
                     'page' => null,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, bool $recursive = true) use ($matcher, $parentPage, $page): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return true;
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -4977,38 +5434,30 @@ final class MenuTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $findActiveHelper,
-                $acceptHelper,
-                $acceptHelper
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
             );
 
         $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
@@ -5017,26 +5466,83 @@ final class MenuTest extends TestCase
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $htmlify->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $htmlify->expects($matcher)
             ->method('toHtml')
-            ->withConsecutive([Menu::class, $parentPage], [Menu::class, $page])
-            ->willReturnOnConsecutiveCalls($expected1, $expected2);
+            ->willReturnCallback(
+                static function (
+                    string $prefix,
+                    PageInterface $pageParam,
+                    bool $escapeLabel = true,
+                    bool $addClassToListItem = false,
+                    array $attributes = [],
+                    bool $convertToButton = false,
+                ) use (
+                    $matcher,
+                    $parentPage,
+                    $page,
+                    $expected1,
+                    $expected2,
+                ): string {
+                    self::assertSame(Menu::class, $prefix);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($escapeLabel);
+                    self::assertFalse($addClassToListItem);
+                    self::assertSame([], $attributes);
+                    self::assertFalse($convertToButton);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $expected1,
+                        default => $expected2,
+                    };
+                },
+            );
 
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturn($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapePlugin->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $escapePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$ulClass], [$liClass], [$liClass . ' li-class-active'])
-            ->willReturnOnConsecutiveCalls('ul-class-escaped', 'li-class-escaped', 'li-class-escaped2 li-class-active-escaped2');
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher, $ulClass, $liClass): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($ulClass, $value),
+                        2 => self::assertSame($liClass, $value),
+                        default => self::assertSame($liClass . ' li-class-active', $value),
+                    };
+
+                    self::assertSame(0, $recurse);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => 'ul-class-escaped',
+                        2 => 'li-class-escaped',
+                        default => 'li-class-escaped2 li-class-active-escaped2',
+                    };
+                },
+            );
 
         $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
@@ -5044,7 +5550,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -5064,31 +5577,37 @@ final class MenuTest extends TestCase
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        self::assertSame($expected, $helper->renderMenu($name, ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass]));
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass],
+            ),
+        );
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu4(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5173,7 +5692,7 @@ final class MenuTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
@@ -5197,29 +5716,30 @@ final class MenuTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $findActiveHelper,
-                $acceptHelper
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
             );
 
         $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
@@ -5235,18 +5755,41 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturn($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $escapePlugin->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $escapePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$ulClass], [$liClass . ' li-class-active'])
-            ->willReturnOnConsecutiveCalls('ul-class-escaped', 'li-class-escaped li-class-active-escaped');
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher, $ulClass, $liClass): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($ulClass, $value),
+                        default => self::assertSame($liClass . ' li-class-active', $value),
+                    };
+
+                    self::assertSame(0, $recurse);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => 'ul-class-escaped',
+                        default => 'li-class-escaped li-class-active-escaped',
+                    };
+                },
+            );
 
         $renderer = $this->getMockBuilder(PartialRendererInterface::class)
             ->disableOriginalConstructor()
@@ -5254,7 +5797,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -5274,31 +5824,37 @@ final class MenuTest extends TestCase
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        self::assertSame($expected, $helper->renderMenu($name, ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false]));
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false],
+            ),
+        );
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu5(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5402,7 +5958,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -5415,10 +5971,19 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturn($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -5432,7 +5997,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -5452,31 +6024,37 @@ final class MenuTest extends TestCase
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        self::assertSame($expected, $helper->renderMenu($name, ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false]));
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false],
+            ),
+        );
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu6(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5557,7 +6135,7 @@ final class MenuTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
@@ -5587,7 +6165,7 @@ final class MenuTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -5600,10 +6178,19 @@ final class MenuTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturn($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $escapePlugin = $this->getMockBuilder(EscapeHtmlAttr::class)
             ->disableOriginalConstructor()
@@ -5617,7 +6204,14 @@ final class MenuTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $helper = new Menu($serviceLocator, $logger, $htmlify, $containerParser, $escapePlugin, $renderer);
+        $helper = new Menu(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+        );
 
         $helper->setRole($role);
 
@@ -5637,6 +6231,12 @@ final class MenuTest extends TestCase
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-        self::assertSame($expected, $helper->renderMenu($name, ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false, 'minDepth' => 2]));
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false, 'minDepth' => 2],
+            ),
+        );
     }
 }

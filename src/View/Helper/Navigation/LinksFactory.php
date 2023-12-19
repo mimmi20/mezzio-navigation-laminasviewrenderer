@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,10 +10,8 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -21,11 +19,11 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 use function assert;
-use function get_class;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 
 final class LinksFactory
@@ -45,29 +43,22 @@ final class LinksFactory
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
                 ViewHelperPluginManager::class,
-                is_object($plugin) ? get_class($plugin) : gettype($plugin)
-            )
+                get_debug_type($plugin),
+            ),
         );
 
-        $logger          = $container->get(Logger::class);
+        $logger          = $container->get(LoggerInterface::class);
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
         $findRoot        = $container->get(FindRootInterface::class);
         $headLink        = $plugin->get(HeadLink::class);
 
-        assert($logger instanceof Logger);
+        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($findRoot instanceof FindRootInterface);
         assert($headLink instanceof HeadLink);
 
-        return new Links(
-            $container,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $findRoot,
-            $headLink
-        );
+        return new Links($container, $logger, $htmlify, $containerParser, $findRoot, $headLink);
     }
 }

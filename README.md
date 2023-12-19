@@ -7,15 +7,15 @@
 ## Code Status
 
 [![codecov](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](http://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](http://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Percentage of issues still open")
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](https://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Average time to resolve an issue")
+[![Percentage of issues still open](https://isitmaintained.com/badge/open/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](https://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Percentage of issues still open")
 
 ## Installation
 
 Run
 
-```
-$ composer require mimmi20/mezzio-navigation-laminasviewrenderer
+```shell
+composer require mimmi20/mezzio-navigation-laminasviewrenderer
 ```
 
 ### Render the navigation
@@ -112,11 +112,11 @@ The following example demonstrates rendering the navigation menus for the named
 <!-- ... -->
 
 <body>
-    <?= $this->navigation('Mezzio\Navigation\Default')->menu() ?>
+    <?= $this->navigation('Mimmi20\Mezzio\Navigation\Default')->menu() ?>
 
-    <?= $this->navigation('Mezzio\Navigation\Special')->menu() ?>
+    <?= $this->navigation('Mimmi20\Navigation\Special')->menu() ?>
 
-    <?= $this->navigation('Mezzio\Navigation\Sitemap')->menu() ?>
+    <?= $this->navigation('Mimmi20\Navigation\Sitemap')->menu() ?>
 </body>
 <!-- ... -->
 ```
@@ -124,7 +124,7 @@ The following example demonstrates rendering the navigation menus for the named
 # View Helpers
 
 The navigation helpers are used for rendering navigational elements from
-[`Mezzio\Navigation\Navigation`](../containers.md) instances.
+[`Mimmi20\Mezzio\Navigation\Navigation`](../containers.md) instances.
 
 There are 5 built-in helpers:
 
@@ -141,7 +141,7 @@ There are 5 built-in helpers:
 All built-in helpers implements the interface `Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface`, which
 adds integration with
 [laminas-acl](https://docs.laminas.dev/laminas-permissions-acl/) or [laminas-rbac](https://docs.laminas.dev/laminas-permissions-rbac/) and
-[laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
+[laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mimmi20\Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
 defines the following methods:
 
 Method signature                                                       | Description
@@ -184,7 +184,7 @@ Method signature                                                             | D
 `accept(PageInterface $page, bool $recursive = true) : bool`                 | Determine if a page should be accepted when iterating containers. This method checks for page visibility and verifies that the helper's role is allowed access to the page's resource and privilege.
 
 If a container is not explicitly set, the helper will create an empty
-`Mezzio\Navigation\Navigation` container when calling `$helper->getContainer()`.
+`Mimmi20\Mezzio\Navigation\Navigation` container when calling `$helper->getContainer()`.
 
 ### Proxying calls to the navigation container
 
@@ -248,13 +248,13 @@ Notes on the setup:
 - The assumed ACL and router setup is shown below the container setup.
 
 ```php
-use Mezzio\Navigation\Navigation;
+use Mimmi20\Mezzio\Navigation\Navigation;
 
 /*
  * Navigation container
 
  * Each element in the array will be passed to
- * Mezzio\Navigation\Page\(new PageFactory())->factory() when constructing
+ * Mimmi20\Mezzio\Navigation\Page\(new PageFactory())->factory() when constructing
  * the navigation container below.
  */
 $pages = [
@@ -782,8 +782,8 @@ This example shows how to specify relations in pages.
 
 ```php
 use Laminas\Config\Config;
-use Mezzio\Navigation\Navigation;
-use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\Navigation;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 
 $container = new Navigation([
     [
@@ -857,7 +857,7 @@ This example shows how to specify which relations to find and render.
 Render only start, next, and prev:
 
 ```php
-use Mezzio\Navigation\Helper\Navigation\LinksInterface;
+use Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface;
 
 $links = $this->navigation()->links();
 $links->setRenderFlag(LinksInterface::RENDER_START | LinksInterface::RENDER_NEXT | LinksInterface::RENDER_PREV);

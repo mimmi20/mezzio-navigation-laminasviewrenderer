@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,67 +10,66 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\Log\Logger;
+use Laminas\I18n\Exception\RuntimeException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
-use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Exception\ExceptionInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
-use Mezzio\Navigation\Navigation;
-use Mezzio\Navigation\Page\PageInterface;
-use Mezzio\Navigation\Page\Route;
-use Mezzio\Navigation\Page\Uri;
+use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
+use Mimmi20\Mezzio\Navigation\Navigation;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\Page\Route;
+use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
 use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 use function assert;
-use function get_class;
 use function sprintf;
 
 final class LinksTest extends TestCase
 {
+    /** @throws void */
     protected function tearDown(): void
     {
         Links::setDefaultAuthorization(null);
         Links::setDefaultRole(null);
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -120,7 +119,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->getMaxDepth());
@@ -130,25 +129,22 @@ final class LinksTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetMinDepth(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -198,7 +194,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame(0, $helper->getMinDepth());
@@ -224,25 +220,22 @@ final class LinksTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -292,7 +285,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertFalse($helper->getRenderInvisible());
@@ -302,28 +295,25 @@ final class LinksTest extends TestCase
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRole(): void
     {
         $role        = 'testRole';
         $defaultRole = 'testDefaultRole';
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -373,7 +363,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->getRole());
@@ -390,25 +380,22 @@ final class LinksTest extends TestCase
         self::assertTrue($helper->hasRole());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -458,7 +445,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertTrue($helper->getUseAuthorization());
@@ -472,28 +459,25 @@ final class LinksTest extends TestCase
         self::assertTrue($helper->getUseAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetAuthorization(): void
     {
         $auth        = $this->createMock(AuthorizationInterface::class);
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -543,7 +527,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->getAuthorization());
@@ -562,27 +546,24 @@ final class LinksTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetView(): void
     {
         $view = $this->createMock(RendererInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -632,7 +613,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->getView());
@@ -646,26 +627,25 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainer(): void
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -692,10 +672,22 @@ final class LinksTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([null], [$container])
-            ->willReturnOnConsecutiveCalls(null, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => null,
+                        default => $container,
+                    };
+                },
+            );
 
         $rootFinder = $this->getMockBuilder(FindRootInterface::class)
             ->disableOriginalConstructor()
@@ -717,7 +709,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $container1 = $helper->getContainer();
@@ -742,19 +734,19 @@ final class LinksTest extends TestCase
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -808,7 +800,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $this->expectException(InvalidArgumentException::class);
@@ -820,24 +812,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -892,7 +883,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setContainer($name);
@@ -902,24 +893,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -969,7 +959,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -1007,7 +997,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setContainer($name);
@@ -1021,34 +1011,35 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertFalse($helper->accept($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testHtmlify(): void
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1133,7 +1124,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setContainer($name);
@@ -1154,31 +1145,28 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetIndent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1228,7 +1216,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame('', $helper->getIndent());
@@ -1244,26 +1232,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1337,7 +1323,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1375,7 +1361,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -1388,26 +1374,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1462,7 +1446,7 @@ final class LinksTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1486,7 +1470,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1524,7 +1508,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -1542,25 +1526,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveWithoutContainer(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1601,7 +1583,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1639,7 +1621,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -1654,26 +1636,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1728,7 +1708,7 @@ final class LinksTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1752,7 +1732,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1790,7 +1770,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -1811,26 +1791,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1890,7 +1868,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1928,7 +1906,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -1943,26 +1921,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2013,7 +1989,7 @@ final class LinksTest extends TestCase
                 [
                     'page' => $parentPage,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -2037,7 +2013,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2075,7 +2051,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -2093,26 +2069,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2192,7 +2166,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2230,7 +2204,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -2245,26 +2219,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2343,7 +2315,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2381,7 +2353,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -2397,25 +2369,22 @@ final class LinksTest extends TestCase
         self::assertSame($expected, $helper->findActive($name));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRenderFlag(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2465,7 +2434,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
@@ -2475,25 +2444,22 @@ final class LinksTest extends TestCase
         self::assertSame(LinksInterface::RENDER_ALTERNATE, $helper->getRenderFlag());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSearchRevSubsectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2543,7 +2509,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2558,32 +2524,31 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertNull($helper->searchRevSubsection($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRevSubsectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2619,8 +2584,8 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         $parentPage->addPage($page);
 
@@ -2658,7 +2623,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->searchRevSubsection($page));
@@ -2666,24 +2631,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRevSubsectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2719,8 +2683,8 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
@@ -2760,31 +2724,28 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame($parentPage, $helper->searchRevSubsection($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSearchRevSectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2834,7 +2795,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -2849,32 +2810,31 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertNull($helper->searchRevSection($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRevSectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2908,8 +2868,8 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         $parentPage->addPage($page);
 
@@ -2947,7 +2907,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->searchRevSection($page));
@@ -2955,24 +2915,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRevSectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3007,8 +2966,8 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
@@ -3047,31 +3006,28 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame($parentPage, $helper->searchRevSection($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSearchRelSubsectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3121,7 +3077,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3136,32 +3092,31 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertSame([], $helper->searchRelSubsection($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSubsectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3218,7 +3173,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         assert(
@@ -3226,32 +3181,31 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertSame([], $helper->searchRelSubsection($parentPage));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSubsectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3299,7 +3253,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -3337,7 +3291,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -3350,24 +3304,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSubsectionWithDeepParent2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3391,10 +3344,24 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -3417,7 +3384,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -3455,7 +3422,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -3468,24 +3435,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSubsectionWithDeepParent3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3511,10 +3477,25 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page1], [$page2], [$page3])
-            ->willReturnOnConsecutiveCalls(false, true, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $page1, $page2, $page3): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        3 => self::assertSame($page3, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -3537,7 +3518,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -3575,7 +3556,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -3586,25 +3567,22 @@ final class LinksTest extends TestCase
         self::assertSame([$page2, $page3], $helper->searchRelSubsection($parentPage));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSearchRelSectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3654,7 +3632,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -3669,32 +3647,31 @@ final class LinksTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertSame([], $helper->searchRelSection($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3751,7 +3728,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame([], $helper->searchRelSection($parentPage));
@@ -3759,24 +3736,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3822,7 +3798,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -3860,7 +3836,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -3873,24 +3849,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSectionWithDeepParent2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3914,10 +3889,24 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page2], [$page])
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, bool $recursive = true) use ($matcher, $page, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page2, $pageParam),
+                        default => self::assertSame($page, $pageParam),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -3940,7 +3929,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -3978,7 +3967,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -3991,24 +3980,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSectionWithDeepParent3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4030,10 +4018,24 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -4056,7 +4058,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4094,7 +4096,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -4107,24 +4109,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSectionWithDeepParent4(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4148,10 +4149,25 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page1], [$page2], [$page3])
-            ->willReturnOnConsecutiveCalls(false, true, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $page1, $page2, $page3): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        3 => self::assertSame($page3, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -4174,7 +4190,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4212,7 +4228,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -4225,24 +4241,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelSectionWithDeepParent5(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4288,7 +4303,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4326,7 +4341,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -4339,7 +4354,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -4347,19 +4361,19 @@ final class LinksTest extends TestCase
      */
     public function testSearchRelChapterWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4394,7 +4408,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -4417,8 +4431,8 @@ final class LinksTest extends TestCase
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
             ->method('find')
-            ->withConsecutive([$page], [$page])
-            ->willReturnOnConsecutiveCalls($page, $page);
+            ->with($page)
+            ->willReturn($page);
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -4432,7 +4446,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertSame([], $helper->searchRelChapter($page));
@@ -4440,7 +4454,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -4448,19 +4461,19 @@ final class LinksTest extends TestCase
      */
     public function testSearchRelChapterWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4502,27 +4515,31 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindFromPropertyInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findFromPropertyHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
 
         $parentPage->addPage($page);
 
@@ -4545,8 +4562,8 @@ final class LinksTest extends TestCase
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
             ->method('find')
-            ->withConsecutive([$parentPage], [$parentPage])
-            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+            ->with($parentPage)
+            ->willReturn($parentPage);
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -4560,7 +4577,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -4573,7 +4590,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -4581,19 +4597,19 @@ final class LinksTest extends TestCase
      */
     public function testSearchRelChapterWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4639,27 +4655,31 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindFromPropertyInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findFromPropertyHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4680,8 +4700,8 @@ final class LinksTest extends TestCase
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
             ->method('find')
-            ->withConsecutive([$parentParentPage], [$parentParentPage])
-            ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
+            ->with($parentParentPage)
+            ->willReturn($parentParentPage);
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -4695,7 +4715,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -4708,7 +4728,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -4716,19 +4735,19 @@ final class LinksTest extends TestCase
      */
     public function testSearchRelChapterWithDeepParent2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4752,10 +4771,24 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage2], [$parentPage])
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage2, $parentPage): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage2, $page),
+                        default => self::assertSame($parentPage, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
             ->disableOriginalConstructor()
@@ -4778,35 +4811,31 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper, $acceptHelper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindFromPropertyInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findFromPropertyHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4827,8 +4856,8 @@ final class LinksTest extends TestCase
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
             ->method('find')
-            ->withConsecutive([$parentParentPage], [$parentParentPage])
-            ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
+            ->with($parentParentPage)
+            ->willReturn($parentParentPage);
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -4842,7 +4871,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -4855,7 +4884,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -4863,19 +4891,19 @@ final class LinksTest extends TestCase
      */
     public function testSearchRelChapterWithDeepParent3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4899,10 +4927,21 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage2], [$parentPage])
-            ->willReturnOnConsecutiveCalls(false, false);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage2, $parentPage): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage2, $page),
+                        default => self::assertSame($parentPage, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return false;
+                },
+            );
 
         $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
             ->disableOriginalConstructor()
@@ -4925,35 +4964,31 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper, $acceptHelper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindFromPropertyInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findFromPropertyHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -4974,8 +5009,8 @@ final class LinksTest extends TestCase
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
             ->method('find')
-            ->withConsecutive([$parentParentPage], [$parentParentPage])
-            ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
+            ->with($parentParentPage)
+            ->willReturn($parentParentPage);
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -4989,7 +5024,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5002,7 +5037,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -5010,19 +5044,19 @@ final class LinksTest extends TestCase
      */
     public function testSearchRelChapterWithDeepParent4(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5046,10 +5080,21 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(2))
+        $matcher      = self::exactly(2);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage2], [$parentPage])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage2, $parentPage): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage2, $page),
+                        default => self::assertSame($parentPage, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return true;
+                },
+            );
 
         $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
             ->disableOriginalConstructor()
@@ -5072,35 +5117,31 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls($findFromPropertyHelper, $acceptHelper, $acceptHelper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindFromPropertyInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findFromPropertyHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
             ->disableOriginalConstructor()
@@ -5121,8 +5162,8 @@ final class LinksTest extends TestCase
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
             ->method('find')
-            ->withConsecutive([$parentParentPage], [$parentParentPage])
-            ->willReturnOnConsecutiveCalls($parentParentPage, $parentParentPage);
+            ->with($parentParentPage)
+            ->willReturn($parentParentPage);
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -5136,7 +5177,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5149,24 +5190,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelPrevWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5220,7 +5260,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->searchRelPrev($page));
@@ -5228,24 +5268,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelPrevWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5254,8 +5293,11 @@ final class LinksTest extends TestCase
             ->method('debug');
 
         $parentPage = new Route();
-        $page1      = new Route();
-        $page2      = new Route();
+        $parentPage->setId('fgh');
+        $page1 = new Route();
+        $page1->setId('abc');
+        $page2 = new Route();
+        $page2->setId('xyz');
 
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
@@ -5265,10 +5307,30 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+
+        $matcher = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page1], [$page2], [$page2])
-            ->willReturnOnConsecutiveCalls(true, true, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1, 2 => self::assertSame(
+                            $page1,
+                            $page,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        default => self::assertSame(
+                            $page2,
+                            $page,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return true;
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -5291,7 +5353,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5312,10 +5374,20 @@ final class LinksTest extends TestCase
             ->getMock();
         $rootFinder->expects(self::never())
             ->method('setRoot');
-        $rootFinder->expects(self::exactly(2))
+
+        $matcher = self::exactly(2);
+        $rootFinder->expects($matcher)
             ->method('find')
-            ->withConsecutive([$page1], [$page2])
-            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+            ->willReturnCallback(
+                static function (PageInterface $page) use ($matcher, $page1, $page2, $parentPage): PageInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    return $parentPage;
+                },
+            );
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -5329,7 +5401,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5343,24 +5415,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelPrevWithParent2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5369,11 +5440,15 @@ final class LinksTest extends TestCase
             ->method('debug');
 
         $parentPage = new Route();
-        $page1      = new Route();
-        $page2      = new Route();
+        $parentPage->setId('fgh');
+        $page1 = new Route();
+        $page1->setId('abc');
+        $page2 = new Route();
+        $page2->setId('xyz');
         $page2->setActive(false);
         $page2->setVisible(false);
         $page3 = new Route();
+        $page3->setId('rst');
 
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
@@ -5384,10 +5459,37 @@ final class LinksTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(7))
+        $matcher      = self::exactly(7);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$page1], [$page1], [$page2], [$page1], [$page1], [$page2], [$page3])
-            ->willReturnOnConsecutiveCalls(true, true, false, true, true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $page1, $page2, $page3): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        3, 6 => self::assertSame(
+                            $page2,
+                            $page,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        4, 7 => self::assertSame(
+                            $page3,
+                            $page,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                        default => self::assertSame(
+                            $page1,
+                            $page,
+                            (string) $matcher->numberOfInvocations(),
+                        ),
+                    };
+
+                    self::assertTrue($recursive, (string) $matcher->numberOfInvocations());
+
+                    return match ($matcher->numberOfInvocations()) {
+                        3, 6 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -5410,7 +5512,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5431,10 +5533,20 @@ final class LinksTest extends TestCase
             ->getMock();
         $rootFinder->expects(self::never())
             ->method('setRoot');
-        $rootFinder->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $rootFinder->expects($matcher)
             ->method('find')
-            ->withConsecutive([$page1], [$page2], [$page3])
-            ->willReturnOnConsecutiveCalls($parentPage, $parentPage, $parentPage);
+            ->willReturnCallback(
+                static function (PageInterface $page) use ($matcher, $page1, $page2, $page3, $parentPage): PageInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        3 => self::assertSame($page3, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    return $parentPage;
+                },
+            );
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -5448,7 +5560,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5463,24 +5575,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelNextWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5534,7 +5645,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->searchRelNext($page));
@@ -5542,24 +5653,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelNextWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5605,7 +5715,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5626,10 +5736,19 @@ final class LinksTest extends TestCase
             ->getMock();
         $rootFinder->expects(self::never())
             ->method('setRoot');
-        $rootFinder->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $rootFinder->expects($matcher)
             ->method('find')
-            ->withConsecutive([$page2], [$page1])
-            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+            ->willReturnCallback(
+                static function (PageInterface $page) use ($matcher, $page1, $page2, $parentPage): PageInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    return $parentPage;
+                },
+            );
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -5643,7 +5762,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5657,24 +5776,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelStartWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5728,7 +5846,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         self::assertNull($helper->searchRelStart($page));
@@ -5736,24 +5854,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelStartWithParent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5799,7 +5916,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5820,10 +5937,19 @@ final class LinksTest extends TestCase
             ->getMock();
         $rootFinder->expects(self::never())
             ->method('setRoot');
-        $rootFinder->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $rootFinder->expects($matcher)
             ->method('find')
-            ->withConsecutive([$page1], [$page2])
-            ->willReturnOnConsecutiveCalls($parentPage, $parentPage);
+            ->willReturnCallback(
+                static function (PageInterface $page) use ($matcher, $page1, $page2, $parentPage): PageInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    return $parentPage;
+                },
+            );
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -5837,7 +5963,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5851,24 +5977,23 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSearchRelStartWithParent2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5923,7 +6048,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5944,10 +6069,19 @@ final class LinksTest extends TestCase
             ->getMock();
         $rootFinder->expects(self::never())
             ->method('setRoot');
-        $rootFinder->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $rootFinder->expects($matcher)
             ->method('find')
-            ->withConsecutive([$page1], [$page2])
-            ->willReturnOnConsecutiveCalls($container, $container);
+            ->willReturnCallback(
+                static function (PageInterface $page) use ($matcher, $page1, $page2, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    return $container;
+                },
+            );
 
         $headLink = $this->getMockBuilder(HeadLink::class)
             ->disableOriginalConstructor()
@@ -5961,7 +6095,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -5982,19 +6116,19 @@ final class LinksTest extends TestCase
      */
     public function testFindRelationWithError(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6059,7 +6193,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6070,7 +6204,9 @@ final class LinksTest extends TestCase
         $rel = 'test';
 
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage(sprintf('Invalid argument: $rel must be "rel" or "rev"; "%s" given', $rel));
+        $this->expectExceptionMessage(
+            sprintf('Invalid argument: $rel must be "rel" or "rev"; "%s" given', $rel),
+        );
         $this->expectExceptionCode(0);
 
         $helper->findRelation($page1, $rel, 'test');
@@ -6078,7 +6214,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -6086,19 +6221,19 @@ final class LinksTest extends TestCase
      */
     public function testFindNullRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6158,7 +6293,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -6194,7 +6329,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6209,7 +6344,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -6217,19 +6351,19 @@ final class LinksTest extends TestCase
      */
     public function testFindPageRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6303,7 +6437,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -6339,7 +6473,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6354,29 +6488,27 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\DomainException
-     *
-     * @group Render2
      */
+    #[Group('Render2')]
     public function testFindContainerRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6440,7 +6572,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -6476,7 +6608,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6491,7 +6623,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -6499,19 +6630,19 @@ final class LinksTest extends TestCase
      */
     public function testFindStringRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6577,7 +6708,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -6613,7 +6744,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6628,7 +6759,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -6636,19 +6766,19 @@ final class LinksTest extends TestCase
      */
     public function testFindStringRelationFromPropertyWithError(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6712,7 +6842,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -6748,7 +6878,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6763,7 +6893,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -6771,19 +6900,19 @@ final class LinksTest extends TestCase
      */
     public function testFindConfigRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6844,7 +6973,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -6880,7 +7009,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -6895,7 +7024,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
@@ -6903,19 +7031,19 @@ final class LinksTest extends TestCase
      */
     public function testFindConfigRelationFromPropertyWithError(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6975,7 +7103,7 @@ final class LinksTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findFromPropertyHelper);
 
@@ -7011,7 +7139,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -7030,19 +7158,19 @@ final class LinksTest extends TestCase
      */
     public function testRenderLinkWithError(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -7128,7 +7256,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -7139,7 +7267,9 @@ final class LinksTest extends TestCase
         $rel = 'test';
 
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage(sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $rel));
+        $this->expectExceptionMessage(
+            sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $rel),
+        );
         $this->expectExceptionCode(0);
 
         $helper->renderLink($page, $rel, 'test');
@@ -7148,23 +7278,22 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws DomainException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testRenderLinkWithoutHref(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -7251,7 +7380,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -7267,23 +7396,22 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws DomainException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testRenderLinkWithHref(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -7321,20 +7449,28 @@ final class LinksTest extends TestCase
             ->willReturn($href);
         $page->expects(self::never())
             ->method('getTarget');
-        $page->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $page->expects($matcher)
             ->method('get')
-            ->withConsecutive(['type'], ['hreflang'], ['charset'], ['lang'], ['media'])
-            ->willReturnCallback(static function (string $param): ?string {
-                if ('type' === $param || 'media' === $param) {
-                    return null;
-                }
+            ->willReturnCallback(
+                static function (string $param) use ($matcher): string | null {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('type', $param),
+                        2 => self::assertSame('hreflang', $param),
+                        3 => self::assertSame('charset', $param),
+                        4 => self::assertSame('lang', $param),
+                        default => self::assertSame('media', $param),
+                    };
 
-                if ('hreflang' === $param || 'lang' === $param) {
-                    return 'de';
-                }
-
-                throw new \Mezzio\Navigation\Exception\InvalidArgumentException('fail');
-            });
+                    return match ($matcher->numberOfInvocations()) {
+                        1, 5 => null,
+                        2, 4 => 'de',
+                        default => throw new \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException(
+                            'fail',
+                        ),
+                    };
+                },
+            );
 
         $role = 'testRole';
 
@@ -7402,7 +7538,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -7415,26 +7551,25 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -7470,7 +7605,7 @@ final class LinksTest extends TestCase
                     'authorization' => null,
                     'renderInvisible' => false,
                     'role' => null,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -7483,10 +7618,22 @@ final class LinksTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(3))
+        $matcher         = self::exactly(3);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null], [$container])
-            ->willReturnOnConsecutiveCalls($container, null, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
 
         $rootFinder = $this->getMockBuilder(FindRootInterface::class)
             ->disableOriginalConstructor()
@@ -7510,7 +7657,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setContainer($container);
@@ -7519,7 +7666,6 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws Exception
@@ -7528,19 +7674,19 @@ final class LinksTest extends TestCase
      */
     public function testRender(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -7621,89 +7767,67 @@ final class LinksTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $findFromPropertyHelper->expects(self::exactly(31))
+        $matcher                = self::exactly(31);
+        $findFromPropertyHelper->expects($matcher)
             ->method('find')
-            ->withConsecutive(
-                [$page, 'rel', 'alternate'],
-                [$page, 'rel', 'stylesheet'],
-                [$page, 'rel', 'start'],
-                [$page, 'rel', 'next'],
-                [$page, 'rel', 'prev'],
-                [$page, 'rel', 'contents'],
-                [$page, 'rel', 'index'],
-                [$page, 'rel', 'glossary'],
-                [$page, 'rel', 'copyright'],
-                [$page, 'rel', 'chapter'],
-                [$page, 'rel', 'start'],
-                [$page, 'rel', 'section'],
-                [$page, 'rel', 'subsection'],
-                [$page, 'rel', 'appendix'],
-                [$page, 'rel', 'help'],
-                [$page, 'rel', 'bookmark'],
-                [$page, 'rev', 'alternate'],
-                [$page, 'rev', 'stylesheet'],
-                [$page, 'rev', 'start'],
-                [$page, 'rev', 'next'],
-                [$page, 'rev', 'prev'],
-                [$page, 'rev', 'contents'],
-                [$page, 'rev', 'index'],
-                [$page, 'rev', 'glossary'],
-                [$page, 'rev', 'copyright'],
-                [$page, 'rev', 'chapter'],
-                [$page, 'rev', 'section'],
-                [$page, 'rev', 'subsection'],
-                [$page, 'rev', 'appendix'],
-                [$page, 'rev', 'help'],
-                [$page, 'rev', 'bookmark']
-            )
-            ->willReturnOnConsecutiveCalls(
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                []
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, string $rel, string $type) use ($matcher, $page): array {
+                    self::assertSame($page, $pageParam);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 => self::assertSame(
+                            'rel',
+                            $rel,
+                        ),
+                        default => self::assertSame('rev', $rel),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 17 => self::assertSame('alternate', $type),
+                        2, 18 => self::assertSame('stylesheet', $type),
+                        3, 11, 19 => self::assertSame('start', $type),
+                        4, 20 => self::assertSame('next', $type),
+                        5, 21 => self::assertSame('prev', $type),
+                        6, 22 => self::assertSame('contents', $type),
+                        7, 23 => self::assertSame('index', $type),
+                        8, 24 => self::assertSame('glossary', $type),
+                        9, 25 => self::assertSame('copyright', $type),
+                        10, 26 => self::assertSame('chapter', $type),
+                        12, 27 => self::assertSame('section', $type),
+                        13, 28 => self::assertSame('subsection', $type),
+                        14, 29 => self::assertSame('appendix', $type),
+                        15, 30 => self::assertSame('help', $type),
+                        default => self::assertSame('bookmark', $type),
+                    };
+
+                    return [];
+                },
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page], [$parentPage])
-            ->willReturnOnConsecutiveCalls(true, true, true);
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, bool $recursive = true) use ($matcher, $parentPage, $page): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertSame($page, $pageParam),
+                        default => self::assertSame($parentPage, $pageParam),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return true;
+                },
+            );
 
         $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
@@ -7712,393 +7836,32 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(35))
+        $matcher = self::exactly(35);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $findActiveHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $acceptHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $acceptHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $acceptHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        5, 8, 15 => self::assertSame(AcceptHelperInterface::class, $name),
+                        default => self::assertSame(FindFromPropertyInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        5,8,15 => $acceptHelper,
+                        default => $findFromPropertyHelper,
+                    };
+                },
             );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -8110,17 +7873,34 @@ final class LinksTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturnOnConsecutiveCalls($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $rootFinder = $this->getMockBuilder(FindRootInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $rootFinder->expects(self::exactly(2))
+        $matcher    = self::exactly(2);
+        $rootFinder->expects($matcher)
             ->method('setRoot')
-            ->withConsecutive([$container], [null]);
+            ->willReturnCallback(
+                static function (ContainerInterface | null $root) use ($matcher, $container): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($container, $root),
+                        default => self::assertNull($root),
+                    };
+                },
+            );
         $rootFinder->expects(self::exactly(7))
             ->method('find')
             ->with($page)
@@ -8144,7 +7924,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -8167,7 +7947,6 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      * @throws Exception
@@ -8176,19 +7955,19 @@ final class LinksTest extends TestCase
      */
     public function testRender2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -8270,80 +8049,48 @@ final class LinksTest extends TestCase
                 [
                     'page' => $parentPage,
                     'depth' => 1,
-                ]
+                ],
             );
 
         $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $findFromPropertyHelper->expects(self::exactly(31))
+
+        $matcher = self::exactly(31);
+        $findFromPropertyHelper->expects($matcher)
             ->method('find')
-            ->withConsecutive(
-                [$parentPage, 'rel', 'alternate'],
-                [$parentPage, 'rel', 'stylesheet'],
-                [$parentPage, 'rel', 'start'],
-                [$parentPage, 'rel', 'next'],
-                [$parentPage, 'rel', 'prev'],
-                [$parentPage, 'rel', 'contents'],
-                [$parentPage, 'rel', 'index'],
-                [$parentPage, 'rel', 'glossary'],
-                [$parentPage, 'rel', 'copyright'],
-                [$parentPage, 'rel', 'chapter'],
-                [$parentPage, 'rel', 'start'],
-                [$parentPage, 'rel', 'section'],
-                [$parentPage, 'rel', 'subsection'],
-                [$parentPage, 'rel', 'appendix'],
-                [$parentPage, 'rel', 'help'],
-                [$parentPage, 'rel', 'bookmark'],
-                [$parentPage, 'rev', 'alternate'],
-                [$parentPage, 'rev', 'stylesheet'],
-                [$parentPage, 'rev', 'start'],
-                [$parentPage, 'rev', 'next'],
-                [$parentPage, 'rev', 'prev'],
-                [$parentPage, 'rev', 'contents'],
-                [$parentPage, 'rev', 'index'],
-                [$parentPage, 'rev', 'glossary'],
-                [$parentPage, 'rev', 'copyright'],
-                [$parentPage, 'rev', 'chapter'],
-                [$parentPage, 'rev', 'section'],
-                [$parentPage, 'rev', 'subsection'],
-                [$parentPage, 'rev', 'appendix'],
-                [$parentPage, 'rev', 'help'],
-                [$parentPage, 'rev', 'bookmark']
-            )
-            ->willReturnOnConsecutiveCalls(
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                [],
-                []
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, string $rel, string $type) use ($matcher, $parentPage): array {
+                    self::assertSame($parentPage, $pageParam);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 => self::assertSame(
+                            'rel',
+                            $rel,
+                        ),
+                        default => self::assertSame('rev', $rel),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        1, 17 => self::assertSame('alternate', $type),
+                        2, 18 => self::assertSame('stylesheet', $type),
+                        3, 11, 19 => self::assertSame('start', $type),
+                        4, 20 => self::assertSame('next', $type),
+                        5, 21 => self::assertSame('prev', $type),
+                        6, 22 => self::assertSame('contents', $type),
+                        7, 23 => self::assertSame('index', $type),
+                        8, 24 => self::assertSame('glossary', $type),
+                        9, 25 => self::assertSame('copyright', $type),
+                        10, 26 => self::assertSame('chapter', $type),
+                        12, 27 => self::assertSame('section', $type),
+                        13, 28 => self::assertSame('subsection', $type),
+                        14, 29 => self::assertSame('appendix', $type),
+                        15, 30 => self::assertSame('help', $type),
+                        default => self::assertSame('bookmark', $type),
+                    };
+
+                    return [];
+                },
             );
 
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
@@ -8351,8 +8098,8 @@ final class LinksTest extends TestCase
             ->getMock();
         $acceptHelper->expects(self::exactly(2))
             ->method('accept')
-            ->withConsecutive([$page], [$page])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->with($page)
+            ->willReturn(true);
 
         $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
@@ -8361,384 +8108,32 @@ final class LinksTest extends TestCase
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(34))
+        $matcher = self::exactly(34);
+        $serviceLocator->expects($matcher)
             ->method('build')
-            ->withConsecutive(
-                [
-                    FindActiveInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    AcceptHelperInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ],
-                [
-                    FindFromPropertyInterface::class,
-                    [
-                        'authorization' => $auth,
-                        'renderInvisible' => false,
-                        'role' => $role,
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $findActiveHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $acceptHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $acceptHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper,
-                $findFromPropertyHelper
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $findFromPropertyHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        7, 14 => self::assertSame(AcceptHelperInterface::class, $name),
+                        default => self::assertSame(FindFromPropertyInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        7, 14 => $acceptHelper,
+                        default => $findFromPropertyHelper,
+                    };
+                },
             );
 
         $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
@@ -8750,17 +8145,34 @@ final class LinksTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$name], [$container])
-            ->willReturnOnConsecutiveCalls($container, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
 
         $rootFinder = $this->getMockBuilder(FindRootInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $rootFinder->expects(self::exactly(2))
+        $matcher    = self::exactly(2);
+        $rootFinder->expects($matcher)
             ->method('setRoot')
-            ->withConsecutive([$container], [null]);
+            ->willReturnCallback(
+                static function (ContainerInterface | null $root) use ($matcher, $container): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($container, $root),
+                        default => self::assertNull($root),
+                    };
+                },
+            );
         $rootFinder->expects(self::exactly(7))
             ->method('find')
             ->with($parentPage)
@@ -8782,7 +8194,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         $helper->setRole($role);
@@ -8804,10 +8216,7 @@ final class LinksTest extends TestCase
         self::assertSame($expected, $helper->render($name));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testToStringExceptionInRenderer(): void
     {
         $auth      = $this->createMock(AuthorizationInterface::class);
@@ -8823,20 +8232,20 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::once())
-            ->method('err')
+            ->method('error')
             ->with($exception);
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -8880,7 +8289,7 @@ final class LinksTest extends TestCase
             $htmlify,
             $containerParser,
             $rootFinder,
-            $headLink
+            $headLink,
         );
 
         assert($auth instanceof AuthorizationInterface);

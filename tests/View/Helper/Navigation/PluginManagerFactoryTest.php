@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,14 +10,14 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManagerFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManagerFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 
 use function assert;
 
@@ -25,6 +25,7 @@ final class PluginManagerFactoryTest extends TestCase
 {
     private PluginManagerFactory $factory;
 
+    /** @throws void */
     protected function setUp(): void
     {
         $this->factory = new PluginManagerFactory();
@@ -32,7 +33,7 @@ final class PluginManagerFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationHasServiceListener(): void
     {
@@ -54,17 +55,26 @@ final class PluginManagerFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationHasNoServiceListenerAndNoConfig(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $matcher   = self::exactly(2);
+        $container->expects($matcher)
             ->method('has')
-            ->withConsecutive(['ServiceListener'], ['config'])
-            ->willReturnOnConsecutiveCalls(false, false);
+            ->willReturnCallback(
+                static function (string $id) use ($matcher): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('ServiceListener', $id),
+                        default => self::assertSame('config', $id),
+                    };
+
+                    return false;
+                },
+            );
         $container->expects(self::never())
             ->method('get');
 
@@ -76,17 +86,29 @@ final class PluginManagerFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationHasNoServiceListenerButAnEmptyConfig(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $matcher   = self::exactly(2);
+        $container->expects($matcher)
             ->method('has')
-            ->withConsecutive(['ServiceListener'], ['config'])
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnCallback(
+                static function (string $id) use ($matcher): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('ServiceListener', $id),
+                        default => self::assertSame('config', $id),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
         $container->expects(self::once())
             ->method('get')
             ->with('config')
@@ -100,17 +122,29 @@ final class PluginManagerFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationHasNoServiceListenerButAConfig(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $matcher   = self::exactly(2);
+        $container->expects($matcher)
             ->method('has')
-            ->withConsecutive(['ServiceListener'], ['config'])
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturnCallback(
+                static function (string $id) use ($matcher): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('ServiceListener', $id),
+                        default => self::assertSame('config', $id),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => false,
+                        default => true,
+                    };
+                },
+            );
         $container->expects(self::once())
             ->method('get')
             ->with('config')

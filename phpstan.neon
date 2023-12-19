@@ -1,18 +1,90 @@
 parameters:
   level: max
+
   parallel:
     maximumNumberOfProcesses: 1
     processTimeout: 200.0
+
   paths:
     - src
     - tests
+
   scanFiles:
     - %currentWorkingDirectory%/vendor/autoload.php
     - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/autoload.php
     - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src/Util/Tokens.php
-  checkGenericClassInNonGenericObjectType: false
-  checkMissingIterableValueType: false
+
+  # reports occurrences of type-checking functions always evaluated to true
+  checkAlwaysTrueCheckTypeFunctionCall: false
+
+  # reports instanceof occurrences always evaluated to true
+  checkAlwaysTrueInstanceof: false
+
+  # reports === and !== occurrences always evaluated to true
+  checkAlwaysTrueStrictComparison: false
+
+  # enable stricter analysis of benevolent union types
+  checkBenevolentUnionTypes: true
+
+  # reports use of dynamic properties as undefined
+  checkDynamicProperties: true
+
+  # reports code paths with missing return statement in functions and methods with @return mixed PHPDoc
+  checkExplicitMixedMissingReturn: true
+
+  # reports function and method calls with incorrect name case
+  checkFunctionNameCase: true
+
+  # it requires type variables always be specified in typehints
+  checkGenericClassInNonGenericObjectType: true
+
+  # be strict about values with an unspecified (implicit mixed) type
+  checkImplicitMixed: false
+
+  # reports references to built-in classes with incorrect name case
+  checkInternalClassCaseSensitivity: true
+
+  # require that callable signatures are specified
+  checkMissingCallableSignature: true
+
+  # checks for missing typehints in iterables
+  checkMissingIterableValueType: true
+
+  # reports return typehints that could be narrowed down because some of the listed types are never returned
+  checkTooWideReturnTypesInProtectedAndPublicMethods: true
+
+  # reports properties with native types that weren’t initialized in the class constructor
+  checkUninitializedProperties: true
+
+  # doesn’t require typehints for properties if the types can be inferred from constructor injection
+  inferPrivatePropertyTypeFromConstructor: false
+
+  # prevents reading key and value variables set in foreach when iterating over a non-empty array
+  polluteScopeWithAlwaysIterableForeach: false
+
+  # prevents reading variables set in for loop initial statement and while loop condition after the loop
+  polluteScopeWithLoopInitialAssignments: false
+
+  # report always true last condition in a series of elseif branches and match expression arms
+  reportAlwaysTrueInLastCondition: true
+
+  # reports violations of parameter type contravariance and return type covariance
+  reportMaybesInMethodSignatures: true
+
+  # reports violations of property type invariance
+  reportMaybesInPropertyPhpDocTypes: false
+
+  # reports violations of parameter type contravariance and return type covariance in static methods
+  reportStaticMethodSignatures: true
+
+  #
+  reportWrongPhpDocTypeInVarTag: true
+
+  # differentiate between PHPDoc and native types (if false)
   treatPhpDocTypesAsCertain: false
+
+  tipsOfTheDay: false
+
   exceptions:
     implicitThrows: false
     checkedExceptionRegexes:
@@ -21,18 +93,19 @@ parameters:
     check:
       missingCheckedExceptionInThrows: true
       tooWideThrowType: true
+
   ignoreErrors:
-    - '~is not subtype of Throwable~'
-    - '~Call to an undefined method .*::find(All|One)By.*\(\)~'
-    - '~Call to an undefined method .*::find(Rel|Rev).*\(\)~'
-    - '~Call to (static )?(method|function) .* with .* will always evaluate to (true|false)~'
-    - '~Parameter #1 \$uri of method Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Sitemap::setServerUrl\(\) expects Laminas\\Uri\\UriInterface\|string, array given~'
-    - '~Parameter #1 \$partial of method Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\(Breadcrumbs|Menu)::setPartial\(\) expects array<int, string>\|Laminas\\View\\Model\\ModelInterface\|string\|null, int given~'
-    - '~Parameter #1 \$configOrContainerInstance of method Laminas\\View\\HelperPluginManager::__construct\(\) expects Interop\\Container\\ContainerInterface\|Laminas\\View\\ConfigInterface\|null, Interop\\Container\\ContainerInterface\|Laminas\\ServiceManager\\ConfigInterface\|null given~'
-    - '~Parameter #1 \$message of method Laminas\\Log\\Logger::.* expects string, .* given~'
-    - '~Parameter #1 \$value of method Laminas\\Validator\\Sitemap\\Lastmod::isValid\(\) expects string, string\|false given~'
-#    - '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, array\(.*, string\) given~'
-    - '~Parameter #2 \$filename of method Laminas\\I18n\\Translator\\Translator::addTranslationFile\(\) expects string, null given~'
-    - '~Parameter #1 \$exception of method PHPUnit\\Framework\\TestCase::expectException\(\) expects class-string<Throwable>, string given~'
     - '~Laminas\\Navigation\\Page\\AbstractPage~'
     - '~Laminas\\Navigation\\AbstractContainer~'
+    - '~has typehint with deprecated interface Laminas\\ServiceManager\\ConfigInterface~'
+    - '~Instantiation of deprecated class Laminas\\ServiceManager\\Config~'
+    - '~Parameter #2 \$factory of method Laminas\\ServiceManager\\ServiceManager::setFactory\(\) expects~'
+    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::find(?:All|One)?By(Active|Label)\(\)~'
+    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\Navigation::find(?:All|One)?By(Active|Label)\(\)~'
+    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\ContainerInterface<Mimmi20\\Mezzio\\Navigation\\Page\\PageInterface>::find(?:All|One)?By(Active|Label)\(\)~'
+    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::findRe[lv](Chapter|Example|Next|Prev|Section|Start|Subsection)\(\)~'
+    - '~Access to an undefined property Mimmi20\\Mezzio\\Navigation\\Page\\PageInterface::\$(changefreq|lastmod|priority|resource)~'
+    - '~\$this\(Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\PluginManagerCompatibilityTest\) given~'
+    - '~setServerUrl\(\) expects Laminas\\Uri\\UriInterface\|string, array given~'
+    - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\(Breadcrumbs|Menu)::setPartial\(\) expects array~'
+    - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'

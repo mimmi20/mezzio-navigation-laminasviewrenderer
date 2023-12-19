@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,16 +10,16 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\View\Helper;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 
-use Interop\Container\ContainerInterface;
 use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 
 use function assert;
 use function sprintf;
@@ -28,6 +28,7 @@ final class UrlHelperFactoryTest extends TestCase
 {
     private UrlHelperFactory $factory;
 
+    /** @throws void */
     protected function setUp(): void
     {
         $this->factory = new UrlHelperFactory();
@@ -35,6 +36,7 @@ final class UrlHelperFactoryTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationException(): void
     {
@@ -50,8 +52,8 @@ final class UrlHelperFactoryTest extends TestCase
         $this->expectExceptionMessage(
             sprintf(
                 'An instance of %s is required in order to create the "url" view helper; not found',
-                BaseUrlHelper::class
-            )
+                BaseUrlHelper::class,
+            ),
         );
         $this->expectExceptionCode(0);
 
@@ -61,7 +63,7 @@ final class UrlHelperFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocation(): void
     {

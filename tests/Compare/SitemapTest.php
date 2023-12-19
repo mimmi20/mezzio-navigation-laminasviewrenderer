@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,12 +10,12 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\Compare;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
 use DOMDocument;
 use DOMElement;
+use Laminas\Config\Exception\InvalidArgumentException;
 use Laminas\Config\Exception\RuntimeException;
-use Laminas\Log\Logger;
 use Laminas\Uri\Uri;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\BasePath;
@@ -24,45 +24,41 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
-use Mezzio\Navigation\Page\PageFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
+use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\UriInterface;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 use function assert;
 use function date_default_timezone_get;
 use function date_default_timezone_set;
-use function get_class;
-use function gettype;
-use function is_object;
+use function get_debug_type;
 use function sprintf;
 use function trim;
 
 /**
- * Tests Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap
+ * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap
  *
- * @group Laminas_View
- * @group Laminas_View_Helper
- * @group Compare
+ * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+ * phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
  */
-final class SitemapTest extends AbstractTest
+#[Group('Compare')]
+#[Group('Laminas_View')]
+#[Group('Laminas_View_Helper')]
+final class SitemapTest extends AbstractTestCase
 {
-    /**
-     * Class name for view helper to test
-     */
-    protected string $helperName = Sitemap::class;
-
     /**
      * View helper
      *
      * @var Sitemap
      */
-    protected ViewHelperInterface $helper;
+    private ViewHelperInterface $helper;
 
     /** @var array<string, int|string> */
     private array $oldServer = [];
@@ -74,10 +70,9 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
-     * @throws \Laminas\Config\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws RuntimeException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -115,58 +110,93 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$baseUrlHelper should be an Instance of %s, but was %s',
                 BaseServerUrlHelper::class,
-                is_object($baseUrlHelper) ? get_class($baseUrlHelper) : gettype($baseUrlHelper)
-            )
+                get_debug_type($baseUrlHelper),
+            ),
         );
 
-        $uri = new class() implements UriInterface {
-            private string $schema = 'http';
-
-            private string $host = 'localhost';
-
-            private ?int $port = 80;
-
-            private string $path = '/';
-
-            private string $query = '';
-
+        $uri = new class () implements UriInterface {
+            private string $schema   = 'http';
+            private string $host     = 'localhost';
+            private int | null $port = 80;
+            private string $path     = '/';
+            private string $query    = '';
             private string $fragment = '';
 
+            /**
+             * @return string the URI scheme
+             *
+             * @throws void
+             */
             public function getScheme(): string
             {
                 return $this->schema;
             }
 
+            /**
+             * @return string the URI authority, in "[user-info@]host[:port]" format
+             *
+             * @throws void
+             */
             public function getAuthority(): string
             {
                 return '';
             }
 
+            /**
+             * @return string the URI user information, in "username[:password]" format
+             *
+             * @throws void
+             */
             public function getUserInfo(): string
             {
                 return '';
             }
 
+            /**
+             * @return string the URI host
+             *
+             * @throws void
+             */
             public function getHost(): string
             {
                 return $this->host;
             }
 
-            public function getPort(): ?int
+            /**
+             * @return int|null the URI port
+             *
+             * @throws void
+             */
+            public function getPort(): int | null
             {
                 return $this->port;
             }
 
+            /**
+             * @return string the URI path
+             *
+             * @throws void
+             */
             public function getPath(): string
             {
                 return $this->path;
             }
 
+            /**
+             * @return string the URI query string
+             *
+             * @throws void
+             */
             public function getQuery(): string
             {
                 return $this->query;
             }
 
+            /**
+             * @return string the URI fragment
+             *
+             * @throws void
+             */
             public function getFragment(): string
             {
                 return $this->fragment;
@@ -177,9 +207,9 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified scheme
              *
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             * @throws void
              */
-            public function withScheme($scheme)
+            public function withScheme(string $scheme): UriInterface
             {
                 $mod         = clone $this;
                 $mod->schema = $scheme;
@@ -188,14 +218,16 @@ final class SitemapTest extends AbstractTest
             }
 
             /**
-             * @param string      $user     the user name to use for authority
+             * @param string      $user     the username to use for authority
              * @param string|null $password the password associated with $user
              *
              * @return static a new instance with the specified user information
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             *
+             * @throws void
+             *
              * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
              */
-            public function withUserInfo($user, $password = null)
+            public function withUserInfo(string $user, string | null $password = null): UriInterface
             {
                 return clone $this;
             }
@@ -205,9 +237,9 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified host
              *
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             * @throws void
              */
-            public function withHost($host)
+            public function withHost(string $host): UriInterface
             {
                 $mod       = clone $this;
                 $mod->host = $host;
@@ -221,9 +253,9 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified port
              *
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             * @throws void
              */
-            public function withPort($port)
+            public function withPort(int | null $port): UriInterface
             {
                 $mod       = clone $this;
                 $mod->port = $port;
@@ -236,9 +268,9 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified path
              *
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             * @throws void
              */
-            public function withPath($path)
+            public function withPath(string $path): UriInterface
             {
                 $mod       = clone $this;
                 $mod->path = $path;
@@ -251,9 +283,9 @@ final class SitemapTest extends AbstractTest
              *
              * @return static a new instance with the specified query string
              *
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             * @throws void
              */
-            public function withQuery($query)
+            public function withQuery(string $query): UriInterface
             {
                 $mod        = clone $this;
                 $mod->query = $query;
@@ -265,9 +297,10 @@ final class SitemapTest extends AbstractTest
              * @param string $fragment the fragment to use with the new instance
              *
              * @return static a new instance with the specified fragment
-             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+             *
+             * @throws void
              */
-            public function withFragment($fragment)
+            public function withFragment(string $fragment): UriInterface
             {
                 $mod           = clone $this;
                 $mod->fragment = $fragment;
@@ -275,15 +308,14 @@ final class SitemapTest extends AbstractTest
                 return $mod;
             }
 
-            /**
-             * @throws \Laminas\Uri\Exception\InvalidArgumentException
-             */
+            /** @throws \Laminas\Uri\Exception\InvalidArgumentException */
             public function __toString(): string
             {
                 $uri = new Uri();
                 $uri->setScheme($this->schema);
                 $uri->setHost($this->host);
-                if (80 !== $this->port) {
+
+                if ($this->port !== 80) {
                     $uri->setPort($this->port);
                 }
 
@@ -303,8 +335,8 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
                 ServerUrlHelper::class,
-                is_object($serverUrlHelper) ? get_class($serverUrlHelper) : gettype($serverUrlHelper)
-            )
+                get_debug_type($serverUrlHelper),
+            ),
         );
 
         $basePathHelper = $plugin->get(BasePath::class);
@@ -313,8 +345,8 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
                 BasePath::class,
-                is_object($basePathHelper) ? get_class($basePathHelper) : gettype($basePathHelper)
-            )
+                get_debug_type($basePathHelper),
+            ),
         );
 
         $escapeHelper = $plugin->get(EscapeHtml::class);
@@ -323,17 +355,17 @@ final class SitemapTest extends AbstractTest
             sprintf(
                 '$escapeHelper should be an Instance of %s, but was %s',
                 EscapeHtml::class,
-                is_object($escapeHelper) ? get_class($escapeHelper) : gettype($escapeHelper)
-            )
+                get_debug_type($escapeHelper),
+            ),
         );
 
         $basePathHelper->setBasePath('');
 
-        $logger          = $this->serviceManager->get(Logger::class);
+        $logger          = $this->serviceManager->get(LoggerInterface::class);
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
 
-        assert($logger instanceof Logger);
+        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
@@ -345,7 +377,7 @@ final class SitemapTest extends AbstractTest
             $containerParser,
             $basePathHelper,
             $escapeHelper,
-            $serverUrlHelper
+            $serverUrlHelper,
         );
 
         // set nav1 in helper as default
@@ -354,6 +386,7 @@ final class SitemapTest extends AbstractTest
         $this->helper->setFormatOutput(true);
     }
 
+    /** @throws void */
     protected function tearDown(): void
     {
         foreach ($this->oldServer as $key => $value) {
@@ -365,33 +398,30 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
-        $returned = $this->helper->__invoke();
+        $returned = ($this->helper)();
         self::assertSame($this->helper, $returned);
         self::assertSame($this->nav1, $returned->getContainer());
     }
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
-        $returned = $this->helper->__invoke($this->nav2);
+        $returned = ($this->helper)($this->nav2);
         self::assertSame($this->helper, $returned);
         self::assertSame($this->nav2, $returned->getContainer());
     }
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -403,7 +433,6 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -417,7 +446,6 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -431,7 +459,6 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -446,7 +473,6 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -460,8 +486,7 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -483,12 +508,11 @@ final class SitemapTest extends AbstractTest
         self::assertInstanceOf(DOMElement::class, $expectedDom->documentElement);
         self::assertInstanceOf(DOMElement::class, $receivedDom->documentElement);
 
-        //self::assertEqualXMLStructure($expectedDom->documentElement, $receivedDom->documentElement);
+        // self::assertEqualXMLStructure($expectedDom->documentElement, $receivedDom->documentElement);
     }
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -502,12 +526,10 @@ final class SitemapTest extends AbstractTest
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     *
-     * @group test-123
      */
+    #[Group('test-123')]
     public function testSetServerUrlWithSchemeAndPortAndHostAndPath(): void
     {
         $this->helper->setServerUrl('http://sub.example.org:8080/foo/');
@@ -516,10 +538,7 @@ final class SitemapTest extends AbstractTest
         self::assertSame(trim($expected), $this->helper->render());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testGetUserSchemaValidation(): void
     {
         $this->helper->setUseSchemaValidation(true);

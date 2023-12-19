@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,9 +10,8 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\Compare;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
@@ -20,6 +19,7 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\ServiceManager\Test\CommonPluginManagerTrait;
 use Laminas\View\Exception\InvalidHelperException;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
@@ -28,21 +28,21 @@ use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
-use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
-use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
-use Mezzio\Navigation\Navigation;
-use Mezzio\Navigation\Page\PageFactory;
-use Mezzio\Navigation\Page\PageFactoryInterface;
-use Mezzio\Navigation\Service\ConstructedNavigationFactory;
-use Mezzio\Navigation\Service\DefaultNavigationFactory;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererFactory;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
+use Mimmi20\Mezzio\Navigation\Navigation;
+use Mimmi20\Mezzio\Navigation\Page\PageFactory;
+use Mimmi20\Mezzio\Navigation\Page\PageFactoryInterface;
+use Mimmi20\Mezzio\Navigation\Service\ConstructedNavigationFactory;
+use Mimmi20\Mezzio\Navigation\Service\DefaultNavigationFactory;
 use Mimmi20\NavigationHelper\Accept\AcceptHelperFactory;
 use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserFactory;
@@ -57,21 +57,24 @@ use Mimmi20\NavigationHelper\FindRoot\FindRoot;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Stringable;
+use Throwable;
 
-/**
- * @group Laminas_View
- * @group Compare
- */
+use function method_exists;
+
+#[Group('Compare')]
+#[Group('Laminas_View')]
 final class PluginManagerCompatibilityTest extends TestCase
 {
     use CommonPluginManagerTrait;
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ServiceNotFoundException
      * @throws InvalidServiceException
      * @throws ContainerModificationsNotAllowedException
@@ -95,7 +98,7 @@ final class PluginManagerCompatibilityTest extends TestCase
                 ],
                 'view_helpers' => [
                     'aliases' => [
-                        'navigation' => \Mezzio\Navigation\LaminasView\View\Helper\Navigation::class,
+                        'navigation' => \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation::class,
                         'Navigation' => Navigation::class,
                         BaseServerUrlHelper::class => ServerUrlHelper::class,
                         'serverurl' => ServerUrlHelper::class,
@@ -111,7 +114,7 @@ final class PluginManagerCompatibilityTest extends TestCase
                         ServerUrlHelper::class => ServerUrlHelperFactory::class,
                     ],
                 ],
-            ]
+            ],
         );
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
         $sm->setFactory(PartialRendererInterface::class, PartialRendererFactory::class);
@@ -126,7 +129,152 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(ConvertToPagesInterface::class, ConvertToPagesFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
-        $sm->setFactory(Logger::class, InvokableFactory::class);
+        $sm->setFactory(
+            LoggerInterface::class,
+            /**
+             * @throws void
+             *
+             * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+             */
+            static fn (ContainerInterface $container, $requestedName, array | null $options = null) => new class () implements LoggerInterface {
+                    /**
+                     * System is unusable.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function emergency(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement emergency() method.
+                    }
+
+                    /**
+                     * Action must be taken immediately.
+                     *
+                     * Example: Entire website down, database unavailable, etc. This should
+                     * trigger the SMS alerts and wake you up.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function alert(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement alert() method.
+                    }
+
+                    /**
+                     * Critical conditions.
+                     *
+                     * Example: Application component unavailable, unexpected exception.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function critical(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement critical() method.
+                    }
+
+                    /**
+                     * Runtime errors that do not require immediate action but should typically
+                     * be logged and monitored.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function error(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement error() method.
+                    }
+
+                    /**
+                     * Exceptional occurrences that are not errors.
+                     *
+                     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+                     * that are not necessarily wrong.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function warning(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement warning() method.
+                    }
+
+                    /**
+                     * Normal but significant events.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function notice(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement notice() method.
+                    }
+
+                    /**
+                     * Interesting events.
+                     *
+                     * Example: User logs in, SQL logs.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function info(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement info() method.
+                    }
+
+                    /**
+                     * Detailed debug information.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function debug(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement debug() method.
+                    }
+
+                    /**
+                     * Logs with an arbitrary level.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function log(mixed $level, Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement log() method.
+                    }
+            },
+        );
         $helpers = new PluginManager($sm);
 
         $helper = $helpers->get('breadcrumbs');
@@ -134,14 +282,13 @@ final class PluginManagerCompatibilityTest extends TestCase
         self::assertSame($sm, $helper->getServiceLocator());
     }
 
-    /**
-     * @throws ContainerModificationsNotAllowedException
-     */
+    /** @throws ContainerModificationsNotAllowedException */
     public function testRegisteringInvalidElementRaisesException(): void
     {
         $this->expectException($this->getServiceNotFoundException());
-        $this->getPluginManager()->setService('test', $this);
         $this->expectExceptionCode(0);
+
+        self::getPluginManager()->setService('test', $this);
     }
 
     /**
@@ -151,19 +298,33 @@ final class PluginManagerCompatibilityTest extends TestCase
      */
     public function testLoadingInvalidElementRaisesException(): void
     {
-        $manager = $this->getPluginManager();
-        $manager->setInvokableClass('test', self::class);
+        $manager = self::getPluginManager();
+        $manager->setFactory(
+            'test',
+            /**
+             * @throws void
+             *
+             * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+             */
+            static fn (ContainerInterface $container, $requestedName, array | null $options = null) => new self(
+                'test',
+            ),
+        );
         $this->expectException($this->getServiceNotFoundException());
-        $this->expectExceptionMessage('Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager can only create instances of Laminas\View\Helper\HelperInterface and/or callables; MezzioTest\Navigation\LaminasView\Compare\PluginManagerCompatibilityTest is invalid');
+        $this->expectExceptionMessage(
+            'Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager can only create instances of Laminas\View\Helper\HelperInterface and/or callables; Mimmi20Test\Mezzio\Navigation\LaminasView\Compare\PluginManagerCompatibilityTest is invalid',
+        );
         $this->expectExceptionCode(0);
 
         $manager->get('test');
     }
 
     /**
+     * @return PluginManager<HelperInterface>
+     *
      * @throws ContainerModificationsNotAllowedException
      */
-    protected function getPluginManager(): PluginManager
+    protected static function getPluginManager(): PluginManager
     {
         $sm = new ServiceManager();
         $sm->setAllowOverride(true);
@@ -187,13 +348,158 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(ConvertToPagesInterface::class, ConvertToPagesFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
-        $sm->setFactory(Logger::class, InvokableFactory::class);
+        $sm->setFactory(
+            LoggerInterface::class,
+            /**
+             * @throws void
+             *
+             * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+             */
+            static fn (ContainerInterface $container, $requestedName, array | null $options = null) => new class () implements LoggerInterface {
+                    /**
+                     * System is unusable.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function emergency(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement emergency() method.
+                    }
+
+                    /**
+                     * Action must be taken immediately.
+                     *
+                     * Example: Entire website down, database unavailable, etc. This should
+                     * trigger the SMS alerts and wake you up.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function alert(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement alert() method.
+                    }
+
+                    /**
+                     * Critical conditions.
+                     *
+                     * Example: Application component unavailable, unexpected exception.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function critical(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement critical() method.
+                    }
+
+                    /**
+                     * Runtime errors that do not require immediate action but should typically
+                     * be logged and monitored.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function error(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement error() method.
+                    }
+
+                    /**
+                     * Exceptional occurrences that are not errors.
+                     *
+                     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+                     * that are not necessarily wrong.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function warning(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement warning() method.
+                    }
+
+                    /**
+                     * Normal but significant events.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function notice(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement notice() method.
+                    }
+
+                    /**
+                     * Interesting events.
+                     *
+                     * Example: User logs in, SQL logs.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function info(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement info() method.
+                    }
+
+                    /**
+                     * Detailed debug information.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function debug(Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement debug() method.
+                    }
+
+                    /**
+                     * Logs with an arbitrary level.
+                     *
+                     * @param array<mixed> $context
+                     *
+                     * @throws void
+                     *
+                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                     */
+                    public function log(mixed $level, Stringable | string $message, array $context = []): void
+                    {
+                        // TODO: Implement log() method.
+                    }
+            },
+        );
         $sm->setFactory(
             'config',
             static fn (): array => [
                 'view_helpers' => [
                     'aliases' => [
-                        'navigation' => \Mezzio\Navigation\LaminasView\View\Helper\Navigation::class,
+                        'navigation' => \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation::class,
                         'Navigation' => Navigation::class,
                         BaseServerUrlHelper::class => ServerUrlHelper::class,
                         'serverurl' => ServerUrlHelper::class,
@@ -209,17 +515,39 @@ final class PluginManagerCompatibilityTest extends TestCase
                         ServerUrlHelper::class => ServerUrlHelperFactory::class,
                     ],
                 ],
-            ]
+            ],
         );
 
         return new PluginManager($sm);
     }
 
+    /**
+     * @return class-string<Throwable>
+     *
+     * @throws ContainerModificationsNotAllowedException
+     */
+    protected function getServiceNotFoundException(): string
+    {
+        $manager = $this->getPluginManager();
+
+        if (method_exists($manager, 'configure')) {
+            return InvalidServiceException::class;
+        }
+
+        return $this->getV2InvalidPluginException();
+    }
+
+    /**
+     * @return class-string<Throwable>
+     *
+     * @throws void
+     */
     protected function getV2InvalidPluginException(): string
     {
         return InvalidHelperException::class;
     }
 
+    /** @throws void */
     protected function getInstanceOf(): string
     {
         return ViewHelperInterface::class;
