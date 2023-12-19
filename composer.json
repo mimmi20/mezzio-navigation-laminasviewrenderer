@@ -40,6 +40,7 @@
         "ext-simplexml": "*",
         "ext-tokenizer": "*",
         "ext-xml": "*",
+        "ext-xmlreader": "*",
         "ext-xmlwriter": "*",
         "infection/infection": "^0.27.9",
         "laminas/laminas-config": "^3.9.0",
