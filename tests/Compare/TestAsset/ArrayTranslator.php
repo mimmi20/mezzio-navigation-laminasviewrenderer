@@ -15,13 +15,12 @@ declare(strict_types = 1);
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare\TestAsset;
 
 use Laminas\I18n\Translator;
-use Laminas\I18n\Translator\TextDomain;
 
 /** phpcs:disable SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty */
 final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
 {
-    /** @var array<string> */
-    public array $translations;
+    /** @var array<string, string> */
+    public array $translations = [];
 
     /**
      * Load translations from a file.
@@ -29,12 +28,14 @@ final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
      * @param string $locale
      * @param string $filename
      *
+     * @return Translator\TextDomain<string, string>
+     *
      * @throws void
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function load($filename, $locale): TextDomain | null
+    public function load($filename, $locale): Translator\TextDomain
     {
         return new Translator\TextDomain($this->translations);
     }

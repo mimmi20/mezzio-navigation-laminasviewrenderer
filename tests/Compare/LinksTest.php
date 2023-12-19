@@ -1079,7 +1079,7 @@ final class LinksTest extends AbstractTestCase
     /**
      * Returns the contens of the expected $file, normalizes newlines
      *
-     * @throws void
+     * @throws Exception
      */
     protected function getExpected(string $file): string
     {

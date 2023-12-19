@@ -12,6 +12,7 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
+use Laminas\I18n\Exception\RuntimeException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
@@ -1018,6 +1019,8 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testHtmlify(): void
     {
@@ -7456,7 +7459,7 @@ final class LinksTest extends TestCase
                         2 => self::assertSame('hreflang', $param),
                         3 => self::assertSame('charset', $param),
                         4 => self::assertSame('lang', $param),
-                        5 => self::assertSame('media', $param),
+                        default => self::assertSame('media', $param),
                     };
 
                     return match ($matcher->numberOfInvocations()) {
@@ -7800,7 +7803,7 @@ final class LinksTest extends TestCase
                         13, 28 => self::assertSame('subsection', $type),
                         14, 29 => self::assertSame('appendix', $type),
                         15, 30 => self::assertSame('help', $type),
-                        16, 31 => self::assertSame('bookmark', $type),
+                        default => self::assertSame('bookmark', $type),
                     };
 
                     return [];
@@ -8052,75 +8055,6 @@ final class LinksTest extends TestCase
         $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-//        $findFromPropertyHelper->expects(self::exactly(31))
-//            ->method('find')
-//            ->withConsecutive(
-//                [$parentPage, 'rel', 'alternate'],
-//                [$parentPage, 'rel', 'stylesheet'],
-//                [$parentPage, 'rel', 'start'],
-//                [$parentPage, 'rel', 'next'],
-//                [$parentPage, 'rel', 'prev'],
-//                [$parentPage, 'rel', 'contents'],
-//                [$parentPage, 'rel', 'index'],
-//                [$parentPage, 'rel', 'glossary'],
-//                [$parentPage, 'rel', 'copyright'],
-//                [$parentPage, 'rel', 'chapter'],
-//                [$parentPage, 'rel', 'start'],
-//                [$parentPage, 'rel', 'section'],
-//                [$parentPage, 'rel', 'subsection'],
-//                [$parentPage, 'rel', 'appendix'],
-//                [$parentPage, 'rel', 'help'],
-//                [$parentPage, 'rel', 'bookmark'],
-//                [$parentPage, 'rev', 'alternate'],
-//                [$parentPage, 'rev', 'stylesheet'],
-//                [$parentPage, 'rev', 'start'],
-//                [$parentPage, 'rev', 'next'],
-//                [$parentPage, 'rev', 'prev'],
-//                [$parentPage, 'rev', 'contents'],
-//                [$parentPage, 'rev', 'index'],
-//                [$parentPage, 'rev', 'glossary'],
-//                [$parentPage, 'rev', 'copyright'],
-//                [$parentPage, 'rev', 'chapter'],
-//                [$parentPage, 'rev', 'section'],
-//                [$parentPage, 'rev', 'subsection'],
-//                [$parentPage, 'rev', 'appendix'],
-//                [$parentPage, 'rev', 'help'],
-//                [$parentPage, 'rev', 'bookmark']
-//            )
-//            ->willReturnOnConsecutiveCalls(
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                [],
-//                []
-//            );
 
         $matcher = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
@@ -8152,7 +8086,7 @@ final class LinksTest extends TestCase
                         13, 28 => self::assertSame('subsection', $type),
                         14, 29 => self::assertSame('appendix', $type),
                         15, 30 => self::assertSame('help', $type),
-                        16, 31 => self::assertSame('bookmark', $type),
+                        default => self::assertSame('bookmark', $type),
                     };
 
                     return [];

@@ -1027,6 +1027,7 @@ final class MenuTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testHtmlify(): void
     {
@@ -3266,6 +3267,7 @@ final class MenuTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -4414,6 +4416,7 @@ final class MenuTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDoNotRenderMenuIfNoPageIsActive(): void
     {
@@ -4523,6 +4526,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenuNoActivePage(): void
     {
@@ -4715,6 +4719,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu(): void
     {
@@ -4884,7 +4889,7 @@ final class MenuTest extends TestCase
             ->willReturnCallback(
                 static function (
                     string $prefix,
-                    AbstractPage | PageInterface $pageParam,
+                    PageInterface $pageParam,
                     bool $escapeLabel = true,
                     bool $addClassToListItem = false,
                     array $attributes = [],
@@ -4997,6 +5002,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu2(): void
     {
@@ -5171,7 +5177,7 @@ final class MenuTest extends TestCase
             ->willReturnCallback(
                 static function (
                     string $prefix,
-                    AbstractPage | PageInterface $pageParam,
+                    PageInterface $pageParam,
                     bool $escapeLabel = true,
                     bool $addClassToListItem = false,
                     array $attributes = [],
@@ -5293,6 +5299,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu3(): void
     {
@@ -5465,7 +5472,7 @@ final class MenuTest extends TestCase
             ->willReturnCallback(
                 static function (
                     string $prefix,
-                    AbstractPage | PageInterface $pageParam,
+                    PageInterface $pageParam,
                     bool $escapeLabel = true,
                     bool $addClassToListItem = false,
                     array $attributes = [],
@@ -5584,6 +5591,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu4(): void
     {
@@ -5830,6 +5838,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu5(): void
     {
@@ -6029,6 +6038,7 @@ final class MenuTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderMenu6(): void
     {

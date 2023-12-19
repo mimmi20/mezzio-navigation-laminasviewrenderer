@@ -1205,6 +1205,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testHtmlify(): void
     {
@@ -5081,6 +5082,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderStraightNoActivePage(): void
     {
@@ -5239,6 +5241,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderStraight(): void
     {
@@ -5473,6 +5476,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderStraightWithoutLinkAtEnd(): void
     {
@@ -5686,6 +5690,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderStraightWithoutLinkAtEnd2(): void
     {
@@ -5902,6 +5907,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderWithoutPartial(): void
     {
@@ -6135,6 +6141,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testRenderWithPartial(): void
     {
@@ -6295,6 +6302,7 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testToStringWithPartial(): void
     {
@@ -6454,7 +6462,10 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame($expected, (string) $helper($name));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     */
     public function testInvoke(): void
     {
         $container = $this->createMock(ContainerInterface::class);
@@ -6545,6 +6556,7 @@ final class BreadcrumbsTest extends TestCase
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {

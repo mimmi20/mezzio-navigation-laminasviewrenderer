@@ -2062,6 +2062,7 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testHtmlify(): void
     {
@@ -3241,7 +3242,10 @@ final class NavigationTest extends TestCase
         self::assertSame($expected, $helper->findActive($name));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     */
     public function testInvoke(): void
     {
         $container = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
@@ -3482,7 +3486,10 @@ final class NavigationTest extends TestCase
         self::assertSame('', (string) $helper);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     */
     public function testToString(): void
     {
         $proxy     = 'menu';

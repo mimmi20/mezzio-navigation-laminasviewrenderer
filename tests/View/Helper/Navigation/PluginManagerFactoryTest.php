@@ -16,6 +16,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManagerFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 use function assert;
@@ -30,7 +31,10 @@ final class PluginManagerFactoryTest extends TestCase
         $this->factory = new PluginManagerFactory();
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationHasServiceListener(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
@@ -49,7 +53,10 @@ final class PluginManagerFactoryTest extends TestCase
         self::assertInstanceOf(PluginManager::class, $result);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationHasNoServiceListenerAndNoConfig(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
@@ -77,7 +84,10 @@ final class PluginManagerFactoryTest extends TestCase
         self::assertInstanceOf(PluginManager::class, $result);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationHasNoServiceListenerButAnEmptyConfig(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
@@ -110,7 +120,10 @@ final class PluginManagerFactoryTest extends TestCase
         self::assertInstanceOf(PluginManager::class, $result);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationHasNoServiceListenerButAConfig(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)

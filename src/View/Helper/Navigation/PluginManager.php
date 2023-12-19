@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\ServiceManager\ConfigInterface;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Psr\Container\ContainerInterface;
 
@@ -25,7 +26,8 @@ use function array_merge_recursive;
  * Navigation\HelperInterface. Additionally, it registers a number of default
  * helpers.
  *
- * @extends ViewHelperPluginManager<ViewHelperInterface>
+ * @template InstanceType of HelperInterface
+ * @extends ViewHelperPluginManager<InstanceType>
  */
 final class PluginManager extends ViewHelperPluginManager implements ContainerInterface
 {

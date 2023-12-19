@@ -18,6 +18,7 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 use function assert;
@@ -33,7 +34,10 @@ final class ServerUrlHelperFactoryTest extends TestCase
         $this->factory = new ServerUrlHelperFactory();
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationException(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
@@ -57,7 +61,10 @@ final class ServerUrlHelperFactoryTest extends TestCase
         ($this->factory)($container);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocation(): void
     {
         $baseHelper = $this->createMock(BaseServerUrlHelper::class);

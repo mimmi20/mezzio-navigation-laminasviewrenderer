@@ -1091,6 +1091,7 @@ final class SitemapTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testHtmlify(): void
     {
@@ -3471,7 +3472,11 @@ final class SitemapTest extends TestCase
         self::assertSame($serverUrl, $helper->getServerUrl());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
     public function testUrlWithoutPageHref(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)
@@ -3554,7 +3559,11 @@ final class SitemapTest extends TestCase
         self::assertSame('', $helper->url($page));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
     public function testUrlWithRelativePageHref(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)
@@ -3643,7 +3652,11 @@ final class SitemapTest extends TestCase
         self::assertSame($serverUrl . '/' . $uri, $helper->url($page));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
     public function testUrlWithAbsolutePageHref(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)
@@ -3731,7 +3744,11 @@ final class SitemapTest extends TestCase
         self::assertSame('', $helper->url($page));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
     public function testUrlWithRelativePageHref2(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)
@@ -7955,7 +7972,10 @@ final class SitemapTest extends TestCase
         self::assertSame($xml, (string) $helper);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     */
     public function testInvoke(): void
     {
         $container = $this->createMock(ContainerInterface::class);

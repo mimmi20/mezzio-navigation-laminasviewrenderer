@@ -100,12 +100,12 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * $blogPages = $this->navigation()->findAllByRoute('blog');
      * </code>
      *
-     * @param string       $method    helper name or method name in container
-     * @param array<mixed> $arguments [optional] arguments to pass
+     * @param string                                               $method    helper name or method name in container
+     * @param array<ContainerInterface<PageInterface>|string|null> $arguments [optional] arguments to pass
      *
      * @return mixed returns what the proxied call returns
      *
-     * @throws void
+     * @throws InvalidArgumentException
      */
     public function __call(string $method, array $arguments = []): mixed
     {

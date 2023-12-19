@@ -25,6 +25,7 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -38,7 +39,10 @@ final class BreadcrumbsFactoryTest extends TestCase
         $this->factory = new BreadcrumbsFactory();
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationWithTranslator(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)
@@ -124,7 +128,10 @@ final class BreadcrumbsFactoryTest extends TestCase
         self::assertInstanceOf(Breadcrumbs::class, $helper);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationWithoutTranslator(): void
     {
         $logger = $this->getMockBuilder(LoggerInterface::class)
@@ -195,7 +202,10 @@ final class BreadcrumbsFactoryTest extends TestCase
         self::assertInstanceOf(Breadcrumbs::class, $helper);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     */
     public function testInvocationWithAssertionError(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)

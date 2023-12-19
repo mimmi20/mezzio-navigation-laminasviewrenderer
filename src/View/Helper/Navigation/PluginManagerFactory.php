@@ -27,6 +27,8 @@ final class PluginManagerFactory implements FactoryInterface
      * @param string            $name
      * @param array<mixed>|null $options
      *
+     * @return PluginManager<covariant ViewHelperInterface>
+     *
      * @throws ContainerExceptionInterface
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
@@ -34,6 +36,7 @@ final class PluginManagerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $name, array | null $options = null): PluginManager
     {
+        /** @var PluginManager<covariant ViewHelperInterface> $pluginManager */
         $pluginManager = new PluginManager($container, $options ?? []);
 
         // If this is in a zend-mvc application, the ServiceListener will inject

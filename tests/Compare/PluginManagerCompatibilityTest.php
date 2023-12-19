@@ -19,6 +19,7 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\ServiceManager\Test\CommonPluginManagerTrait;
 use Laminas\View\Exception\InvalidHelperException;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
@@ -59,9 +60,11 @@ use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Psr\Log\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Stringable;
+use Throwable;
+
+use function method_exists;
 
 /**
  * @group Compare
@@ -284,8 +287,9 @@ final class PluginManagerCompatibilityTest extends TestCase
     public function testRegisteringInvalidElementRaisesException(): void
     {
         $this->expectException($this->getServiceNotFoundException());
-        self::getPluginManager()->setService('test', $this);
         $this->expectExceptionCode(0);
+
+        self::getPluginManager()->setService('test', $this);
     }
 
     /**
@@ -316,7 +320,11 @@ final class PluginManagerCompatibilityTest extends TestCase
         $manager->get('test');
     }
 
-    /** @throws ContainerModificationsNotAllowedException */
+    /**
+     * @return PluginManager<HelperInterface>
+     *
+     * @throws ContainerModificationsNotAllowedException
+     */
     protected static function getPluginManager(): PluginManager
     {
         $sm = new ServiceManager();
@@ -477,7 +485,6 @@ final class PluginManagerCompatibilityTest extends TestCase
                      *
                      * @param array<mixed> $context
                      *
-                     * @throws InvalidArgumentException
                      * @throws void
                      *
                      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
@@ -515,7 +522,27 @@ final class PluginManagerCompatibilityTest extends TestCase
         return new PluginManager($sm);
     }
 
-    /** @throws void */
+    /**
+     * @return class-string<Throwable>
+     *
+     * @throws ContainerModificationsNotAllowedException
+     */
+    protected function getServiceNotFoundException(): string
+    {
+        $manager = $this->getPluginManager();
+
+        if (method_exists($manager, 'configure')) {
+            return InvalidServiceException::class;
+        }
+
+        return $this->getV2InvalidPluginException();
+    }
+
+    /**
+     * @return class-string<Throwable>
+     *
+     * @throws void
+     */
     protected function getV2InvalidPluginException(): string
     {
         return InvalidHelperException::class;

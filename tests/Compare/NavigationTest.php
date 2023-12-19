@@ -18,6 +18,7 @@ use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Mezzio\LaminasView\LaminasViewRenderer;
@@ -178,6 +179,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testInjectingContainer(): void
     {
@@ -202,6 +204,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DomainException
+     * @throws \Laminas\I18n\Exception\RuntimeException
      */
     public function testDisablingContainerInjection(): void
     {
@@ -426,6 +429,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws ExceptionInterface
+     * @throws \Laminas\I18n\Exception\RuntimeException
      *
      * @group Laminas-6854
      */
@@ -465,7 +469,11 @@ final class NavigationTest extends AbstractTestCase
         self::assertStringContainsString('p2', $render);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     */
     public function testMultipleNavigations(): void
     {
         $menu     = ($this->helper)('nav1')->menu();
@@ -483,6 +491,8 @@ final class NavigationTest extends AbstractTestCase
 
     /**
      * @throws Exception
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @group #3859
      */
@@ -505,6 +515,8 @@ final class NavigationTest extends AbstractTestCase
 
     /**
      * @throws Exception
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @group #3859
      */
@@ -527,6 +539,8 @@ final class NavigationTest extends AbstractTestCase
 
     /**
      * @throws Exception
+     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      *
      * @group #3859
      */
@@ -550,6 +564,7 @@ final class NavigationTest extends AbstractTestCase
     /** @throws Exception */
     public function testSetPluginManagerAndView(): void
     {
+        /** @var Navigation\PluginManager<HelperInterface> $pluginManager */
         $pluginManager = new Navigation\PluginManager(new ServiceManager());
         $view          = new PhpRenderer();
 
@@ -562,7 +577,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * Returns the contens of the expected $file, normalizes newlines
      *
-     * @throws void
+     * @throws Exception
      */
     protected function getExpected(string $file): string
     {
