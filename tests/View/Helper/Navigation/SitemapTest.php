@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,12 +10,12 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
 use DOMElement;
 use DOMException;
-use Laminas\Log\Logger;
+use DOMNode;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Uri\Exception\InvalidUriException;
 use Laminas\Uri\Exception\InvalidUriPartException;
@@ -31,14 +31,14 @@ use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
-use Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapInterface;
-use Mezzio\Navigation\Navigation;
-use Mezzio\Navigation\Page\PageInterface;
-use Mezzio\Navigation\Page\Uri;
+use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
+use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapInterface;
+use Mimmi20\Mezzio\Navigation\Navigation;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
@@ -46,42 +46,41 @@ use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Stringable;
 
 use function assert;
 use function date;
-use function get_class;
 use function sprintf;
 use function time;
 
 final class SitemapTest extends TestCase
 {
+    /** @throws void */
     protected function tearDown(): void
     {
         Sitemap::setDefaultAuthorization(null);
         Sitemap::setDefaultRole(null);
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -129,7 +128,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertNull($helper->getMaxDepth());
 
@@ -138,25 +145,22 @@ final class SitemapTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetMinDepth(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -204,7 +208,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -229,25 +241,22 @@ final class SitemapTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -295,7 +304,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -304,28 +321,25 @@ final class SitemapTest extends TestCase
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetRole(): void
     {
         $role        = 'testRole';
         $defaultRole = 'testDefaultRole';
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -373,7 +387,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -389,25 +411,22 @@ final class SitemapTest extends TestCase
         self::assertTrue($helper->hasRole());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -455,7 +474,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -468,28 +495,25 @@ final class SitemapTest extends TestCase
         self::assertTrue($helper->getUseAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetAuthorization(): void
     {
         $auth        = $this->createMock(AuthorizationInterface::class);
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -537,7 +561,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -555,27 +587,24 @@ final class SitemapTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetView(): void
     {
         $view = $this->createMock(RendererInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -623,7 +652,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertNull($helper->getView());
 
@@ -636,7 +673,6 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -644,19 +680,19 @@ final class SitemapTest extends TestCase
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -701,12 +737,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([null], [$container])
-            ->willReturnOnConsecutiveCalls(null, $container);
+            ->willReturnCallback(
+                static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $container1 = $helper->getContainer();
 
@@ -731,19 +787,19 @@ final class SitemapTest extends TestCase
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -795,7 +851,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
@@ -806,25 +870,24 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -877,7 +940,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setContainer($name);
 
@@ -886,25 +957,24 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -954,7 +1024,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -990,7 +1060,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setContainer($name);
         $helper->setRole($role);
@@ -1003,15 +1081,14 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertFalse($helper->accept($page));
     }
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
@@ -1019,19 +1096,19 @@ final class SitemapTest extends TestCase
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1112,7 +1189,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setContainer($name);
 
@@ -1132,31 +1217,28 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetIndent(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1204,7 +1286,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame('', $helper->getIndent());
 
@@ -1219,26 +1309,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1312,7 +1401,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1348,7 +1437,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -1360,26 +1457,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1434,7 +1530,7 @@ final class SitemapTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1458,7 +1554,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1494,7 +1590,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -1511,25 +1615,24 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveWithoutContainer(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1570,7 +1673,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1606,7 +1709,15 @@ final class SitemapTest extends TestCase
             ->with(null)
             ->willReturn(null);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -1620,26 +1731,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1694,7 +1804,7 @@ final class SitemapTest extends TestCase
                 [
                     'page' => $page,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1718,7 +1828,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1754,7 +1864,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -1774,26 +1892,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1853,7 +1970,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -1889,7 +2006,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -1903,26 +2028,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -1973,7 +2097,7 @@ final class SitemapTest extends TestCase
                 [
                     'page' => $parentPage,
                     'depth' => 0,
-                ]
+                ],
             );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
@@ -1997,7 +2121,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2033,7 +2157,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -2050,26 +2182,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2149,7 +2280,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2185,7 +2316,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -2199,26 +2338,25 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2297,7 +2435,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($findActiveHelper);
 
@@ -2333,7 +2471,15 @@ final class SitemapTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -2348,25 +2494,22 @@ final class SitemapTest extends TestCase
         self::assertSame($expected, $helper->findActive($name));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUseXmlDeclaration(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2414,7 +2557,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertTrue($helper->getUseXmlDeclaration());
 
@@ -2423,25 +2574,22 @@ final class SitemapTest extends TestCase
         self::assertFalse($helper->getUseXmlDeclaration());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUseSchemaValidation(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2489,7 +2637,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertFalse($helper->getUseSchemaValidation());
 
@@ -2498,25 +2654,22 @@ final class SitemapTest extends TestCase
         self::assertTrue($helper->getUseSchemaValidation());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetUseSitemapValidators(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2564,7 +2717,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertTrue($helper->getUseSitemapValidators());
 
@@ -2579,19 +2740,19 @@ final class SitemapTest extends TestCase
      */
     public function testSetInvalidServerUrl(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2639,7 +2800,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $uri = 'ftp://test.org';
 
@@ -2656,19 +2825,19 @@ final class SitemapTest extends TestCase
      */
     public function testSetInvalidTypeOfServerUrl(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2716,10 +2885,20 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('$serverUrl should be aa string or an Instance of %s', UriInterface::class));
+        $this->expectExceptionMessage(
+            sprintf('$serverUrl should be aa string or an Instance of %s', UriInterface::class),
+        );
         $this->expectExceptionCode(0);
 
         $helper->setServerUrl([]);
@@ -2731,19 +2910,19 @@ final class SitemapTest extends TestCase
      */
     public function testSetServerUrlWithInvalidFragment(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2791,7 +2970,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $uri = $this->getMockBuilder(UriInterface::class)
             ->disableOriginalConstructor()
@@ -2823,19 +3010,19 @@ final class SitemapTest extends TestCase
      */
     public function testSetServerUrlWithInvalidUri(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2883,7 +3070,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $uri = $this->getMockBuilder(UriInterface::class)
             ->disableOriginalConstructor()
@@ -2917,19 +3112,19 @@ final class SitemapTest extends TestCase
      */
     public function testSetServerUrlWithError(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -2977,7 +3172,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $uri = $this->getMockBuilder(UriInterface::class)
             ->disableOriginalConstructor()
@@ -3008,24 +3211,23 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testSetServerUrl(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3073,7 +3275,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $serverUrl = 'ftp://test.org';
 
@@ -3102,25 +3312,22 @@ final class SitemapTest extends TestCase
         self::assertSame($serverUrl, $helper->getServerUrl());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetFormatOutput(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3168,7 +3375,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertFalse($helper->getFormatOutput());
 
@@ -3177,25 +3392,22 @@ final class SitemapTest extends TestCase
         self::assertTrue($helper->getFormatOutput());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testGetServerUrl(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3246,30 +3458,35 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame($serverUrl, $helper->getServerUrl());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testUrlWithoutPageHref(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3324,30 +3541,35 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn('');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame('', $helper->url($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testUrlWithRelativePageHref(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3408,30 +3630,35 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame($serverUrl . '/' . $uri, $helper->url($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testUrlWithAbsolutePageHref(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3490,31 +3717,36 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame($uri . '/', $helper->url($page));
         self::assertSame('', $helper->url($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testUrlWithRelativePageHref2(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3578,30 +3810,35 @@ final class SitemapTest extends TestCase
             ->method('getHref')
             ->willReturn($uri);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         self::assertSame($serverUrl . '/' . $baseUri . '/' . $uri, $helper->url($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetDomDocument(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3649,7 +3886,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $dom = $this->createMock(DOMDocument::class);
 
@@ -3661,25 +3906,22 @@ final class SitemapTest extends TestCase
         self::assertSame($dom, $helper->getDom());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetLocValidator(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3727,7 +3969,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $locValidator = $this->createMock(Loc::class);
 
@@ -3739,25 +3989,22 @@ final class SitemapTest extends TestCase
         self::assertSame($locValidator, $helper->getLocValidator());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetLastmodValidator(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3805,7 +4052,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $lastmodValidator = $this->createMock(Lastmod::class);
 
@@ -3817,25 +4072,22 @@ final class SitemapTest extends TestCase
         self::assertSame($lastmodValidator, $helper->getLastmodValidator());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetPriorityValidator(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3883,7 +4135,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $priorityValidator = $this->createMock(Priority::class);
 
@@ -3895,25 +4155,22 @@ final class SitemapTest extends TestCase
         self::assertSame($priorityValidator, $helper->getPriorityValidator());
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testSetChangefreqValidator(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -3961,7 +4218,15 @@ final class SitemapTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $changefreqValidator = $this->createMock(Changefreq::class);
 
@@ -3975,27 +4240,26 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4035,8 +4299,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         $parentPage->addPage($page);
 
@@ -4074,7 +4338,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4111,12 +4375,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -4143,20 +4427,33 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . '/' . $parentUri]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $urlLoc): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '/' . $parentUri, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        default => $urlLoc,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -4170,27 +4467,26 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveWithSchemaValidation(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4230,8 +4526,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page)
-            )
+                $page::class,
+            ),
         );
         $parentPage->addPage($page);
 
@@ -4269,7 +4565,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4306,12 +4602,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -4339,20 +4655,33 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . '/' . $parentUri]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $urlLoc): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '/' . $parentUri, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        default => $urlLoc,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -4370,27 +4699,26 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeep(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4425,8 +4753,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -4435,8 +4763,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -4447,10 +4775,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -4473,7 +4816,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4510,12 +4853,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -4543,20 +4906,33 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . '/' . $parentUri]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $urlLoc): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '/' . $parentUri, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        default => $urlLoc,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -4573,25 +4949,25 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidation(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4626,8 +5002,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -4636,8 +5012,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -4674,7 +5050,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4711,12 +5087,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -4741,18 +5137,28 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $urlSet, $urlNode): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        default => self::assertSame('url', $qualifiedName),
+                    };
+
+                    self::assertSame('', $value);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        default => $urlNode,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -4775,7 +5181,12 @@ final class SitemapTest extends TestCase
         $helper->setLocValidator($locValidator);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(sprintf('Encountered an invalid URL for Sitemap XML: "%s"', $serverUrl . 'test' . $parentUri));
+        $this->expectExceptionMessage(
+            sprintf(
+                'Encountered an invalid URL for Sitemap XML: "%s"',
+                $serverUrl . 'test' . $parentUri,
+            ),
+        );
         $this->expectExceptionCode(0);
 
         $helper->getDomSitemap();
@@ -4784,25 +5195,25 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidationException(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -4837,8 +5248,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -4847,8 +5258,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -4885,7 +5296,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -4922,12 +5333,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -4952,18 +5383,28 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(2))
+        $matcher = self::exactly(2);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $urlSet, $urlNode): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        default => self::assertSame('url', $qualifiedName),
+                    };
+
+                    self::assertSame('', $value);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        default => $urlNode,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -4986,7 +5427,12 @@ final class SitemapTest extends TestCase
         $helper->setLocValidator($locValidator);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(sprintf('An error occured while validating an URL for Sitemap XML: "%s"', $serverUrl . 'test' . $parentUri));
+        $this->expectExceptionMessage(
+            sprintf(
+                'An error occured while validating an URL for Sitemap XML: "%s"',
+                $serverUrl . 'test' . $parentUri,
+            ),
+        );
         $this->expectExceptionCode(0);
 
         $helper->getDomSitemap();
@@ -4995,26 +5441,25 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmod(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5051,24 +5496,7 @@ final class SitemapTest extends TestCase
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
-        assert(
-            $page1 instanceof PageInterface,
-            sprintf(
-                '$page1 should be an Instance of %s, but was %s',
-                PageInterface::class,
-                get_class($page1)
-            )
-        );
         $parentPage->addPage($page1);
-
-        assert(
-            $page2 instanceof PageInterface,
-            sprintf(
-                '$page2 should be an Instance of %s, but was %s',
-                PageInterface::class,
-                get_class($page2)
-            )
-        );
         $parentPage->addPage($page2);
 
         $container->addPage($parentPage);
@@ -5078,10 +5506,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -5104,7 +5547,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5128,7 +5571,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -5141,12 +5584,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -5166,9 +5629,19 @@ final class SitemapTest extends TestCase
         $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $urlNode->expects(self::exactly(4))
+        $matcher = self::exactly(4);
+        $urlNode->expects($matcher)
             ->method('appendChild')
-            ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq], [$urlPriority]);
+            ->willReturnCallback(
+                static function (DOMNode $node) use ($matcher, $urlLoc, $urlLastMod, $urlChangefreq, $urlPriority): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($urlLoc, $node),
+                        2 => self::assertSame($urlLastMod, $node),
+                        3 => self::assertSame($urlChangefreq, $node),
+                        default => self::assertSame($urlPriority, $node),
+                    };
+                },
+            );
 
         $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
@@ -5177,26 +5650,42 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(6))
+        $matcher = self::exactly(6);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
-                [SitemapInterface::SITEMAP_NS, 'lastmod', date('c', $time)],
-                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq],
-                [SitemapInterface::SITEMAP_NS, 'priority', $priority]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc,
-                $urlLastMod,
-                $urlChangefreq,
-                $urlPriority
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $time, $changefreq, $priority, $urlLoc, $urlLastMod, $urlChangefreq, $urlPriority): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        3 => self::assertSame('loc', $qualifiedName),
+                        4 => self::assertSame('lastmod', $qualifiedName),
+                        5 => self::assertSame('changefreq', $qualifiedName),
+                        default => self::assertSame('priority', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        4 => self::assertSame(date('c', $time), $value),
+                        5 => self::assertSame($changefreq, $value),
+                        6 => self::assertSame($priority, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        3 => $urlLoc,
+                        4 => $urlLastMod,
+                        5 => $urlChangefreq,
+                        default => $urlPriority,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -5212,7 +5701,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -5257,26 +5746,25 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmod(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5318,8 +5806,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -5328,8 +5816,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -5340,10 +5828,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -5366,7 +5869,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5390,7 +5893,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -5403,12 +5906,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -5427,9 +5950,18 @@ final class SitemapTest extends TestCase
         $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $urlNode->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $urlNode->expects($matcher)
             ->method('appendChild')
-            ->withConsecutive([$urlLoc], [$urlChangefreq], [$urlPriority]);
+            ->willReturnCallback(
+                static function (DOMNode $node) use ($matcher, $urlLoc, $urlChangefreq, $urlPriority): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($urlLoc, $node),
+                        2 => self::assertSame($urlChangefreq, $node),
+                        default => self::assertSame($urlPriority, $node),
+                    };
+                },
+            );
 
         $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
@@ -5438,24 +5970,39 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
-                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq],
-                [SitemapInterface::SITEMAP_NS, 'priority', $priority]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc,
-                $urlChangefreq,
-                $urlPriority
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $priority, $urlLoc, $urlChangefreq, $urlPriority, $changefreq): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        3 => self::assertSame('loc', $qualifiedName),
+                        4 => self::assertSame('changefreq', $qualifiedName),
+                        default => self::assertSame('priority', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        4 => self::assertSame($changefreq, $value),
+                        5 => self::assertSame($priority, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        3 => $urlLoc,
+                        4 => $urlChangefreq,
+                        default => $urlPriority,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -5471,7 +6018,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -5516,8 +6063,7 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
@@ -5525,20 +6071,20 @@ final class SitemapTest extends TestCase
     {
         $exception = new \Laminas\Validator\Exception\RuntimeException('test');
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::once())
-            ->method('err')
+            ->method('error')
             ->with($exception);
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5580,8 +6126,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -5590,8 +6136,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -5602,10 +6148,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -5628,7 +6189,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5652,7 +6213,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -5665,12 +6226,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -5689,9 +6270,18 @@ final class SitemapTest extends TestCase
         $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $urlNode->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $urlNode->expects($matcher)
             ->method('appendChild')
-            ->withConsecutive([$urlLoc], [$urlChangefreq], [$urlPriority]);
+            ->willReturnCallback(
+                static function (DOMNode $node) use ($matcher, $urlLoc, $urlChangefreq, $urlPriority): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($urlLoc, $node),
+                        2 => self::assertSame($urlChangefreq, $node),
+                        default => self::assertSame($urlPriority, $node),
+                    };
+                },
+            );
 
         $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
@@ -5700,24 +6290,39 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
-                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq],
-                [SitemapInterface::SITEMAP_NS, 'priority', $priority]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc,
-                $urlChangefreq,
-                $urlPriority
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $priority, $urlLoc, $changefreq, $urlChangefreq, $urlPriority): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        3 => self::assertSame('loc', $qualifiedName),
+                        4 => self::assertSame('changefreq', $qualifiedName),
+                        default => self::assertSame('priority', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        4 => self::assertSame($changefreq, $value),
+                        5 => self::assertSame($priority, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        3 => $urlLoc,
+                        4 => $urlChangefreq,
+                        default => $urlPriority,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -5733,7 +6338,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -5778,26 +6383,25 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmodAndChangeFreq(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -5839,8 +6443,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -5849,8 +6453,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -5861,10 +6465,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -5887,7 +6506,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -5911,7 +6530,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -5924,12 +6543,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -5957,20 +6596,33 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $urlLoc): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        default => $urlLoc,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -5986,7 +6638,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -6031,8 +6683,7 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
@@ -6042,20 +6693,31 @@ final class SitemapTest extends TestCase
         $exception2 = new \Laminas\Validator\Exception\RuntimeException('test');
         $exception3 = new \Laminas\Validator\Exception\RuntimeException('test');
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
-        $logger->expects(self::exactly(3))
-            ->method('err')
-            ->withConsecutive([$exception1], [$exception2], [$exception3]);
+            ->method('critical');
+        $matcher = self::exactly(3);
+        $logger->expects($matcher)
+            ->method('error')
+            ->willReturnCallback(
+                static function (string | Stringable $message, array $context = []) use ($matcher, $exception1, $exception2, $exception3): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($exception1, $message),
+                        2 => self::assertSame($exception2, $message),
+                        default => self::assertSame($exception3, $message),
+                    };
+
+                    self::assertSame([], $context);
+                },
+            );
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6097,8 +6759,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -6107,8 +6769,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -6119,10 +6781,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -6145,7 +6822,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -6169,7 +6846,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -6182,12 +6859,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -6215,20 +6912,33 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $urlLoc): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        default => $urlLoc,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -6244,7 +6954,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -6289,26 +6999,25 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithoutPriority(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6350,8 +7059,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -6360,8 +7069,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -6372,10 +7081,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -6398,7 +7122,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -6422,7 +7146,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -6435,12 +7159,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -6459,9 +7203,18 @@ final class SitemapTest extends TestCase
         $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $urlNode->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $urlNode->expects($matcher)
             ->method('appendChild')
-            ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq]);
+            ->willReturnCallback(
+                static function (DOMNode $node) use ($matcher, $urlLoc, $urlLastMod, $urlChangefreq): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($urlLoc, $node),
+                        2 => self::assertSame($urlLastMod, $node),
+                        default => self::assertSame($urlChangefreq, $node),
+                    };
+                },
+            );
 
         $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
@@ -6470,24 +7223,39 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
-                [SitemapInterface::SITEMAP_NS, 'lastmod', date('c', $time)],
-                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc,
-                $urlLastMod,
-                $urlChangefreq
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $time, $changefreq, $urlLoc, $urlLastMod, $urlChangefreq): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        3 => self::assertSame('loc', $qualifiedName),
+                        4 => self::assertSame('lastmod', $qualifiedName),
+                        default => self::assertSame('changefreq', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        4 => self::assertSame(date('c', $time), $value),
+                        5 => self::assertSame($changefreq, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        3 => $urlLoc,
+                        4 => $urlLastMod,
+                        default => $urlChangefreq,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -6503,7 +7271,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -6548,25 +7316,24 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testRenderWithXmlDeclaration(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6609,8 +7376,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -6619,8 +7386,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -6631,10 +7398,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -6657,7 +7439,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -6681,7 +7463,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -6694,12 +7476,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -6718,9 +7520,18 @@ final class SitemapTest extends TestCase
         $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $urlNode->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $urlNode->expects($matcher)
             ->method('appendChild')
-            ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq]);
+            ->willReturnCallback(
+                static function (DOMNode $node) use ($matcher, $urlLoc, $urlLastMod, $urlChangefreq): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($urlLoc, $node),
+                        2 => self::assertSame($urlLastMod, $node),
+                        default => self::assertSame($urlChangefreq, $node),
+                    };
+                },
+            );
 
         $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
@@ -6729,24 +7540,39 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
-                [SitemapInterface::SITEMAP_NS, 'lastmod', date('c', $time)],
-                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc,
-                $urlLastMod,
-                $urlChangefreq
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $time, $changefreq, $urlLoc, $urlLastMod, $urlChangefreq): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        3 => self::assertSame('loc', $qualifiedName),
+                        4 => self::assertSame('lastmod', $qualifiedName),
+                        default => self::assertSame('changefreq', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        4 => self::assertSame(date('c', $time), $value),
+                        5 => self::assertSame($changefreq, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        3 => $urlLoc,
+                        4 => $urlLastMod,
+                        default => $urlChangefreq,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -6766,7 +7592,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -6811,25 +7637,24 @@ final class SitemapTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     public function testToStringWithXmlDeclaration(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -6872,8 +7697,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page1 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page1)
-            )
+                $page1::class,
+            ),
         );
         $parentPage->addPage($page1);
 
@@ -6882,8 +7707,8 @@ final class SitemapTest extends TestCase
             sprintf(
                 '$page2 should be an Instance of %s, but was %s',
                 PageInterface::class,
-                get_class($page2)
-            )
+                $page2::class,
+            ),
         );
         $parentPage->addPage($page2);
 
@@ -6894,10 +7719,25 @@ final class SitemapTest extends TestCase
         $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $acceptHelper->expects(self::exactly(3))
+        $matcher      = self::exactly(3);
+        $acceptHelper->expects($matcher)
             ->method('accept')
-            ->withConsecutive([$parentPage], [$page1], [$page2])
-            ->willReturnOnConsecutiveCalls(true, false, true);
+            ->willReturnCallback(
+                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($parentPage, $page),
+                        2 => self::assertSame($page1, $page),
+                        default => self::assertSame($page2, $page),
+                    };
+
+                    self::assertTrue($recursive);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => false,
+                        default => true,
+                    };
+                },
+            );
 
         $auth = $this->getMockBuilder(AuthorizationInterface::class)
             ->disableOriginalConstructor()
@@ -6920,7 +7760,7 @@ final class SitemapTest extends TestCase
                     'authorization' => $auth,
                     'renderInvisible' => false,
                     'role' => $role,
-                ]
+                ],
             )
             ->willReturn($acceptHelper);
 
@@ -6944,7 +7784,7 @@ final class SitemapTest extends TestCase
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
-            ->willReturn($serverUrl . 'test' . $parentUri);
+            ->willReturn($serverUrl . '-test-' . $parentUri);
 
         $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
             ->disableOriginalConstructor()
@@ -6957,12 +7797,32 @@ final class SitemapTest extends TestCase
         $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $containerParser->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
             ->method('parseContainer')
-            ->withConsecutive([$container], [null])
-            ->willReturnOnConsecutiveCalls($container, null);
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $helper->setRole($role);
 
@@ -6981,9 +7841,18 @@ final class SitemapTest extends TestCase
         $urlNode = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $urlNode->expects(self::exactly(3))
+        $matcher = self::exactly(3);
+        $urlNode->expects($matcher)
             ->method('appendChild')
-            ->withConsecutive([$urlLoc], [$urlLastMod], [$urlChangefreq]);
+            ->willReturnCallback(
+                static function (DOMNode $node) use ($matcher, $urlLoc, $urlLastMod, $urlChangefreq): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($urlLoc, $node),
+                        2 => self::assertSame($urlLastMod, $node),
+                        default => self::assertSame($urlChangefreq, $node),
+                    };
+                },
+            );
 
         $urlSet = $this->getMockBuilder(DOMElement::class)
             ->disableOriginalConstructor()
@@ -6992,24 +7861,39 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
+        $dom     = $this->getMockBuilder(DOMDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $dom->expects(self::exactly(5))
+        $matcher = self::exactly(5);
+        $dom->expects($matcher)
             ->method('createElementNS')
-            ->withConsecutive(
-                [SitemapInterface::SITEMAP_NS, 'urlset'],
-                [SitemapInterface::SITEMAP_NS, 'url'],
-                [SitemapInterface::SITEMAP_NS, 'loc', $serverUrl . 'test' . $parentUri],
-                [SitemapInterface::SITEMAP_NS, 'lastmod', date('c', $time)],
-                [SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $urlSet,
-                $urlNode,
-                $urlLoc,
-                $urlLastMod,
-                $urlChangefreq
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $time, $changefreq, $urlLoc, $urlLastMod, $urlChangefreq): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        3 => self::assertSame('loc', $qualifiedName),
+                        4 => self::assertSame('lastmod', $qualifiedName),
+                        default => self::assertSame('changefreq', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        4 => self::assertSame(date('c', $time), $value),
+                        5 => self::assertSame($changefreq, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        3 => $urlLoc,
+                        4 => $urlLastMod,
+                        default => $urlChangefreq,
+                    };
+                },
             );
         $dom->expects(self::once())
             ->method('appendChild')
@@ -7029,7 +7913,7 @@ final class SitemapTest extends TestCase
             ->getMock();
         $locValidator->expects(self::once())
             ->method('isValid')
-            ->with($serverUrl . 'test' . $parentUri)
+            ->with($serverUrl . '-test-' . $parentUri)
             ->willReturn(true);
 
         assert($locValidator instanceof Loc);
@@ -7071,27 +7955,24 @@ final class SitemapTest extends TestCase
         self::assertSame($xml, (string) $helper);
     }
 
-    /**
-     * @throws Exception
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testInvoke(): void
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -7141,7 +8022,15 @@ final class SitemapTest extends TestCase
             ->with($container)
             ->willReturn($container);
 
-        $helper = new Sitemap($serviceLocator, $logger, $htmlify, $containerParser, $basePath, $escaper, $serverUrlHelper);
+        $helper = new Sitemap(
+            $serviceLocator,
+            $logger,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
 
         $container1 = $helper->getContainer();
 

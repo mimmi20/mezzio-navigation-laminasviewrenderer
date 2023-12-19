@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,36 +10,52 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use ErrorException;
 use Laminas\View\Exception;
-use Mezzio\Navigation\Exception\ExceptionInterface;
-use Mezzio\Navigation\Exception\InvalidArgumentException;
-use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
+use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 
 interface LinksInterface extends ViewHelperInterface
 {
     /**
      * Constants used for specifying which link types to find and render
      */
-    public const RENDER_ALTERNATE  = 0x0001;
+    public const RENDER_ALTERNATE = 0x0001;
+
     public const RENDER_STYLESHEET = 0x0002;
-    public const RENDER_START      = 0x0004;
-    public const RENDER_NEXT       = 0x0008;
-    public const RENDER_PREV       = 0x0010;
-    public const RENDER_CONTENTS   = 0x0020;
-    public const RENDER_INDEX      = 0x0040;
-    public const RENDER_GLOSSARY   = 0x0080;
-    public const RENDER_COPYRIGHT  = 0x0100;
-    public const RENDER_CHAPTER    = 0x0200;
-    public const RENDER_SECTION    = 0x0400;
+
+    public const RENDER_START = 0x0004;
+
+    public const RENDER_NEXT = 0x0008;
+
+    public const RENDER_PREV = 0x0010;
+
+    public const RENDER_CONTENTS = 0x0020;
+
+    public const RENDER_INDEX = 0x0040;
+
+    public const RENDER_GLOSSARY = 0x0080;
+
+    public const RENDER_COPYRIGHT = 0x0100;
+
+    public const RENDER_CHAPTER = 0x0200;
+
+    public const RENDER_SECTION = 0x0400;
+
     public const RENDER_SUBSECTION = 0x0800;
-    public const RENDER_APPENDIX   = 0x1000;
-    public const RENDER_HELP       = 0x2000;
-    public const RENDER_BOOKMARK   = 0x4000;
-    public const RENDER_CUSTOM     = 0x8000;
-    public const RENDER_ALL        = 0xFFFF;
+
+    public const RENDER_APPENDIX = 0x1000;
+
+    public const RENDER_HELP = 0x2000;
+
+    public const RENDER_BOOKMARK = 0x4000;
+
+    public const RENDER_CUSTOM = 0x8000;
+
+    public const RENDER_ALL = 0xFFFF;
 
     /**
      * Magic overload: Proxy calls to {@link findRelation()} or container
@@ -54,13 +70,11 @@ interface LinksInterface extends ViewHelperInterface
      *
      * @param array<mixed> $arguments
      *
-     * @return mixed
-     *
      * @throws Exception\ExceptionInterface
      * @throws ExceptionInterface
      * @throws ErrorException
      */
-    public function __call(string $method, array $arguments = []);
+    public function __call(string $method, array $arguments = []): mixed;
 
     /**
      * Renders the given $page as a link element, with $attrib = $relation
@@ -86,7 +100,7 @@ interface LinksInterface extends ViewHelperInterface
      *
      * The form of the returned array:
      * <code>
-     * // $page denotes an instance of Mezzio\Navigation\Page\PageInterface
+     * // $page denotes an instance of Mimmi20\Mezzio\Navigation\Page\PageInterface
      * $returned = array(
      *     'rel' => array(
      *         'alternate' => array($page, $page, $page),
@@ -107,7 +121,7 @@ interface LinksInterface extends ViewHelperInterface
      *
      * @throws InvalidArgumentException
      */
-    public function findAllRelations(PageInterface $page, ?int $flag = null): array;
+    public function findAllRelations(PageInterface $page, int | null $flag = null): array;
 
     /**
      * Finds relations of the given $rel=$type from $page
@@ -136,8 +150,10 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to the first document in a collection of documents. This link type
      * tells search engines which document is considered by the author to be the
      * starting point of the collection.
+     *
+     * @throws void
      */
-    public function searchRelStart(PageInterface $page): ?PageInterface;
+    public function searchRelStart(PageInterface $page): PageInterface | null;
 
     /**
      * Searches the root container for the forward 'next' relation of the given
@@ -147,8 +163,10 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to the next document in a linear sequence of documents. User
      * agents may choose to preload the "next" document, to reduce the perceived
      * load time.
+     *
+     * @throws void
      */
-    public function searchRelNext(PageInterface $page): ?PageInterface;
+    public function searchRelNext(PageInterface $page): PageInterface | null;
 
     /**
      * Searches the root container for the forward 'prev' relation of the given
@@ -157,8 +175,10 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to the previous document in an ordered series of documents. Some
      * user agents also support the synonym "Previous".
+     *
+     * @throws void
      */
-    public function searchRelPrev(PageInterface $page): ?PageInterface;
+    public function searchRelPrev(PageInterface $page): PageInterface | null;
 
     /**
      * Searches the root container for forward 'chapter' relations of the given
@@ -182,6 +202,8 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to a document serving as a section in a collection of documents.
      *
      * @return array<PageInterface>
+     *
+     * @throws void
      */
     public function searchRelSection(PageInterface $page): array;
 
@@ -194,6 +216,8 @@ interface LinksInterface extends ViewHelperInterface
      * documents.
      *
      * @return array<PageInterface>
+     *
+     * @throws void
      */
     public function searchRelSubsection(PageInterface $page): array;
 
@@ -203,8 +227,10 @@ interface LinksInterface extends ViewHelperInterface
      *
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
+     *
+     * @throws void
      */
-    public function searchRevSection(PageInterface $page): ?PageInterface;
+    public function searchRevSection(PageInterface $page): PageInterface | null;
 
     /**
      * Searches the root container for the reverse 'section' relation of the
@@ -213,8 +239,10 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a subsection in a collection of
      * documents.
+     *
+     * @throws void
      */
-    public function searchRevSubsection(PageInterface $page): ?PageInterface;
+    public function searchRevSubsection(PageInterface $page): PageInterface | null;
 
     // Util methods:
 
@@ -244,12 +272,17 @@ interface LinksInterface extends ViewHelperInterface
      * {@link renderLink()} method.
      *
      * @return self
+     *
+     * @throws void
+     *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function setRenderFlag(int $renderFlag);
 
     /**
      * Returns the helper's render flag
+     *
+     * @throws void
      */
     public function getRenderFlag(): int;
 }

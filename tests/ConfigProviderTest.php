@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,29 +10,26 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView;
 
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\Navigation\LaminasView\ConfigProvider;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use Mimmi20\Mezzio\Navigation\LaminasView\ConfigProvider;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class ConfigProviderTest extends TestCase
 {
     private ConfigProvider $provider;
 
+    /** @throws void */
     protected function setUp(): void
     {
         $this->provider = new ConfigProvider();
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testProviderDefinesExpectedFactoryServices(): void
     {
         $viewHelperConfig = $this->provider->getViewHelperConfig();
@@ -55,10 +52,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('navigation', $aliases);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testProviderDefinesExpectedFactoryServices2(): void
     {
         $dependencyConfig = $this->provider->getDependencyConfig();
@@ -72,10 +66,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testInvocationReturnsArrayWithDependencies(): void
     {
         $config = ($this->provider)();

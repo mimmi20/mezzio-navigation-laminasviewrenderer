@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,25 +10,25 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use ErrorException;
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HeadLink;
-use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Exception\ExceptionInterface;
-use Mezzio\Navigation\Exception\InvalidArgumentException;
-use Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
+use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
 
 use function array_diff;
@@ -98,22 +98,20 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     private FindRootInterface $rootFinder;
 
-    private HeadLink $headLink;
-
+    /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        Logger $logger,
+        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         FindRootInterface $rootFinder,
-        HeadLink $headLink
+        private HeadLink $headLink,
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
         $this->htmlify         = $htmlify;
         $this->containerParser = $containerParser;
         $this->rootFinder      = $rootFinder;
-        $this->headLink        = $headLink;
     }
 
     /**
@@ -129,22 +127,24 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @param array<mixed> $arguments
      *
-     * @return mixed
-     *
      * @throws Exception\ExceptionInterface
      * @throws ExceptionInterface
      * @throws ErrorException
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    public function __call(string $method, array $arguments = [])
+    public function __call(string $method, array $arguments = []): mixed
     {
         ErrorHandler::start(E_WARNING);
         $result = preg_match('/find(Rel|Rev)(.+)/', $method, $match);
         ErrorHandler::stop();
 
         if ($result && $arguments[0] instanceof PageInterface) {
-            return $this->findRelation($arguments[0], mb_strtolower($match[1]), mb_strtolower($match[2]));
+            return $this->findRelation(
+                $arguments[0],
+                mb_strtolower($match[1]),
+                mb_strtolower($match[2]),
+            );
         }
 
         return $this->parentCall($method, $arguments);
@@ -155,7 +155,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * Implements {@link ViewHelperInterface::render()}.
      *
-     * @param ContainerInterface|string|null $container [optional] container to render.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
      *                                                  Default is null, which indicates
      *                                                  that the helper should render
      *                                                  the container returned by {@link getContainer()}.
@@ -164,11 +164,11 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    public function render($container = null): string
+    public function render(ContainerInterface | string | null $container = null): string
     {
         $container = $this->containerParser->parseContainer($container);
 
-        if (null === $container) {
+        if ($container === null) {
             $container = $this->getContainer();
         }
 
@@ -189,7 +189,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         try {
             $result = $this->findAllRelations($active, $this->getRenderFlag());
         } catch (\Laminas\Stdlib\Exception\InvalidArgumentException $e) {
-            $this->logger->err($e);
+            $this->logger->error($e);
 
             return '';
         }
@@ -207,7 +207,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                 foreach ($pages as $page) {
                     $r = $this->renderLink($page, $attrib, $relation);
 
-                    if ('' === $r) {
+                    if ($r === '') {
                         continue;
                     }
 
@@ -243,8 +243,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             throw new Exception\DomainException(
                 sprintf(
                     'Invalid relation attribute "%s", must be "rel" or "rev"',
-                    $attrib
-                )
+                    $attrib,
+                ),
             );
         }
 
@@ -267,11 +267,11 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         foreach ($otherAttributes as $otherAttributeName) {
             try {
                 $otherAttributeValue = $page->get($otherAttributeName);
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 continue;
             }
 
-            if (null === $otherAttributeValue) {
+            if ($otherAttributeValue === null) {
                 continue;
             }
 
@@ -288,7 +288,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * The form of the returned array:
      * <code>
-     * // $page denotes an instance of Mezzio\Navigation\Page\PageInterface
+     * // $page denotes an instance of Mimmi20\Mezzio\Navigation\Page\PageInterface
      * $returned = array(
      *     'rel' => array(
      *         'alternate' => array($page, $page, $page),
@@ -310,7 +310,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    public function findAllRelations(PageInterface $page, ?int $flag = null): array
+    public function findAllRelations(PageInterface $page, int | null $flag = null): array
     {
         if (!is_int($flag)) {
             $flag = self::RENDER_ALL;
@@ -336,7 +336,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
                 try {
                     $found = $this->findRelation($page, $rel, $type);
-                } catch (Exception\DomainException $e) {
+                } catch (Exception\DomainException) {
                     continue;
                 }
 
@@ -373,8 +373,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             throw new Exception\DomainException(
                 sprintf(
                     'Invalid argument: $rel must be "rel" or "rev"; "%s" given',
-                    $rel
-                )
+                    $rel,
+                ),
             );
         }
 
@@ -383,7 +383,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         if (!$result) {
             $result = $this->findFromSearch($page, $rel, $type);
 
-            if (null === $result) {
+            if ($result === null) {
                 return [];
             }
 
@@ -405,8 +405,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * Refers to the first document in a collection of documents. This link type
      * tells search engines which document is considered by the author to be the
      * starting point of the collection.
+     *
+     * @throws void
      */
-    public function searchRelStart(PageInterface $page): ?PageInterface
+    public function searchRelStart(PageInterface $page): PageInterface | null
     {
         $found = $this->rootFinder->find($page);
 
@@ -430,21 +432,33 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * Refers to the next document in a linear sequence of documents. User
      * agents may choose to preload the "next" document, to reduce the perceived
      * load time.
+     *
+     * @throws void
      */
-    public function searchRelNext(PageInterface $page): ?PageInterface
+    public function searchRelNext(PageInterface $page): PageInterface | null
     {
-        $found    = null;
-        $break    = false;
-        $iterator = new RecursiveIteratorIterator($this->rootFinder->find($page), RecursiveIteratorIterator::SELF_FIRST);
+        $found = null;
+        $break = false;
+
+        /** @var RecursiveIteratorIterator<PageInterface> $iterator */
+        $iterator = new RecursiveIteratorIterator(
+            $this->rootFinder->find($page),
+            RecursiveIteratorIterator::SELF_FIRST,
+        );
+
         foreach ($iterator as $intermediate) {
+            assert($intermediate instanceof PageInterface);
+
             if ($intermediate === $page) {
                 // current page; break at next accepted page
                 $break = true;
+
                 continue;
             }
 
             if ($break && $this->accept($intermediate)) {
                 $found = $intermediate;
+
                 break;
             }
         }
@@ -459,23 +473,30 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to the previous document in an ordered series of documents. Some
      * user agents also support the synonym "Previous".
+     *
+     * @throws void
      */
-    public function searchRelPrev(PageInterface $page): ?PageInterface
+    public function searchRelPrev(PageInterface $page): PageInterface | null
     {
-        $found    = null;
-        $prev     = null;
+        $found = null;
+        $prev  = null;
+
+        /** @var RecursiveIteratorIterator<PageInterface> $iterator */
         $iterator = new RecursiveIteratorIterator(
             $this->rootFinder->find($page),
-            RecursiveIteratorIterator::SELF_FIRST
+            RecursiveIteratorIterator::SELF_FIRST,
         );
 
         foreach ($iterator as $intermediate) {
+            assert($intermediate instanceof PageInterface);
+
             if (!$this->accept($intermediate)) {
                 continue;
             }
 
             if ($intermediate === $page) {
                 $found = $prev;
+
                 break;
             }
 
@@ -510,11 +531,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
         foreach ($root as $chapter) {
             // exclude self and start page from chapters
-            if (
-                $chapter === $page
-                || in_array($chapter, $start, true)
-                || !$this->accept($chapter)
-            ) {
+            if ($chapter === $page || in_array($chapter, $start, true) || !$this->accept($chapter)) {
                 continue;
             }
 
@@ -532,6 +549,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * Refers to a document serving as a section in a collection of documents.
      *
      * @return array<PageInterface>
+     *
+     * @throws void
      */
     public function searchRelSection(PageInterface $page): array
     {
@@ -568,6 +587,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * documents.
      *
      * @return array<PageInterface>
+     *
+     * @throws void
      */
     public function searchRelSubsection(PageInterface $page): array
     {
@@ -603,8 +624,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
+     *
+     * @throws void
      */
-    public function searchRevSection(PageInterface $page): ?PageInterface
+    public function searchRevSection(PageInterface $page): PageInterface | null
     {
         $parent = $page->getParent();
 
@@ -629,8 +652,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a subsection in a collection of
      * documents.
+     *
+     * @throws void
      */
-    public function searchRevSubsection(PageInterface $page): ?PageInterface
+    public function searchRevSubsection(PageInterface $page): PageInterface | null
     {
         $parent = $page->getParent();
 
@@ -644,6 +669,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         foreach ($root as $chapter) {
             if ($chapter->hasPage($parent)) {
                 $found = $parent;
+
                 break;
             }
         }
@@ -677,6 +703,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * Note that custom relations can also be rendered directly using the
      * {@link renderLink()} method.
+     *
+     * @throws void
      */
     public function setRenderFlag(int $renderFlag): self
     {
@@ -687,6 +715,8 @@ final class Links extends AbstractHtmlElement implements LinksInterface
 
     /**
      * Returns the helper's render flag
+     *
+     * @throws void
      */
     public function getRenderFlag(): int
     {
@@ -715,10 +745,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
                     'renderInvisible' => $this->getRenderInvisible(),
                     'role' => $this->getRole(),
-                ]
+                ],
             );
         } catch (ContainerExceptionInterface $e) {
-            $this->logger->err($e);
+            $this->logger->error($e);
 
             return [];
         }
@@ -737,8 +767,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @param string        $type link type, e.g. 'start', 'next', etc
      *
      * @return array<PageInterface>|PageInterface|null
+     *
+     * @throws void
      */
-    private function findFromSearch(PageInterface $page, string $rel, string $type)
+    private function findFromSearch(PageInterface $page, string $rel, string $type): array | PageInterface | null
     {
         $found = null;
 

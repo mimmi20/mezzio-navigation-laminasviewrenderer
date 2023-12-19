@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,19 +10,20 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\Log\Logger;
+use Laminas\I18n\Exception\RuntimeException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Model\ModelInterface;
-use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Psr\Log\LoggerInterface;
 
 use function array_key_exists;
 use function array_merge;
@@ -54,7 +55,7 @@ trait MenuTrait
      *
      * @var array<int, string>|ModelInterface|string|null
      */
-    private $partial;
+    private array | ModelInterface | string | null $partial = null;
 
     /**
      * Whether parents should be rendered when only rendering active branch.
@@ -76,24 +77,19 @@ trait MenuTrait
      */
     private string $liActiveClass = 'active';
 
-    private PartialRendererInterface $renderer;
-
-    private EscapeHtmlAttr $escaper;
-
+    /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        Logger $logger,
+        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
-        EscapeHtmlAttr $escaper,
-        PartialRendererInterface $renderer
+        private EscapeHtmlAttr $escaper,
+        private PartialRendererInterface $renderer,
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
         $this->htmlify         = $htmlify;
         $this->containerParser = $containerParser;
-        $this->escaper         = $escaper;
-        $this->renderer        = $renderer;
     }
 
     /**
@@ -108,7 +104,7 @@ trait MenuTrait
      * @see renderPartial()
      * @see renderMenu()
      *
-     * @param ContainerInterface|string|null $container [optional] container to render.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
      *                                                  Default is null, which indicates
      *                                                  that the helper should render
      *                                                  the container returned by {@link getContainer()}.
@@ -116,8 +112,9 @@ trait MenuTrait
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
-    public function render($container = null): string
+    public function render(ContainerInterface | string | null $container = null): string
     {
         $partial = $this->getPartial();
 
@@ -135,8 +132,8 @@ trait MenuTrait
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface|string|null                $container [optional] container to pass to view
-     *                                                                 script. Default is to use the container registered in the helper.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
+     *                                                  script. Default is to use the container registered in the helper.
      * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
      *                                                                 Default is to use the partial registered in the helper. If an array
      *                                                                 is given, the first value is used for the partial view script.
@@ -145,8 +142,10 @@ trait MenuTrait
      * @throws Exception\InvalidArgumentException if partial is invalid array
      * @throws InvalidArgumentException
      */
-    public function renderPartial($container = null, $partial = null): string
-    {
+    public function renderPartial(
+        ContainerInterface | string | null $container = null,
+        array | ModelInterface | string | null $partial = null,
+    ): string {
         return $this->renderPartialModel([], $container, $partial);
     }
 
@@ -159,19 +158,22 @@ trait MenuTrait
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<mixed>                   $params
-     * @param ContainerInterface|string|null $container [optional] container to pass to view
+     * @param array<mixed>                                  $params
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|string|null $partial   [optional] partial view script to use.
-     *                                                  Default is to use the partial registered in the helper. If an array
-     *                                                  is given, the first value is used for the partial view script.
+     * @param array<int, string>|string|null                $partial   [optional] partial view script to use.
+     *                                                                 Default is to use the partial registered in the helper. If an array
+     *                                                                 is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
      * @throws InvalidArgumentException
      */
-    public function renderPartialWithParams(array $params = [], $container = null, $partial = null): string
-    {
+    public function renderPartialWithParams(
+        array $params = [],
+        ContainerInterface | string | null $container = null,
+        array | string | null $partial = null,
+    ): string {
         return $this->renderPartialModel($params, $container, $partial);
     }
 
@@ -182,8 +184,11 @@ trait MenuTrait
      * Overrides {@link AbstractHelper::htmlify()}.
      *
      * @param PageInterface $page               page to generate HTML for
-     * @param bool          $escapeLabel        Whether or not to escape the label
-     * @param bool          $addClassToListItem Whether or not to add the page class to the list item
+     * @param bool          $escapeLabel        Whether to escape the label
+     * @param bool          $addClassToListItem Whether to add the page class to the list item
+     *
+     * @throws RuntimeException
+     * @throws \Laminas\View\Exception\InvalidArgumentException
      */
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
@@ -194,6 +199,8 @@ trait MenuTrait
      * Sets a flag indicating whether labels should be escaped.
      *
      * @param bool $flag [optional] escape labels
+     *
+     * @throws void
      */
     public function escapeLabels(bool $flag = true): self
     {
@@ -202,6 +209,7 @@ trait MenuTrait
         return $this;
     }
 
+    /** @throws void */
     public function getEscapeLabels(): bool
     {
         return $this->escapeLabels;
@@ -213,7 +221,9 @@ trait MenuTrait
      * @param bool $flag [optional] page class applied to <li> element Default
      *                   is true
      *
-     * @return self fluent interface, returns self
+     * @return self fluent interface
+     *
+     * @throws void
      */
     public function setAddClassToListItem(bool $flag = true): self
     {
@@ -228,6 +238,8 @@ trait MenuTrait
      * By default, this value is false.
      *
      * @return bool whether parents should be rendered
+     *
+     * @throws void
      */
     public function getAddClassToListItem(): bool
     {
@@ -238,6 +250,8 @@ trait MenuTrait
      * Sets a flag indicating whether only active branch should be rendered.
      *
      * @param bool $flag [optional] render only active branch
+     *
+     * @throws void
      */
     public function setOnlyActiveBranch(bool $flag = true): self
     {
@@ -249,8 +263,9 @@ trait MenuTrait
     /**
      * Returns a flag indicating whether only active branch should be rendered.
      *
-     * By default, this value is false, meaning the entire menu will be
-     * be rendered.
+     * By default, this value is false, meaning the entire menu will be rendered.
+     *
+     * @throws void
      */
     public function getOnlyActiveBranch(): bool
     {
@@ -262,10 +277,19 @@ trait MenuTrait
      *
      * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array
      *                                                               is given, the first value is used for the partial view script.
+     *
+     * @throws void
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     public function setPartial($partial): self
     {
-        if (null === $partial || is_string($partial) || is_array($partial) || $partial instanceof ModelInterface) {
+        if (
+            $partial === null
+            || is_string($partial)
+            || is_array($partial)
+            || $partial instanceof ModelInterface
+        ) {
             $this->partial = $partial;
         }
 
@@ -276,8 +300,10 @@ trait MenuTrait
      * Returns partial view script to use for rendering menu.
      *
      * @return array<int, string>|ModelInterface|string|null
+     *
+     * @throws void
      */
-    public function getPartial()
+    public function getPartial(): array | ModelInterface | string | null
     {
         return $this->partial;
     }
@@ -288,6 +314,8 @@ trait MenuTrait
      * See {@link setOnlyActiveBranch()} for more information.
      *
      * @param bool $flag [optional] render parents when rendering active branch
+     *
+     * @throws void
      */
     public function setRenderParents(bool $flag = true): self
     {
@@ -300,6 +328,8 @@ trait MenuTrait
      * Returns flag indicating whether parents should be rendered when rendering only the active branch.
      *
      * By default, this value is true.
+     *
+     * @throws void
      */
     public function getRenderParents(): bool
     {
@@ -310,6 +340,8 @@ trait MenuTrait
      * Sets CSS class to use for the first 'ul' element when rendering.
      *
      * @param string $ulClass CSS class to set
+     *
+     * @throws void
      */
     public function setUlClass(string $ulClass): self
     {
@@ -320,6 +352,8 @@ trait MenuTrait
 
     /**
      * Returns CSS class to use for the first 'ul' element when rendering.
+     *
+     * @throws void
      */
     public function getUlClass(): string
     {
@@ -330,6 +364,8 @@ trait MenuTrait
      * Sets CSS class to use for the 'li' elements when rendering.
      *
      * @param string $liClass CSS class to set
+     *
+     * @throws void
      */
     public function setLiClass(string $liClass): self
     {
@@ -340,6 +376,8 @@ trait MenuTrait
 
     /**
      * Returns CSS class to use for the 'li' elements when rendering.
+     *
+     * @throws void
      */
     public function getLiClass(): string
     {
@@ -350,6 +388,8 @@ trait MenuTrait
      * Sets CSS class to use for the active 'li' element when rendering.
      *
      * @param string $liActiveClass CSS class to set
+     *
+     * @throws void
      */
     public function setLiActiveClass(string $liActiveClass): self
     {
@@ -360,6 +400,8 @@ trait MenuTrait
 
     /**
      * Returns CSS class to use for the active 'li' element when rendering.
+     *
+     * @throws void
      */
     public function getLiActiveClass(): string
     {
@@ -374,6 +416,8 @@ trait MenuTrait
      *
      * @return array<string, bool|int|string|null>
      * @phpstan-return array{indent: string, ulClass: string, liClass: string, minDepth: int|null, maxDepth: int|null, onlyActiveBranch: bool, renderParents: bool, escapeLabels: bool, addClassToListItem: bool, liActiveClass: string}
+     *
+     * @throws void
      */
     private function normalizeOptions(array $options = []): array
     {
@@ -384,32 +428,28 @@ trait MenuTrait
             $options['indent'] = $this->getIndent();
         }
 
-        if (isset($options['ulClass']) && null !== $options['ulClass']) {
-            $options['ulClass'] = (string) $options['ulClass'];
-        } else {
-            $options['ulClass'] = $this->getUlClass();
-        }
+        $options['ulClass'] = isset($options['ulClass']) && $options['ulClass'] !== null
+            ? (string) $options['ulClass']
+            : $this->getUlClass();
 
-        if (isset($options['liClass']) && null !== $options['liClass']) {
-            $options['liClass'] = (string) $options['liClass'];
-        } else {
-            $options['liClass'] = $this->getLiClass();
-        }
+        $options['liClass'] = isset($options['liClass']) && $options['liClass'] !== null
+            ? (string) $options['liClass']
+            : $this->getLiClass();
 
         if (array_key_exists('minDepth', $options)) {
-            if (null !== $options['minDepth']) {
+            if ($options['minDepth'] !== null) {
                 $options['minDepth'] = (int) $options['minDepth'];
             }
         } else {
             $options['minDepth'] = $this->getMinDepth();
         }
 
-        if (0 > $options['minDepth'] || null === $options['minDepth']) {
+        if (0 > $options['minDepth'] || $options['minDepth'] === null) {
             $options['minDepth'] = 0;
         }
 
         if (array_key_exists('maxDepth', $options)) {
-            if (null !== $options['maxDepth']) {
+            if ($options['maxDepth'] !== null) {
                 $options['maxDepth'] = (int) $options['maxDepth'];
             }
         } else {
@@ -432,11 +472,12 @@ trait MenuTrait
             $options['addClassToListItem'] = $this->getAddClassToListItem();
         }
 
-        if (array_key_exists('liActiveClass', $options) && null !== $options['liActiveClass']) {
-            $options['liActiveClass'] = (string) $options['liActiveClass'];
-        } else {
-            $options['liActiveClass'] = $this->getLiActiveClass();
-        }
+        $options['liActiveClass'] = array_key_exists(
+            'liActiveClass',
+            $options,
+        ) && $options['liActiveClass'] !== null
+            ? (string) $options['liActiveClass']
+            : $this->getLiActiveClass();
 
         return $options;
     }
@@ -445,30 +486,33 @@ trait MenuTrait
      * Render a partial with the given "model".
      *
      * @param array<mixed>                                  $params
-     * @param ContainerInterface|string|null                $container
+     * @param ContainerInterface<PageInterface>|string|null $container
      * @param array<int, string>|ModelInterface|string|null $partial
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
      * @throws InvalidArgumentException
      */
-    private function renderPartialModel(array $params, $container, $partial): string
-    {
-        if (null === $partial) {
+    private function renderPartialModel(
+        array $params,
+        ContainerInterface | string | null $container,
+        array | ModelInterface | string | null $partial,
+    ): string {
+        if ($partial === null) {
             $partial = $this->getPartial();
         }
 
-        if (null === $partial || '' === $partial || [] === $partial) {
+        if ($partial === null || $partial === '' || $partial === []) {
             throw new Exception\RuntimeException(
-                'Unable to render menu: No partial view script provided'
+                'Unable to render menu: No partial view script provided',
             );
         }
 
         if (is_array($partial)) {
-            if (2 !== count($partial)) {
+            if (count($partial) !== 2) {
                 throw new Exception\InvalidArgumentException(
                     'Unable to render menu: A view partial supplied as '
-                    . 'an array must contain one value: the partial view script'
+                    . 'an array must contain one value: the partial view script',
                 );
             }
 
@@ -477,21 +521,23 @@ trait MenuTrait
 
         $container = $this->containerParser->parseContainer($container);
 
-        if (null === $container) {
+        if ($container === null) {
             $container = $this->getContainer();
         }
 
         return $this->renderer->render(
             $partial,
-            array_merge($params, ['container' => $container])
+            array_merge($params, ['container' => $container]),
         );
     }
 
     /**
      * @param array<string, int|PageInterface|null> $found
      * @phpstan-param array{page?: PageInterface|null, depth?: int|null} $found
+     *
+     * @throws void
      */
-    private function isActiveBranch(array $found, PageInterface $page, ?int $maxDepth): bool
+    private function isActiveBranch(array $found, PageInterface $page, int | null $maxDepth): bool
     {
         if (!array_key_exists('page', $found) || !($found['page'] instanceof PageInterface)) {
             return false;
@@ -505,7 +551,10 @@ trait MenuTrait
         if ($foundPage->hasPage($page)) {
             // accept if page is a direct child of the active page
             $accept = true;
-        } elseif ($foundPage->getParent() instanceof ContainerInterface && $foundPage->getParent()->hasPage($page)) {
+        } elseif (
+            $foundPage->getParent() instanceof ContainerInterface
+            && $foundPage->getParent()->hasPage($page)
+        ) {
             // page is a sibling of the active page...
             if (
                 !$foundPage->hasPages(!$this->renderInvisible)

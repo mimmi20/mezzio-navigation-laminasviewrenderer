@@ -14,10 +14,8 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
-use Rector\Php71\Rector\FuncCall\CountOnNullRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -27,9 +25,6 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ]);
-
-    // register a single rule
-    // $rectorConfig->rule(\Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\InlineConstructorDefaultToPropertyRector::class);
 
     $rectorConfig->sets([
         SetList::DEAD_CODE,
@@ -44,13 +39,6 @@ return static function (RectorConfig $rectorConfig): void {
             FirstClassCallableRector::class,
             RemoveAlwaysTrueIfConditionRector::class,
             RemoveParentCallWithoutParentRector::class,
-            CountOnNullRector::class,
         ],
     );
-
-    $rectorConfig->skip([
-        ReadOnlyPropertyRector::class => [
-            __DIR__ . '/src/LaminasRbacFactory.php',
-        ],
-    ]);
 };

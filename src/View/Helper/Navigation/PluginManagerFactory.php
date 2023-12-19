@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,12 +10,12 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 
 use function array_key_exists;
 use function assert;
@@ -28,10 +28,11 @@ final class PluginManagerFactory implements FactoryInterface
      * @param array<mixed>|null $options
      *
      * @throws ContainerExceptionInterface
+     *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function __invoke(ContainerInterface $container, $name, ?array $options = null): PluginManager
+    public function __invoke(ContainerInterface $container, $name, array | null $options = null): PluginManager
     {
         $pluginManager = new PluginManager($container, $options ?? []);
 
@@ -51,7 +52,10 @@ final class PluginManagerFactory implements FactoryInterface
         assert(is_array($config));
 
         // If we do not have navigation helper configuration, nothing more to do
-        if (!array_key_exists('navigation_helpers', $config) || !is_array($config['navigation_helpers'])) {
+        if (
+            !array_key_exists('navigation_helpers', $config)
+            || !is_array($config['navigation_helpers'])
+        ) {
             return $pluginManager;
         }
 

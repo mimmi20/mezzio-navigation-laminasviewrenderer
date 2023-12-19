@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,9 +10,8 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
@@ -20,20 +19,22 @@ use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\AbstractHtmlElement;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
-use Mezzio\Navigation\ContainerInterface;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
+use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
+use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Psr\Log\LoggerInterface;
 
 use function assert;
-use function call_user_func_array;
 use function spl_object_hash;
 use function sprintf;
 
@@ -57,7 +58,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
     private string $defaultProxy = 'menu';
 
     /**
-     * Indicates whether or not a given helper has been injected
+     * Indicates whether a given helper has been injected
      *
      * @var array<string, bool>
      */
@@ -68,13 +69,15 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      */
     private bool $injectAuthorization = true;
 
-    private ?ViewHelperPluginManager $pluginManager = null;
+    /** @var ViewHelperPluginManager<HelperInterface>|null */
+    private ViewHelperPluginManager | null $pluginManager = null;
 
+    /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        Logger $logger,
+        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
-        ContainerParserInterface $containerParser
+        ContainerParserInterface $containerParser,
     ) {
         $this->serviceLocator  = $serviceLocator;
         $this->logger          = $logger;
@@ -101,38 +104,40 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @param array<mixed> $arguments [optional] arguments to pass
      *
      * @return mixed returns what the proxied call returns
+     *
+     * @throws void
      */
-    public function __call(string $method, array $arguments = [])
+    public function __call(string $method, array $arguments = []): mixed
     {
         // check if call should proxy to another helper
         try {
             $helper = $this->findHelperStrict($method);
         } catch (RuntimeException $e) {
-            $this->logger->err($e);
+            $this->logger->error($e);
 
             // default behaviour: proxy call to container
             return $this->parentCall($method, $arguments);
         }
 
-        return call_user_func_array($helper, $arguments);
+        return $helper(...$arguments);
     }
 
     /**
      * Renders helper
      *
-     * @param ContainerInterface|string|null $container
+     * @param ContainerInterface<PageInterface>|string|null $container
      *
      * @throws InvalidArgumentException
      * @throws RuntimeException
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
-    public function render($container = null): string
+    public function render(ContainerInterface | string | null $container = null): string
     {
         try {
             $helper = $this->findHelperStrict($this->getDefaultProxy());
         } catch (RuntimeException $e) {
-            $this->logger->err($e);
+            $this->logger->error($e);
 
             return '';
         }
@@ -155,7 +160,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @throws RuntimeException if $strict is true and helper cannot be found
      */
-    public function findHelper(string $proxy, bool $strict = true): ?ViewHelperInterface
+    public function findHelper(string $proxy, bool $strict = true): ViewHelperInterface | null
     {
         if ($strict) {
             return $this->findHelperStrict($proxy);
@@ -168,6 +173,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Sets the default proxy to use in {@link render()}
      *
      * @param string $proxy default proxy
+     *
+     * @throws void
      */
     public function setDefaultProxy(string $proxy): void
     {
@@ -176,6 +183,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
 
     /**
      * Returns the default proxy to use in {@link render()}
+     *
+     * @throws void
      */
     public function getDefaultProxy(): string
     {
@@ -184,6 +193,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
 
     /**
      * Sets whether Authorization should be injected when proxying
+     *
+     * @throws void
      */
     public function setInjectAuthorization(bool $injectAuthorization = true): void
     {
@@ -192,6 +203,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
 
     /**
      * Returns whether Authorization should be injected when proxying
+     *
+     * @throws void
      */
     public function getInjectAuthorization(): bool
     {
@@ -200,6 +213,10 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
 
     /**
      * Set manager for retrieving navigation helpers
+     *
+     * @param ViewHelperPluginManager<HelperInterface> $pluginManager
+     *
+     * @throws void
      */
     public function setPluginManager(ViewHelperPluginManager $pluginManager): void
     {
@@ -212,13 +229,20 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         $this->pluginManager = $pluginManager;
     }
 
-    public function getPluginManager(): ?ViewHelperPluginManager
+    /**
+     * @return ViewHelperPluginManager<HelperInterface>|null
+     *
+     * @throws void
+     */
+    public function getPluginManager(): ViewHelperPluginManager | null
     {
         return $this->pluginManager;
     }
 
     /**
      * Set the View object
+     *
+     * @throws void
      */
     public function setView(Renderer $view): self
     {
@@ -235,15 +259,17 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Returns the helper matching $proxy
      *
      * The helper must implement the interface
-     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
+     * {@link \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
      *
      * @param string $proxy helper name
      *
      * @return ViewHelperInterface|null helper instance
+     *
+     * @throws void
      */
-    private function findHelperNonStrict(string $proxy): ?ViewHelperInterface
+    private function findHelperNonStrict(string $proxy): ViewHelperInterface | null
     {
-        if (null === $this->pluginManager) {
+        if ($this->pluginManager === null) {
             return null;
         }
 
@@ -280,15 +306,15 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
-        if (null === $this->pluginManager) {
+        if ($this->pluginManager === null) {
             throw new RuntimeException(
-                sprintf('Failed to find plugin for %s, no PluginManager set', $proxy)
+                sprintf('Failed to find plugin for %s, no PluginManager set', $proxy),
             );
         }
 
         if (!$this->pluginManager->has($proxy)) {
             throw new RuntimeException(
-                sprintf('Failed to find plugin for %s', $proxy)
+                sprintf('Failed to find plugin for %s', $proxy),
             );
         }
 
@@ -298,7 +324,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
             throw new RuntimeException(
                 sprintf('Failed to load plugin for %s', $proxy),
                 0,
-                $e
+                $e,
             );
         }
 
@@ -309,6 +335,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         return $helper;
     }
 
+    /** @throws void */
     private function prepareHelper(ViewHelperInterface $helper): void
     {
         $container = $this->getContainer();
@@ -330,6 +357,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * helper is configured to do so
      *
      * @param ViewHelperInterface $helper helper instance
+     *
+     * @throws void
      */
     private function inject(ViewHelperInterface $helper): void
     {
@@ -343,7 +372,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
 
         $role = $this->getRole();
 
-        if ($helper->hasRole() || null === $role) {
+        if ($helper->hasRole() || $role === null) {
             return;
         }
 

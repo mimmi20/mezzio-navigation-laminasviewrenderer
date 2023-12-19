@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,16 +10,16 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView;
+namespace Mimmi20\Mezzio\Navigation\LaminasView;
 
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation;
-use Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
-use Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
-use Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
 
 final class ConfigProvider
 {
@@ -28,6 +28,8 @@ final class ConfigProvider
      *
      * @return array<string, array<string, array<string, string>>>
      * @phpstan-return array{view_helpers: array{aliases: array<string, class-string>, factories: array<class-string, class-string>}, dependencies: array{factories: array<class-string, class-string>}}
+     *
+     * @throws void
      */
     public function __invoke(): array
     {
@@ -42,6 +44,8 @@ final class ConfigProvider
      *
      * @return array<string, array<string, string>>
      * @phpstan-return array{aliases: array<string, class-string>, factories: array<class-string, class-string>}
+     *
+     * @throws void
      */
     public function getViewHelperConfig(): array
     {
@@ -70,6 +74,8 @@ final class ConfigProvider
      *
      * @return array<string, array<string, string>>
      * @phpstan-return array{factories: array<class-string, class-string>}
+     *
+     * @throws void
      */
     public function getDependencyConfig(): array
     {

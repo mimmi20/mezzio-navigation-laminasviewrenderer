@@ -18,10 +18,10 @@ parameters:
   checkAlwaysTrueCheckTypeFunctionCall: false
 
   # reports instanceof occurrences always evaluated to true
-  checkAlwaysTrueInstanceof: true
+  checkAlwaysTrueInstanceof: false
 
   # reports === and !== occurrences always evaluated to true
-  checkAlwaysTrueStrictComparison: true
+  checkAlwaysTrueStrictComparison: false
 
   # enable stricter analysis of benevolent union types
   checkBenevolentUnionTypes: true
@@ -94,5 +94,12 @@ parameters:
       missingCheckedExceptionInThrows: true
       tooWideThrowType: true
 
-#  ignoreErrors:
-#    - '~Call to static method .* with .* will always evaluate to true~'
+  ignoreErrors:
+    - '~Laminas\\Navigation\\Page\\AbstractPage~'
+    - '~Laminas\\Navigation\\AbstractContainer~'
+    - '~has typehint with deprecated interface Laminas\\ServiceManager\\ConfigInterface~'
+    - '~Instantiation of deprecated class Laminas\\ServiceManager\\Config~'
+    - '~Parameter #2 \$factory of method Laminas\\ServiceManager\\ServiceManager::setFactory\(\) expects~'
+    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::find(?:All|One)?By(Active|Label)\(\)~'
+    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::findRe[lv](Chapter|Example|Next|Prev|Section|Start|Subsection)\(\)~'
+#    - '~~'

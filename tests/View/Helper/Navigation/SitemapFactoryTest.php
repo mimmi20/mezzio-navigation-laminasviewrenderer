@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,52 +10,50 @@
 
 declare(strict_types = 1);
 
-namespace MezzioTest\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use AssertionError;
-use Interop\Container\ContainerInterface;
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
+use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\LaminasView\ServerUrlHelper;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
-use Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 final class SitemapFactoryTest extends TestCase
 {
     private SitemapFactory $factory;
 
+    /** @throws void */
     protected function setUp(): void
     {
         $this->factory = new SitemapFactory();
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws Exception */
     public function testInvocation(): void
     {
-        $logger = $this->getMockBuilder(Logger::class)
+        $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $logger->expects(self::never())
-            ->method('emerg');
+            ->method('emergency');
         $logger->expects(self::never())
             ->method('alert');
         $logger->expects(self::never())
-            ->method('crit');
+            ->method('critical');
         $logger->expects(self::never())
-            ->method('err');
+            ->method('error');
         $logger->expects(self::never())
-            ->method('warn');
+            ->method('warning');
         $logger->expects(self::never())
             ->method('notice');
         $logger->expects(self::never())
@@ -72,27 +70,57 @@ final class SitemapFactoryTest extends TestCase
         $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $viewHelperPluginManager->expects(self::exactly(3))
+        $matcher                 = self::exactly(3);
+        $viewHelperPluginManager->expects($matcher)
             ->method('get')
-            ->withConsecutive([ServerUrlHelper::class], [BasePath::class], [EscapeHtml::class])
-            ->willReturnOnConsecutiveCalls($serverUrlHelper, $basePath, $escaper);
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $serverUrlHelper, $basePath, $escaper): HelperInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(ServerUrlHelper::class, $name),
+                        2 => self::assertSame(BasePath::class, $name),
+                        default => self::assertSame(EscapeHtml::class, $name),
+                    };
+
+                    self::assertNull($options);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $serverUrlHelper,
+                        2 => $basePath,
+                        default => $escaper,
+                    };
+                },
+            );
 
         $container = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(4))
+        $matcher   = self::exactly(4);
+        $container->expects($matcher)
             ->method('get')
-            ->withConsecutive([ViewHelperPluginManager::class], [Logger::class], [HtmlifyInterface::class], [ContainerParserInterface::class])
-            ->willReturnOnConsecutiveCalls($viewHelperPluginManager, $logger, $htmlify, $containerParser);
+            ->willReturnCallback(
+                static function (string $id) use ($matcher, $viewHelperPluginManager, $logger, $htmlify, $containerParser): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(ViewHelperPluginManager::class, $id),
+                        2 => self::assertSame(LoggerInterface::class, $id),
+                        3 => self::assertSame(HtmlifyInterface::class, $id),
+                        default => self::assertSame(ContainerParserInterface::class, $id),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $viewHelperPluginManager,
+                        2 => $logger,
+                        3 => $htmlify,
+                        default => $containerParser,
+                    };
+                },
+            );
 
         $helper = ($this->factory)($container);
 
         self::assertInstanceOf(Sitemap::class, $helper);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function testInvocationWithAssertionError(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)

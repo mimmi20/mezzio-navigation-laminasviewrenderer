@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,7 +10,7 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\View\Helper\AbstractHtmlElement;
 
@@ -18,6 +18,8 @@ use function implode;
 
 /**
  * Helper for printing breadcrumbs.
+ *
+ * phpcs:disable SlevomatCodingStandard.Classes.TraitUseDeclaration.MultipleTraitsPerDeclaration
  */
 final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterface
 {
@@ -26,6 +28,8 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
     }
 
     /**
+     * @throws void
+     *
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
@@ -34,6 +38,7 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
         return $html;
     }
 
+    /** @throws void */
     private function renderSeparator(): string
     {
         return $this->getSeparator();
@@ -41,10 +46,13 @@ final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterf
 
     /**
      * @param array<string> $html
+     *
+     * @throws void
+     *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function combineRendered(array $html): string
     {
-        return [] !== $html ? $this->getIndent() . implode($this->renderSeparator(), $html) : '';
+        return $html !== [] ? $this->getIndent() . implode($this->renderSeparator(), $html) : '';
     }
 }

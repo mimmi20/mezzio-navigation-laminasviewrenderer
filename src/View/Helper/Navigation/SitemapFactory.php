@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,10 +10,8 @@
 
 declare(strict_types = 1);
 
-namespace Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Interop\Container\ContainerInterface;
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
@@ -22,9 +20,10 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 use function assert;
-use function get_class;
 use function gettype;
 use function is_object;
 use function sprintf;
@@ -46,8 +45,8 @@ final class SitemapFactory
             sprintf(
                 '$plugin should be an Instance of %s, but was %s',
                 ViewHelperPluginManager::class,
-                is_object($plugin) ? get_class($plugin) : gettype($plugin)
-            )
+                is_object($plugin) ? $plugin::class : gettype($plugin),
+            ),
         );
 
         $serverUrlHelper = $plugin->get(ServerUrlHelper::class);
@@ -56,8 +55,8 @@ final class SitemapFactory
             sprintf(
                 '$serverUrlHelper should be an Instance of %s, but was %s',
                 ServerUrlHelper::class,
-                is_object($serverUrlHelper) ? get_class($serverUrlHelper) : gettype($serverUrlHelper)
-            )
+                is_object($serverUrlHelper) ? $serverUrlHelper::class : gettype($serverUrlHelper),
+            ),
         );
 
         $basePathHelper = $plugin->get(BasePath::class);
@@ -66,16 +65,16 @@ final class SitemapFactory
             sprintf(
                 '$basePathHelper should be an Instance of %s, but was %s',
                 BasePath::class,
-                is_object($basePathHelper) ? get_class($basePathHelper) : gettype($basePathHelper)
-            )
+                is_object($basePathHelper) ? $basePathHelper::class : gettype($basePathHelper),
+            ),
         );
 
-        $logger          = $container->get(Logger::class);
+        $logger          = $container->get(LoggerInterface::class);
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
         $escapeHtml      = $plugin->get(EscapeHtml::class);
 
-        assert($logger instanceof Logger);
+        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapeHtml instanceof EscapeHtml);
@@ -87,7 +86,7 @@ final class SitemapFactory
             $containerParser,
             $basePathHelper,
             $escapeHtml,
-            $serverUrlHelper
+            $serverUrlHelper,
         );
     }
 }
