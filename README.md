@@ -20,7 +20,6 @@ composer require mimmi20/mezzio-navigation-laminasviewrenderer
 
 ### Render the navigation
 
-
 Calling the view helper for menus in your layout script:
 
 ```php
@@ -121,7 +120,7 @@ The following example demonstrates rendering the navigation menus for the named
 <!-- ... -->
 ```
 
-# View Helpers
+## View Helpers
 
 The navigation helpers are used for rendering navigational elements from
 [`Mimmi20\Mezzio\Navigation\Navigation`](../containers.md) instances.
@@ -144,44 +143,44 @@ adds integration with
 [laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mimmi20\Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
 defines the following methods:
 
-Method signature                                                       | Description
----------------------------------------------------------------------- | -----------
-`getContainer() : null\|ContainerInterface`                             | Retrieve the current navigation container, if any.
-`hasContainer() : bool`                                                | Is any navigation container currently registered?
-`setContainer(ContainerInterface $container) : self`                    | Set a navigation container.
-`getTranslator() : null\|Laminas\I18n\Translator\TranslatorInterface`     | Retrieve the current translator instance, if any.
-`setTranslator(Laminas\I18n\Translator\TranslatorInterface`) : self`      | Set a translator instance to use with labels.
-`hasTranslator() : bool`                                               | Is a translator instance present?
-`isTranslatorEnabled() : bool`                                         | Should translation occur? To be `true`, both the flag enabling translation must be set, and a translator instance present.
-`setTranslatorEnabled(bool $flag) : self`                              | Set the flag indicating whether or not translation should occur.
-`getAcl() : null\|Laminas\Permissions\Acl\AclInterface`                   | Retrieve the current ACL instance, if any.
-`setAcl(Laminas\Permissions\Acl\AclInterface $acl) : self`                | Set an ACL instance.
-`hasAcl() : bool`                                                      | Whether or not an ACL instance is present.
-`getRole() : null\|string|\Laminas\Permissions\Acl\Role\RoleInterface`    | Retrieve the current ACL role instance, if any.
-`setRole(string\|Laminas\Permissions\Acl\Role\RoleInterface $acl) : self` | Set an ACL role instance.
-`hasRole() : bool`                                                     | Whether or not an ACL role instance is present.
-`getUseAcl() : bool`                                                   | Whether or not to use ACLs; both the flag must be enabled and an ACL instance present.
-`setUseAcl(bool $flag) : self`                                         | Set the flag indicating whether or not to use ACLs.
-`__toString()`                                                         | Cast the helper to a string value; relies on `render()`.
-`render()`                                                             | Render the helper to a string.
+| Method signature                                                          | Description|
+|---------------------------------------------------------------------------| -----------|
+| `getContainer() : null\|ContainerInterface`                               | Retrieve the current navigation container, if any.|
+| `hasContainer() : bool`                                                   | Is any navigation container currently registered?|
+| `setContainer(ContainerInterface $container) : self`                      | Set a navigation container.|
+| `getTranslator() : null\|Laminas\I18n\Translator\TranslatorInterface`     | Retrieve the current translator instance, if any.|
+| `setTranslator(Laminas\I18n\Translator\TranslatorInterface`) : self`      | Set a translator instance to use with labels.|
+| `hasTranslator() : bool`                                                  | Is a translator instance present?|
+| `isTranslatorEnabled() : bool`                                            | Should translation occur? To be `true`, both the flag enabling translation must be set, and a translator instance present.|
+| `setTranslatorEnabled(bool $flag) : self`                                 | Set the flag indicating whether or not translation should occur.|
+| `getAcl() : null\|Laminas\Permissions\Acl\AclInterface`                   | Retrieve the current ACL instance, if any.|
+| `setAcl(Laminas\Permissions\Acl\AclInterface $acl) : self`                | Set an ACL instance.|
+| `hasAcl() : bool`                                                         | Whether or not an ACL instance is present.|
+| `getRole() : null\|string                                                 |\Laminas\Permissions\Acl\Role\RoleInterface`    | Retrieve the current ACL role instance, if any.|
+| `setRole(string\|Laminas\Permissions\Acl\Role\RoleInterface $acl) : self` | Set an ACL role instance.|
+| `hasRole() : bool`                                                        | Whether or not an ACL role instance is present.|
+| `getUseAcl() : bool`                                                      | Whether or not to use ACLs; both the flag must be enabled and an ACL instance present.|
+| `setUseAcl(bool $flag) : self`                                            | Set the flag indicating whether or not to use ACLs.|
+| `__toString()`                                                            | Cast the helper to a string value; relies on `render()`.|
+| `render()`                                                                | Render the helper to a string.|
 
 In addition to the method stubs from the interface, the abstract class also
 implements the following methods:
 
-Method signature                                                             | Description
----------------------------------------------------------------------------- | -----------
-`getIndent() : string`                                                       | Retrieve the indentation string to use; default is 4 spaces.
-`setIndent(string\|int $indent) : self`                                      | Set the indentation to use. In the case of an integer, this indicates the number of spaces. Indentation can be specified for all but the `Sitemap` helper.
-`getMinDepth() : int`                                                        | Retrieve the minimum depth a page must have to be included in output
-`setMinDepth(null\|int $depth) : self`                                       | Set the minimum depth a page must have to be included in output; `null` means no minimum.
-`getMaxDepth() : int`                                                        | Retrieve the maximum depth a page must have to be included in output
-`setMaxDepth(null\|int $depth) : self`                                       | Set the maximum depth a page must have to be included in output; `null` means no maximum.
-`getRenderInvisible() : bool`                                                | Retrieve the flag indicating whether or not to render items marked as invisible; defaults to `false`.
-`setRenderInvisible(bool $flag) : self`                                      | Set the flag indicating whether or not to render items marked as invisible.
-`__call() : mixed`                                                           | Proxy method calls to the registered container; this allows you to use the helper as if it were a navigation container. See [the example below](#proxying-calls-to-the-navigation-container).
-`findActive(/* ... */) : array`                                              | Find the deepest active page in the container, using the arguments `ContainerInterface $container, int $minDepth = null, int $maxDepth = -1)`. If depths are not given, the method will use the values retrieved from `getMinDepth()` and `getMaxDepth()`. The deepest active page must be between `$minDepth` and `$maxDepth` inclusively. Returns an array containing the found page instance (key `page`) and the depth (key `depth`) at which the page was found.
-`htmlify(PageInterface $page) : string`                                      | Renders an HTML `a` element based on the give page.
-`accept(PageInterface $page, bool $recursive = true) : bool`                 | Determine if a page should be accepted when iterating containers. This method checks for page visibility and verifies that the helper's role is allowed access to the page's resource and privilege.
+| Method signature                                             | Description|
+|--------------------------------------------------------------| -----------|
+| `getIndent() : string`                                       | Retrieve the indentation string to use; default is 4 spaces.|
+| `setIndent(string\|int $indent) : self`                      | Set the indentation to use. In the case of an integer, this indicates the number of spaces. Indentation can be specified for all but the `Sitemap` helper.|
+| `getMinDepth() : int`                                        | Retrieve the minimum depth a page must have to be included in output|
+| `setMinDepth(null\|int $depth) : self`                       | Set the minimum depth a page must have to be included in output; `null` means no minimum.|
+| `getMaxDepth() : int`                                        | Retrieve the maximum depth a page must have to be included in output|
+| `setMaxDepth(null\|int $depth) : self`                       | Set the maximum depth a page must have to be included in output; `null` means no maximum.|
+| `getRenderInvisible() : bool`                                | Retrieve the flag indicating whether or not to render items marked as invisible; defaults to `false`.|
+| `setRenderInvisible(bool $flag) : self`                      | Set the flag indicating whether or not to render items marked as invisible.|
+| `__call() : mixed`                                           | Proxy method calls to the registered container; this allows you to use the helper as if it were a navigation container. See [the example below](#proxying-calls-to-the-navigation-container).|
+| `findActive(/* ... */) : array`                              | Find the deepest active page in the container, using the arguments `ContainerInterface $container, int $minDepth = null, int $maxDepth = -1)`. If depths are not given, the method will use the values retrieved from `getMinDepth()` and `getMaxDepth()`. The deepest active page must be between `$minDepth` and `$maxDepth` inclusively. Returns an array containing the found page instance (key `page`) and the depth (key `depth`) at which the page was found.|
+| `htmlify(PageInterface $page) : string`                      | Renders an HTML `a` element based on the give page.|
+| `accept(PageInterface $page, bool $recursive = true) : bool` | Determine if a page should be accepted when iterating containers. This method checks for page visibility and verifies that the helper's role is allowed access to the page's resource and privilege.|
 
 If a container is not explicitly set, the helper will create an empty
 `Mimmi20\Mezzio\Navigation\Navigation` container when calling `$helper->getContainer()`.
@@ -497,7 +496,7 @@ class Module
 }
 ```
 
-# Navigation Proxy
+## Navigation Proxy
 
 The `navigation()` helper is a proxy helper that relays calls to other
 navigational helpers. It can be considered an entry point to all
@@ -513,23 +512,22 @@ container, ACL and optionally role, and a translator. This means that you won't
 have to explicitly set all three in all navigational helpers, nor resort to
 injecting by means of static methods.
 
-## Methods
+### Methods
 
-Method signature                                                               | Description
------------------------------------------------------------------------------- | -----------
-`findHelper(string $helper, bool $strict = true) : Navigation\HelperInterface` | Finds the given helper, verifies that it is a navigational helper, and injects the current container, ACL and role instances,  and translator, if present. If `$strict` is `true`, the method will raise an exception when unable to find a valid helper.
-`getInjectContainer() : bool`                                                  | Retrieve the flag indicating whether or not to inject the current container into proxied helpers; default is `true`.
-`setInjectContainer(bool $flag) : self`                                        | Set the flag indicating whether or not to inject the current container into proxied helpers.
-`getInjectAcl() : bool`                                                        | Retrieve the flag indicating whether or not to inject ACL and role instances into proxied helpers; default is `true`.
-`setInjectAcl(bool $flag) : self`                                              | Set the flag indicating whether or not to inject ACL and role instances into proxied helpers.
-`getInjectTranslator() : bool`                                                 | Retrieve the flag indicating whether or not to inject the current translator instance into proxied helpers; default is `true`.
-`setInjectTranslator(bool $flag) : self`                                       | Set the flag indicating whether or not to inject the current translator instance into proxied helpers.
-`getDefaultProxy() : string`                                                   | Retrieve the default proxy helper to delegate to when rendering; defaults to `menu`.
-`setDefaultProxy(string $helper) : self`                                       | Set the default proxy helper to delegate to when rendering.
-`render(ContainerInterface = null)`                                             | Proxies to the render method of the default proxy.
+| Method signature                                                               | Description|
+|--------------------------------------------------------------------------------| -----------|
+| `findHelper(string $helper, bool $strict = true) : Navigation\HelperInterface` | Finds the given helper, verifies that it is a navigational helper, and injects the current container, ACL and role instances,  and translator, if present. If `$strict` is `true`, the method will raise an exception when unable to find a valid helper.|
+| `getInjectContainer() : bool`                                                  | Retrieve the flag indicating whether or not to inject the current container into proxied helpers; default is `true`.|
+| `setInjectContainer(bool $flag) : self`                                        | Set the flag indicating whether or not to inject the current container into proxied helpers.|
+| `getInjectAcl() : bool`                                                        | Retrieve the flag indicating whether or not to inject ACL and role instances into proxied helpers; default is `true`.|
+| `setInjectAcl(bool $flag) : self`                                              | Set the flag indicating whether or not to inject ACL and role instances into proxied helpers.|
+| `getInjectTranslator() : bool`                                                 | Retrieve the flag indicating whether or not to inject the current translator instance into proxied helpers; default is `true`.|
+| `setInjectTranslator(bool $flag) : self`                                       | Set the flag indicating whether or not to inject the current translator instance into proxied helpers.|
+| `getDefaultProxy() : string`                                                   | Retrieve the default proxy helper to delegate to when rendering; defaults to `menu`.|
+| `setDefaultProxy(string $helper) : self`                                       | Set the default proxy helper to delegate to when rendering.|
+| `render(ContainerInterface = null)`                                            | Proxies to the render method of the default proxy.|
 
-
-# Breadcrumbs
+## Breadcrumbs
 
 Breadcrumbs are used for indicating where in a sitemap a user is currently browsing, and are
 typically rendered like the following:
@@ -544,9 +542,9 @@ customization (minimum/maximum depth, indentation, separator, and whether the
 last element should be linked), or rendering using a partial view script.
 
 The Breadcrumbs helper finds the deepest active page in a navigation container,
-and renders an upwards path to the root. For MVC pages, the "activeness" of a
+and renders an upwards path to the root. For pages, the "activeness" of a
 page is determined by inspecting the request object, as stated in the section on
-[MVC pages](#mvc-pages).
+pages.
 
 The helper sets the `minDepth` property to 1 by default, meaning breadcrumbs
 will not be rendered if the deepest active page is a root page. If `maxDepth` is
@@ -555,18 +553,18 @@ at level 2 even if the deepest active page is on level 3).
 
 Methods in the breadcrumbs helper:
 
-Method signature                            | Description
-------------------------------------------- | -----------
-`getSeparator() : string`                   | Retrieves the separator string to use between breadcrumbs; default is ` &gt; `.
-`setSeparator(string $separator) : self`    | Set the separator string to use between breadcrumbs.
-`getLinkLast() : bool`                      | Retrieve the flag indicating whether the last breadcrumb should be rendered as an anchor; defaults to `false`.
-`setLinkLast(bool $flag) : self`            | Set the flag indicating whether the last breadcrumb should be rendered as an anchor.
-`getPartial() : string\|array`              | Retrieve a partial view script that should be used for rendering breadcrumbs. If a partial view script is set, the helper's `render()` method will use the `renderPartial()` method. The helper expects the partial to be a `string` or an `array` with two elements. If the partial is a `string`, it denotes the name of the partial script to use. If it is an `array`, the first element will be used as the name of the partial view script, and the second element is the module where the script is found.
-`setPartial(string\|array $partial) : self` | Set the partial view script to use when rendering breadcrumbs; see `getPartial()` for acceptable values.
-`renderStraight()`                          | The default render method used when no partial view script is present.
-`renderPartial()`                           | Used for rendering using a partial view script.
+| Method signature                            | Description|
+|---------------------------------------------| -----------|
+| `getSeparator() : string`                   | Retrieves the separator string to use between breadcrumbs; default is ` &gt; `.|
+| `setSeparator(string $separator) : self`    | Set the separator string to use between breadcrumbs.|
+| `getLinkLast() : bool`                      | Retrieve the flag indicating whether the last breadcrumb should be rendered as an anchor; defaults to `false`.|
+| `setLinkLast(bool $flag) : self`            | Set the flag indicating whether the last breadcrumb should be rendered as an anchor.|
+| `getPartial() : string\|array`              | Retrieve a partial view script that should be used for rendering breadcrumbs. If a partial view script is set, the helper's `render()` method will use the `renderPartial()` method. The helper expects the partial to be a `string` or an `array` with two elements. If the partial is a `string`, it denotes the name of the partial script to use. If it is an `array`, the first element will be used as the name of the partial view script, and the second element is the module where the script is found.|
+| `setPartial(string\|array $partial) : self` | Set the partial view script to use when rendering breadcrumbs; see `getPartial()` for acceptable values.|
+| `renderStraight()`                          | The default render method used when no partial view script is present.|
+| `renderPartial()`                           | Used for rendering using a partial view script.|
 
-## Basic usage
+### Basic usage
 
 This example shows how to render breadcrumbs with default settings.
 
@@ -589,7 +587,7 @@ Output:
 <a href="/products">Products</a> &gt; <a href="/products/server">Foo Server</a> &gt; FAQ
 ```
 
-## Specifying indentation
+### Specifying indentation
 
 This example shows how to render breadcrumbs with initial indentation.
 
@@ -605,7 +603,7 @@ Output:
         <a href="/products">Products</a> &gt; <a href="/products/server">Foo Server</a> &gt; FAQ
 ```
 
-## Customize output
+### Customize output
 
 This example shows how to customize breadcrumbs output by specifying multiple options.
 
@@ -634,7 +632,7 @@ Setting minimum depth required to render breadcrumbs:
 
 Output: Nothing, because the deepest active page is not at level 10 or deeper.
 
-## Rendering using a partial view script
+### Rendering using a partial view script
 
 This example shows how to render customized breadcrumbs using a partial vew
 script. By calling `setPartial()`, you can specify a partial view script that
@@ -664,7 +662,7 @@ Output:
 Products, Foo Server, FAQ
 ```
 
-# Links
+## Links
 
 The `links()` helper is used for rendering HTML `LINK` elements. Links are used for describing
 document relationships of the currently active page. Read more about links and
@@ -764,19 +762,19 @@ link types.  `RENDER_CUSTOM` denotes non-standard relations specified in pages.
 
 Methods in the links helper:
 
-Method signature                                                                          | Description
------------------------------------------------------------------------------------------ | -----------
-`getRenderFlag() : int`                                                                   | Retrieves the render flag; default is `RENDER_ALL`.
-`setRenderFlag(int $flag) : self`                                                         | Set the render flag; see examples below.
-`findAllRelations(PageInterface $page, int $flag = null) : array`                          | Finds all relations of all types for a given page.
-`findRelation(PageInterface $page, string $rel, string $type) : PageInterface\|array\|null` | Finds all relations of a given type from a given page.
-`searchRel*(PageInterface $page) : PageInterface\|null`                                     | Traverses a container to find forward relations to the `Start` page, the `Next` page, the `Prev`ious page, `Chapter`s, `Section`s, and `Subsection`s.
-`searchRev*(PageInterface $page) : PageInterface\|null`                                     | Traverses a container to find reverse relations to `Section`s or `Subsection`s.
-`renderLink(PageInterface $page, string $attrib, string $relation) : string`               | Renders a single `link` element.
+| Method signature                                                                            | Description|
+|---------------------------------------------------------------------------------------------| -----------|
+| `getRenderFlag() : int`                                                                     | Retrieves the render flag; default is `RENDER_ALL`.|
+| `setRenderFlag(int $flag) : self`                                                           | Set the render flag; see examples below.|
+| `findAllRelations(PageInterface $page, int $flag = null) : array`                           | Finds all relations of all types for a given page.|
+| `findRelation(PageInterface $page, string $rel, string $type) : PageInterface\|array\|null` | Finds all relations of a given type from a given page.|
+| `searchRel*(PageInterface $page) : PageInterface\|null`                                     | Traverses a container to find forward relations to the `Start` page, the `Next` page, the `Prev`ious page, `Chapter`s, `Section`s, and `Subsection`s.|
+| `searchRev*(PageInterface $page) : PageInterface\|null`                                     | Traverses a container to find reverse relations to `Section`s or `Subsection`s.|
+| `renderLink(PageInterface $page, string $attrib, string $relation) : string`                | Renders a single `link` element.|
 
-## Basic usage
+### Basic usage
 
-### Specify relations in pages
+#### Specify relations in pages
 
 This example shows how to specify relations in pages.
 
@@ -825,7 +823,7 @@ $container = new Navigation([
 ]);
 ```
 
-### Default rendering of links
+#### Default rendering of links
 
 This example shows how to render a menu from a container registered in the
 view helper.
@@ -850,7 +848,7 @@ Output:
 <link rev="subsection" href="/products/server" title="Foo Server">
 ```
 
-### Specify which relations to render
+#### Specify which relations to render
 
 This example shows how to specify which relations to find and render.
 
@@ -910,7 +908,7 @@ Output:
 <link rev="subsection" href="/products/server" title="Foo Server">
 ```
 
-# Menu
+## Menu
 
 The `menu()` helper is used for rendering menus from navigation containers. By
 default, the menu will be rendered using HTML `UL` and `LI` tags, but the helper
@@ -918,34 +916,33 @@ also allows using a partial view script.
 
 Methods in the Menu helper:
 
-Method signature                                                                            | Description
-------------------------------------------------------------------------------------------- | -----------
-`getUlClass() : string`                                                                     | Retrieve the CSS class used when rendering `ul` elements in `renderMenu()`.
-`setUlClass(string $class) : self`                                                          | Set the CSS class to use when rendering `ul` elements in `renderMenu()`.
-`getOnlyActiveBranch() : bool`                                                              | Retrieve the flag specifying whether or not to render only the active branch of a container.
-`setOnlyActiveBranch(bool $flag) : self`                                                    | Set the flag specifying whether or not to render only the active branch of a container.
-`getRenderParents() : bool`                                                                 | Retrieve the flag specifying whether or not to render parent pages when rendering the active branch of a container.
-`setRenderParents(bool $flag) : self`                                                       | Set the flag specifying whether or not to render parent pages when rendering the active branch of a container. When set to `false`, only the deepest active menu will be rendered.
-`getPartial() : string|array`                                                               | Retrieve a partial view script that should be used for rendering breadcrumbs. If a partial view script is set, the helper's `render()` method will use the `renderPartial()` method. The helper expects the partial to be a `string` or an `array` with two elements. If the partial is a `string`, it denotes the name of the partial script to use. If it is an `array`, the first element will be used as the name of the partial view script, and the second element is the module where the script is found.
-`setPartial(string|array $partial) : self`                                                  | Set the partial view script to use when rendering breadcrumbs; see `getPartial()` for acceptable values.
-`htmlify(/* ... */) : string`                                                               | Overrides the method from the abstract class, with the argument list `PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false`. Returns `span` elements if the page has no `href`.
-`renderMenu(ContainerInterface $container = null, $options = []) : string`                   | Default rendering method; renders a container as an HTML `UL` list. If `$container` is not given, the container registered in the helper will be rendered.  `$options` is used for overriding options specified temporarily without resetting the values in the helper instance; if none are set, those already provided to the helper will be used. Options are an associative array where each key corresponds to an option in the helper. See the table below for recognized options.
-`renderPartial(ContainerInterface $container = null, string|array $partial = null) : string` | Used for rendering the menu using a partial view script.
-`renderSubMenu(/* ... */) : string`                                                         | Renders the deepest menu level of a container's active branch. Accepts the arguments `ContainerInterface $container`, `string $ulClass = null`, `string|int $indent = null` (an integer value indicates number of spaces to use), `string $liActiveClass = null`.
+| Method signature                                                           | Description|
+|----------------------------------------------------------------------------| -----------|
+| `getUlClass() : string`                                                    | Retrieve the CSS class used when rendering `ul` elements in `renderMenu()`.|
+| `setUlClass(string $class) : self`                                         | Set the CSS class to use when rendering `ul` elements in `renderMenu()`.|
+| `getOnlyActiveBranch() : bool`                                             | Retrieve the flag specifying whether or not to render only the active branch of a container.|
+| `setOnlyActiveBranch(bool $flag) : self`                                   | Set the flag specifying whether or not to render only the active branch of a container.|
+| `getRenderParents() : bool`                                                | Retrieve the flag specifying whether or not to render parent pages when rendering the active branch of a container.|
+| `setRenderParents(bool $flag) : self`                                      | Set the flag specifying whether or not to render parent pages when rendering the active branch of a container. When set to `false`, only the deepest active menu will be rendered.|
+| `getPartial() : string                                                     |array`                                                               | Retrieve a partial view script that should be used for rendering breadcrumbs. If a partial view script is set, the helper's `render()` method will use the `renderPartial()` method. The helper expects the partial to be a `string` or an `array` with two elements. If the partial is a `string`, it denotes the name of the partial script to use. If it is an `array`, the first element will be used as the name of the partial view script, and the second element is the module where the script is found.|
+| `setPartial(string                                                         |array $partial) : self`                                                  | Set the partial view script to use when rendering breadcrumbs; see `getPartial()` for acceptable values.|
+| `htmlify(/* ... */) : string`                                              | Overrides the method from the abstract class, with the argument list `PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false`. Returns `span` elements if the page has no `href`.|
+| `renderMenu(ContainerInterface $container = null, $options = []) : string` | Default rendering method; renders a container as an HTML `UL` list. If `$container` is not given, the container registered in the helper will be rendered.  `$options` is used for overriding options specified temporarily without resetting the values in the helper instance; if none are set, those already provided to the helper will be used. Options are an associative array where each key corresponds to an option in the helper. See the table below for recognized options.|
+| `renderPartial(ContainerInterface $container = null, string                |array $partial = null) : string` | Used for rendering the menu using a partial view script.|
+| `renderSubMenu(/* ... */) : string`                                        | Renders the deepest menu level of a container's active branch. Accepts the arguments `ContainerInterface $container`, `string $ulClass = null`, `string|int $indent = null` (an integer value indicates number of spaces to use), `string $liActiveClass = null`.|
 
 The following are options recognized by the `renderMenu()` method:
 
-Option name        | Description
------------------- | -----------
-`indent`           | Indentation. Expects a `string` or an `int` value.
-`minDepth`         | Minimum depth. Expects an `int` or `null` (no minimum depth).
-`maxDepth`         | Maximum depth. Expects an `int` or `null` (no maximum depth).
-`ulClass`          | CSS class for `ul` element. Expects a `string`.
-`onlyActiveBranch` | Whether only active branch should be rendered. Expects a `boolean` value.
-`renderParents`    | Whether parents should be rendered if only rendering active branch. Expects a `boolean` value.
+| Option name        | Description|
+|--------------------| -----------|
+| `indent`           | Indentation. Expects a `string` or an `int` value.|
+| `minDepth`         | Minimum depth. Expects an `int` or `null` (no minimum depth).|
+| `maxDepth`         | Maximum depth. Expects an `int` or `null` (no maximum depth).|
+| `ulClass`          | CSS class for `ul` element. Expects a `string`.|
+| `onlyActiveBranch` | Whether only active branch should be rendered. Expects a `boolean` value.|
+| `renderParents`    | Whether parents should be rendered if only rendering active branch. Expects a `boolean` value.|
 
-
-## Basic usage
+### Basic usage
 
 This example shows how to render a menu from a container registered/found in the
 view helper. Notice how pages are filtered out based on visibility and ACL.
@@ -1032,7 +1029,7 @@ Output:
 </ul>
 ```
 
-## Calling renderMenu() directly
+### Calling renderMenu() directly
 
 This example shows how to render a menu that is not registered in the view
 helper by calling `renderMenu()` directly and specifying options.
@@ -1064,7 +1061,7 @@ Output:
 </ul>
 ```
 
-## Rendering the deepest active menu
+### Rendering the deepest active menu
 
 This example shows how `renderSubMenu()` will render the deepest sub menu of
 the active branch.
@@ -1107,7 +1104,7 @@ The output will be the same if 'FAQ' or 'Foo Server' is active:
 </ul>
 ```
 
-## Rendering with maximum depth
+### Rendering with maximum depth
 
 ```php
 <?= $this->navigation()
@@ -1158,7 +1155,7 @@ Output:
 </ul>
 ```
 
-## Rendering with minimum depth
+### Rendering with minimum depth
 
 ```php
 <?= $this->navigation()
@@ -1218,7 +1215,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch
+### Rendering only the active branch
 
 ```php
 <?= $this->navigation()
@@ -1252,7 +1249,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch with minimum depth
+### Rendering only the active branch with minimum depth
 
 ```php
 <?= $this->navigation()
@@ -1282,7 +1279,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch with maximum depth
+### Rendering only the active branch with maximum depth
 
 ```php
 <?= $this->navigation()
@@ -1309,7 +1306,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch with maximum depth and no parents
+### Rendering only the active branch with maximum depth and no parents
 
 ```php
 <?= $this->navigation()
@@ -1332,7 +1329,7 @@ Output:
 </ul>
 ```
 
-## Rendering a custom menu using a partial view script
+### Rendering a custom menu using a partial view script
 
 This example shows how to render a custom menu using a partial view script. By
 calling `setPartial()`, you can specify a partial view script that will be used
@@ -1366,7 +1363,7 @@ Output:
 <a href="/community">Community</a>
 ```
 
-### Using additional parameters in partial view scripts
+#### Using additional parameters in partial view scripts
 
 Starting with version 2.6.0, you can assign custom variables to a
 partial script.
@@ -1407,7 +1404,7 @@ Output:
 <a href="/community">Community</a>
 ```
 
-### Using menu options in partial view scripts
+#### Using menu options in partial view scripts
 
 In a layout:
 
@@ -1444,7 +1441,7 @@ Output:
 </div>
 ```
 
-### Using ACLs with partial view scripts
+#### Using ACLs with partial view scripts
 
 If you want to use an ACL within your partial view script, then you will have to
 check the access to a page manually.
@@ -1459,7 +1456,7 @@ foreach ($this->container as $page) {
 }
 ```
 
-# View Helper - Sitemap
+## View Helper - Sitemap
 
 The `sitemap()` helper is used for generating XML sitemaps, as defined by the
 [Sitemaps XML format](http://www.sitemaps.org/protocol.php). Read more about
@@ -1471,12 +1468,12 @@ to validate each element that is rendered. This can be disabled by calling
 
 ### Sitemap XML elements
 
-Element    | Type   | Description
----------- | ------ | -----------
-loc        | string | Absolute URL to page. An absolute URL will be generated by the helper.
-lastmod    | string | The date of last modification of the file, in W3C Datetime format. This time portion can be omitted if desired, and only use YYYY-MM-DD. The helper will try to retrieve the lastmod value from the page's custom property lastmod if it is set in the page. If the value is not a valid date, it is ignored.
-changefreq | string | How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page. Valid values are: "always", "hourly", "daily", "weekly", "monthly", "yearly", and "never". The helper will try to retrieve the changefreq value from the page's custom property changefreq if it is set in the page. If the value is not valid, it is ignored.
-priority   | float  | The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. The helper will try to retrieve the priority value from the page's custom property priority if it is set in the page. If the value is not valid, it is ignored.
+| Element    | Type   | Description|
+|------------| ------ | -----------|
+| loc        | string | Absolute URL to page. An absolute URL will be generated by the helper.|
+| lastmod    | string | The date of last modification of the file, in W3C Datetime format. This time portion can be omitted if desired, and only use YYYY-MM-DD. The helper will try to retrieve the lastmod value from the page's custom property lastmod if it is set in the page. If the value is not a valid date, it is ignored.|
+| changefreq | string | How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page. Valid values are: "always", "hourly", "daily", "weekly", "monthly", "yearly", and "never". The helper will try to retrieve the changefreq value from the page's custom property changefreq if it is set in the page. If the value is not valid, it is ignored.|
+| priority   | float  | The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. The helper will try to retrieve the priority value from the page's custom property priority if it is set in the page. If the value is not valid, it is ignored.|
 
 > ### Validation only when enabled
 >
@@ -1490,22 +1487,22 @@ require a request to the schema file. It can be enabled with
 
 Methods in the sitemap helper:
 
-Method signature                                        | Description
-------------------------------------------------------- | -----------
-`getFormatOutput() : bool`                              | Retrieve the flag indicating whether or not generated XML should be formatted. Default is `false`.
-`setFormatOutput(bool $flag) : self`                    | Set the flag indicating whether or not generated XML should be formatted. The flag corresponds to the the `formatOutput` property of the native `DOMDocument` class. Read more in the [DOMDocument documentation](http://php.net/domdocument).
-`getUseXmlDeclaration() : bool`                         | Retrieve the flag indicating whether or not to emit the XML declaration when rendering; defaults to `true`.
-`setUseXmlDeclaration(bool $flag) : self`               | Set the flag indicating whether or not to emit the XML declaration when rendering.
-`getUseSitemapValidators() : bool`                      | Retrieve the flag indicating whether or not sitemap validators should be used when generating the DOM; default is `true`.
-`setUseSitemapValidators(bool $flag) : self`            | Set the flag indicating whether or not sitemap validators should be used when generating the DOM.
-`getUseSchemaValidation() : bool`                       | Retrieve the flag indicating whether or not the helper should use XML schema validation when generating the DOM; default is `false`.
-`setUseSchemaValidation(bool $flag) : self`             | Set the flag indicating whether or not the helper should use XML schema validation when generating the DOM.
-`getServerUrl() : string`                               | Retrieve the server URL to prepend to non-absolute URIs via the `url()` method; if none is present, it will be determined by the helper.
-`setServerUrl(string $url) : self`                      | Set the base server URL to prepend to non-absolute URIs.
-`url(PageInterface $page) : string`                      | Generate an absolute URL for the provided page.
-`getDomSitemap(ContainerInterface = null) : DOMDocument` | Generates a DOMDocument sitemap representation from the given container.
+| Method signature                                         | Description |
+|----------------------------------------------------------| -----------|
+| `getFormatOutput() : bool`                               | Retrieve the flag indicating whether or not generated XML should be formatted. Default is `false`. |
+| `setFormatOutput(bool $flag) : self`                     | Set the flag indicating whether or not generated XML should be formatted. The flag corresponds to the the `formatOutput` property of the native `DOMDocument` class. Read more in the [DOMDocument documentation](http://php.net/domdocument). |
+| `getUseXmlDeclaration() : bool`                          | Retrieve the flag indicating whether or not to emit the XML declaration when rendering; defaults to `true`. |
+| `setUseXmlDeclaration(bool $flag) : self`                | Set the flag indicating whether or not to emit the XML declaration when rendering. |
+| `getUseSitemapValidators() : bool`                       | Retrieve the flag indicating whether or not sitemap validators should be used when generating the DOM; default is `true`. |
+| `setUseSitemapValidators(bool $flag) : self`             | Set the flag indicating whether or not sitemap validators should be used when generating the DOM. |
+| `getUseSchemaValidation() : bool`                        | Retrieve the flag indicating whether or not the helper should use XML schema validation when generating the DOM; default is `false`. |
+| `setUseSchemaValidation(bool $flag) : self`              | Set the flag indicating whether or not the helper should use XML schema validation when generating the DOM. |
+| `getServerUrl() : string`                                | Retrieve the server URL to prepend to non-absolute URIs via the `url()` method; if none is present, it will be determined by the helper. |
+| `setServerUrl(string $url) : self`                       | Set the base server URL to prepend to non-absolute URIs. |
+| `url(PageInterface $page) : string`                      | Generate an absolute URL for the provided page. |
+| `getDomSitemap(ContainerInterface = null) : DOMDocument` | Generates a DOMDocument sitemap representation from the given container. |
 
-## Basic usage
+### Basic usage
 
 This example shows how to render an *XML* sitemap based on the setup we did further up.
 
@@ -1585,7 +1582,7 @@ the view helper are filtered out:
 </urlset>
 ```
 
-## Rendering using no ACL role
+### Rendering using no ACL role
 
 Render the sitemap using no ACL role (should filter out `/community/account`):
 
@@ -1651,7 +1648,7 @@ Output:
 </urlset>
 ```
 
-## Rendering using a maximum depth
+### Rendering using a maximum depth
 
 Render the sitemap using a maximum depth of 1.
 
@@ -1710,7 +1707,6 @@ Output:
 >
 > See the [example from the HeadStyle documentation](https://github.com/laminas/laminas-view)
 > to see how you can achieve this.
-
 
 ## License
 
