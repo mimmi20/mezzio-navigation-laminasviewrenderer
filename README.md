@@ -20,7 +20,6 @@ composer require mimmi20/mezzio-navigation-laminasviewrenderer
 
 ### Render the navigation
 
-
 Calling the view helper for menus in your layout script:
 
 ```php
@@ -528,7 +527,6 @@ injecting by means of static methods.
 | `setDefaultProxy(string $helper) : self`                                       | Set the default proxy helper to delegate to when rendering.|
 | `render(ContainerInterface = null)`                                            | Proxies to the render method of the default proxy.|
 
-
 ## Breadcrumbs
 
 Breadcrumbs are used for indicating where in a sitemap a user is currently browsing, and are
@@ -943,7 +941,6 @@ The following are options recognized by the `renderMenu()` method:
 | `ulClass`          | CSS class for `ul` element. Expects a `string`.|
 | `onlyActiveBranch` | Whether only active branch should be rendered. Expects a `boolean` value.|
 | `renderParents`    | Whether parents should be rendered if only rendering active branch. Expects a `boolean` value.|
-
 
 ### Basic usage
 
