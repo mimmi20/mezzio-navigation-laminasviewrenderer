@@ -121,7 +121,7 @@ The following example demonstrates rendering the navigation menus for the named
 <!-- ... -->
 ```
 
-# View Helpers
+## View Helpers
 
 The navigation helpers are used for rendering navigational elements from
 [`Mimmi20\Mezzio\Navigation\Navigation`](../containers.md) instances.
@@ -497,7 +497,7 @@ class Module
 }
 ```
 
-# Navigation Proxy
+## Navigation Proxy
 
 The `navigation()` helper is a proxy helper that relays calls to other
 navigational helpers. It can be considered an entry point to all
@@ -513,7 +513,7 @@ container, ACL and optionally role, and a translator. This means that you won't
 have to explicitly set all three in all navigational helpers, nor resort to
 injecting by means of static methods.
 
-## Methods
+### Methods
 
 Method signature                                                               | Description
 ------------------------------------------------------------------------------ | -----------
@@ -529,7 +529,7 @@ Method signature                                                               |
 `render(ContainerInterface = null)`                                             | Proxies to the render method of the default proxy.
 
 
-# Breadcrumbs
+## Breadcrumbs
 
 Breadcrumbs are used for indicating where in a sitemap a user is currently browsing, and are
 typically rendered like the following:
@@ -566,7 +566,7 @@ Method signature                            | Description
 `renderStraight()`                          | The default render method used when no partial view script is present.
 `renderPartial()`                           | Used for rendering using a partial view script.
 
-## Basic usage
+### Basic usage
 
 This example shows how to render breadcrumbs with default settings.
 
@@ -589,7 +589,7 @@ Output:
 <a href="/products">Products</a> &gt; <a href="/products/server">Foo Server</a> &gt; FAQ
 ```
 
-## Specifying indentation
+### Specifying indentation
 
 This example shows how to render breadcrumbs with initial indentation.
 
@@ -605,7 +605,7 @@ Output:
         <a href="/products">Products</a> &gt; <a href="/products/server">Foo Server</a> &gt; FAQ
 ```
 
-## Customize output
+### Customize output
 
 This example shows how to customize breadcrumbs output by specifying multiple options.
 
@@ -634,7 +634,7 @@ Setting minimum depth required to render breadcrumbs:
 
 Output: Nothing, because the deepest active page is not at level 10 or deeper.
 
-## Rendering using a partial view script
+### Rendering using a partial view script
 
 This example shows how to render customized breadcrumbs using a partial vew
 script. By calling `setPartial()`, you can specify a partial view script that
@@ -664,7 +664,7 @@ Output:
 Products, Foo Server, FAQ
 ```
 
-# Links
+## Links
 
 The `links()` helper is used for rendering HTML `LINK` elements. Links are used for describing
 document relationships of the currently active page. Read more about links and
@@ -774,9 +774,9 @@ Method signature                                                                
 `searchRev*(PageInterface $page) : PageInterface\|null`                                     | Traverses a container to find reverse relations to `Section`s or `Subsection`s.
 `renderLink(PageInterface $page, string $attrib, string $relation) : string`               | Renders a single `link` element.
 
-## Basic usage
+### Basic usage
 
-### Specify relations in pages
+#### Specify relations in pages
 
 This example shows how to specify relations in pages.
 
@@ -825,7 +825,7 @@ $container = new Navigation([
 ]);
 ```
 
-### Default rendering of links
+#### Default rendering of links
 
 This example shows how to render a menu from a container registered in the
 view helper.
@@ -850,7 +850,7 @@ Output:
 <link rev="subsection" href="/products/server" title="Foo Server">
 ```
 
-### Specify which relations to render
+#### Specify which relations to render
 
 This example shows how to specify which relations to find and render.
 
@@ -945,7 +945,7 @@ Option name        | Description
 `renderParents`    | Whether parents should be rendered if only rendering active branch. Expects a `boolean` value.
 
 
-## Basic usage
+### Basic usage
 
 This example shows how to render a menu from a container registered/found in the
 view helper. Notice how pages are filtered out based on visibility and ACL.
@@ -1032,7 +1032,7 @@ Output:
 </ul>
 ```
 
-## Calling renderMenu() directly
+### Calling renderMenu() directly
 
 This example shows how to render a menu that is not registered in the view
 helper by calling `renderMenu()` directly and specifying options.
@@ -1064,7 +1064,7 @@ Output:
 </ul>
 ```
 
-## Rendering the deepest active menu
+### Rendering the deepest active menu
 
 This example shows how `renderSubMenu()` will render the deepest sub menu of
 the active branch.
@@ -1107,7 +1107,7 @@ The output will be the same if 'FAQ' or 'Foo Server' is active:
 </ul>
 ```
 
-## Rendering with maximum depth
+### Rendering with maximum depth
 
 ```php
 <?= $this->navigation()
@@ -1158,7 +1158,7 @@ Output:
 </ul>
 ```
 
-## Rendering with minimum depth
+### Rendering with minimum depth
 
 ```php
 <?= $this->navigation()
@@ -1218,7 +1218,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch
+### Rendering only the active branch
 
 ```php
 <?= $this->navigation()
@@ -1252,7 +1252,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch with minimum depth
+### Rendering only the active branch with minimum depth
 
 ```php
 <?= $this->navigation()
@@ -1282,7 +1282,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch with maximum depth
+### Rendering only the active branch with maximum depth
 
 ```php
 <?= $this->navigation()
@@ -1309,7 +1309,7 @@ Output:
 </ul>
 ```
 
-## Rendering only the active branch with maximum depth and no parents
+### Rendering only the active branch with maximum depth and no parents
 
 ```php
 <?= $this->navigation()
@@ -1332,7 +1332,7 @@ Output:
 </ul>
 ```
 
-## Rendering a custom menu using a partial view script
+### Rendering a custom menu using a partial view script
 
 This example shows how to render a custom menu using a partial view script. By
 calling `setPartial()`, you can specify a partial view script that will be used
@@ -1366,7 +1366,7 @@ Output:
 <a href="/community">Community</a>
 ```
 
-### Using additional parameters in partial view scripts
+#### Using additional parameters in partial view scripts
 
 Starting with version 2.6.0, you can assign custom variables to a
 partial script.
@@ -1407,7 +1407,7 @@ Output:
 <a href="/community">Community</a>
 ```
 
-### Using menu options in partial view scripts
+#### Using menu options in partial view scripts
 
 In a layout:
 
@@ -1444,7 +1444,7 @@ Output:
 </div>
 ```
 
-### Using ACLs with partial view scripts
+#### Using ACLs with partial view scripts
 
 If you want to use an ACL within your partial view script, then you will have to
 check the access to a page manually.
@@ -1459,7 +1459,7 @@ foreach ($this->container as $page) {
 }
 ```
 
-# View Helper - Sitemap
+## View Helper - Sitemap
 
 The `sitemap()` helper is used for generating XML sitemaps, as defined by the
 [Sitemaps XML format](http://www.sitemaps.org/protocol.php). Read more about
@@ -1505,7 +1505,7 @@ Method signature                                        | Description
 `url(PageInterface $page) : string`                      | Generate an absolute URL for the provided page.
 `getDomSitemap(ContainerInterface = null) : DOMDocument` | Generates a DOMDocument sitemap representation from the given container.
 
-## Basic usage
+### Basic usage
 
 This example shows how to render an *XML* sitemap based on the setup we did further up.
 
@@ -1585,7 +1585,7 @@ the view helper are filtered out:
 </urlset>
 ```
 
-## Rendering using no ACL role
+### Rendering using no ACL role
 
 Render the sitemap using no ACL role (should filter out `/community/account`):
 
@@ -1651,7 +1651,7 @@ Output:
 </urlset>
 ```
 
-## Rendering using a maximum depth
+### Rendering using a maximum depth
 
 Render the sitemap using a maximum depth of 1.
 
