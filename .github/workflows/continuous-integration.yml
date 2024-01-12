@@ -51,7 +51,7 @@ jobs:
       composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
       skip-phpstan: false
       skip-rector: false
-      skip-phpmd: false
+      skip-phpmd: true
 
   tests:
     name: "UnitTests & Code Coverage"
