@@ -161,7 +161,7 @@ trait BreadcrumbsTrait
      *                                                  to render the container registered in the helper.
      *
      * @throws InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      * @throws RuntimeException
      */
     public function renderStraight(ContainerInterface | string | null $container = null): string

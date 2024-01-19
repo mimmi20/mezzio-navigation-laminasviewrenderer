@@ -147,7 +147,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws Exception\RuntimeException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function render(ContainerInterface | string | null $container = null): string
     {
@@ -195,7 +195,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *                                                            validators are used and the
      *                                                            loc element fails validation
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      * @throws DOMException
      */
     public function getDomSitemap(
@@ -421,8 +421,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     /**
      * Returns an escaped absolute URL for the given page
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\View\Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     public function url(PageInterface $page): string
     {
@@ -705,7 +705,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
     /**
      * Escapes string for XML usage
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     private function xmlEscape(string $string): string
     {
