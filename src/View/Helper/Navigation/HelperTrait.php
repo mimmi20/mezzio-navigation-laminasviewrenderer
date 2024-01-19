@@ -332,7 +332,7 @@ trait HelperTrait
      *
      * @return string HTML string (<a href="…">Label</a>)
      *
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      * @throws RuntimeException
      */
     public function htmlify(PageInterface $page): string

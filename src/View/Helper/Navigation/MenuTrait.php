@@ -188,7 +188,7 @@ trait MenuTrait
      * @param bool          $addClassToListItem Whether to add the page class to the list item
      *
      * @throws RuntimeException
-     * @throws \Laminas\View\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
