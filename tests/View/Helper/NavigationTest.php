@@ -1925,7 +1925,7 @@ final class NavigationTest extends TestCase
             ->method('debug');
 
         $container = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
-        $name      = 'Mimmi20\\Mezzio\\Navigation\\Top';
+        $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
@@ -1988,7 +1988,7 @@ final class NavigationTest extends TestCase
             ->method('debug');
 
         $container = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
-        $name      = 'Mimmi20\\Mezzio\\Navigation\\Top';
+        $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2089,7 +2089,7 @@ final class NavigationTest extends TestCase
             ->method('debug');
 
         $container = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
-        $name      = 'Mimmi20\\Mezzio\\Navigation\\Top';
+        $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
             ->disableOriginalConstructor()
@@ -2259,7 +2259,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2385,7 +2385,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2615,7 +2615,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2754,7 +2754,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -2868,7 +2868,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -3000,7 +3000,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -3134,7 +3134,7 @@ final class NavigationTest extends TestCase
         $logger->expects(self::never())
             ->method('debug');
 
-        $name = 'Mezzio\\Navigation\\Top';
+        $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
