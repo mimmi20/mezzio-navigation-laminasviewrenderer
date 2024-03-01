@@ -103,7 +103,7 @@ jobs:
           debug: true
 
       - name: "Update dependencies with composer"
-        uses: "ramsey/composer-install@2.2.0"
+        uses: "ramsey/composer-install@3.0.0"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
@@ -159,7 +159,7 @@ jobs:
           debug: true
 
       - name: "Update dependencies with composer"
-        uses: "ramsey/composer-install@2.2.0"
+        uses: "ramsey/composer-install@3.0.0"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
@@ -171,7 +171,7 @@ jobs:
         run: "vendor/bin/phpunit -c phpunit.xml --coverage-clover=.build/coverage/clover.xml --coverage-text --coverage-xml=.build/coverage/coverage-xml --log-junit=.build/coverage/phpunit.junit.xml --display-warnings --display-deprecations"
 
       - name: "Upload coverage to Codecov"
-        uses: "codecov/codecov-action@v4.0.1"
+        uses: "codecov/codecov-action@v4.1.0"
         with:
           file: ".build/coverage/clover.xml"
           flags: "phpunit,php-${{ matrix.php-version }},${{ matrix.operating-system }}"
