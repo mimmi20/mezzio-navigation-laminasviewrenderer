@@ -104,10 +104,10 @@ final class LinksTest extends AbstractTestCase
 
         assert($headLinkHelper->getView() !== null, 'View was not set into Headlink Helper');
 
-        $logger = $this->serviceManager->get(LoggerInterface::class);
-        $htmlify = $this->serviceManager->get(HtmlifyInterface::class);
+        $logger          = $this->serviceManager->get(LoggerInterface::class);
+        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
-        $findRoot = $this->serviceManager->get(FindRootInterface::class);
+        $findRoot        = $this->serviceManager->get(FindRootInterface::class);
 
         assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
@@ -351,7 +351,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = [];
-        $actual = [];
+        $actual   = [];
 
         foreach ($types as $type) {
             $active->addRel($type, $samplePage);
@@ -362,7 +362,7 @@ final class LinksTest extends AbstractTestCase
             self::assertContainsOnly(PageInterface::class, $found);
 
             $expected[$type] = $samplePage->getLabel();
-            $actual[$type] = $found[0]->getLabel();
+            $actual[$type]   = $found[0]->getLabel();
 
             $active->removeRel($type);
         }
@@ -382,7 +382,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Home';
-        $actual = $this->helper->findRelStart($active)[0]->getLabel();
+        $actual   = $this->helper->findRelStart($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -413,7 +413,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.1';
-        $actual = $this->helper->findRelNext($active)[0]->getLabel();
+        $actual   = $this->helper->findRelNext($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -429,7 +429,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.2';
-        $actual = $this->helper->findRelNext($active)[0]->getLabel();
+        $actual   = $this->helper->findRelNext($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -445,7 +445,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.3';
-        $actual = $this->helper->findRelNext($active)[0]->getLabel();
+        $actual   = $this->helper->findRelNext($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -461,7 +461,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2';
-        $actual = $this->helper->findRelPrev($active)[0]->getLabel();
+        $actual   = $this->helper->findRelPrev($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -477,7 +477,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.1';
-        $actual = $this->helper->findRelPrev($active)[0]->getLabel();
+        $actual   = $this->helper->findRelPrev($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -493,7 +493,7 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $expected = 'Page 2.2.2';
-        $actual = $this->helper->findRelPrev($active)[0]->getLabel();
+        $actual   = $this->helper->findRelPrev($active)[0]->getLabel();
         self::assertSame($expected, $actual);
     }
 
@@ -511,7 +511,7 @@ final class LinksTest extends AbstractTestCase
         $found = $this->helper->findRelChapter($active);
 
         $expected = ['Page 1', 'Page 2', 'Page 3', 'Zym'];
-        $actual = [];
+        $actual   = [];
 
         foreach ($found as $page) {
             $actual[] = $page->getLabel();
@@ -534,7 +534,7 @@ final class LinksTest extends AbstractTestCase
         $found = $this->helper->findRelChapter($active);
 
         $expected = ['Page 1', 'Page 3', 'Zym'];
-        $actual = [];
+        $actual   = [];
 
         foreach ($found as $page) {
             $actual[] = $page->getLabel();
@@ -554,9 +554,9 @@ final class LinksTest extends AbstractTestCase
 
         self::assertInstanceOf(PageInterface::class, $active);
 
-        $found = $this->helper->findRelSection($active);
+        $found    = $this->helper->findRelSection($active);
         $expected = ['Page 2.1', 'Page 2.2', 'Page 2.3'];
-        $actual = [];
+        $actual   = [];
 
         foreach ($found as $page) {
             $actual[] = $page->getLabel();
@@ -611,7 +611,7 @@ final class LinksTest extends AbstractTestCase
         $found = $this->helper->findRelSubsection($active);
 
         $expected = ['Page 2.2.1', 'Page 2.2.2'];
-        $actual = [];
+        $actual   = [];
 
         foreach ($found as $page) {
             $actual[] = $page->getLabel();
@@ -729,7 +729,7 @@ final class LinksTest extends AbstractTestCase
             'help' => false,
             'bookmark' => false,
         ];
-        $actual = [];
+        $actual   = [];
 
         foreach (array_keys($expected) as $type) {
             $active->addRel($type, $samplePage);
@@ -768,7 +768,7 @@ final class LinksTest extends AbstractTestCase
         $this->helper->setRole('member');
 
         $container = $this->helper->getContainer();
-        $iterator = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
+        $iterator  = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
 
         foreach ($iterator as $page) {
             assert($page instanceof PageInterface);
@@ -792,7 +792,7 @@ final class LinksTest extends AbstractTestCase
         ];
 
         $expected = [];
-        $actual = [];
+        $actual   = [];
 
         foreach ($search as $type => $activeLabel) {
             $expected[$type] = false;
@@ -914,7 +914,7 @@ final class LinksTest extends AbstractTestCase
 
         // build actual result
         $allRelations = $this->helper->findAllRelations($active);
-        $actual = [];
+        $actual       = [];
 
         foreach ($allRelations as $attrib => $relations) {
             if (!array_key_exists($attrib, $actual)) {
@@ -951,7 +951,7 @@ final class LinksTest extends AbstractTestCase
         $active->setActive(true);
 
         $expected = [];
-        $actual = [];
+        $actual   = [];
 
         // build expected and actual result
         foreach ($this->getFlags() as $newFlag => $type) {
@@ -966,10 +966,10 @@ final class LinksTest extends AbstractTestCase
                 . '<link '
                 . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
                 . 'rev="' . $type . '">';
-            $actualOutput = $this->helper->render();
+            $actualOutput   = $this->helper->render();
 
             $expected[$type] = $expectedOutput;
-            $actual[$type] = $actualOutput;
+            $actual[$type]   = $actualOutput;
 
             // remove forced relation
             $active->removeRel($type);
@@ -1001,7 +1001,7 @@ final class LinksTest extends AbstractTestCase
         $expected = '<link href="page2" rel="next" title="Page&#x20;2">'
             . PHP_EOL
             . '<link href="page1" rel="prev" title="Page&#x20;1">';
-        $actual = $this->helper->render();
+        $actual   = $this->helper->render();
 
         self::assertSame($expected, $actual);
     }
@@ -1029,7 +1029,7 @@ final class LinksTest extends AbstractTestCase
         $expected = '  <link href="page2" rel="next" title="Page&#x20;2">'
             . PHP_EOL
             . '  <link href="page1" rel="prev" title="Page&#x20;1">';
-        $actual = $this->helper->render();
+        $actual   = $this->helper->render();
 
         self::assertSame($expected, $actual);
     }
@@ -1049,7 +1049,7 @@ final class LinksTest extends AbstractTestCase
         $flag = Navigation\Links::RENDER_NEXT;
 
         $expected = '<link href="page2&#x2F;page2_3&#x2F;page2_3_1" rel="next" title="Page&#x20;2.3.1">';
-        $actual = $this->helper->setRenderFlag($flag)->render();
+        $actual   = $this->helper->setRenderFlag($flag)->render();
 
         self::assertSame($expected, $actual);
     }
@@ -1069,7 +1069,7 @@ final class LinksTest extends AbstractTestCase
         $flag = Navigation\Links::RENDER_NEXT;
 
         $expected = '';
-        $actual = $this->helper->setRenderFlag($flag)->render();
+        $actual   = $this->helper->setRenderFlag($flag)->render();
 
         self::assertSame($expected, $actual);
     }
