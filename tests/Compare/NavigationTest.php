@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
@@ -71,8 +71,8 @@ final class NavigationTest extends AbstractTestCase
         $this->serviceManager->get(ViewHelperPluginManager::class);
         $this->serviceManager->get(LaminasViewRenderer::class);
 
-        $logger          = $this->serviceManager->get(LoggerInterface::class);
-        $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
+        $logger = $this->serviceManager->get(LoggerInterface::class);
+        $htmlify = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
 
         assert($logger instanceof LoggerInterface);
@@ -156,7 +156,7 @@ final class NavigationTest extends AbstractTestCase
 
         // result
         $expected = $this->getExpected('menu/default1.html');
-        $actual   = $this->helper->render();
+        $actual = $this->helper->render();
 
         self::assertSame($expected, $actual);
     }
@@ -189,7 +189,7 @@ final class NavigationTest extends AbstractTestCase
             'menu' => $this->getExpected('menu/default2.html'),
             'breadcrumbs' => $this->getExpected('bc/default.html'),
         ];
-        $actual   = [];
+        $actual = [];
 
         // result
         $actual['menu'] = $this->helper->render();
@@ -219,7 +219,7 @@ final class NavigationTest extends AbstractTestCase
             'menu' => '',
             'breadcrumbs' => '',
         ];
-        $actual   = [
+        $actual = [
             'menu' => $this->helper->render(),
             'breadcrumbs' => $this->helper->breadcrumbs()->render(),
         ];
@@ -255,7 +255,7 @@ final class NavigationTest extends AbstractTestCase
         $this->helper->setContainer('navigation');
 
         $expected = $this->helper->getContainer();
-        $actual   = $container;
+        $actual = $container;
         self::assertSame($expected, $actual);
     }
 
@@ -276,7 +276,7 @@ final class NavigationTest extends AbstractTestCase
         $this->helper->setRole($acl['role']);
 
         $expected = $this->getExpected('menu/acl.html');
-        $actual   = $this->helper->render();
+        $actual = $this->helper->render();
 
         self::assertSame($expected, $actual);
     }
@@ -299,7 +299,7 @@ final class NavigationTest extends AbstractTestCase
         $this->helper->setInjectAuthorization(false);
 
         $expected = $this->getExpected('menu/default1.html');
-        $actual   = $this->helper->render();
+        $actual = $this->helper->render();
 
         self::assertSame($expected, $actual);
     }
@@ -316,7 +316,7 @@ final class NavigationTest extends AbstractTestCase
             'breadcrumbs' => $this->getExpected('bc/default.html'),
             'menu' => $this->getExpected('menu/default1.html'),
         ];
-        $actual   = [];
+        $actual = [];
 
         // result
         $this->helper->setDefaultProxy('breadcrumbs');
@@ -411,13 +411,13 @@ final class NavigationTest extends AbstractTestCase
         $container->setPages($pages);
 
         $expected = '<ul class="navigation">' . $nl
-                  . '    <li>' . $nl
-                  . '        <a id="menu-p1" href="p1">Page 1</a>' . $nl
-                  . '    </li>' . $nl
-                  . '    <li>' . $nl
-                  . '        <a id="menu-p2" href="p2">Page 2</a>' . $nl
-                  . '    </li>' . $nl
-                  . '</ul>';
+            . '    <li>' . $nl
+            . '        <a id="menu-p1" href="p1">Page 1</a>' . $nl
+            . '    </li>' . $nl
+            . '    <li>' . $nl
+            . '        <a id="menu-p2" href="p2">Page 2</a>' . $nl
+            . '    </li>' . $nl
+            . '</ul>';
 
         $actual = $this->helper->render($container);
 
@@ -475,14 +475,14 @@ final class NavigationTest extends AbstractTestCase
      */
     public function testMultipleNavigations(): void
     {
-        $menu     = ($this->helper)('nav1')->menu();
-        $actual   = spl_object_hash($this->nav1);
+        $menu = ($this->helper)('nav1')->menu();
+        $actual = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($this->nav1, $menu->getContainer());
         self::assertSame($expected, $actual);
 
-        $menu     = ($this->helper)('nav2')->menu();
-        $actual   = spl_object_hash($this->nav2);
+        $menu = ($this->helper)('nav2')->menu();
+        $actual = spl_object_hash($this->nav2);
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($this->nav2, $menu->getContainer());
         self::assertSame($expected, $actual);
@@ -496,17 +496,17 @@ final class NavigationTest extends AbstractTestCase
     #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndDifferentContainers(): void
     {
-        $menu     = ($this->helper)('nav1')->menu();
-        $actual   = spl_object_hash($this->nav1);
+        $menu = ($this->helper)('nav1')->menu();
+        $actual = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($expected, $actual);
 
         $breadcrumbs = ($this->helper)('nav2')->breadcrumbs();
-        $actual      = spl_object_hash($this->nav2);
-        $expected    = spl_object_hash($breadcrumbs->getContainer());
+        $actual = spl_object_hash($this->nav2);
+        $expected = spl_object_hash($breadcrumbs->getContainer());
         self::assertSame($expected, $actual);
 
-        $links    = ($this->helper)()->links();
+        $links = ($this->helper)()->links();
         $expected = spl_object_hash($links->getContainer());
         self::assertSame($expected, $actual);
     }
@@ -520,16 +520,16 @@ final class NavigationTest extends AbstractTestCase
     public function testMultipleNavigationsWithDifferentHelpersAndSameContainer(): void
     {
         // Tests
-        $menu     = ($this->helper)('nav1')->menu();
-        $actual   = spl_object_hash($this->nav1);
+        $menu = ($this->helper)('nav1')->menu();
+        $actual = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($expected, $actual);
 
         $breadcrumbs = ($this->helper)('nav1')->breadcrumbs();
-        $expected    = spl_object_hash($breadcrumbs->getContainer());
+        $expected = spl_object_hash($breadcrumbs->getContainer());
         self::assertSame($expected, $actual);
 
-        $links    = ($this->helper)()->links();
+        $links = ($this->helper)()->links();
         $expected = spl_object_hash($links->getContainer());
         self::assertSame($expected, $actual);
     }
@@ -543,16 +543,16 @@ final class NavigationTest extends AbstractTestCase
     public function testMultipleNavigationsWithSameHelperAndSameContainer(): void
     {
         // Test
-        $menu     = ($this->helper)('nav1')->menu();
-        $actual   = spl_object_hash($this->nav1);
+        $menu = ($this->helper)('nav1')->menu();
+        $actual = spl_object_hash($this->nav1);
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($expected, $actual);
 
-        $menu     = ($this->helper)('nav1')->menu();
+        $menu = ($this->helper)('nav1')->menu();
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($expected, $actual);
 
-        $menu     = ($this->helper)()->menu();
+        $menu = ($this->helper)()->menu();
         $expected = spl_object_hash($menu->getContainer());
         self::assertSame($expected, $actual);
     }
@@ -562,7 +562,7 @@ final class NavigationTest extends AbstractTestCase
     {
         /** @var Navigation\PluginManager<HelperInterface> $pluginManager */
         $pluginManager = new Navigation\PluginManager(new ServiceManager());
-        $view          = new PhpRenderer();
+        $view = new PhpRenderer();
 
         $this->helper->setPluginManager($pluginManager);
         $this->helper->setView($view);
