@@ -411,13 +411,13 @@ final class NavigationTest extends AbstractTestCase
         $container->setPages($pages);
 
         $expected = '<ul class="navigation">' . $nl
-                  . '    <li>' . $nl
-                  . '        <a id="menu-p1" href="p1">Page 1</a>' . $nl
-                  . '    </li>' . $nl
-                  . '    <li>' . $nl
-                  . '        <a id="menu-p2" href="p2">Page 2</a>' . $nl
-                  . '    </li>' . $nl
-                  . '</ul>';
+            . '    <li>' . $nl
+            . '        <a id="menu-p1" href="p1">Page 1</a>' . $nl
+            . '    </li>' . $nl
+            . '    <li>' . $nl
+            . '        <a id="menu-p2" href="p2">Page 2</a>' . $nl
+            . '    </li>' . $nl
+            . '</ul>';
 
         $actual = $this->helper->render($container);
 

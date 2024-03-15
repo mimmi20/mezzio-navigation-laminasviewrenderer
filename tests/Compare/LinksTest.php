@@ -961,11 +961,11 @@ final class LinksTest extends AbstractTestCase
 
             $this->helper->setRenderFlag($newFlag);
             $expectedOutput = '<link '
-                              . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
-                              . 'rel="' . $type . '">' . PHP_EOL
-                            . '<link '
-                              . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
-                              . 'rev="' . $type . '">';
+                . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
+                . 'rel="' . $type . '">' . PHP_EOL
+                . '<link '
+                . 'href="http&#x3A;&#x2F;&#x2F;www.example.com&#x2F;" '
+                . 'rev="' . $type . '">';
             $actualOutput   = $this->helper->render();
 
             $expected[$type] = $expectedOutput;
@@ -989,7 +989,7 @@ final class LinksTest extends AbstractTestCase
     public function testRenderFlagBitwiseOr(): void
     {
         $newFlag = Navigation\Links::RENDER_NEXT
-                   | Navigation\Links::RENDER_PREV;
+            | Navigation\Links::RENDER_PREV;
         $this->helper->setRenderFlag($newFlag);
         $active = $this->helper->findOneByLabel('Page 1.1');
 
@@ -999,8 +999,8 @@ final class LinksTest extends AbstractTestCase
 
         // test data
         $expected = '<link href="page2" rel="next" title="Page&#x20;2">'
-                  . PHP_EOL
-                  . '<link href="page1" rel="prev" title="Page&#x20;1">';
+            . PHP_EOL
+            . '<link href="page1" rel="prev" title="Page&#x20;1">';
         $actual   = $this->helper->render();
 
         self::assertSame($expected, $actual);
@@ -1020,15 +1020,15 @@ final class LinksTest extends AbstractTestCase
         self::assertInstanceOf(PageInterface::class, $active);
 
         $newFlag = Navigation\Links::RENDER_NEXT
-                   | Navigation\Links::RENDER_PREV;
+            | Navigation\Links::RENDER_PREV;
         $this->helper->setRenderFlag($newFlag);
         $this->helper->setIndent('  ');
         $active->setActive(true);
 
         // build expected and actual result
         $expected = '  <link href="page2" rel="next" title="Page&#x20;2">'
-                  . PHP_EOL
-                  . '  <link href="page1" rel="prev" title="Page&#x20;1">';
+            . PHP_EOL
+            . '  <link href="page1" rel="prev" title="Page&#x20;1">';
         $actual   = $this->helper->render();
 
         self::assertSame($expected, $actual);

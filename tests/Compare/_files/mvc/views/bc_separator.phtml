@@ -1,10 +1,10 @@
 <?php
 echo implode(
-  $this->vars()->separator,
-  array_map(
-    function ($a) {
-      return $a->getLabel();
-    },
-    $this->vars()->pages
-  )
+    $this->vars()->separator,
+    array_map(
+        function ($a) {
+            return $a->getLabel();
+        },
+        $this->vars()->pages
+    )
 );
