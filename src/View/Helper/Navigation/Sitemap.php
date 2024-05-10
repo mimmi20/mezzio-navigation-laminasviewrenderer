@@ -382,8 +382,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
             $errors = libxml_get_errors();
 
-            /** @codeCoverageIgnoreStart */
-
             $validationMessages = [];
 
             foreach ($errors as $error) {
@@ -412,7 +410,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                     ),
                 );
             }
-            // @codeCoverageIgnoreEnd
         }
 
         return $dom;
@@ -495,15 +492,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
             } catch (InvalidArgumentException $e) {
                 throw new Exception\InvalidArgumentException('Invalid server URL', 0, $e);
             }
-        }
-
-        if (!$serverUrl instanceof UriInterface) {
-            throw new Exception\InvalidArgumentException(
-                sprintf(
-                    '$serverUrl should be aa string or an Instance of %s',
-                    UriInterface::class,
-                ),
-            );
         }
 
         try {
