@@ -382,8 +382,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
 
             $errors = libxml_get_errors();
 
-            /** @codeCoverageIgnoreStart */
-
             $validationMessages = [];
 
             foreach ($errors as $error) {
@@ -412,7 +410,6 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
                     ),
                 );
             }
-            // @codeCoverageIgnoreEnd
         }
 
         return $dom;
@@ -485,46 +482,33 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * E.g. http://www.example.com
      *
-     * @param string|UriInterface $uri
-     *
      * @throws Exception\InvalidArgumentException
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
-    public function setServerUrl($uri): self
+    public function setServerUrl(string | UriInterface $serverUrl): self
     {
-        if (is_string($uri)) {
+        if (is_string($serverUrl)) {
             try {
-                $uri = Uri\UriFactory::factory($uri);
+                $serverUrl = Uri\UriFactory::factory($serverUrl);
             } catch (InvalidArgumentException $e) {
                 throw new Exception\InvalidArgumentException('Invalid server URL', 0, $e);
             }
         }
 
-        if (!$uri instanceof UriInterface) {
-            throw new Exception\InvalidArgumentException(
-                sprintf(
-                    '$serverUrl should be aa string or an Instance of %s',
-                    UriInterface::class,
-                ),
-            );
-        }
-
         try {
-            $uri->setFragment('');
+            $serverUrl->setFragment('');
         } catch (InvalidUriPartException $e) {
             throw new Exception\InvalidArgumentException('Invalid server URL', 0, $e);
         }
 
-        $uri->setPath('');
-        $uri->setQuery('');
+        $serverUrl->setPath('');
+        $serverUrl->setQuery('');
 
-        if (!$uri->isValid()) {
+        if (!$serverUrl->isValid()) {
             throw new Exception\InvalidArgumentException('Invalid server URL');
         }
 
         try {
-            $this->serverUrl = $uri->toString();
+            $this->serverUrl = $serverUrl->toString();
         } catch (InvalidUriException $e) {
             throw new Exception\InvalidArgumentException('Invalid server URL', 0, $e);
         }
@@ -612,7 +596,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this->useXmlDeclaration;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function getDom(): DOMDocument
     {
         return $this->dom;
@@ -622,6 +610,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @return $this
      *
      * @throws void
+     *
+     * @api
      */
     public function setDom(DOMDocument $dom): self
     {
@@ -630,7 +620,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function getLocValidator(): Loc
     {
         return $this->locValidator;
@@ -640,6 +634,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @return $this
      *
      * @throws void
+     *
+     * @api
      */
     public function setLocValidator(Loc $locValidator): self
     {
@@ -648,7 +644,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function getLastmodValidator(): Lastmod
     {
         return $this->lastmodValidator;
@@ -658,6 +658,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @return $this
      *
      * @throws void
+     *
+     * @api
      */
     public function setLastmodValidator(Lastmod $lastmodValidator): self
     {
@@ -666,7 +668,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function getPriorityValidator(): Priority
     {
         return $this->priorityValidator;
@@ -676,6 +682,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @return $this
      *
      * @throws void
+     *
+     * @api
      */
     public function setPriorityValidator(Priority $priorityValidator): self
     {
@@ -684,7 +692,11 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         return $this;
     }
 
-    /** @throws void */
+    /**
+     * @throws void
+     *
+     * @api
+     */
     public function getChangefreqValidator(): Changefreq
     {
         return $this->changefreqValidator;
@@ -694,6 +706,8 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @return $this
      *
      * @throws void
+     *
+     * @api
      */
     public function setChangefreqValidator(Changefreq $changefreqValidator): self
     {

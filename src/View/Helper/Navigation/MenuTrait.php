@@ -535,12 +535,12 @@ trait MenuTrait
         $foundPage  = $found['page'];
         $foundDepth = $found['depth'] ?? 0;
 
-        $accept = false;
-
         if ($foundPage->hasPage($page)) {
             // accept if page is a direct child of the active page
-            $accept = true;
-        } elseif (
+            return true;
+        }
+
+        if (
             $foundPage->getParent() instanceof ContainerInterface
             && $foundPage->getParent()->hasPage($page)
         ) {
@@ -551,10 +551,10 @@ trait MenuTrait
             ) {
                 // accept if active page has no children, or the
                 // children are too deep to be rendered
-                $accept = true;
+                return true;
             }
         }
 
-        return $accept;
+        return false;
     }
 }

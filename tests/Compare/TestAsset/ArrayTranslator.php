@@ -16,11 +16,17 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare\TestAsset;
 
 use Laminas\I18n\Translator;
 
-/** phpcs:disable SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty */
 final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
 {
-    /** @var array<string, string> */
-    public array $translations = [];
+    /**
+     * @param array<string, string> $translations
+     *
+     * @throws void
+     */
+    public function __construct(private readonly array $translations = [])
+    {
+        // nothing to do
+    }
 
     /**
      * Load translations from a file.

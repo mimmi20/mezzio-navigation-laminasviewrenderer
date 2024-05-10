@@ -159,6 +159,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @return ViewHelperInterface|null helper instance
      *
      * @throws RuntimeException if $strict is true and helper cannot be found
+     *
+     * @api
      */
     public function findHelper(string $proxy, bool $strict = true): ViewHelperInterface | null
     {
@@ -175,6 +177,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @param string $proxy default proxy
      *
      * @throws void
+     *
+     * @api
      */
     public function setDefaultProxy(string $proxy): void
     {
@@ -185,6 +189,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Returns the default proxy to use in {@link render()}
      *
      * @throws void
+     *
+     * @api
      */
     public function getDefaultProxy(): string
     {
@@ -195,6 +201,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Sets whether Authorization should be injected when proxying
      *
      * @throws void
+     *
+     * @api
      */
     public function setInjectAuthorization(bool $injectAuthorization = true): void
     {
@@ -233,6 +241,8 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @return ViewHelperPluginManager<HelperInterface>|null
      *
      * @throws void
+     *
+     * @api
      */
     public function getPluginManager(): ViewHelperPluginManager | null
     {
