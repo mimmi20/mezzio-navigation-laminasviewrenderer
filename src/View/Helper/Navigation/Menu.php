@@ -84,29 +84,29 @@ final class Menu extends AbstractHtmlElement implements MenuInterface
 
         if ($options['onlyActiveBranch'] && !$options['renderParents']) {
             return $this->renderDeepestMenu(
-                $container,
-                $options['ulClass'],
-                $options['liClass'],
-                $options['indent'],
-                $options['minDepth'],
-                $options['maxDepth'],
-                $options['escapeLabels'],
-                $options['addClassToListItem'],
-                $options['liActiveClass'],
+                container: $container,
+                ulClass: $options['ulClass'],
+                liCssClass: $options['liClass'],
+                indent: $options['indent'],
+                minDepth: $options['minDepth'],
+                maxDepth: $options['maxDepth'],
+                escapeLabels: $options['escapeLabels'],
+                addClassToListItem: $options['addClassToListItem'],
+                liActiveClass: $options['liActiveClass'],
             );
         }
 
         return $this->renderNormalMenu(
-            $container,
-            $options['ulClass'],
-            $options['liClass'],
-            $options['indent'],
-            $options['minDepth'],
-            $options['maxDepth'],
-            $options['onlyActiveBranch'],
-            $options['escapeLabels'],
-            $options['addClassToListItem'],
-            $options['liActiveClass'],
+            container: $container,
+            ulClass: $options['ulClass'],
+            liCssClass: $options['liClass'],
+            indent: $options['indent'],
+            minDepth: $options['minDepth'],
+            maxDepth: $options['maxDepth'],
+            onlyActive: $options['onlyActiveBranch'],
+            escapeLabels: $options['escapeLabels'],
+            addClassToListItem: $options['addClassToListItem'],
+            liActiveClass: $options['liActiveClass'],
         );
     }
 
