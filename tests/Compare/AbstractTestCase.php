@@ -304,16 +304,17 @@ abstract class AbstractTestCase extends TestCase
      */
     protected function getTranslator(): Translator
     {
-        $loader               = new TestAsset\ArrayTranslator();
-        $loader->translations = [
-            'Page 1' => 'Side 1',
-            'Page 1.1' => 'Side 1.1',
-            'Page 2' => 'Side 2',
-            'Page 2.3' => 'Side 2.3',
-            'Page 2.3.3.1' => 'Side 2.3.3.1',
-            'Home' => 'Hjem',
-            'Go home' => 'Gå hjem',
-        ];
+        $loader = new TestAsset\ArrayTranslator(
+            [
+                'Page 1' => 'Side 1',
+                'Page 1.1' => 'Side 1.1',
+                'Page 2' => 'Side 2',
+                'Page 2.3' => 'Side 2.3',
+                'Page 2.3.3.1' => 'Side 2.3.3.1',
+                'Home' => 'Hjem',
+                'Go home' => 'Gå hjem',
+            ],
+        );
 
         $translator = new Translator();
         $translator->getPluginManager()->setService('default', $loader);
@@ -329,25 +330,27 @@ abstract class AbstractTestCase extends TestCase
      */
     protected function getTranslatorWithTextDomain(): Translator
     {
-        $loader1               = new TestAsset\ArrayTranslator();
-        $loader1->translations = [
-            'Page 1' => 'TextDomain1 1',
-            'Page 1.1' => 'TextDomain1 1.1',
-            'Page 2' => 'TextDomain1 2',
-            'Page 2.3' => 'TextDomain1 2.3',
-            'Page 2.3.3' => 'TextDomain1 2.3.3',
-            'Page 2.3.3.1' => 'TextDomain1 2.3.3.1',
-        ];
+        $loader1 = new TestAsset\ArrayTranslator(
+            [
+                'Page 1' => 'TextDomain1 1',
+                'Page 1.1' => 'TextDomain1 1.1',
+                'Page 2' => 'TextDomain1 2',
+                'Page 2.3' => 'TextDomain1 2.3',
+                'Page 2.3.3' => 'TextDomain1 2.3.3',
+                'Page 2.3.3.1' => 'TextDomain1 2.3.3.1',
+            ],
+        );
 
-        $loader2               = new TestAsset\ArrayTranslator();
-        $loader2->translations = [
-            'Page 1' => 'TextDomain2 1',
-            'Page 1.1' => 'TextDomain2 1.1',
-            'Page 2' => 'TextDomain2 2',
-            'Page 2.3' => 'TextDomain2 2.3',
-            'Page 2.3.3' => 'TextDomain2 2.3.3',
-            'Page 2.3.3.1' => 'TextDomain2 2.3.3.1',
-        ];
+        $loader2 = new TestAsset\ArrayTranslator(
+            [
+                'Page 1' => 'TextDomain2 1',
+                'Page 1.1' => 'TextDomain2 1.1',
+                'Page 2' => 'TextDomain2 2',
+                'Page 2.3' => 'TextDomain2 2.3',
+                'Page 2.3.3' => 'TextDomain2 2.3.3',
+                'Page 2.3.3.1' => 'TextDomain2 2.3.3.1',
+            ],
+        );
 
         $translator = new Translator();
         $translator->getPluginManager()->setService('default1', $loader1);
