@@ -80,13 +80,10 @@ interface LinksInterface extends ViewHelperInterface
      * Renders the given $page as a link element, with $attrib = $relation
      *
      * @param PageInterface $page     the page to render the link for
-     * @param string        $attrib   the attribute to use for $type,
-     *                                either 'rel' or 'rev'
+     * @param 'rel'|'rev'   $attrib   the attribute to use for $type, either 'rel' or 'rev'
      * @param string        $relation relation type, muse be one of;
-     *                                alternate, appendix, bookmark,
-     *                                chapter, contents, copyright,
-     *                                glossary, help, home, index, next,
-     *                                prev, section, start, stylesheet,
+     *                                alternate, appendix, bookmark, chapter, contents, copyright,
+     *                                glossary, help, home, index, next, prev, section, start, stylesheet,
      *                                subsection
      *
      * @throws Exception\DomainException
@@ -130,7 +127,7 @@ interface LinksInterface extends ViewHelperInterface
      * by searching the root container if nothing was found in the page.
      *
      * @param PageInterface $page page to find relations for
-     * @param string        $rel  relation, "rel" or "rev"
+     * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
      * @return array<PageInterface>
