@@ -149,7 +149,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Returns the helper matching $proxy
      *
      * The helper must implement the interface
-     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
+     * {@link \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation}.
      *
      * @param string $proxy  helper name
      * @param bool   $strict [optional] whether exceptions should be
@@ -159,6 +159,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @return ViewHelperInterface|null helper instance
      *
      * @throws RuntimeException if $strict is true and helper cannot be found
+     * @throws InvalidArgumentException
      *
      * @api
      */
@@ -275,7 +276,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @return ViewHelperInterface|null helper instance
      *
-     * @throws void
+     * @throws InvalidArgumentException
      */
     private function findHelperNonStrict(string $proxy): ViewHelperInterface | null
     {
@@ -306,13 +307,14 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * Returns the helper matching $proxy
      *
      * The helper must implement the interface
-     * {@link \Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
+     * {@link \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface}.
      *
      * @param string $proxy helper name
      *
      * @return ViewHelperInterface helper instance
      *
      * @throws RuntimeException if helper cannot be found
+     * @throws InvalidArgumentException
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
@@ -345,7 +347,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
         return $helper;
     }
 
-    /** @throws void */
+    /** @throws InvalidArgumentException */
     private function prepareHelper(ViewHelperInterface $helper): void
     {
         $container = $this->getContainer();

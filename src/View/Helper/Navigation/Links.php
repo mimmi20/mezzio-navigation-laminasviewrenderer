@@ -40,7 +40,6 @@ use function array_values;
 use function assert;
 use function in_array;
 use function is_array;
-use function is_int;
 use function is_string;
 use function mb_strlen;
 use function mb_strtolower;
@@ -220,13 +219,10 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * Renders the given $page as a link element, with $attrib = $relation
      *
      * @param PageInterface $page     the page to render the link for
-     * @param string        $attrib   the attribute to use for $type,
-     *                                either 'rel' or 'rev'
+     * @param 'rel'|'rev'   $attrib   the attribute to use for $type, either 'rel' or 'rev'
      * @param string        $relation relation type, muse be one of;
-     *                                alternate, appendix, bookmark,
-     *                                chapter, contents, copyright,
-     *                                glossary, help, home, index, next,
-     *                                prev, section, start, stylesheet,
+     *                                alternate, appendix, bookmark, chapter, contents, copyright,
+     *                                glossary, help, home, index, next, prev, section, start, stylesheet,
      *                                subsection
      *
      * @throws Exception\DomainException
@@ -306,7 +302,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      */
     public function findAllRelations(PageInterface $page, int | null $flag = null): array
     {
-        if (!is_int($flag)) {
+        if ($flag === null) {
             $flag = self::RENDER_ALL;
         }
 
@@ -352,7 +348,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * by searching the root container if nothing was found in the page.
      *
      * @param PageInterface $page page to find relations for
-     * @param string        $rel  relation, "rel" or "rev"
+     * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
      * @return array<PageInterface>
@@ -722,7 +718,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * relation is specified as a property of $page
      *
      * @param PageInterface $page page to find relations for
-     * @param string        $rel  relation, 'rel' or 'rev'
+     * @param 'rel'|'rev'   $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
      *
      * @return array<PageInterface>
@@ -757,12 +753,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * search for the relation in the root container
      *
      * @param PageInterface $page page to find relations for
-     * @param string        $rel  relation, 'rel' or 'rev'
+     * @param 'rel'|'rev'   $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next', etc
      *
      * @return array<PageInterface>|PageInterface|null
      *
-     * @throws void
+     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
     private function findFromSearch(PageInterface $page, string $rel, string $type): array | PageInterface | null
     {

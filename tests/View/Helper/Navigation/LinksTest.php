@@ -6201,7 +6201,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        $rel = 'test';
+        $rel = 'foo';
 
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage(
@@ -7264,7 +7264,7 @@ final class LinksTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        $rel = 'test';
+        $rel = 'foo';
 
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage(
