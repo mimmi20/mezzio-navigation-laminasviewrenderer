@@ -13,8 +13,8 @@
   "commitBodyTable": true,
   "configMigration": true,
   "configWarningReuseIssue": false,
-  "dependencyDashboard": true,
-  "dependencyDashboardApproval": true,
+  "dependencyDashboard": false,
+  "dependencyDashboardApproval": false,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "labels": [
     "dependencies"
