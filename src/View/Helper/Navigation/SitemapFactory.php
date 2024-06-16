@@ -34,7 +34,7 @@ final class SitemapFactory
      *
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): ViewHelperInterface
+    public function __invoke(ContainerInterface $container): Sitemap
     {
         assert($container instanceof ServiceLocatorInterface);
 
