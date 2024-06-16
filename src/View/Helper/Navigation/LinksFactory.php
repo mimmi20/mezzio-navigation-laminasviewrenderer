@@ -33,7 +33,7 @@ final class LinksFactory
      *
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): ViewHelperInterface
+    public function __invoke(ContainerInterface $container): Links
     {
         assert($container instanceof ServiceLocatorInterface);
 

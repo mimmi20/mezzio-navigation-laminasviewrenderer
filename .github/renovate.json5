@@ -51,7 +51,7 @@
       "rangeStrategy": "widen"
     },
     {
-      "matchPackageNames": ["nikic/php-parser", "infection/infection"],
+      "matchPackageNames": ["nikic/php-parser", "infection/infection", "psr/container", "psr/http-message", "laminas/laminas-servicemanager"],
       "rangeStrategy": "widen"
     },
     {
