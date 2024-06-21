@@ -53,58 +53,25 @@ updates:
       - dependency-name: "nikic/php-parser"
       - dependency-name: "infection/infection"
       - dependency-name: "psr/http-message"
+      - dependency-name: "psr/simple-cache"
+      - dependency-name: "illuminate/view"
+      - dependency-name: "illuminate/config"
+      - dependency-name: "illuminate/container"
+      - dependency-name: "illuminate/contracts"
+      - dependency-name: "illuminate/events"
+      - dependency-name: "illuminate/filesystem"
+      - dependency-name: "endorphin-studio/browser-detector-tests"
+      - dependency-name: "laminas/laminas-diactoros"
+      - dependency-name: "symfony/console"
+      - dependency-name: "symfony/finder"
+      - dependency-name: "symfony/yaml"
+      - dependency-name: "symfony/http-foundation"
+      - dependency-name: "psr/log"
+      - dependency-name: "browscap/browscap"
+      - dependency-name: "symfony/filesystem"
 
     # Disable rebasing for all pull requests
     rebase-strategy: "disabled"
-
-  #- package-ecosystem: "composer"
-  #
-  #  directory: "/"
-  #
-  #  schedule:
-  #    interval: "weekly"
-  #    day: "friday"
-  #    time: "04:00"
-  #    timezone: "Europe/Berlin"
-  #
-  #  groups:
-  #    # Specify a name for the group, which will be used in pull request titles
-  #    # and branch names
-  #    minor-patch-dependencies:
-  #      applies-to: "version-updates"
-  #      # Define patterns to include dependencies in the group (based on
-  #      # dependency name)
-  #      patterns:
-  #        - "*"
-  #
-  #  open-pull-requests-limit: 10
-  #
-  #  reviewers:
-  #    - "mimmi20"
-  #
-  #  assignees:
-  #    - "mimmi20"
-  #
-  #  labels:
-  #    - "dependencies"
-  #
-  #  versioning-strategy: "widen"
-  #
-  #  target-branch: "master"
-  #
-  #  commit-message:
-  #    include: "scope"
-  #    prefix: "composer"
-  #
-  #  allow:
-  #    - dependency-name: "psr/container"
-  #    - dependency-name: "infection/infection"
-  #    - dependency-name: "nikic/php-parser"
-  #    - dependency-name: "psr/http-message"
-  #    - dependency-name: "laminas/laminas-servicemanager"
-  #
-  #  # Disable rebasing for all pull requests
-  #  rebase-strategy: "disabled"
 
   - package-ecosystem: "github-actions"
 
