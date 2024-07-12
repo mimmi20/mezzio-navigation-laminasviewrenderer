@@ -69,6 +69,69 @@ updates:
       - dependency-name: "psr/log"
       - dependency-name: "browscap/browscap"
       - dependency-name: "symfony/filesystem"
+      - dependency-name: "predis/predis"
+      - dependency-name: "elasticsearch/elasticsearch"
+
+    # Disable rebasing for all pull requests
+    rebase-strategy: "disabled"
+
+  - package-ecosystem: "npm"
+
+    directory: "/"
+
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "04:00"
+      timezone: "Europe/Berlin"
+
+    groups:
+      # Specify a name for the group, which will be used in pull request titles
+      # and branch names
+      minor-patch-dependencies:
+        applies-to: "version-updates"
+        # Define patterns to include dependencies in the group (based on
+        # dependency name)
+        patterns:
+          - "*"
+
+    open-pull-requests-limit: 10
+
+    reviewers:
+      - "mimmi20"
+
+    assignees:
+      - "mimmi20"
+
+    labels:
+      - "dependencies"
+
+    versioning-strategy: "widen"
+
+    target-branch: "master"
+
+    commit-message:
+      include: "scope"
+      prefix: "npm"
+
+    ignore:
+      - dependency-name: "@vitest/coverage-istanbul"
+      - dependency-name: "@vitest/ui"
+      - dependency-name: "vitest"
+      - dependency-name: "supports-color"
+      - dependency-name: "@localnerve/imagemin-gifsicle"
+      - dependency-name: "@localnerve/imagemin-pngquant"
+      - dependency-name: "@node-minify/core"
+      - dependency-name: "@node-minify/no-compress"
+      - dependency-name: "@node-minify/terser"
+      - dependency-name: "@typescript-eslint/eslint-plugin"
+      - dependency-name: "@typescript-eslint/parser"
+      - dependency-name: "@typescript-eslint/typescript-estree"
+      - dependency-name: "@vheemstra/vite-plugin-imagemin"
+      - dependency-name: "cssnano"
+      - dependency-name: "cssnano-preset-default"
+      - dependency-name: "imagemin"
+      - dependency-name: "postcss-load-config"
 
     # Disable rebasing for all pull requests
     rebase-strategy: "disabled"
