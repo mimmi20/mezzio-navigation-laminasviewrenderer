@@ -131,7 +131,6 @@ parameters:
     - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\(Breadcrumbs|Menu)::setPartial\(\) expects array~'
     - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
-    - '~Mixed property fetch in a~'
 
 rules:
   # code complexity
