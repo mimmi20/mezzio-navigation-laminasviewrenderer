@@ -133,11 +133,12 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         ErrorHandler::stop();
 
         if ($result && $arguments[0] instanceof PageInterface) {
-            return $this->findRelation(
-                $arguments[0],
-                mb_strtolower($match[1]),
-                mb_strtolower($match[2]),
-            );
+            $rel  = mb_strtolower($match[1]);
+            $type = mb_strtolower($match[2]);
+
+            assert($rel === 'rel' || $rel === 'rev');
+
+            return $this->findRelation(page: $arguments[0], rel: $rel, type: $type);
         }
 
         return $this->parentCall($method, $arguments);
