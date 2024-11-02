@@ -72,7 +72,7 @@ jobs:
 
     uses: "mimmi20/ci/.github/workflows/test.yml@8.1"
     with:
-      extensions: "ctype, dom, fileinfo, intl, simplexml, tokenizer, xml, xmlwriter"
+      extensions: "ctype, dom, fileinfo, intl, simplexml, tokenizer, xml, xmlreader, xmlwriter"
       ini-values: "opcache.enable=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On, intl.default_locale=de, intl.use_exceptions=1, zend.exception_ignore_args=0"
       coverage: "xdebug"
       composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
