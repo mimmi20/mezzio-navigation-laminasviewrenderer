@@ -41,10 +41,4 @@ return static function (RectorConfig $rectorConfig): void {
             RemoveParentCallWithoutParentRector::class,
         ],
     );
-
-//    $rectorConfig->skip([
-//        RemoveUnusedPrivateMethodParameterRector::class => [
-//            __DIR__ . '/src/View/Helper/Navigation/Breadcrumbs.php',
-//        ],
-//    ]);
 };

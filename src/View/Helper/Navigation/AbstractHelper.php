@@ -525,9 +525,9 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * @api
      */
-    public function getMinDepth(): int | null
+    public function getMinDepth(): int
     {
-        if (!is_int($this->minDepth) || 0 > $this->minDepth) {
+        if ($this->minDepth === null || $this->minDepth < 0) {
             return 0;
         }
 
