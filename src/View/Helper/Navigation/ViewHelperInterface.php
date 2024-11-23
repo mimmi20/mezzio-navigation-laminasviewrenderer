@@ -19,17 +19,20 @@ use Laminas\View\Helper\HelperInterface;
 use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use Override;
+use Stringable;
 
 /**
  * Interface for navigational helpers
  */
-interface ViewHelperInterface extends HelperInterface
+interface ViewHelperInterface extends HelperInterface, Stringable
 {
     /**
      * Magic overload: Should proxy to {@link render()}.
      *
      * @throws void
      */
+    #[Override]
     public function __toString(): string;
 
     /**

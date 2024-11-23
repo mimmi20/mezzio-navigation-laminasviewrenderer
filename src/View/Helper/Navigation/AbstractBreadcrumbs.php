@@ -24,6 +24,7 @@ use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use Psr\Log\LoggerInterface;
 
 use function array_merge;
@@ -32,32 +33,34 @@ use function array_unshift;
 use function assert;
 use function count;
 use function get_debug_type;
+use function implode;
 use function is_array;
-use function is_int;
 use function is_string;
 use function sprintf;
 
 /**
  * Helper for printing breadcrumbs.
+ *
+ * phpcs:disable SlevomatCodingStandard.Classes.TraitUseDeclaration.MultipleTraitsPerDeclaration
  */
-trait BreadcrumbsTrait
+abstract class AbstractBreadcrumbs extends AbstractHelper implements BreadcrumbsInterface
 {
     /**
      * Whether last page in breadcrumb should be hyperlinked.
      */
-    private bool $linkLast = false;
+    protected bool $linkLast = false;
 
     /**
      * Partial view script to use for rendering menu.
      *
      * @var array<int, string>|ModelInterface|string|null
      */
-    private array | ModelInterface | string | null $partial = null;
+    protected array | ModelInterface | string | null $partial = null;
 
     /**
      * Breadcrumbs separator string.
      */
-    private string $separator = ' &gt; ';
+    protected string $separator = ' &gt; ';
 
     /** @throws void */
     public function __construct(
@@ -65,14 +68,11 @@ trait BreadcrumbsTrait
         LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
-        private EscapeHtml $escaper,
-        private PartialRendererInterface $renderer,
-        private Translate | null $translator = null,
+        private readonly EscapeHtml $escaper,
+        private readonly PartialRendererInterface $renderer,
+        private readonly Translate | null $translator = null,
     ) {
-        $this->serviceLocator  = $serviceLocator;
-        $this->logger          = $logger;
-        $this->htmlify         = $htmlify;
-        $this->containerParser = $containerParser;
+        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
     }
 
     /**
@@ -90,6 +90,7 @@ trait BreadcrumbsTrait
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
+    #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
         $partial = $this->getPartial();
@@ -118,6 +119,7 @@ trait BreadcrumbsTrait
      * @throws Exception\InvalidArgumentException if partial is invalid array
      * @throws InvalidArgumentException
      */
+    #[Override]
     public function renderPartial(
         ContainerInterface | string | null $container = null,
         array | ModelInterface | string | null $partial = null,
@@ -145,6 +147,7 @@ trait BreadcrumbsTrait
      * @throws Exception\InvalidArgumentException if partial is invalid array
      * @throws InvalidArgumentException
      */
+    #[Override]
     public function renderPartialWithParams(
         array $params = [],
         ContainerInterface | string | null $container = null,
@@ -164,6 +167,7 @@ trait BreadcrumbsTrait
      * @throws Exception\InvalidArgumentException
      * @throws RuntimeException
      */
+    #[Override]
     public function renderStraight(ContainerInterface | string | null $container = null): string
     {
         $container = $this->containerParser->parseContainer($container);
@@ -195,7 +199,7 @@ trait BreadcrumbsTrait
         // put the deepest active page last in breadcrumbs
         if ($this->getLinkLast()) {
             $html[] = $this->renderBreadcrumbItem(
-                $this->htmlify->toHtml(self::class, $active),
+                $this->htmlify->toHtml(static::class, $active),
                 $active->getLiClass() ?? '',
                 $active->isActive(),
             );
@@ -222,7 +226,7 @@ trait BreadcrumbsTrait
             if ($parent instanceof PageInterface) {
                 // prepend crumb to html
                 $entry = $this->renderBreadcrumbItem(
-                    $this->htmlify->toHtml(self::class, $parent),
+                    $this->htmlify->toHtml(static::class, $parent),
                     $parent->getLiClass() ?? '',
                     $parent->isActive(),
                 );
@@ -247,7 +251,8 @@ trait BreadcrumbsTrait
      *
      * @throws void
      */
-    public function setLinkLast(bool $linkLast): self
+    #[Override]
+    public function setLinkLast(bool $linkLast): static
     {
         $this->linkLast = $linkLast;
 
@@ -259,6 +264,7 @@ trait BreadcrumbsTrait
      *
      * @throws void
      */
+    #[Override]
     public function getLinkLast(): bool
     {
         return $this->linkLast;
@@ -274,7 +280,8 @@ trait BreadcrumbsTrait
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
-    public function setPartial($partial): self
+    #[Override]
+    public function setPartial($partial): static
     {
         if (
             $partial === null
@@ -295,6 +302,7 @@ trait BreadcrumbsTrait
      *
      * @throws void
      */
+    #[Override]
     public function getPartial(): array | ModelInterface | string | null
     {
         return $this->partial;
@@ -307,7 +315,8 @@ trait BreadcrumbsTrait
      *
      * @throws void
      */
-    public function setSeparator(string $separator): self
+    #[Override]
+    public function setSeparator(string $separator): static
     {
         $this->separator = $separator;
 
@@ -321,6 +330,7 @@ trait BreadcrumbsTrait
      *
      * @throws void
      */
+    #[Override]
     public function getSeparator(): string
     {
         return $this->separator;
@@ -330,14 +340,46 @@ trait BreadcrumbsTrait
      * Returns minimum depth a page must have to be included when rendering
      *
      * @throws void
+     *
+     * @api
      */
-    public function getMinDepth(): int | null
+    #[Override]
+    public function getMinDepth(): int
     {
-        if (!is_int($this->minDepth) || 0 > $this->minDepth) {
+        if ($this->minDepth === null || $this->minDepth < 0) {
             return 1;
         }
 
         return $this->minDepth;
+    }
+
+    /**
+     * @throws void
+     *
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    protected function renderBreadcrumbItem(string $content, string $liClass = '', bool $active = false): string
+    {
+        return $content;
+    }
+
+    /**
+     * @param array<string> $html
+     *
+     * @throws void
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    protected function combineRendered(array $html): string
+    {
+        return $html !== [] ? $this->getIndent() . implode($this->renderSeparator(), $html) : '';
+    }
+
+    /** @throws void */
+    protected function renderSeparator(): string
+    {
+        return $this->getSeparator();
     }
 
     /**

@@ -12,47 +12,12 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\View\Helper\AbstractHtmlElement;
-
-use function implode;
-
 /**
  * Helper for printing breadcrumbs.
  *
  * phpcs:disable SlevomatCodingStandard.Classes.TraitUseDeclaration.MultipleTraitsPerDeclaration
  */
-final class Breadcrumbs extends AbstractHtmlElement implements BreadcrumbsInterface
+final class Breadcrumbs extends AbstractBreadcrumbs
 {
-    use BreadcrumbsTrait, HelperTrait{
-        BreadcrumbsTrait::getMinDepth insteadof HelperTrait;
-    }
-
-    /**
-     * @throws void
-     *
-     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function renderBreadcrumbItem(string $html, string $liClass = '', bool $active = false): string
-    {
-        return $html;
-    }
-
-    /** @throws void */
-    private function renderSeparator(): string
-    {
-        return $this->getSeparator();
-    }
-
-    /**
-     * @param array<string> $html
-     *
-     * @throws void
-     *
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function combineRendered(array $html): string
-    {
-        return $html !== [] ? $this->getIndent() . implode($this->renderSeparator(), $html) : '';
-    }
+    // nothing to do here
 }

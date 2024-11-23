@@ -12,11 +12,11 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
-use Laminas\Config\Exception\InvalidArgumentException;
-use Laminas\Config\Exception\RuntimeException;
+use Laminas\I18n\Exception\RuntimeException;
 use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\Exception\DomainException;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
@@ -29,6 +29,7 @@ use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -61,9 +62,8 @@ final class NavigationTest extends AbstractTestCase
      * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
-     * @throws RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -88,6 +88,7 @@ final class NavigationTest extends AbstractTestCase
     }
 
     /** @throws void */
+    #[Override]
     protected function tearDown(): void
     {
         Navigation::setDefaultAuthorization(null);
@@ -97,7 +98,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
@@ -109,7 +110,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
@@ -147,7 +148,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
      */
     public function testShouldProxyToMenuHelperByDefault(): void
@@ -164,7 +165,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testHasContainer(): void
     {
@@ -177,9 +178,9 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\I18n\Exception\RuntimeException
+     * @throws RuntimeException
      */
     public function testInjectingContainer(): void
     {
@@ -202,9 +203,9 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\I18n\Exception\RuntimeException
+     * @throws RuntimeException
      */
     public function testDisablingContainerInjection(): void
     {
@@ -230,7 +231,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testMultipleNavigationsAndOneMenuDisplayedTwoTimes(): void
     {
@@ -245,7 +246,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws ContainerModificationsNotAllowedException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testServiceManagerIsUsedToRetrieveContainer(): void
     {
@@ -263,7 +264,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
      */
     public function testInjectingAuthorization(): void
@@ -285,7 +286,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
      */
     public function testDisablingInjectAuthorization(): void
@@ -307,7 +308,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
      */
     public function testSpecifyingDefaultProxy(): void
@@ -380,7 +381,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DomainException
      * @throws ExceptionInterface
      */
@@ -427,9 +428,9 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws ExceptionInterface
-     * @throws \Laminas\I18n\Exception\RuntimeException
+     * @throws RuntimeException
      */
     #[Group('Laminas-6854')]
     public function testRenderInvisibleItem(): void
@@ -471,7 +472,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testMultipleNavigations(): void
     {
@@ -491,7 +492,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndDifferentContainers(): void
@@ -514,7 +515,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     #[Group('#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndSameContainer(): void
@@ -537,7 +538,7 @@ final class NavigationTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws \Laminas\View\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     #[Group('#3859')]
     public function testMultipleNavigationsWithSameHelperAndSameContainer(): void
@@ -575,6 +576,7 @@ final class NavigationTest extends AbstractTestCase
      *
      * @throws Exception
      */
+    #[Override]
     protected function getExpected(string $file): string
     {
         return str_replace("\n", PHP_EOL, parent::getExpected($file));

@@ -14,8 +14,7 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
 use DOMDocument;
 use DOMElement;
-use Laminas\Config\Exception\InvalidArgumentException;
-use Laminas\Config\Exception\RuntimeException;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\Uri\Uri;
 use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Helper\BasePath;
@@ -29,6 +28,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInter
 use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -73,9 +73,8 @@ final class SitemapTest extends AbstractTestCase
      * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
-     * @throws RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     protected function setUp(): void
     {
         $this->originalTimezone = date_default_timezone_get();
@@ -127,6 +126,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getScheme(): string
             {
                 return $this->schema;
@@ -137,6 +137,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getAuthority(): string
             {
                 return '';
@@ -147,6 +148,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getUserInfo(): string
             {
                 return '';
@@ -157,6 +159,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getHost(): string
             {
                 return $this->host;
@@ -167,6 +170,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getPort(): int | null
             {
                 return $this->port;
@@ -177,6 +181,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getPath(): string
             {
                 return $this->path;
@@ -187,6 +192,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getQuery(): string
             {
                 return $this->query;
@@ -197,6 +203,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function getFragment(): string
             {
                 return $this->fragment;
@@ -209,6 +216,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function withScheme(string $scheme): UriInterface
             {
                 $mod         = clone $this;
@@ -227,6 +235,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
              */
+            #[Override]
             public function withUserInfo(string $user, string | null $password = null): UriInterface
             {
                 return clone $this;
@@ -239,6 +248,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function withHost(string $host): UriInterface
             {
                 $mod       = clone $this;
@@ -255,6 +265,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function withPort(int | null $port): UriInterface
             {
                 $mod       = clone $this;
@@ -270,6 +281,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function withPath(string $path): UriInterface
             {
                 $mod       = clone $this;
@@ -285,6 +297,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function withQuery(string $query): UriInterface
             {
                 $mod        = clone $this;
@@ -300,6 +313,7 @@ final class SitemapTest extends AbstractTestCase
              *
              * @throws void
              */
+            #[Override]
             public function withFragment(string $fragment): UriInterface
             {
                 $mod           = clone $this;
@@ -309,6 +323,7 @@ final class SitemapTest extends AbstractTestCase
             }
 
             /** @throws \Laminas\Uri\Exception\InvalidArgumentException */
+            #[Override]
             public function __toString(): string
             {
                 $uri = new Uri();
@@ -387,6 +402,7 @@ final class SitemapTest extends AbstractTestCase
     }
 
     /** @throws void */
+    #[Override]
     protected function tearDown(): void
     {
         foreach ($this->oldServer as $key => $value) {
@@ -399,7 +415,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
     {
@@ -411,7 +427,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
     {
@@ -423,7 +439,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testNullingOutNavigation(): void
     {
@@ -434,7 +450,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSettingMaxDepth(): void
     {
@@ -447,7 +463,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSettingMinDepth(): void
     {
@@ -460,7 +476,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSettingBothDepths(): void
     {
@@ -474,7 +490,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testDropXmlDeclaration(): void
     {
@@ -488,7 +504,7 @@ final class SitemapTest extends AbstractTestCase
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testDisablingValidators(): void
     {
@@ -514,7 +530,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetServerUrlWithSchemeAndHost(): void
     {
@@ -527,7 +543,7 @@ final class SitemapTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     #[Group('test-123')]
     public function testSetServerUrlWithSchemeAndPortAndHostAndPath(): void

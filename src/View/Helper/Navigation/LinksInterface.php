@@ -23,39 +23,39 @@ interface LinksInterface extends ViewHelperInterface
     /**
      * Constants used for specifying which link types to find and render
      */
-    public const RENDER_ALTERNATE = 0x0001;
+    public const int RENDER_ALTERNATE = 0x0001;
 
-    public const RENDER_STYLESHEET = 0x0002;
+    public const int RENDER_STYLESHEET = 0x0002;
 
-    public const RENDER_START = 0x0004;
+    public const int RENDER_START = 0x0004;
 
-    public const RENDER_NEXT = 0x0008;
+    public const int RENDER_NEXT = 0x0008;
 
-    public const RENDER_PREV = 0x0010;
+    public const int RENDER_PREV = 0x0010;
 
-    public const RENDER_CONTENTS = 0x0020;
+    public const int RENDER_CONTENTS = 0x0020;
 
-    public const RENDER_INDEX = 0x0040;
+    public const int RENDER_INDEX = 0x0040;
 
-    public const RENDER_GLOSSARY = 0x0080;
+    public const int RENDER_GLOSSARY = 0x0080;
 
-    public const RENDER_COPYRIGHT = 0x0100;
+    public const int RENDER_COPYRIGHT = 0x0100;
 
-    public const RENDER_CHAPTER = 0x0200;
+    public const int RENDER_CHAPTER = 0x0200;
 
-    public const RENDER_SECTION = 0x0400;
+    public const int RENDER_SECTION = 0x0400;
 
-    public const RENDER_SUBSECTION = 0x0800;
+    public const int RENDER_SUBSECTION = 0x0800;
 
-    public const RENDER_APPENDIX = 0x1000;
+    public const int RENDER_APPENDIX = 0x1000;
 
-    public const RENDER_HELP = 0x2000;
+    public const int RENDER_HELP = 0x2000;
 
-    public const RENDER_BOOKMARK = 0x4000;
+    public const int RENDER_BOOKMARK = 0x4000;
 
-    public const RENDER_CUSTOM = 0x8000;
+    public const int RENDER_CUSTOM = 0x8000;
 
-    public const RENDER_ALL = 0xFFFF;
+    public const int RENDER_ALL = 0xFFFF;
 
     /**
      * Magic overload: Proxy calls to {@link findRelation()} or container

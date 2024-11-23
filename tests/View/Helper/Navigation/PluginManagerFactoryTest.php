@@ -14,6 +14,7 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManagerFactory;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -26,6 +27,7 @@ final class PluginManagerFactoryTest extends TestCase
     private PluginManagerFactory $factory;
 
     /** @throws void */
+    #[Override]
     protected function setUp(): void
     {
         $this->factory = new PluginManagerFactory();

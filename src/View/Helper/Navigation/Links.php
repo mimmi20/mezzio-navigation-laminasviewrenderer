@@ -17,7 +17,6 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception;
-use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HeadLink;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
@@ -27,6 +26,7 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
@@ -55,12 +55,8 @@ use const PHP_EOL;
 /**
  * Helper for printing <link> elements
  */
-final class Links extends AbstractHtmlElement implements LinksInterface
+final class Links extends AbstractHelper implements LinksInterface
 {
-    use HelperTrait {
-        __call as parentCall;
-    }
-
     /**
      * Maps render constants to W3C link types
      *
@@ -101,10 +97,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
         private readonly FindRootInterface $rootFinder,
         private readonly HeadLink $headLink,
     ) {
-        $this->serviceLocator  = $serviceLocator;
-        $this->logger          = $logger;
-        $this->htmlify         = $htmlify;
-        $this->containerParser = $containerParser;
+        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
     }
 
     /**
@@ -126,6 +119,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     public function __call(string $method, array $arguments = []): mixed
     {
         ErrorHandler::start(E_WARNING);
@@ -141,7 +135,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
             return $this->findRelation(page: $arguments[0], rel: $rel, type: $type);
         }
 
-        return $this->parentCall($method, $arguments);
+        return parent::__call($method, $arguments);
     }
 
     /**
@@ -158,6 +152,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
         $container = $this->containerParser->parseContainer($container);
@@ -228,6 +223,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws Exception\DomainException
      */
+    #[Override]
     public function renderLink(PageInterface $page, string $attrib, string $relation): string
     {
         if (!in_array($attrib, ['rel', 'rev'], true)) {
@@ -301,6 +297,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     public function findAllRelations(PageInterface $page, int | null $flag = null): array
     {
         if ($flag === null) {
@@ -358,6 +355,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     public function findRelation(PageInterface $page, string $rel, string $type): array
     {
         if (!in_array($rel, ['rel', 'rev'], true)) {
@@ -399,6 +397,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRelStart(PageInterface $page): PageInterface | null
     {
         $found = $this->rootFinder->find($page);
@@ -426,6 +425,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRelNext(PageInterface $page): PageInterface | null
     {
         $found = null;
@@ -467,6 +467,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRelPrev(PageInterface $page): PageInterface | null
     {
         $found = null;
@@ -510,6 +511,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     public function searchRelChapter(PageInterface $page): array
     {
         $found = [];
@@ -543,6 +545,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRelSection(PageInterface $page): array
     {
         if (!$page->hasPages()) {
@@ -581,6 +584,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRelSubsection(PageInterface $page): array
     {
         if (!$page->hasPages()) {
@@ -618,6 +622,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRevSection(PageInterface $page): PageInterface | null
     {
         $parent = $page->getParent();
@@ -646,6 +651,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function searchRevSubsection(PageInterface $page): PageInterface | null
     {
         $parent = $page->getParent();
@@ -697,6 +703,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function setRenderFlag(int $renderFlag): self
     {
         $this->renderFlag = $renderFlag;
@@ -709,6 +716,7 @@ final class Links extends AbstractHtmlElement implements LinksInterface
      *
      * @throws void
      */
+    #[Override]
     public function getRenderFlag(): int
     {
         return $this->renderFlag;

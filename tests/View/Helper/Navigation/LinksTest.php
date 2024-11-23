@@ -34,6 +34,7 @@ use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
 use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
@@ -46,6 +47,7 @@ use function sprintf;
 final class LinksTest extends TestCase
 {
     /** @throws void */
+    #[Override]
     protected function tearDown(): void
     {
         Links::setDefaultAuthorization(null);

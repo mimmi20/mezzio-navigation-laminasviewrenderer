@@ -33,6 +33,7 @@ use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -46,6 +47,7 @@ use const PHP_EOL;
 final class MenuTest extends TestCase
 {
     /** @throws void */
+    #[Override]
     protected function tearDown(): void
     {
         Menu::setDefaultAuthorization(null);

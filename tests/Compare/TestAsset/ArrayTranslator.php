@@ -15,15 +15,16 @@ declare(strict_types = 1);
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare\TestAsset;
 
 use Laminas\I18n\Translator;
+use Override;
 
-final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
+final readonly class ArrayTranslator implements Translator\Loader\FileLoaderInterface
 {
     /**
      * @param array<string, string> $translations
      *
      * @throws void
      */
-    public function __construct(private readonly array $translations = [])
+    public function __construct(private array $translations = [])
     {
         // nothing to do
     }
@@ -41,6 +42,7 @@ final class ArrayTranslator implements Translator\Loader\FileLoaderInterface
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
+    #[Override]
     public function load($filename, $locale): Translator\TextDomain
     {
         return new Translator\TextDomain($this->translations);

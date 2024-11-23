@@ -57,6 +57,7 @@ use Mimmi20\NavigationHelper\FindRoot\FindRoot;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -137,138 +138,147 @@ final class PluginManagerCompatibilityTest extends TestCase
              * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
              */
             static fn (ContainerInterface $container, $requestedName, array | null $options = null) => new class () implements LoggerInterface {
-                    /**
-                     * System is unusable.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * System is unusable.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function emergency(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement emergency() method.
                     }
 
-                    /**
-                     * Action must be taken immediately.
-                     *
-                     * Example: Entire website down, database unavailable, etc. This should
-                     * trigger the SMS alerts and wake you up.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Action must be taken immediately.
+                 *
+                 * Example: Entire website down, database unavailable, etc. This should
+                 * trigger the SMS alerts and wake you up.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function alert(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement alert() method.
                     }
 
-                    /**
-                     * Critical conditions.
-                     *
-                     * Example: Application component unavailable, unexpected exception.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Critical conditions.
+                 *
+                 * Example: Application component unavailable, unexpected exception.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function critical(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement critical() method.
                     }
 
-                    /**
-                     * Runtime errors that do not require immediate action but should typically
-                     * be logged and monitored.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Runtime errors that do not require immediate action but should typically
+                 * be logged and monitored.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function error(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement error() method.
                     }
 
-                    /**
-                     * Exceptional occurrences that are not errors.
-                     *
-                     * Example: Use of deprecated APIs, poor use of an API, undesirable things
-                     * that are not necessarily wrong.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Exceptional occurrences that are not errors.
+                 *
+                 * Example: Use of deprecated APIs, poor use of an API, undesirable things
+                 * that are not necessarily wrong.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function warning(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement warning() method.
                     }
 
-                    /**
-                     * Normal but significant events.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Normal but significant events.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function notice(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement notice() method.
                     }
 
-                    /**
-                     * Interesting events.
-                     *
-                     * Example: User logs in, SQL logs.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Interesting events.
+                 *
+                 * Example: User logs in, SQL logs.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function info(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement info() method.
                     }
 
-                    /**
-                     * Detailed debug information.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Detailed debug information.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function debug(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement debug() method.
                     }
 
-                    /**
-                     * Logs with an arbitrary level.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Logs with an arbitrary level.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function log(mixed $level, Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement log() method.
@@ -324,6 +334,7 @@ final class PluginManagerCompatibilityTest extends TestCase
      *
      * @throws ContainerModificationsNotAllowedException
      */
+    #[Override]
     protected static function getPluginManager(): PluginManager
     {
         $sm = new ServiceManager();
@@ -356,138 +367,147 @@ final class PluginManagerCompatibilityTest extends TestCase
              * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
              */
             static fn (ContainerInterface $container, $requestedName, array | null $options = null) => new class () implements LoggerInterface {
-                    /**
-                     * System is unusable.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * System is unusable.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function emergency(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement emergency() method.
                     }
 
-                    /**
-                     * Action must be taken immediately.
-                     *
-                     * Example: Entire website down, database unavailable, etc. This should
-                     * trigger the SMS alerts and wake you up.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Action must be taken immediately.
+                 *
+                 * Example: Entire website down, database unavailable, etc. This should
+                 * trigger the SMS alerts and wake you up.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function alert(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement alert() method.
                     }
 
-                    /**
-                     * Critical conditions.
-                     *
-                     * Example: Application component unavailable, unexpected exception.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Critical conditions.
+                 *
+                 * Example: Application component unavailable, unexpected exception.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function critical(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement critical() method.
                     }
 
-                    /**
-                     * Runtime errors that do not require immediate action but should typically
-                     * be logged and monitored.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Runtime errors that do not require immediate action but should typically
+                 * be logged and monitored.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function error(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement error() method.
                     }
 
-                    /**
-                     * Exceptional occurrences that are not errors.
-                     *
-                     * Example: Use of deprecated APIs, poor use of an API, undesirable things
-                     * that are not necessarily wrong.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Exceptional occurrences that are not errors.
+                 *
+                 * Example: Use of deprecated APIs, poor use of an API, undesirable things
+                 * that are not necessarily wrong.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function warning(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement warning() method.
                     }
 
-                    /**
-                     * Normal but significant events.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Normal but significant events.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function notice(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement notice() method.
                     }
 
-                    /**
-                     * Interesting events.
-                     *
-                     * Example: User logs in, SQL logs.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Interesting events.
+                 *
+                 * Example: User logs in, SQL logs.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function info(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement info() method.
                     }
 
-                    /**
-                     * Detailed debug information.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Detailed debug information.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function debug(Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement debug() method.
                     }
 
-                    /**
-                     * Logs with an arbitrary level.
-                     *
-                     * @param array<mixed> $context
-                     *
-                     * @throws void
-                     *
-                     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-                     */
+                /**
+                 * Logs with an arbitrary level.
+                 *
+                 * @param array<mixed> $context
+                 *
+                 * @throws void
+                 *
+                 * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+                 */
+                #[Override]
                     public function log(mixed $level, Stringable | string $message, array $context = []): void
                     {
                         // TODO: Implement log() method.
@@ -542,12 +562,14 @@ final class PluginManagerCompatibilityTest extends TestCase
      *
      * @throws void
      */
+    #[Override]
     protected function getV2InvalidPluginException(): string
     {
         return InvalidHelperException::class;
     }
 
     /** @throws void */
+    #[Override]
     protected function getInstanceOf(): string
     {
         return ViewHelperInterface::class;
