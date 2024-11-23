@@ -337,6 +337,23 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
     }
 
     /**
+     * Returns minimum depth a page must have to be included when rendering
+     *
+     * @throws void
+     *
+     * @api
+     */
+    #[Override]
+    public function getMinDepth(): int
+    {
+        if ($this->minDepth === null || $this->minDepth < 0) {
+            return 1;
+        }
+
+        return $this->minDepth;
+    }
+
+    /**
      * @throws void
      *
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
@@ -445,22 +462,5 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         }
 
         return $this->renderer->render($partial, $model);
-    }
-
-    /**
-     * Returns minimum depth a page must have to be included when rendering
-     *
-     * @throws void
-     *
-     * @api
-     */
-    #[Override]
-    public function getMinDepth(): int
-    {
-        if ($this->minDepth === null || $this->minDepth < 0) {
-            return 1;
-        }
-
-        return $this->minDepth;
     }
 }
