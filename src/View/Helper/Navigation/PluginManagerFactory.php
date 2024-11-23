@@ -14,6 +14,7 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Override;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
@@ -34,6 +35,7 @@ final class PluginManagerFactory implements FactoryInterface
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
+    #[Override]
     public function __invoke(ContainerInterface $container, $name, array | null $options = null): PluginManager
     {
         /** @var PluginManager<covariant ViewHelperInterface> $pluginManager */

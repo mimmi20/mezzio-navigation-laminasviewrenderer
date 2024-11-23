@@ -26,7 +26,6 @@ use Laminas\Validator\Sitemap\Lastmod;
 use Laminas\Validator\Sitemap\Loc;
 use Laminas\Validator\Sitemap\Priority;
 use Laminas\View\Exception;
-use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Mezzio\LaminasView\ServerUrlHelper;
@@ -34,6 +33,7 @@ use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
 
@@ -64,10 +64,8 @@ use const PHP_EOL;
  *
  * @see http://www.sitemaps.org/protocol.php
  */
-final class Sitemap extends AbstractHtmlElement implements SitemapInterface
+final class Sitemap extends AbstractHelper implements SitemapInterface
 {
-    use HelperTrait;
-
     /**
      * Whether XML output should be formatted
      */
@@ -115,10 +113,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
         private readonly EscapeHtml $escaper,
         private readonly ServerUrlHelper $serverUrlHelper,
     ) {
-        $this->serviceLocator  = $serviceLocator;
-        $this->logger          = $logger;
-        $this->htmlify         = $htmlify;
-        $this->containerParser = $containerParser;
+        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
 
         libxml_use_internal_errors(true);
 
@@ -149,6 +144,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      */
+    #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
         try {
@@ -198,6 +194,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @throws Exception\InvalidArgumentException
      * @throws DOMException
      */
+    #[Override]
     public function getDomSitemap(
         ContainerInterface | string | null $container = null,
         int | null $minDepth = null,
@@ -421,6 +418,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
+    #[Override]
     public function url(PageInterface $page): string
     {
         $href = $page->getHref();
@@ -460,6 +458,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function setFormatOutput(bool $formatOutput = true): self
     {
         $this->formatOutput = $formatOutput;
@@ -472,6 +471,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function getFormatOutput(): bool
     {
         return $this->formatOutput;
@@ -484,6 +484,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws Exception\InvalidArgumentException
      */
+    #[Override]
     public function setServerUrl(string | UriInterface $serverUrl): self
     {
         if (is_string($serverUrl)) {
@@ -521,6 +522,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function getServerUrl(): string
     {
         if ($this->serverUrl === null) {
@@ -535,6 +537,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function setUseSitemapValidators(bool $useSitemapValidators): self
     {
         $this->useSitemapValidators = $useSitemapValidators;
@@ -547,6 +550,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function getUseSitemapValidators(): bool
     {
         return $this->useSitemapValidators;
@@ -557,6 +561,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function setUseSchemaValidation(bool $schemaValidation): self
     {
         $this->useSchemaValidation = $schemaValidation;
@@ -569,6 +574,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function getUseSchemaValidation(): bool
     {
         return $this->useSchemaValidation;
@@ -579,6 +585,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function setUseXmlDeclaration(bool $useXmlDecl): self
     {
         $this->useXmlDeclaration = $useXmlDecl;
@@ -591,6 +598,7 @@ final class Sitemap extends AbstractHtmlElement implements SitemapInterface
      *
      * @throws void
      */
+    #[Override]
     public function getUseXmlDeclaration(): bool
     {
         return $this->useXmlDeclaration;

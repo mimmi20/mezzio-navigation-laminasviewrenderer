@@ -11,7 +11,6 @@
 declare(strict_types = 1);
 
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
@@ -29,7 +28,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->sets([
         SetList::DEAD_CODE,
-        LevelSetList::UP_TO_PHP_81,
+        LevelSetList::UP_TO_PHP_83,
         PHPUnitSetList::PHPUNIT_100,
     ]);
 
@@ -43,9 +42,9 @@ return static function (RectorConfig $rectorConfig): void {
         ],
     );
 
-    $rectorConfig->skip([
-        RemoveUnusedPrivateMethodParameterRector::class => [
-            __DIR__ . '/src/View/Helper/Navigation/Breadcrumbs.php',
-        ],
-    ]);
+//    $rectorConfig->skip([
+//        RemoveUnusedPrivateMethodParameterRector::class => [
+//            __DIR__ . '/src/View/Helper/Navigation/Breadcrumbs.php',
+//        ],
+//    ]);
 };

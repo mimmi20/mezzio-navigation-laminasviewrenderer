@@ -782,7 +782,6 @@ Methods in the links helper:
 This example shows how to specify relations in pages.
 
 ```php
-use Laminas\Config\Config;
 use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 

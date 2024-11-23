@@ -16,6 +16,7 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\ConfigProvider;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -24,6 +25,7 @@ final class ConfigProviderTest extends TestCase
     private ConfigProvider $provider;
 
     /** @throws void */
+    #[Override]
     protected function setUp(): void
     {
         $this->provider = new ConfigProvider();

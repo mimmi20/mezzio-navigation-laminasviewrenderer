@@ -12,12 +12,9 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
-use Laminas\Config\Config;
-use Laminas\Config\Exception\InvalidArgumentException;
-use Laminas\Config\Exception\RuntimeException;
-use Laminas\Config\Factory as ConfigFactory;
 use Laminas\I18n\Translator\Translator;
 use Laminas\Permissions\Acl\Acl;
+use Laminas\Permissions\Acl\Exception\InvalidArgumentException;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Role\GenericRole;
 use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
@@ -62,6 +59,7 @@ use Mimmi20\NavigationHelper\FindRoot\FindRoot;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -105,18 +103,15 @@ abstract class AbstractTestCase extends TestCase
      *
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
+    #[Override]
     protected function setUp(): void
     {
         $cwd = __DIR__;
 
         // read navigation config
         $this->files = $cwd . '/_files';
-        $config      = ConfigFactory::fromFile($this->files . '/navigation.xml', true);
-
-        static::assertInstanceOf(Config::class, $config);
+        $config      = require $this->files . '/navigation.php';
 
         $sm = $this->serviceManager = new ServiceManager();
         $sm->setAllowOverride(true);
@@ -135,7 +130,7 @@ abstract class AbstractTestCase extends TestCase
                     $this->createMock(MiddlewareInterface::class),
                 );
 
-                $pages            = $config->toArray();
+                $pages            = $config;
                 $pages['default'] = $pages['nav_test1'];
 
                 $navConfig = new NavigationConfig();
@@ -167,7 +162,7 @@ abstract class AbstractTestCase extends TestCase
             'config',
             static fn (): array => [
                 'navigation' => [
-                    'default' => $config->get('nav_test1'),
+                    'default' => $config['nav_test1'],
                 ],
                 'view_helpers' => [
                     'aliases' => [
@@ -272,7 +267,7 @@ abstract class AbstractTestCase extends TestCase
      *
      * @return array<string, LaminasAcl|string>
      *
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function getAcl(): array
     {

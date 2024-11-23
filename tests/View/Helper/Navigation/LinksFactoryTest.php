@@ -21,6 +21,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -32,6 +33,7 @@ final class LinksFactoryTest extends TestCase
     private LinksFactory $factory;
 
     /** @throws void */
+    #[Override]
     protected function setUp(): void
     {
         $this->factory = new LinksFactory();

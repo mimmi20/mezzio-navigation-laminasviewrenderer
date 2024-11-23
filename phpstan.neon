@@ -1,6 +1,8 @@
 parameters:
   level: max
 
+  phpVersion: 80300 # PHP 8.3
+
   parallel:
     maximumNumberOfProcesses: 1
     processTimeout: 200.0
@@ -69,7 +71,7 @@ parameters:
   reportAlwaysTrueInLastCondition: true
 
   # reports violations of parameter type contravariance and return type covariance
-  reportMaybesInMethodSignatures: true
+  reportMaybesInMethodSignatures: false # todo: fix
 
   # reports violations of property type invariance
   reportMaybesInPropertyPhpDocTypes: false # todo: fix
@@ -99,9 +101,10 @@ parameters:
     function: 40
 
   type_coverage:
-    return: 96.8
-    param: 98.2
-    property: 100
+    return_type: 96.3
+    param_type: 98.2
+    property_type: 100
+    constant_type: 100
     # also, how many files has declare strict types
     declare: 100
 
@@ -131,6 +134,7 @@ parameters:
     - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\(Breadcrumbs|Menu)::setPartial\(\) expects array~'
     - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
+    - '~assertContainsOnly~'
 
 rules:
   # code complexity

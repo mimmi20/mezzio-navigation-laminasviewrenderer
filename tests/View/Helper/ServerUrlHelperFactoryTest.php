@@ -16,6 +16,7 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -29,6 +30,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
     private ServerUrlHelperFactory $factory;
 
     /** @throws void */
+    #[Override]
     protected function setUp(): void
     {
         $this->factory = new ServerUrlHelperFactory();

@@ -18,13 +18,12 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
-use Laminas\View\Helper\AbstractHtmlElement;
 use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\AbstractHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\HelperTrait;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
@@ -32,6 +31,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInter
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use Psr\Log\LoggerInterface;
 
 use function assert;
@@ -46,12 +46,8 @@ use function sprintf;
  * @method Menu        menu(ContainerInterface|string|null $container = null)
  * @method Sitemap     sitemap(ContainerInterface|string|null $container = null)
  */
-final class Navigation extends AbstractHtmlElement implements ViewHelperInterface
+final class Navigation extends AbstractHelper implements ViewHelperInterface
 {
-    use HelperTrait {
-        __call as parentCall;
-    }
-
     /**
      * Default proxy to use in {@link render()}
      */
@@ -107,6 +103,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @throws InvalidArgumentException
      */
+    #[Override]
     public function __call(string $method, array $arguments = []): mixed
     {
         // check if call should proxy to another helper
@@ -116,7 +113,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
             $this->logger->error($e);
 
             // default behaviour: proxy call to container
-            return $this->parentCall($method, $arguments);
+            return parent::__call($method, $arguments);
         }
 
         return $helper(...$arguments);
@@ -132,6 +129,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      * @throws DomainException
      * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      */
+    #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
         try {
@@ -255,6 +253,7 @@ final class Navigation extends AbstractHtmlElement implements ViewHelperInterfac
      *
      * @throws void
      */
+    #[Override]
     public function setView(Renderer $view): self
     {
         parent::setView($view);

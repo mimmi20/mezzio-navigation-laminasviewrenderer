@@ -23,12 +23,12 @@ interface SitemapInterface extends ViewHelperInterface
     /**
      * Namespace for the <urlset> tag
      */
-    public const SITEMAP_NS = 'https://www.sitemaps.org/schemas/sitemap/0.9';
+    public const string SITEMAP_NS = 'https://www.sitemaps.org/schemas/sitemap/0.9';
 
     /**
      * Schema URL
      */
-    public const SITEMAP_XSD = 'https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
+    public const string SITEMAP_XSD = 'https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
 
     /**
      * Returns a DOMDocument containing the Sitemap XML for the given container
