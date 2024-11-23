@@ -359,9 +359,9 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    protected function renderBreadcrumbItem(string $html, string $liClass = '', bool $active = false): string
+    protected function renderBreadcrumbItem(string $content, string $liClass = '', bool $active = false): string
     {
-        return $html;
+        return $content;
     }
 
     /**
