@@ -421,6 +421,52 @@ final class MenuTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      */
+    public function testSetContainerWithException(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->willThrowException($exception);
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $container1 = $helper->getContainer();
+
+        self::assertInstanceOf(Navigation::class, $container1);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->setContainer();
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';
@@ -699,6 +745,108 @@ final class MenuTest extends TestCase
                 $page::class,
             ),
         );
+        self::assertSame($expected, $helper->htmlify($page));
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     */
+    public function testHtmlifyWithException(): void
+    {
+        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
+
+        $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
+
+        $container = $this->createMock(ContainerInterface::class);
+        $name      = 'Mezzio\Navigation\Top';
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::never())
+            ->method('isActive');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::never())
+            ->method('hasPages');
+        $page->expects(self::never())
+            ->method('getLiClass');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Menu::class, $page)
+            ->willThrowException($exception);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setContainer($name);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page::class,
+            ),
+        );
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
         self::assertSame($expected, $helper->htmlify($page));
     }
 
@@ -1782,6 +1930,104 @@ final class MenuTest extends TestCase
         $helper->setMaxDepth($maxDepth);
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->findActive($name);
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testFindActiveException2(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setActive(true);
+        $parentPage->setUri('parent');
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+
+        $page1 = new Uri();
+        $page1->setActive(true);
+        $page1->setUri('test1');
+
+        $page2 = new Uri();
+        $page2->setActive(true);
+        $page1->setUri('test2');
+
+        $parentPage->addPage($page1);
+        $parentPage->addPage($page2);
+
+        $parentParentPage = new Uri();
+        $parentParentPage->setVisible(true);
+        $parentParentPage->setActive(true);
+        $parentParentPage->setUri('parentParent');
+
+        $parentParentParentPage = new Uri();
+        $parentParentParentPage->setVisible(true);
+        $parentParentParentPage->setActive(true);
+        $parentParentParentPage->setUri('parentParentParent');
+
+        $parentParentPage->addPage($parentPage);
+        $parentParentParentPage->addPage($parentParentPage);
+
+        $container = new Navigation();
+        $container->addPage($parentParentParentPage);
+
+        $role     = 'testRole';
+        $maxDepth = -1;
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willThrowException($exception);
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $helper->setMinDepth(-1);
+        $helper->setMaxDepth($maxDepth);
+
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
         $this->expectExceptionCode(0);
 

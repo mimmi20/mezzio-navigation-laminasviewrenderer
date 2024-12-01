@@ -15,6 +15,7 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\HelperPluginManager;
@@ -700,6 +701,164 @@ final class NavigationTest extends TestCase
         $helper->setPluginManager($pluginManager);
 
         self::assertSame($rendered, $helper->render($container));
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
+    public function testRenderWithException(): void
+    {
+        $proxy     = 'menu';
+        $container = null;
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        assert($serviceLocator instanceof ContainerInterface);
+
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
+
+        $menu    = $this->createMock(Navigation\ViewHelperInterface::class);
+        $matcher = self::exactly(2);
+        $menu->expects($matcher)
+            ->method('setContainer')
+            ->willReturnCallback(
+                static function (\Mimmi20\Mezzio\Navigation\ContainerInterface | string | null $container = null) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertNull($container),
+                        default => self::assertInstanceOf(
+                            \Mimmi20\Mezzio\Navigation\Navigation::class,
+                            $container,
+                        ),
+                    };
+                },
+            );
+        $menu->expects(self::once())
+            ->method('hasAuthorization')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('setAuthorization')
+            ->with(null);
+        $menu->expects(self::once())
+            ->method('hasRole')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('render')
+            ->with($container)
+            ->willThrowException(new \Laminas\Stdlib\Exception\InvalidArgumentException('test'));
+
+        $pluginManager = $this->createMock(HelperPluginManager::class);
+        $pluginManager->expects(self::once())
+            ->method('has')
+            ->with($proxy)
+            ->willReturn(true);
+        $pluginManager->expects(self::once())
+            ->method('get')
+            ->with($proxy)
+            ->willReturn($menu);
+
+        assert($pluginManager instanceof HelperPluginManager);
+        $helper->setPluginManager($pluginManager);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->render($container);
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
+    public function testRenderWithException2(): void
+    {
+        $proxy     = 'menu';
+        $container = null;
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        assert($serviceLocator instanceof ContainerInterface);
+
+        assert($htmlify instanceof HtmlifyInterface);
+        assert($containerParser instanceof ContainerParserInterface);
+        $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
+
+        $menu    = $this->createMock(Navigation\ViewHelperInterface::class);
+        $matcher = self::exactly(2);
+        $menu->expects($matcher)
+            ->method('setContainer')
+            ->willReturnCallback(
+                static function (\Mimmi20\Mezzio\Navigation\ContainerInterface | string | null $container = null) use ($matcher): void {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertNull($container),
+                        default => self::assertInstanceOf(
+                            \Mimmi20\Mezzio\Navigation\Navigation::class,
+                            $container,
+                        ),
+                    };
+                },
+            );
+        $menu->expects(self::once())
+            ->method('hasAuthorization')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('setAuthorization')
+            ->with(null);
+        $menu->expects(self::once())
+            ->method('hasRole')
+            ->willReturn(false);
+        $menu->expects(self::once())
+            ->method('render')
+            ->with($container)
+            ->willThrowException(new DomainException('test'));
+
+        $pluginManager = $this->createMock(HelperPluginManager::class);
+        $pluginManager->expects(self::once())
+            ->method('has')
+            ->with($proxy)
+            ->willReturn(true);
+        $pluginManager->expects(self::once())
+            ->method('get')
+            ->with($proxy)
+            ->willReturn($menu);
+
+        assert($pluginManager instanceof HelperPluginManager);
+        $helper->setPluginManager($pluginManager);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->render($container);
     }
 
     /** @throws Exception */
