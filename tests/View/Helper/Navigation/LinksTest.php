@@ -5348,7 +5348,6 @@ final class LinksTest extends TestCase
             );
 
         $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
-
         $matcher = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
             ->method('find')
@@ -5696,7 +5695,6 @@ final class LinksTest extends TestCase
             );
 
         $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
-
         $matcher = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
             ->method('find')
@@ -5832,6 +5830,7 @@ final class LinksTest extends TestCase
 
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
+        $helper->setRenderFlag(LinksInterface::RENDER_ALL);
 
         self::assertSame($expected, $helper->render($name));
     }
@@ -5882,5 +5881,217 @@ final class LinksTest extends TestCase
         $this->expectExceptionCode(0);
 
         self::assertSame('', (string) $helper);
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     */
+    public function testFindAllRelations(): void
+    {
+        $name      = 'Mezzio\Navigation\Top';
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentLabel = 'parent-label';
+        $parentUri   = '##';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri($parentUri);
+        $parentPage->setTarget('self');
+        $parentPage->setLabel($parentLabel);
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+        $parentPage->setRel(['next' => '#abc', 'prev' => '#def', 4711 => '#xyz']);
+        $parentPage->setRev(['next' => '#fgh', 'prev' => '#ijk', 42 => '#stu']);
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::exactly(2))
+            ->method('getParent')
+            ->willReturn($parentPage);
+        $page->expects(self::never())
+            ->method('isActive');
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::never())
+            ->method('get');
+        $page->expects(self::once())
+            ->method('getDefinedRel')
+            ->willReturn(['prev', 'next']);
+        $page->expects(self::once())
+            ->method('getDefinedRev')
+            ->willReturn(['index']);
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
+        $matcher = self::exactly(31);
+        $findFromPropertyHelper->expects($matcher)
+            ->method('find')
+            ->willReturnCallback(
+                static function (PageInterface $pageParam, string $rel, string $type) use ($matcher, $page): array {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    self::assertSame($page, $pageParam, (string) $invocation);
+
+                    match ($invocation) {
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 => self::assertSame(
+                            'rel',
+                            $rel,
+                            (string) $invocation,
+                        ),
+                        default => self::assertSame('rev', $rel, (string) $invocation),
+                    };
+
+                    match ($invocation) {
+                        1, 17 => self::assertSame('alternate', $type, (string) $invocation),
+                        2, 18 => self::assertSame('stylesheet', $type, (string) $invocation),
+                        3, 11, 19 => self::assertSame('start', $type, (string) $invocation),
+                        4, 20 => self::assertSame('next', $type, (string) $invocation),
+                        5, 21 => self::assertSame('prev', $type, (string) $invocation),
+                        6, 22 => self::assertSame('contents', $type, (string) $invocation),
+                        7, 23 => self::assertSame('index', $type, (string) $invocation),
+                        8, 24 => self::assertSame('glossary', $type, (string) $invocation),
+                        9, 25 => self::assertSame('copyright', $type, (string) $invocation),
+                        10, 26 => self::assertSame('chapter', $type, (string) $invocation),
+                        12, 27 => self::assertSame('section', $type, (string) $invocation),
+                        13, 28 => self::assertSame('subsection', $type, (string) $invocation),
+                        14, 29 => self::assertSame('appendix', $type, (string) $invocation),
+                        15, 30 => self::assertSame('help', $type, (string) $invocation),
+                        default => self::assertSame('bookmark', $type, (string) $invocation),
+                    };
+
+                    return match ($invocation) {
+                        4 => ['#abc'],
+                        5 => ['#def'],
+                        default => [],
+                    };
+                },
+            );
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::exactly(2))
+            ->method('accept')
+            ->with($parentPage, true)
+            ->willReturn(true);
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $matcher = self::exactly(33);
+        $serviceLocator->expects($matcher)
+            ->method('build')
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findFromPropertyHelper, $acceptHelper): mixed {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        4, 13 => self::assertSame(\Mimmi20\NavigationHelper\Accept\AcceptHelperInterface::class, $name, (string) $invocation),
+                        default => self::assertSame(FindFromPropertyInterface::class, $name, (string) $invocation),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                        (string) $invocation,
+                    );
+
+                    return match ($invocation) {
+                        4, 13 => $acceptHelper,
+                        default => $findFromPropertyHelper,
+                    };
+                },
+            );
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $rootFinder = $this->createMock(FindRootInterface::class);
+        $rootFinder->expects(self::never())
+            ->method('setRoot');
+        $rootFinder->expects(self::exactly(5))
+            ->method('find')
+            ->with($page)
+            ->willReturn($parentPage);
+
+        $expected = [
+            'rel' => [
+                'start' => [$parentPage],
+                'next' => ['#abc'],
+                'prev' => ['#def'],
+            ],
+            'rev' => [],
+        ];
+
+        $headLink = $this->createMock(HeadLink::class);
+        $headLink->expects(self::never())
+            ->method('__invoke');
+        $headLink->expects(self::never())
+            ->method('itemToString');
+
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+        $helper->setRenderFlag(LinksInterface::RENDER_ALL);
+
+        self::assertSame($expected, $helper->findAllRelations($page));
     }
 }
