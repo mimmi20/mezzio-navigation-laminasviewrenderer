@@ -27,8 +27,7 @@ interface MenuInterface extends ViewHelperInterface
      *
      * Available $options:
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to create menu from.
-     *                                                  Default is to use the container retrieved from {@link getContainer()}.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to create menu from. Default is to use the container retrieved from {@link getContainer()}.
      * @param array<string, bool|int|string|null>           $options   [optional] options for controlling rendering
      * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
@@ -43,11 +42,8 @@ interface MenuInterface extends ViewHelperInterface
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|string|null                $partial   [optional] partial view script to use.
-     *                                                                 Default is to use the partial registered in the helper. If an array
-     *                                                                 is given, the first value is used for the partial view script.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view script. Default is to use the container registered in the helper.
+     * @param array<int, string>|string|null                $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -66,12 +62,9 @@ interface MenuInterface extends ViewHelperInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<int|string, mixed>                                  $params
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|string|null                $partial   [optional] partial view script to use.
-     *                                                                 Default is to use the partial registered in the helper. If an array
-     *                                                                 is given, the first value is used for the partial view script.
+     * @param array<int|string, mixed>                      $params
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view script. Default is to use the container registered in the helper.
+     * @param array<int, string>|string|null                $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -98,17 +91,11 @@ interface MenuInterface extends ViewHelperInterface
      * ));
      * </code>
      *
-     * @param ContainerInterface<PageInterface>|null $container     [optional] container to render.
-     *                                               Default is to render the container registered in the helper.
-     * @param string|null                            $ulClass       [optional] CSS class to use for UL element.
-     *                                                              Default is to use the value from {@link getUlClass()}.
-     * @param string|null                            $liClass       [optional] CSS class to use for LI elements.
-     *                                                              Default is to use the value from {@link getLiClass()}.
-     * @param int|string|null                        $indent        [optional] indentation as a string or number
-     *                                                              of spaces. Default is to use the value retrieved from
-     *                                                              {@link getIndent()}.
-     * @param string|null                            $liActiveClass [optional] CSS class to use for UL
-     *                                                              element. Default is to use the value from {@link getUlClass()}.
+     * @param ContainerInterface<PageInterface>|null $container     [optional] container to render. Default is to render the container registered in the helper.
+     * @param string|null                            $ulClass       [optional] CSS class to use for UL element. Default is to use the value from {@link getUlClass()}.
+     * @param string|null                            $liClass       [optional] CSS class to use for LI elements. Default is to use the value from {@link getLiClass()}.
+     * @param int|string|null                        $indent        [optional] indentation as a string or number of spaces. Default is to use the value retrieved from {@link getIndent()}.
+     * @param string|null                            $liActiveClass [optional] CSS class to use for UL element. Default is to use the value from {@link getUlClass()}.
      *
      * @throws Exception\InvalidArgumentException
      */
@@ -197,8 +184,7 @@ interface MenuInterface extends ViewHelperInterface
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array
-     *                                                               is given, the first value is used for the partial view script.
+     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is given, the first value is used for the partial view script.
      *
      * @return self
      *

@@ -125,8 +125,8 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Magic overload: Proxy calls to the navigation container
      *
-     * @param string       $method    method name in container
-     * @param array<int, mixed> $arguments rguments to pass
+     * @param string            $method    method name in container
+     * @param array<int, mixed> $arguments arguments to pass
      *
      * @throws void
      */
@@ -157,10 +157,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * Implements {@link ViewHelperInterface::render()}.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
-     *                                                  Default is null, which indicates
-     *                                                  that the helper should render
-     *                                                  the container returned by {@link getContainer()}.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is null, which indicates that the helper should render the container returned by {@link getContainer()}.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -246,18 +243,8 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * Finds the deepest active page in the given container
      *
      * @param Navigation\ContainerInterface<PageInterface>|string|null $container to search
-     * @param int|null                                                 $minDepth  [optional] minimum depth
-     *                                                                            required for page to be
-     *                                                                            valid. Default is to use
-     *                                                                            {@link getMinDepth()}. A
-     *                                                                            null value means no minimum
-     *                                                                            depth required.
-     * @param int|null                                                 $maxDepth  [optional] maximum depth
-     *                                                                            a page can have to be
-     *                                                                            valid. Default is to use
-     *                                                                            {@link getMaxDepth()}. A
-     *                                                                            null value means no maximum
-     *                                                                            depth required.
+     * @param int|null                                                 $minDepth  [optional] minimum depth required for page to be valid. Default is to use {@link getMinDepth()}. A null value means no minimum depth required.
+     * @param int|null                                                 $maxDepth  [optional] maximum depth a page can have to be valid. Default is to use {@link getMaxDepth()}. A null value means no maximum depth required.
      *
      * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page', or an empty array if not found
      * @phpstan-return array{page?: PageInterface|null, depth?: int|null}
@@ -320,10 +307,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *   will not be accepted if it is the descendant of a non-accepted page
      *
      * @param PageInterface $page      page to check
-     * @param bool          $recursive [optional] if true, page will not be
-     *                                 accepted if it is the descendant of
-     *                                 a page that is not accepted. Default
-     *                                 is true
+     * @param bool          $recursive [optional] if true, page will not be accepted if it is the descendant of a page that is not accepted. Default is true
      *
      * @return bool Whether page should be accepted
      *
@@ -655,8 +639,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Sets default Authorization to use if another Authorization is not explicitly set
      *
-     * @param AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which
-     *                                                   sets no Authorization object.
+     * @param AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which sets no Authorization object.
      *
      * @throws void
      *
@@ -671,8 +654,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * Sets default Authorization role(s) to use when iterating pages if not explicitly
      * set later with {@link setRole()}
      *
-     * @param string|null $role [optional] role to set. Expects null or string. Default is null, which
-     *                          sets no default role.
+     * @param string|null $role [optional] role to set. Expects null or string. Default is null, which sets no default role.
      *
      * @throws void
      *

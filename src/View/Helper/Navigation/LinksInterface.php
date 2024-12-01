@@ -22,40 +22,79 @@ interface LinksInterface extends ViewHelperInterface
 {
     /**
      * Constants used for specifying which link types to find and render
+     *
+     * @api
      */
     public const int RENDER_ALTERNATE = 0x0001;
 
+    /** @api */
     public const int RENDER_STYLESHEET = 0x0002;
 
+    /** @api */
     public const int RENDER_START = 0x0004;
 
+    /** @api */
     public const int RENDER_NEXT = 0x0008;
 
+    /** @api */
     public const int RENDER_PREV = 0x0010;
 
+    /** @api */
     public const int RENDER_CONTENTS = 0x0020;
 
+    /** @api */
     public const int RENDER_INDEX = 0x0040;
 
+    /** @api */
     public const int RENDER_GLOSSARY = 0x0080;
 
+    /** @api */
     public const int RENDER_COPYRIGHT = 0x0100;
 
+    /** @api */
     public const int RENDER_CHAPTER = 0x0200;
 
+    /** @api */
     public const int RENDER_SECTION = 0x0400;
 
+    /** @api */
     public const int RENDER_SUBSECTION = 0x0800;
 
+    /** @api */
     public const int RENDER_APPENDIX = 0x1000;
 
+    /** @api */
     public const int RENDER_HELP = 0x2000;
 
+    /** @api */
     public const int RENDER_BOOKMARK = 0x4000;
 
+    /** @api */
     public const int RENDER_CUSTOM = 0x8000;
 
+    /** @api */
     public const int RENDER_ALL = 0xFFFF;
+
+    /**
+     * Maps render constants to W3C link types
+     */
+    public const array RELATIONS = [
+        self::RENDER_ALTERNATE => 'alternate',
+        self::RENDER_STYLESHEET => 'stylesheet',
+        self::RENDER_START => 'start',
+        self::RENDER_NEXT => 'next',
+        self::RENDER_PREV => 'prev',
+        self::RENDER_CONTENTS => 'contents',
+        self::RENDER_INDEX => 'index',
+        self::RENDER_GLOSSARY => 'glossary',
+        self::RENDER_COPYRIGHT => 'copyright',
+        self::RENDER_CHAPTER => 'chapter',
+        self::RENDER_SECTION => 'section',
+        self::RENDER_SUBSECTION => 'subsection',
+        self::RENDER_APPENDIX => 'appendix',
+        self::RENDER_HELP => 'help',
+        self::RENDER_BOOKMARK => 'bookmark',
+    ];
 
     /**
      * Magic overload: Proxy calls to {@link findRelation()} or container
@@ -85,6 +124,7 @@ interface LinksInterface extends ViewHelperInterface
      *                                alternate, appendix, bookmark, chapter, contents, copyright,
      *                                glossary, help, home, index, next, prev, section, start, stylesheet,
      *                                subsection
+     * @phpstan-param value-of<self::RELATIONS> $relation
      *
      * @throws Exception\DomainException
      */
@@ -129,6 +169,7 @@ interface LinksInterface extends ViewHelperInterface
      * @param PageInterface $page page to find relations for
      * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
+     * @phpstan-param value-of<self::RELATIONS> $type
      *
      * @return array<int, PageInterface>
      *
@@ -251,18 +292,18 @@ interface LinksInterface extends ViewHelperInterface
      * the render constants. Examples:
      * <code>
      * // render all links except glossary
-     * $flag = Links:RENDER_ALL ^ Links:RENDER_GLOSSARY;
+     * $flag = LinksInterface:RENDER_ALL ^ LinksInterface:RENDER_GLOSSARY;
      * $helper->setRenderFlag($flag);
      *
      * // render only chapters and sections
-     * $flag = Links:RENDER_CHAPTER | Links:RENDER_SECTION;
+     * $flag = LinksInterface:RENDER_CHAPTER | LinksInterface:RENDER_SECTION;
      * $helper->setRenderFlag($flag);
      *
      * // render only relations that are not native W3C relations
-     * $helper->setRenderFlag(Links:RENDER_CUSTOM);
+     * $helper->setRenderFlag(LinksInterface:RENDER_CUSTOM);
      *
      * // render all relations (default)
-     * $helper->setRenderFlag(Links:RENDER_ALL);
+     * $helper->setRenderFlag(LinksInterface:RENDER_ALL);
      * </code>
      *
      * Note that custom relations can also be rendered directly using the

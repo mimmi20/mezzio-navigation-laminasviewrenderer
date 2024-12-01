@@ -12,9 +12,7 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use ErrorException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\Stdlib\ErrorHandler;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\HeadLink;
@@ -47,7 +45,6 @@ use function rtrim;
 use function sprintf;
 use function ucfirst;
 
-use const E_WARNING;
 use const PHP_EOL;
 
 /**
@@ -55,29 +52,6 @@ use const PHP_EOL;
  */
 final class Links extends AbstractHelper implements LinksInterface
 {
-    /**
-     * Maps render constants to W3C link types
-     *
-     * @var array<int, string>
-     */
-    private const array RELATIONS = [
-        LinksInterface::RENDER_ALTERNATE => 'alternate',
-        LinksInterface::RENDER_STYLESHEET => 'stylesheet',
-        LinksInterface::RENDER_START => 'start',
-        LinksInterface::RENDER_NEXT => 'next',
-        LinksInterface::RENDER_PREV => 'prev',
-        LinksInterface::RENDER_CONTENTS => 'contents',
-        LinksInterface::RENDER_INDEX => 'index',
-        LinksInterface::RENDER_GLOSSARY => 'glossary',
-        LinksInterface::RENDER_COPYRIGHT => 'copyright',
-        LinksInterface::RENDER_CHAPTER => 'chapter',
-        LinksInterface::RENDER_SECTION => 'section',
-        LinksInterface::RENDER_SUBSECTION => 'subsection',
-        LinksInterface::RENDER_APPENDIX => 'appendix',
-        LinksInterface::RENDER_HELP => 'help',
-        LinksInterface::RENDER_BOOKMARK => 'bookmark',
-    ];
-
     /**
      * The helper's render flag
      *
@@ -136,10 +110,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * Implements {@link ViewHelperInterface::render()}.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
-     *                                                  Default is null, which indicates
-     *                                                  that the helper should render
-     *                                                  the container returned by {@link getContainer()}.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is null, which indicates that the helper should render the container returned by {@link getContainer()}.
      *
      * @throws Exception\DomainException
      * @throws Exception\RuntimeException
@@ -207,6 +178,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *                                alternate, appendix, bookmark, chapter, contents, copyright,
      *                                glossary, help, home, index, next, prev, section, start, stylesheet,
      *                                subsection
+     * @phpstan-param value-of<LinksInterface::RELATIONS> $relation
      *
      * @throws Exception\DomainException
      */
@@ -292,14 +264,14 @@ final class Links extends AbstractHelper implements LinksInterface
         }
 
         $result = ['rel' => [], 'rev' => []];
-        $native = array_values(self::RELATIONS);
+        $native = array_values(LinksInterface::RELATIONS);
 
         foreach (array_keys($result) as $rel) {
-            $meth  = 'getDefined' . ucfirst($rel);
+            $meth = 'getDefined' . ucfirst($rel);
             $types = array_merge($native, array_diff($page->{$meth}(), $native));
 
             foreach ($types as $type) {
-                $relFlag = array_search($type, self::RELATIONS, true);
+                $relFlag = array_search($type, LinksInterface::RELATIONS, true);
 
                 if (!$relFlag) {
                     $relFlag = self::RENDER_CUSTOM;
@@ -335,6 +307,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param PageInterface $page page to find relations for
      * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
+     * @phpstan-param value-of<LinksInterface::RELATIONS> $type
      *
      * @return array<int, PageInterface>
      *

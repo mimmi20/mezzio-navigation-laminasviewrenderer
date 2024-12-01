@@ -79,7 +79,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * $blogPages = $this->navigation()->findAllByRoute('blog');
      * </code>
      *
-     * @param string                                               $method    helper name or method name in container
+     * @param string                                                           $method    helper name or method name in container
      * @param array<int|string, ContainerInterface<PageInterface>|string|null> $arguments [optional] arguments to pass
      *
      * @return mixed returns what the proxied call returns
@@ -123,9 +123,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * {@link \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation}.
      *
      * @param string $proxy  helper name
-     * @param bool   $strict [optional] whether exceptions should be
-     *                       thrown if something goes
-     *                       wrong. Default is true.
+     * @param bool   $strict [optional] whether exceptions should be thrown if something goes wrong. Default is true.
      *
      * @return ViewHelperInterface|null helper instance
      *

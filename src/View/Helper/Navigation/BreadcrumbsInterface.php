@@ -37,11 +37,8 @@ interface BreadcrumbsInterface extends ViewHelperInterface
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
-     *                                                                 Default is to use the partial registered in the helper. If an array
-     *                                                                 is given, the first value is used for the partial view script.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -60,12 +57,9 @@ interface BreadcrumbsInterface extends ViewHelperInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<string, array<int|string, mixed>|string>            $params
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
-     *                                                                 Default is to use the partial registered in the helper. If an array
-     *                                                                 is given, the first value is used for the partial view script.
+     * @param array<string, array<int|string, mixed>|string> $params
+     * @param ContainerInterface<PageInterface>|string|null  $container [optional] container to pass to view script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null  $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -99,8 +93,7 @@ interface BreadcrumbsInterface extends ViewHelperInterface
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is
-     *                                                               given, the first value is used for the partial view script.
+     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is given, the first value is used for the partial view script.
      *
      * @return self
      *

@@ -78,10 +78,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * Implements {@link ViewHelperInterface::render()}.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
-     *                                                  Default is null, which indicates
-     *                                                  that the helper should render
-     *                                                  the container returned by {@link getContainer()}.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is null, which indicates that the helper should render the container returned by {@link getContainer()}.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -105,11 +102,8 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * as-is, and will be available in the partial script as 'container', e.g.
      * <code>echo 'Number of pages: ', count($this->container);</code>.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
-     *                                                                 Default is to use the partial registered in the helper. If an array
-     *                                                                 is given, the first value is used for the partial view script.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -131,12 +125,9 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<string, array<int|string, mixed>|string>            $params
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
-     *                                                  script. Default is to use the container registered in the helper.
-     * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
-     *                                                                 Default is to use the partial registered in the helper. If an array
-     *                                                                 is given, the first value is used for the partial view script.
+     * @param array<string, array<int|string, mixed>|string> $params
+     * @param ContainerInterface<PageInterface>|string|null  $container [optional] container to pass to view script. Default is to use the container registered in the helper.
+     * @param array<int, string>|ModelInterface|string|null  $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
@@ -154,8 +145,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * Renders breadcrumbs by chaining 'a' elements with the separator
      * registered in the helper.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is
-     *                                                  to render the container registered in the helper.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is to render the container registered in the helper.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -287,8 +277,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
     /**
      * Sets which partial view script to use for rendering menu.
      *
-     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is
-     *                                                               given, the first value is used for the partial view script.
+     * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is given, the first value is used for the partial view script.
      *
      * @throws void
      *

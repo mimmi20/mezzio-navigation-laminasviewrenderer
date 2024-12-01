@@ -135,6 +135,7 @@ parameters:
     - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
     - '~assertContainsOnly~'
+    - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
 
 rules:
   # code complexity

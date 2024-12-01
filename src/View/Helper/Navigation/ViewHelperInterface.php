@@ -51,10 +51,7 @@ interface ViewHelperInterface extends HelperInterface, Stringable
     /**
      * Renders helper
      *
-     * @param Navigation\ContainerInterface<PageInterface>|string|null $container [optional] container to render.
-     *                                                             Default is null, which indicates
-     *                                                             that the helper should render
-     *                                                             the container returned by {@link getContainer()}.
+     * @param Navigation\ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is null, which indicates that the helper should render the container returned by {@link getContainer()}.
      *
      * @return string helper output
      *
