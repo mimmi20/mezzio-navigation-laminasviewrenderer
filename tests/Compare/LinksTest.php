@@ -798,7 +798,6 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws ExceptionInterface
      */
     public function testFindAllRelations(): void

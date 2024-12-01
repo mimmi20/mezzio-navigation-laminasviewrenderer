@@ -254,7 +254,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * @return array<string, array<int|string, array<int, PageInterface>>>
      * @phpstan-return array<'rel'|'rev', array<int|string, non-empty-array<int, PageInterface>>>
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws void
      */
     #[Override]
     public function findAllRelations(PageInterface $page, int | null $flag = null): array
@@ -283,7 +283,7 @@ final class Links extends AbstractHelper implements LinksInterface
 
                 try {
                     $found = $this->findRelation($page, $rel, $type);
-                } catch (Exception\DomainException | Exception\RuntimeException) {
+                } catch (Exception\DomainException | Exception\RuntimeException | Exception\InvalidArgumentException) {
                     continue;
                 }
 
