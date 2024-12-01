@@ -60,7 +60,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @var array<int, string>
      */
-    private static array $RELATIONS = [
+    private const array RELATIONS = [
         LinksInterface::RENDER_ALTERNATE => 'alternate',
         LinksInterface::RENDER_STYLESHEET => 'stylesheet',
         LinksInterface::RENDER_START => 'start',
@@ -108,7 +108,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * $h->findRelFoo($page);     // $h->findRelation($page, 'rel', 'foo');
      * </code>
      *
-     * @param array<mixed> $arguments
+     * @param array<int, mixed> $arguments
      *
      * @throws Exception\DomainException
      * @throws Exception\InvalidArgumentException
@@ -117,14 +117,7 @@ final class Links extends AbstractHelper implements LinksInterface
     #[Override]
     public function __call(string $method, array $arguments = []): mixed
     {
-        ErrorHandler::start(E_WARNING);
         $result = preg_match('/find(Rel|Rev)(.+)/', $method, $match);
-
-        try {
-            ErrorHandler::stop();
-        } catch (ErrorException $e) {
-            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
-        }
 
         if ($result && $arguments[0] instanceof PageInterface) {
             $rel  = mb_strtolower($match[1]);
@@ -182,10 +175,6 @@ final class Links extends AbstractHelper implements LinksInterface
         $result = $this->findAllRelations($active, $this->getRenderFlag());
 
         foreach ($result as $attrib => $types) {
-            if (!is_string($attrib)) {
-                continue;
-            }
-
             foreach ($types as $relation => $pages) {
                 if (!is_string($relation)) {
                     continue;
@@ -290,7 +279,8 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @param PageInterface $page page to find links for
      *
-     * @return array<string, array<int|string, array<int|string, PageInterface>>>
+     * @return array<string, array<int|string, array<int, PageInterface>>>
+     * @phpstan-return array<'rel'|'rev', array<int|string, non-empty-array<int, PageInterface>>>
      *
      * @throws Exception\InvalidArgumentException
      */
@@ -302,14 +292,14 @@ final class Links extends AbstractHelper implements LinksInterface
         }
 
         $result = ['rel' => [], 'rev' => []];
-        $native = array_values(self::$RELATIONS);
+        $native = array_values(self::RELATIONS);
 
         foreach (array_keys($result) as $rel) {
             $meth  = 'getDefined' . ucfirst($rel);
             $types = array_merge($native, array_diff($page->{$meth}(), $native));
 
             foreach ($types as $type) {
-                $relFlag = array_search($type, self::$RELATIONS, true);
+                $relFlag = array_search($type, self::RELATIONS, true);
 
                 if (!$relFlag) {
                     $relFlag = self::RENDER_CUSTOM;
@@ -346,7 +336,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\DomainException
      * @throws Exception\InvalidArgumentException
@@ -502,7 +492,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a chapter in a collection of documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\DomainException
      * @throws Exception\InvalidArgumentException
@@ -538,7 +528,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\RuntimeException
      */
@@ -577,7 +567,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * Refers to a document serving as a subsection in a collection of
      * documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\RuntimeException
      */
@@ -727,7 +717,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param 'rel'|'rev'   $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -764,7 +754,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param 'rel'|'rev'   $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next', etc
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<int, PageInterface>|PageInterface|null
      *
      * @throws Exception\InvalidArgumentException
      */

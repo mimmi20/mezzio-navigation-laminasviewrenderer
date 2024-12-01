@@ -3750,6 +3750,115 @@ final class BreadcrumbsTest extends TestCase
      * @throws InvalidArgumentException
      * @throws ExceptionInterface
      */
+    public function testRenderPartialWithException(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('isActive');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->willThrowException($exception);
+
+        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $partial   = 'testPartial';
+        $seperator = '/';
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $translatePlugin = $this->createMock(Translate::class);
+        $translatePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $helper = new Breadcrumbs(
+            $serviceLocator,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+            $translatePlugin,
+        );
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $helper->setSeparator($seperator);
+        $helper->setLinkLast(true);
+        $helper->setPartial($partial);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->renderPartial($name);
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
+     */
     public function testRenderStraightNoActivePage(): void
     {
         $name = 'Mezzio\Navigation\Top';

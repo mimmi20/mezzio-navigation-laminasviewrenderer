@@ -126,7 +126,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * Magic overload: Proxy calls to the navigation container
      *
      * @param string       $method    method name in container
-     * @param array<mixed> $arguments rguments to pass
+     * @param array<int, mixed> $arguments rguments to pass
      *
      * @throws void
      */

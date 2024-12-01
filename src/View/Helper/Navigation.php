@@ -80,7 +80,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * </code>
      *
      * @param string                                               $method    helper name or method name in container
-     * @param array<ContainerInterface<PageInterface>|string|null> $arguments [optional] arguments to pass
+     * @param array<int|string, ContainerInterface<PageInterface>|string|null> $arguments [optional] arguments to pass
      *
      * @return mixed returns what the proxied call returns
      *

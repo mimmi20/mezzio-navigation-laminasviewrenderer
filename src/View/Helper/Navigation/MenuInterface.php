@@ -66,7 +66,7 @@ interface MenuInterface extends ViewHelperInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<mixed>                                  $params
+     * @param array<int|string, mixed>                                  $params
      * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
      * @param array<int, string>|string|null                $partial   [optional] partial view script to use.

@@ -131,7 +131,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<string, array<mixed>|string>            $params
+     * @param array<string, array<int|string, mixed>|string>            $params
      * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view
      *                                                  script. Default is to use the container registered in the helper.
      * @param array<int, string>|ModelInterface|string|null $partial   [optional] partial view script to use.
@@ -379,7 +379,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
     }
 
     /**
-     * @param array<string> $html
+     * @param array<int|string, string> $html
      *
      * @throws void
      *

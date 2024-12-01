@@ -68,7 +68,7 @@ interface LinksInterface extends ViewHelperInterface
      * $h->findRelFoo($page);     // $h->findRelation($page, 'rel', 'foo');
      * </code>
      *
-     * @param array<mixed> $arguments
+     * @param array<int, mixed> $arguments
      *
      * @throws Exception\ExceptionInterface
      * @throws ExceptionInterface
@@ -130,7 +130,7 @@ interface LinksInterface extends ViewHelperInterface
      * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\DomainException if $rel is not "rel" or "rev"
      * @throws InvalidArgumentException
@@ -184,7 +184,7 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a chapter in a collection of documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\DomainException
      * @throws InvalidArgumentException
@@ -198,7 +198,7 @@ interface LinksInterface extends ViewHelperInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws void
      */
@@ -212,7 +212,7 @@ interface LinksInterface extends ViewHelperInterface
      * Refers to a document serving as a subsection in a collection of
      * documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws void
      */
