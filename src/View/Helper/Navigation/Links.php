@@ -267,7 +267,7 @@ final class Links extends AbstractHelper implements LinksInterface
         $native = array_values(LinksInterface::RELATIONS);
 
         foreach (array_keys($result) as $rel) {
-            $meth = 'getDefined' . ucfirst($rel);
+            $meth  = 'getDefined' . ucfirst($rel);
             $types = array_merge($native, array_diff($page->{$meth}(), $native));
 
             foreach ($types as $type) {
