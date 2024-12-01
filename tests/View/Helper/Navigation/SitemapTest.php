@@ -5430,6 +5430,621 @@ final class SitemapTest extends TestCase
      * @throws RuntimeException
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
+    public function testGetDomSitemapWithException2(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = 0.9;
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page1::class,
+            ),
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page2::class,
+            ),
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->createMock(BasePath::class);
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $escaper = $this->createMock(EscapeHtml::class);
+        $escaper->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
+        $serverUrlHelper->expects(self::never())
+            ->method('__invoke');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with(null)
+            ->willThrowException($exception);
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $dom = $this->createMock(DOMDocument::class);
+        $dom->expects(self::never())
+            ->method('createElementNS');
+        $dom->expects(self::never())
+            ->method('appendChild');
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->createMock(Loc::class);
+        $locValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->createMock(Lastmod::class);
+        $lastmodValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->createMock(Changefreq::class);
+        $changefreqValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->createMock(Priority::class);
+        $priorityValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionCode(0);
+        self::expectExceptionMessage('test');
+
+        $helper->getDomSitemap();
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     */
+    public function testGetDomSitemapWithException3(): void
+    {
+        $exception = new DOMException('test');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = 0.9;
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page1::class,
+            ),
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page2::class,
+            ),
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($parentPage, true)
+            ->willReturn(true);
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ],
+            )
+            ->willReturn($acceptHelper);
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->createMock(BasePath::class);
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->createMock(EscapeHtml::class);
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . '-test-' . $parentUri);
+
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlNode = $this->createMock(DOMElement::class);
+        $urlNode->expects(self::never())
+            ->method('appendChild');
+
+        $urlSet = $this->createMock(DOMElement::class);
+        $urlSet->expects(self::never())
+            ->method('appendChild');
+
+        $dom     = $this->createMock(DOMDocument::class);
+        $matcher = self::exactly(2);
+        $dom->expects($matcher)
+            ->method('createElementNS')
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value) use ($matcher, $urlSet, $exception): DOMElement {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($invocation) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        default => self::assertSame('url', $qualifiedName),
+                    };
+
+                    self::assertSame('', $value);
+
+                    return match ($invocation) {
+                        1 => $urlSet,
+                        default => throw $exception,
+                    };
+                },
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->createMock(Loc::class);
+        $locValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->createMock(Lastmod::class);
+        $lastmodValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->createMock(Changefreq::class);
+        $changefreqValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->createMock(Priority::class);
+        $priorityValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::expectException(RuntimeException::class);
+        self::expectExceptionCode(0);
+        self::expectExceptionMessage('test');
+
+        $helper->getDomSitemap();
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     */
+    public function testGetDomSitemapWithException4(): void
+    {
+        $exception = new DOMException('test');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentUri = '/test.html';
+
+        $time       = time();
+        $changefreq = 'never';
+        $priority   = 0.9;
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setUri($parentUri);
+        $parentPage->set('lastmod', date('Y-m-d H:i:s', $time));
+        $parentPage->set('changefreq', $changefreq);
+        $parentPage->set('priority', $priority);
+
+        $container = new Navigation();
+
+        $page1 = new Uri();
+        $page1->setVisible(false);
+        $page1->setOrder(1);
+
+        $page2 = new Uri();
+        $page2->setVisible(true);
+        $page2->setUri($parentUri);
+        $page2->setOrder(2);
+
+        assert(
+            $page1 instanceof PageInterface,
+            sprintf(
+                '$page1 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page1::class,
+            ),
+        );
+        $parentPage->addPage($page1);
+
+        assert(
+            $page2 instanceof PageInterface,
+            sprintf(
+                '$page2 should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page2::class,
+            ),
+        );
+        $parentPage->addPage($page2);
+
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($parentPage, true)
+            ->willReturn(true);
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::once())
+            ->method('build')
+            ->with(
+                AcceptHelperInterface::class,
+                [
+                    'authorization' => $auth,
+                    'renderInvisible' => false,
+                    'role' => $role,
+                ],
+            )
+            ->willReturn($acceptHelper);
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $basePath = $this->createMock(BasePath::class);
+        $basePath->expects(self::never())
+            ->method('__invoke');
+
+        $serverUrl = 'http://test.org:8081';
+
+        $escaper = $this->createMock(EscapeHtml::class);
+        $escaper->expects(self::once())
+            ->method('__invoke')
+            ->with($serverUrl . $parentUri)
+            ->willReturn($serverUrl . '-test-' . $parentUri);
+
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
+        $serverUrlHelper->expects(self::once())
+            ->method('__invoke')
+            ->with(null)
+            ->willReturn($serverUrl);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
+                    match ($matcher->numberOfInvocations()) {
+                        2 => self::assertNull($containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        2 => null,
+                        default => $container,
+                    };
+                },
+            );
+
+        $helper = new Sitemap(
+            $serviceLocator,
+            $htmlify,
+            $containerParser,
+            $basePath,
+            $escaper,
+            $serverUrlHelper,
+        );
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+        $helper->setContainer($container);
+        $helper->setFormatOutput(true);
+        $helper->setMinDepth(0);
+        $helper->setMaxDepth(42);
+        $helper->setUseSchemaValidation(false);
+
+        $urlNode = $this->createMock(DOMElement::class);
+        $urlNode->expects(self::never())
+            ->method('appendChild');
+
+        $urlSet = $this->createMock(DOMElement::class);
+        $urlSet->expects(self::once())
+            ->method('appendChild')
+            ->with($urlNode);
+
+        $dom     = $this->createMock(DOMDocument::class);
+        $matcher = self::exactly(3);
+        $dom->expects($matcher)
+            ->method('createElementNS')
+            ->willReturnCallback(
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $exception): DOMElement {
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame('urlset', $qualifiedName),
+                        2 => self::assertSame('url', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
+                    };
+
+                    match ($matcher->numberOfInvocations()) {
+                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
+                        default => self::assertSame('', $value),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $urlSet,
+                        2 => $urlNode,
+                        default => throw $exception,
+                    };
+                },
+            );
+        $dom->expects(self::once())
+            ->method('appendChild')
+            ->with($urlSet);
+        $dom->expects(self::never())
+            ->method('schemaValidate');
+
+        assert($dom instanceof DOMDocument);
+        $helper->setDom($dom);
+
+        $locValidator = $this->createMock(Loc::class);
+        $locValidator->expects(self::once())
+            ->method('isValid')
+            ->with($serverUrl . '-test-' . $parentUri)
+            ->willReturn(true);
+
+        assert($locValidator instanceof Loc);
+        $helper->setLocValidator($locValidator);
+
+        $lastmodValidator = $this->createMock(Lastmod::class);
+        $lastmodValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($lastmodValidator instanceof Lastmod);
+        $helper->setLastmodValidator($lastmodValidator);
+
+        $changefreqValidator = $this->createMock(Changefreq::class);
+        $changefreqValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($changefreqValidator instanceof Changefreq);
+        $helper->setChangefreqValidator($changefreqValidator);
+
+        $priorityValidator = $this->createMock(Priority::class);
+        $priorityValidator->expects(self::never())
+            ->method('isValid');
+
+        assert($priorityValidator instanceof Priority);
+        $helper->setPriorityValidator($priorityValidator);
+
+        self::expectException(RuntimeException::class);
+        self::expectExceptionCode(0);
+        self::expectExceptionMessage('test');
+
+        $helper->getDomSitemap();
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     */
     public function testRenderWithXmlDeclaration(): void
     {
         $resource  = 'testResource';
