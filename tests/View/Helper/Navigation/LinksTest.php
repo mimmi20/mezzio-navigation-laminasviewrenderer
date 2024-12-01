@@ -5348,7 +5348,7 @@ final class LinksTest extends TestCase
             );
 
         $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
-        $matcher = self::exactly(31);
+        $matcher                = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
             ->method('find')
             ->willReturnCallback(
@@ -5695,7 +5695,7 @@ final class LinksTest extends TestCase
             );
 
         $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
-        $matcher = self::exactly(31);
+        $matcher                = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
             ->method('find')
             ->willReturnCallback(
@@ -5885,14 +5885,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws DomainException
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindAllRelations(): void
     {
-        $name      = 'Mezzio\Navigation\Top';
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -5960,7 +5957,7 @@ final class LinksTest extends TestCase
             ->method('isGranted');
 
         $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
-        $matcher = self::exactly(31);
+        $matcher                = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
             ->method('find')
             ->willReturnCallback(
@@ -6023,8 +6020,16 @@ final class LinksTest extends TestCase
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
-                        4, 13 => self::assertSame(\Mimmi20\NavigationHelper\Accept\AcceptHelperInterface::class, $name, (string) $invocation),
-                        default => self::assertSame(FindFromPropertyInterface::class, $name, (string) $invocation),
+                        4, 13 => self::assertSame(
+                            AcceptHelperInterface::class,
+                            $name,
+                            (string) $invocation,
+                        ),
+                        default => self::assertSame(
+                            FindFromPropertyInterface::class,
+                            $name,
+                            (string) $invocation,
+                        ),
                     };
 
                     self::assertSame(
