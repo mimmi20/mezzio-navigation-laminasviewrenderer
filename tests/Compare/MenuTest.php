@@ -420,8 +420,15 @@ final class MenuTest extends AbstractTestCase
 
         try {
             $this->helper->render();
+
             self::fail('invalid $partial should throw Laminas\View\Exception\InvalidArgumentException');
-        } catch (ExceptionInterface) {
+        } catch (ExceptionInterface $e) {
+            self::assertSame(InvalidArgumentException::class, $e::class);
+            self::assertSame(
+                'Unable to render menu: A view partial supplied as an array must contain one value: the partial view script',
+                $e->getMessage(),
+            );
+            self::assertSame(0, $e->getCode());
         }
     }
 

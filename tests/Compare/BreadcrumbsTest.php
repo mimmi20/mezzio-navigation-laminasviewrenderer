@@ -318,7 +318,13 @@ final class BreadcrumbsTest extends AbstractTestCase
             self::fail(
                 '$partial was invalid, but no Laminas\View\Exception\ExceptionInterface was thrown',
             );
-        } catch (ExceptionInterface) {
+        } catch (ExceptionInterface $e) {
+            self::assertSame(InvalidArgumentException::class, $e::class);
+            self::assertSame(
+                'Unable to render breadcrumbs: A view partial supplied as an array must contain one value: the partial view script',
+                $e->getMessage(),
+            );
+            self::assertSame(0, $e->getCode());
         }
     }
 

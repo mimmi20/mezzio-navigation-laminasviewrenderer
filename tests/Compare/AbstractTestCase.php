@@ -64,7 +64,6 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function file_get_contents;
@@ -196,28 +195,6 @@ abstract class AbstractTestCase extends TestCase
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
-
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(static::never())
-            ->method('emergency');
-        $logger->expects(static::never())
-            ->method('alert');
-        $logger->expects(static::never())
-            ->method('critical');
-        $logger->expects(static::never())
-            ->method('error');
-        $logger->expects(static::never())
-            ->method('warning');
-        $logger->expects(static::never())
-            ->method('notice');
-        $logger->expects(static::never())
-            ->method('info');
-        $logger->expects(static::never())
-            ->method('debug');
-
-        $sm->setService(LoggerInterface::class, $logger);
 
         // setup containers from config
         $nav1 = $sm->get('nav_test1');
