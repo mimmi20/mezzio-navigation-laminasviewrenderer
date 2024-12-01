@@ -24,7 +24,6 @@ use Laminas\Validator\Sitemap\Changefreq;
 use Laminas\Validator\Sitemap\Lastmod;
 use Laminas\Validator\Sitemap\Loc;
 use Laminas\Validator\Sitemap\Priority;
-use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\BasePath;
@@ -47,8 +46,6 @@ use Override;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-use Stringable;
 
 use function assert;
 use function date;
@@ -70,29 +67,7 @@ final class SitemapTest extends TestCase
     {
         $maxDepth = 4;
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -100,39 +75,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -150,29 +114,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetMinDepth(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -180,39 +122,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -246,29 +177,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -276,39 +185,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -329,29 +227,7 @@ final class SitemapTest extends TestCase
         $role        = 'testRole';
         $defaultRole = 'testDefaultRole';
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -359,39 +235,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -416,29 +281,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -446,39 +289,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -503,29 +335,7 @@ final class SitemapTest extends TestCase
         $auth        = $this->createMock(AuthorizationInterface::class);
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -533,39 +343,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -594,29 +393,7 @@ final class SitemapTest extends TestCase
     {
         $view = $this->createMock(RendererInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -624,39 +401,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -675,36 +441,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetContainer(): void
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -712,33 +455,23 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -758,7 +491,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -784,36 +516,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'default';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -821,33 +530,23 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -855,7 +554,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -872,37 +570,14 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -910,33 +585,23 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -944,7 +609,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -959,37 +623,15 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -997,23 +639,17 @@ final class SitemapTest extends TestCase
         $page->expects(self::never())
             ->method('getPrivilege');
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page)
             ->willReturn(false);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
 
         $role = 'testRole';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1030,33 +666,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -1064,7 +690,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1091,40 +716,17 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\I18n\Exception\RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlify(): void
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1132,9 +734,7 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1158,35 +758,25 @@ final class SitemapTest extends TestCase
         $page->expects(self::never())
             ->method('getTarget');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::once())
             ->method('toHtml')
             ->with(Sitemap::class, $page)
             ->willReturn($expected);
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -1194,7 +784,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1204,9 +793,7 @@ final class SitemapTest extends TestCase
 
         $helper->setContainer($name);
 
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = $this->createMock(PhpRenderer::class);
         $view->expects(self::never())
             ->method('plugin');
         $view->expects(self::never())
@@ -1229,29 +816,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetIndent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1259,39 +824,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1312,37 +866,15 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::never())
             ->method('isVisible');
         $parentPage->expects(self::never())
@@ -1354,9 +886,7 @@ final class SitemapTest extends TestCase
         $parentPage->expects(self::never())
             ->method('isActive');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1375,23 +905,17 @@ final class SitemapTest extends TestCase
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1408,33 +932,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -1442,7 +956,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1460,37 +973,15 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::never())
             ->method('isVisible');
         $parentPage->expects(self::never())
@@ -1502,9 +993,7 @@ final class SitemapTest extends TestCase
         $parentPage->expects(self::never())
             ->method('isActive');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1523,9 +1012,7 @@ final class SitemapTest extends TestCase
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
@@ -1536,15 +1023,11 @@ final class SitemapTest extends TestCase
                 ],
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1561,33 +1044,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -1595,7 +1068,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1618,52 +1090,26 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testFindActiveWithoutContainer(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $role     = 'testRole';
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with(new IsInstanceOf(Navigation::class), $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1680,33 +1126,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with(null)
@@ -1714,7 +1150,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1734,37 +1169,15 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::never())
             ->method('isVisible');
         $parentPage->expects(self::never())
@@ -1776,9 +1189,7 @@ final class SitemapTest extends TestCase
         $parentPage->expects(self::never())
             ->method('isActive');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1797,9 +1208,7 @@ final class SitemapTest extends TestCase
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
@@ -1810,15 +1219,11 @@ final class SitemapTest extends TestCase
                 ],
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1835,33 +1240,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -1869,7 +1264,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -1895,37 +1289,15 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1944,23 +1316,17 @@ final class SitemapTest extends TestCase
         $maxDepth = 42;
         $minDepth = 2;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1977,33 +1343,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -2011,7 +1367,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2031,32 +1386,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
@@ -2067,9 +1402,7 @@ final class SitemapTest extends TestCase
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -2090,9 +1423,7 @@ final class SitemapTest extends TestCase
         $maxDepth = 0;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
@@ -2103,15 +1434,11 @@ final class SitemapTest extends TestCase
                 ],
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2128,33 +1455,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -2162,7 +1479,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2185,32 +1501,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
@@ -2254,23 +1550,17 @@ final class SitemapTest extends TestCase
         $maxDepth = 1;
         $minDepth = 2;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2287,33 +1577,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -2321,7 +1601,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2341,32 +1620,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
@@ -2409,23 +1668,17 @@ final class SitemapTest extends TestCase
         $role     = 'testRole';
         $maxDepth = -1;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, 0, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2442,33 +1695,23 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
@@ -2476,7 +1719,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2500,29 +1742,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetUseXmlDeclaration(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2530,39 +1750,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2580,29 +1789,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetUseSchemaValidation(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2610,39 +1797,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2660,29 +1836,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetUseSitemapValidators(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2690,39 +1844,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2739,33 +1882,11 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws InvalidArgumentException
      */
     public function testSetInvalidServerUrl(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2773,39 +1894,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2824,33 +1934,11 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws InvalidArgumentException
      */
     public function testSetServerUrlWithInvalidFragment(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2858,39 +1946,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2898,9 +1975,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $uri = $this->getMockBuilder(UriInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $uri = $this->createMock(UriInterface::class);
         $uri->expects(self::once())
             ->method('setFragment')
             ->with('')
@@ -2924,33 +1999,11 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws InvalidArgumentException
      */
     public function testSetServerUrlWithInvalidUri(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2958,39 +2011,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -2998,9 +2040,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $uri = $this->getMockBuilder(UriInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $uri = $this->createMock(UriInterface::class);
         $uri->expects(self::once())
             ->method('setFragment')
             ->with('');
@@ -3026,33 +2066,11 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws InvalidArgumentException
      */
     public function testSetServerUrlWithError(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3060,39 +2078,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3100,9 +2107,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $uri = $this->getMockBuilder(UriInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $uri = $this->createMock(UriInterface::class);
         $uri->expects(self::once())
             ->method('setFragment')
             ->with('');
@@ -3129,33 +2134,11 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws InvalidArgumentException
      */
     public function testSetServerUrl(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3163,39 +2146,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3205,9 +2177,7 @@ final class SitemapTest extends TestCase
 
         $serverUrl = 'ftp://test.org';
 
-        $uri = $this->getMockBuilder(UriInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $uri = $this->createMock(UriInterface::class);
         $uri->expects(self::once())
             ->method('setFragment')
             ->with('');
@@ -3233,29 +2203,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetFormatOutput(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3263,39 +2211,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3313,29 +2250,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testGetServerUrl(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3343,42 +2258,31 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'ftp://test.org';
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3396,29 +2300,7 @@ final class SitemapTest extends TestCase
      */
     public function testUrlWithoutPageHref(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3426,46 +2308,33 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getHref')
             ->willReturn('');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3483,29 +2352,7 @@ final class SitemapTest extends TestCase
      */
     public function testUrlWithRelativePageHref(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3513,52 +2360,39 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'ftp://test.org';
         $uri       = '/';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $uri)
             ->willReturn($serverUrl . '/' . $uri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getHref')
             ->willReturn($uri);
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3576,29 +2410,7 @@ final class SitemapTest extends TestCase
      */
     public function testUrlWithAbsolutePageHref(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3606,50 +2418,37 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $uri = 'ftp://test.org';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($uri)
             ->willReturn($uri . '/');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::exactly(2))
             ->method('getHref')
             ->willReturn($uri);
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3668,29 +2467,7 @@ final class SitemapTest extends TestCase
      */
     public function testUrlWithRelativePageHref2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3698,17 +2475,13 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
         $baseUri = '/test';
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::once())
             ->method('__invoke')
             ->willReturn($baseUri);
@@ -3716,37 +2489,28 @@ final class SitemapTest extends TestCase
         $serverUrl = 'ftp://test.org';
         $uri       = 'test.html';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $baseUri . '/' . $uri)
             ->willReturn($serverUrl . '/' . $baseUri . '/' . $uri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getHref')
             ->willReturn($uri);
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3760,29 +2524,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetDomDocument(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3790,39 +2532,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3843,29 +2574,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetLocValidator(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3873,39 +2582,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -3926,29 +2624,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetLastmodValidator(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3956,39 +2632,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -4009,29 +2674,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetPriorityValidator(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4039,39 +2682,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -4092,29 +2724,7 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetChangefreqValidator(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4122,39 +2732,28 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -4174,33 +2773,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -4212,9 +2790,7 @@ final class SitemapTest extends TestCase
         $parentPage->setPrivilege($privilege);
         $parentPage->setUri($parentUri);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -4243,23 +2819,17 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4276,39 +2846,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '/' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -4328,7 +2888,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -4347,23 +2906,17 @@ final class SitemapTest extends TestCase
 
         $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(3);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -4401,33 +2954,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveWithSchemaValidation(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -4439,9 +2971,7 @@ final class SitemapTest extends TestCase
         $parentPage->setPrivilege($privilege);
         $parentPage->setUri($parentUri);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -4470,23 +3000,17 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4503,39 +3027,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '/' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -4555,7 +3069,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -4575,23 +3088,17 @@ final class SitemapTest extends TestCase
 
         $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(3);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -4633,33 +3140,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeep(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -4706,9 +3192,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -4729,15 +3213,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4754,39 +3234,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '/' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -4806,7 +3276,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -4826,23 +3295,17 @@ final class SitemapTest extends TestCase
 
         $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(3);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -4882,33 +3345,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidation(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -4955,23 +3397,17 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4988,39 +3424,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . 'test' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -5040,7 +3466,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -5058,22 +3483,16 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::never())
             ->method('appendChild');
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(2);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -5103,9 +3522,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . 'test' . $parentUri)
@@ -5128,33 +3545,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLocValidationException(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -5201,23 +3597,17 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5234,39 +3624,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . 'test' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -5286,7 +3666,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -5304,22 +3683,16 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::never())
             ->method('appendChild');
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(2);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -5349,9 +3722,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . 'test' . $parentUri)
@@ -5374,33 +3745,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmod(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -5437,9 +3787,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -5460,15 +3808,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5485,39 +3829,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -5537,7 +3871,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -5560,9 +3893,7 @@ final class SitemapTest extends TestCase
         $urlChangefreq = $this->createMock(DOMElement::class);
         $urlPriority   = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $matcher = self::exactly(4);
         $urlNode->expects($matcher)
             ->method('appendChild')
@@ -5577,16 +3908,12 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(6);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -5630,9 +3957,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -5641,9 +3966,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -5652,9 +3975,7 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
@@ -5663,9 +3984,7 @@ final class SitemapTest extends TestCase
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
@@ -5679,33 +3998,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmod(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -5759,9 +4057,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -5782,15 +4078,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5807,39 +4099,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -5859,7 +4141,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -5881,9 +4162,7 @@ final class SitemapTest extends TestCase
         $urlChangefreq = $this->createMock(DOMElement::class);
         $urlPriority   = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $matcher = self::exactly(3);
         $urlNode->expects($matcher)
             ->method('appendChild')
@@ -5897,16 +4176,12 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(5);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -5947,9 +4222,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -5958,9 +4231,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -5969,9 +4240,7 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
@@ -5980,9 +4249,7 @@ final class SitemapTest extends TestCase
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
@@ -5996,35 +4263,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmodException(): void
     {
         $exception = new \Laminas\Validator\Exception\RuntimeException('test');
-
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::once())
-            ->method('error')
-            ->with($exception);
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -6079,43 +4324,23 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
-        $acceptHelper->expects($matcher)
+        $acceptHelper->expects(self::once())
             ->method('accept')
-            ->willReturnCallback(
-                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($parentPage, $page),
-                        2 => self::assertSame($page1, $page),
-                        default => self::assertSame($page2, $page),
-                    };
+            ->with($parentPage, true)
+            ->willReturn(true);
 
-                    self::assertTrue($recursive);
-
-                    return match ($matcher->numberOfInvocations()) {
-                        2 => false,
-                        default => true,
-                    };
-                },
-            );
-
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -6127,39 +4352,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -6179,7 +4394,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -6197,64 +4411,40 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $urlLoc        = $this->createMock(DOMElement::class);
-        $urlChangefreq = $this->createMock(DOMElement::class);
-        $urlPriority   = $this->createMock(DOMElement::class);
-
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $matcher = self::exactly(3);
-        $urlNode->expects($matcher)
+        $urlLoc  = $this->createMock(DOMElement::class);
+        $urlNode = $this->createMock(DOMElement::class);
+        $urlNode->expects(self::once())
             ->method('appendChild')
-            ->willReturnCallback(
-                static function (DOMNode $node) use ($matcher, $urlLoc, $urlChangefreq, $urlPriority): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($urlLoc, $node),
-                        2 => self::assertSame($urlChangefreq, $node),
-                        default => self::assertSame($urlPriority, $node),
-                    };
-                },
-            );
+            ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $matcher = self::exactly(5);
+        $dom     = $this->createMock(DOMDocument::class);
+        $matcher = self::exactly(3);
         $dom->expects($matcher)
             ->method('createElementNS')
             ->willReturnCallback(
-                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $priority, $urlLoc, $changefreq, $urlChangefreq, $urlPriority): DOMElement {
+                static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $urlLoc): DOMElement {
                     self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
 
                     match ($matcher->numberOfInvocations()) {
                         1 => self::assertSame('urlset', $qualifiedName),
                         2 => self::assertSame('url', $qualifiedName),
-                        3 => self::assertSame('loc', $qualifiedName),
-                        4 => self::assertSame('changefreq', $qualifiedName),
-                        default => self::assertSame('priority', $qualifiedName),
+                        default => self::assertSame('loc', $qualifiedName),
                     };
 
                     match ($matcher->numberOfInvocations()) {
                         3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
-                        4 => self::assertSame($changefreq, $value),
-                        5 => self::assertSame($priority, $value),
                         default => self::assertSame('', $value),
                     };
 
                     return match ($matcher->numberOfInvocations()) {
                         1 => $urlSet,
                         2 => $urlNode,
-                        3 => $urlLoc,
-                        4 => $urlChangefreq,
-                        default => $urlPriority,
+                        default => $urlLoc,
                     };
                 },
             );
@@ -6267,9 +4457,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -6278,9 +4466,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -6289,60 +4475,37 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $changefreqValidator->expects(self::once())
+        $changefreqValidator = $this->createMock(Changefreq::class);
+        $changefreqValidator->expects(self::never())
             ->method('isValid')
-            ->with($changefreq)
-            ->willReturn(true);
+            ->with($changefreq);
 
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $priorityValidator->expects(self::once())
+        $priorityValidator = $this->createMock(Priority::class);
+        $priorityValidator->expects(self::never())
             ->method('isValid')
-            ->with($priority)
-            ->willReturn(true);
+            ->with($priority);
 
         assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
-        self::assertSame($dom, $helper->getDomSitemap());
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->getDomSitemap();
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithInvalidLastmodAndChangeFreq(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -6396,9 +4559,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -6419,15 +4580,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6444,39 +4601,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -6496,7 +4643,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -6516,23 +4662,17 @@ final class SitemapTest extends TestCase
 
         $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(3);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -6567,9 +4707,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -6578,9 +4716,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -6589,9 +4725,7 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
@@ -6600,9 +4734,7 @@ final class SitemapTest extends TestCase
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
@@ -6616,48 +4748,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithLastmodExceptionAndChangeFreqException(): void
     {
         $exception1 = new \Laminas\Validator\Exception\RuntimeException('test');
-        $exception2 = new \Laminas\Validator\Exception\RuntimeException('test');
-        $exception3 = new \Laminas\Validator\Exception\RuntimeException('test');
-
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $matcher = self::exactly(3);
-        $logger->expects($matcher)
-            ->method('error')
-            ->willReturnCallback(
-                static function (string | Stringable $message, array $context = []) use ($matcher, $exception1, $exception2, $exception3): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($exception1, $message),
-                        2 => self::assertSame($exception2, $message),
-                        default => self::assertSame($exception3, $message),
-                    };
-
-                    self::assertSame([], $context);
-                },
-            );
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -6712,43 +4809,23 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
-        $acceptHelper->expects($matcher)
+        $acceptHelper->expects(self::once())
             ->method('accept')
-            ->willReturnCallback(
-                static function (PageInterface $page, bool $recursive = true) use ($matcher, $parentPage, $page1, $page2): bool {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($parentPage, $page),
-                        2 => self::assertSame($page1, $page),
-                        default => self::assertSame($page2, $page),
-                    };
+            ->with($parentPage, true)
+            ->willReturn(true);
 
-                    self::assertTrue($recursive);
-
-                    return match ($matcher->numberOfInvocations()) {
-                        2 => false,
-                        default => true,
-                    };
-                },
-            );
-
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
             ->method('get');
-        $serviceLocator->expects(self::exactly(3))
+        $serviceLocator->expects(self::once())
             ->method('build')
             ->with(
                 AcceptHelperInterface::class,
@@ -6760,39 +4837,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -6812,7 +4879,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -6832,23 +4898,17 @@ final class SitemapTest extends TestCase
 
         $urlLoc = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $urlNode->expects(self::once())
             ->method('appendChild')
             ->with($urlLoc);
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(3);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -6883,9 +4943,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -6894,9 +4952,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -6905,60 +4961,37 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $changefreqValidator->expects(self::once())
+        $changefreqValidator = $this->createMock(Changefreq::class);
+        $changefreqValidator->expects(self::never())
             ->method('isValid')
-            ->with($changefreq)
-            ->willThrowException($exception2);
+            ->with($changefreq);
 
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $priorityValidator->expects(self::once())
+        $priorityValidator = $this->createMock(Priority::class);
+        $priorityValidator->expects(self::never())
             ->method('isValid')
-            ->with($priority)
-            ->willThrowException($exception3);
+            ->with($priority);
 
         assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
-        self::assertSame($dom, $helper->getDomSitemap());
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->getDomSitemap();
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapOneActivePageRecursiveDeepWithoutPriority(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -7012,9 +5045,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -7035,15 +5066,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7060,39 +5087,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -7112,7 +5129,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -7134,9 +5150,7 @@ final class SitemapTest extends TestCase
         $urlLastMod    = $this->createMock(DOMElement::class);
         $urlChangefreq = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $matcher = self::exactly(3);
         $urlNode->expects($matcher)
             ->method('appendChild')
@@ -7150,16 +5164,12 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(5);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -7200,9 +5210,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -7211,9 +5219,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -7222,9 +5228,7 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
@@ -7233,9 +5237,7 @@ final class SitemapTest extends TestCase
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
@@ -7249,34 +5251,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws DOMException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testGetDomSitemapWithException(): void
     {
         $exception = new DOMException('test');
-
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -7331,15 +5312,11 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7347,33 +5324,23 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -7393,7 +5360,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -7411,9 +5377,7 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom = $this->createMock(DOMDocument::class);
         $dom->expects(self::once())
             ->method('createElementNS')
             ->willThrowException($exception);
@@ -7425,43 +5389,35 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::never())
             ->method('isValid');
 
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::never())
             ->method('isValid');
 
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::never())
             ->method('isValid');
 
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::never())
             ->method('isValid');
 
         assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
-        self::expectException(DOMException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionCode(0);
         self::expectExceptionMessage('test');
 
@@ -7470,32 +5426,12 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testRenderWithXmlDeclaration(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -7550,9 +5486,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -7573,15 +5507,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7598,39 +5528,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -7650,7 +5570,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -7672,9 +5591,7 @@ final class SitemapTest extends TestCase
         $urlLastMod    = $this->createMock(DOMElement::class);
         $urlChangefreq = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $matcher = self::exactly(3);
         $urlNode->expects($matcher)
             ->method('appendChild')
@@ -7688,16 +5605,12 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(5);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -7742,9 +5655,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -7753,9 +5664,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -7764,9 +5673,7 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
@@ -7775,9 +5682,7 @@ final class SitemapTest extends TestCase
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
@@ -7791,34 +5696,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testRenderWithException(): void
     {
         $exception = new DOMException('test');
-
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::once())
-            ->method('error')
-            ->with($exception, []);
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
 
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -7873,15 +5757,11 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7889,33 +5769,23 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -7935,7 +5805,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -7953,9 +5822,7 @@ final class SitemapTest extends TestCase
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
 
-        $dom = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom = $this->createMock(DOMDocument::class);
         $dom->expects(self::once())
             ->method('createElementNS')
             ->willThrowException($exception);
@@ -7969,73 +5836,48 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::never())
             ->method('isValid');
 
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::never())
             ->method('isValid');
 
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::never())
             ->method('isValid');
 
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::never())
             ->method('isValid');
 
         assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);
 
-        self::assertSame('', $helper->render());
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->render();
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testToStringWithXmlDeclaration(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
 
@@ -8090,9 +5932,7 @@ final class SitemapTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -8113,15 +5953,11 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -8138,39 +5974,29 @@ final class SitemapTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
         $serverUrl = 'http://test.org:8081';
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::once())
             ->method('__invoke')
             ->with($serverUrl . $parentUri)
             ->willReturn($serverUrl . '-test-' . $parentUri);
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::once())
             ->method('__invoke')
             ->with(null)
             ->willReturn($serverUrl);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -8190,7 +6016,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,
@@ -8212,9 +6037,7 @@ final class SitemapTest extends TestCase
         $urlLastMod    = $this->createMock(DOMElement::class);
         $urlChangefreq = $this->createMock(DOMElement::class);
 
-        $urlNode = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlNode = $this->createMock(DOMElement::class);
         $matcher = self::exactly(3);
         $urlNode->expects($matcher)
             ->method('appendChild')
@@ -8228,16 +6051,12 @@ final class SitemapTest extends TestCase
                 },
             );
 
-        $urlSet = $this->getMockBuilder(DOMElement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $urlSet = $this->createMock(DOMElement::class);
         $urlSet->expects(self::once())
             ->method('appendChild')
             ->with($urlNode);
 
-        $dom     = $this->getMockBuilder(DOMDocument::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dom     = $this->createMock(DOMDocument::class);
         $matcher = self::exactly(5);
         $dom->expects($matcher)
             ->method('createElementNS')
@@ -8282,9 +6101,7 @@ final class SitemapTest extends TestCase
         assert($dom instanceof DOMDocument);
         $helper->setDom($dom);
 
-        $locValidator = $this->getMockBuilder(Loc::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $locValidator = $this->createMock(Loc::class);
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
@@ -8293,9 +6110,7 @@ final class SitemapTest extends TestCase
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
 
-        $lastmodValidator = $this->getMockBuilder(Lastmod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $lastmodValidator = $this->createMock(Lastmod::class);
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
@@ -8304,9 +6119,7 @@ final class SitemapTest extends TestCase
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
 
-        $changefreqValidator = $this->getMockBuilder(Changefreq::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $changefreqValidator = $this->createMock(Changefreq::class);
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
@@ -8315,9 +6128,7 @@ final class SitemapTest extends TestCase
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
 
-        $priorityValidator = $this->getMockBuilder(Priority::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $priorityValidator = $this->createMock(Priority::class);
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
@@ -8331,35 +6142,13 @@ final class SitemapTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testInvoke(): void
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -8367,33 +6156,23 @@ final class SitemapTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $basePath = $this->getMockBuilder(BasePath::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $basePath = $this->createMock(BasePath::class);
         $basePath->expects(self::never())
             ->method('__invoke');
 
-        $escaper = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escaper = $this->createMock(EscapeHtml::class);
         $escaper->expects(self::never())
             ->method('__invoke');
 
-        $serverUrlHelper = $this->getMockBuilder(ServerUrlHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
         $serverUrlHelper->expects(self::never())
             ->method('__invoke');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($container)
@@ -8401,7 +6180,6 @@ final class SitemapTest extends TestCase
 
         $helper = new Sitemap(
             $serviceLocator,
-            $logger,
             $htmlify,
             $containerParser,
             $basePath,

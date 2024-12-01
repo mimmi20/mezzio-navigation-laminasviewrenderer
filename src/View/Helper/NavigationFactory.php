@@ -18,7 +18,6 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function get_debug_type;
@@ -35,15 +34,13 @@ final class NavigationFactory
     {
         assert($container instanceof ServiceLocatorInterface);
 
-        $logger          = $container->get(LoggerInterface::class);
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
 
-        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
-        $helper = new Navigation($container, $logger, $htmlify, $containerParser);
+        $helper = new Navigation($container, $htmlify, $containerParser);
 
         $plugin = $container->get(Navigation\PluginManager::class);
 

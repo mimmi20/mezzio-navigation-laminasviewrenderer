@@ -24,7 +24,6 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
 
 use function array_key_exists;
@@ -95,13 +94,12 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
     /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         protected EscapeHtmlAttr $escaper,
         private readonly PartialRendererInterface $renderer,
     ) {
-        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
+        parent::__construct($serviceLocator, $htmlify, $containerParser);
     }
 
     /**
@@ -123,8 +121,6 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
     #[Override]
     public function render(ContainerInterface | string | null $container = null): string
@@ -153,7 +149,6 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     * @throws InvalidArgumentException
      */
     #[Override]
     public function renderPartial(
@@ -181,7 +176,6 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     * @throws InvalidArgumentException
      */
     #[Override]
     public function renderPartialWithParams(
@@ -202,13 +196,17 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      * @param bool          $escapeLabel        Whether to escape the label
      * @param bool          $addClassToListItem Whether to add the page class to the list item
      *
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
     #[Override]
     public function htmlify(PageInterface $page, bool $escapeLabel = true, bool $addClassToListItem = false): string
     {
-        return $this->htmlify->toHtml(static::class, $page, $escapeLabel, $addClassToListItem);
+        try {
+            return $this->htmlify->toHtml(static::class, $page, $escapeLabel, $addClassToListItem);
+        } catch (RuntimeException $e) {
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -452,14 +450,17 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      * @param array<string, bool|int|string|null>           $options   [optional] options for controlling rendering
      * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
     #[Override]
     public function renderMenu(ContainerInterface | string | null $container = null, array $options = []): string
     {
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if ($container === null) {
             $container = $this->getContainer();
@@ -534,10 +535,8 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *                                                              of spaces. Default is to use the value retrieved from
      *                                                              {@link getIndent()}.
      * @param string|null                            $liActiveClass [optional] CSS class to use for UL
-     *                                                              element. Default is to use the value from {@link getUlClass()}.
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
     #[Override]
@@ -676,7 +675,6 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     * @throws InvalidArgumentException
      */
     private function renderPartialModel(
         array $params,
@@ -704,7 +702,11 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $partial = $partial[0];
         }
 
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if ($container === null) {
             $container = $this->getContainer();
@@ -729,8 +731,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      * @param bool                              $addClassToListItem Whether or not page class applied to <li> element
      * @param string                            $liActiveClass      CSS class for active LI
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
     private function renderDeepestMenu(
@@ -807,13 +808,20 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
                 ? ''
                 : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
             $html   .= $indent . '    <li' . $liClass . '>' . PHP_EOL;
-            $html   .= $indent . '        ' . $this->htmlify->toHtml(
-                static::class,
-                $subPage,
-                $escapeLabels,
-                $addClassToListItem,
-            ) . PHP_EOL;
-            $html   .= $indent . '    </li>' . PHP_EOL;
+
+            try {
+                $subPageHtml = $this->htmlify->toHtml(
+                    static::class,
+                    $subPage,
+                    $escapeLabels,
+                    $addClassToListItem,
+                );
+            } catch (RuntimeException $e) {
+                throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            $html .= $indent . '        ' . $subPageHtml . PHP_EOL;
+            $html .= $indent . '    </li>' . PHP_EOL;
         }
 
         return $html . $indent . '</ul>';
@@ -833,8 +841,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      * @param bool                              $addClassToListItem Whether or not page class applied to <li> element
      * @param string                            $liActiveClass      CSS class for active LI
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
     private function renderNormalMenu(
@@ -940,13 +947,20 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $liClass = $liClasses === []
                 ? ''
                 : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
-            $html   .= $myIndent . '    <li' . $liClass . '>' . PHP_EOL
-                . $myIndent . '        ' . $this->htmlify->toHtml(
+
+            try {
+                $pageHtml = $this->htmlify->toHtml(
                     static::class,
                     $page,
                     $escapeLabels,
                     $addClassToListItem,
-                ) . PHP_EOL;
+                );
+            } catch (RuntimeException $e) {
+                throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            $html .= $myIndent . '    <li' . $liClass . '>' . PHP_EOL
+                . $myIndent . '        ' . $pageHtml . PHP_EOL;
 
             // store as previous depth for next iteration
             $prevDepth = $depth;

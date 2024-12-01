@@ -39,9 +39,7 @@ final class PluginManagerFactoryTest extends TestCase
      */
     public function testInvocationHasServiceListener(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('has')
             ->with('ServiceListener')
@@ -61,9 +59,7 @@ final class PluginManagerFactoryTest extends TestCase
      */
     public function testInvocationHasNoServiceListenerAndNoConfig(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $matcher   = self::exactly(2);
         $container->expects($matcher)
             ->method('has')
@@ -92,9 +88,7 @@ final class PluginManagerFactoryTest extends TestCase
      */
     public function testInvocationHasNoServiceListenerButAnEmptyConfig(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $matcher   = self::exactly(2);
         $container->expects($matcher)
             ->method('has')
@@ -128,9 +122,7 @@ final class PluginManagerFactoryTest extends TestCase
      */
     public function testInvocationHasNoServiceListenerButAConfig(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $matcher   = self::exactly(2);
         $container->expects($matcher)
             ->method('has')

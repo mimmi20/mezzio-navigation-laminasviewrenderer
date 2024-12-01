@@ -12,16 +12,15 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\I18n\Exception\RuntimeException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Exception\DomainException;
 use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
-use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksInterface;
 use Mimmi20\Mezzio\Navigation\Navigation;
@@ -39,7 +38,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function sprintf;
@@ -59,29 +57,7 @@ final class LinksTest extends TestCase
     {
         $maxDepth = 4;
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -89,40 +65,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getMaxDepth());
 
@@ -134,29 +95,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSetMinDepth(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -164,40 +103,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame(0, $helper->getMinDepth());
 
@@ -225,29 +149,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -255,40 +157,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertFalse($helper->getRenderInvisible());
 
@@ -303,29 +190,7 @@ final class LinksTest extends TestCase
         $role        = 'testRole';
         $defaultRole = 'testDefaultRole';
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -333,40 +198,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getRole());
         self::assertFalse($helper->hasRole());
@@ -385,29 +235,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -415,40 +243,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertTrue($helper->getUseAuthorization());
 
@@ -467,29 +280,7 @@ final class LinksTest extends TestCase
         $auth        = $this->createMock(AuthorizationInterface::class);
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -497,40 +288,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
@@ -553,29 +329,7 @@ final class LinksTest extends TestCase
     {
         $view = $this->createMock(RendererInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -583,40 +337,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->getView());
 
@@ -629,35 +368,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetContainer(): void
     {
         $container = $this->createMock(ContainerInterface::class);
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -665,15 +382,11 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -691,28 +404,17 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $container1 = $helper->getContainer();
 
@@ -732,35 +434,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'default';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -768,42 +448,27 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test');
@@ -814,36 +479,14 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testSetContainerWithStringFound(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -851,42 +494,27 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
@@ -895,36 +523,15 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testDoNotAccept(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -932,23 +539,17 @@ final class LinksTest extends TestCase
         $page->expects(self::never())
             ->method('getPrivilege');
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page)
             ->willReturn(false);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
 
         $role = 'testRole';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -965,42 +566,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
         $helper->setRole($role);
@@ -1021,7 +607,6 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
@@ -1029,32 +614,10 @@ final class LinksTest extends TestCase
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1062,9 +625,7 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1090,50 +651,33 @@ final class LinksTest extends TestCase
         $page->expects(self::never())
             ->method('get');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::once())
             ->method('toHtml')
             ->with(Links::class, $page)
             ->willReturn($expected);
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
 
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = $this->createMock(PhpRenderer::class);
         $view->expects(self::never())
             ->method('plugin');
         $view->expects(self::never())
@@ -1156,29 +700,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSetIndent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1186,40 +708,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame('', $helper->getIndent());
 
@@ -1234,36 +741,15 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveNoActivePages(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::never())
             ->method('isVisible');
         $parentPage->expects(self::never())
@@ -1275,9 +761,7 @@ final class LinksTest extends TestCase
         $parentPage->expects(self::never())
             ->method('isActive');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1296,23 +780,17 @@ final class LinksTest extends TestCase
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1329,42 +807,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -1376,36 +839,15 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePage(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::never())
             ->method('isVisible');
         $parentPage->expects(self::never())
@@ -1417,9 +859,7 @@ final class LinksTest extends TestCase
         $parentPage->expects(self::never())
             ->method('isActive');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1438,9 +878,7 @@ final class LinksTest extends TestCase
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
@@ -1451,15 +889,11 @@ final class LinksTest extends TestCase
                 ],
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1476,42 +910,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -1528,51 +947,26 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testFindActiveWithoutContainer(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $role     = 'testRole';
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with(new IsInstanceOf(Navigation::class), $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1589,42 +983,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with(null)
             ->willReturn(null);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -1638,36 +1017,15 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageWithoutDepth(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::never())
             ->method('isVisible');
         $parentPage->expects(self::never())
@@ -1679,9 +1037,7 @@ final class LinksTest extends TestCase
         $parentPage->expects(self::never())
             ->method('isActive');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1700,9 +1056,7 @@ final class LinksTest extends TestCase
         $maxDepth = 42;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
@@ -1713,15 +1067,11 @@ final class LinksTest extends TestCase
                 ],
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1738,42 +1088,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -1793,36 +1128,15 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageOutOfRange(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1841,23 +1155,17 @@ final class LinksTest extends TestCase
         $maxDepth = 42;
         $minDepth = 2;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -1874,42 +1182,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -1923,31 +1216,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
@@ -1958,9 +1232,7 @@ final class LinksTest extends TestCase
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1981,9 +1253,7 @@ final class LinksTest extends TestCase
         $maxDepth = 0;
         $minDepth = 0;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
@@ -1994,15 +1264,11 @@ final class LinksTest extends TestCase
                 ],
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2019,42 +1285,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -2071,31 +1322,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
@@ -2139,23 +1371,17 @@ final class LinksTest extends TestCase
         $maxDepth = 1;
         $minDepth = 2;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2172,42 +1398,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -2221,31 +1432,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindActiveOneActivePageRecursive3(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name = 'Mezzio\Navigation\Top';
 
         $resource  = 'testResource';
@@ -2288,23 +1480,17 @@ final class LinksTest extends TestCase
         $role     = 'testRole';
         $maxDepth = -1;
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, 0, $maxDepth)
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2321,42 +1507,27 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
             ->willReturn($container);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -2374,29 +1545,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSetRenderFlag(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2404,40 +1553,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame(LinksInterface::RENDER_ALL, $helper->getRenderFlag());
 
@@ -2449,29 +1583,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSearchRevSubsectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2479,44 +1591,27 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn(null);
@@ -2534,33 +1629,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRevSubsectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2570,9 +1643,7 @@ final class LinksTest extends TestCase
 
         $parentPage = new Route();
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
@@ -2591,21 +1662,15 @@ final class LinksTest extends TestCase
         );
         $parentPage->addPage($page);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -2613,53 +1678,22 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRevSubsection($page));
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRevSubsectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2671,9 +1705,7 @@ final class LinksTest extends TestCase
         $parentParentPage       = new Route();
         $parentParentParentPage = new Route();
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
@@ -2692,21 +1724,15 @@ final class LinksTest extends TestCase
         $parentParentPage->addPage($parentPage);
         $parentParentParentPage->addPage($parentParentPage);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -2714,20 +1740,11 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentParentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRevSubsection($page));
     }
@@ -2735,29 +1752,7 @@ final class LinksTest extends TestCase
     /** @throws Exception */
     public function testSearchRevSectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2765,44 +1760,27 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn(null);
@@ -2820,33 +1798,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRevSectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2856,9 +1812,7 @@ final class LinksTest extends TestCase
 
         $parentPage = new Route();
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
@@ -2875,21 +1829,15 @@ final class LinksTest extends TestCase
         );
         $parentPage->addPage($page);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -2897,53 +1845,22 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRevSection($page));
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRevSectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -2954,9 +1871,7 @@ final class LinksTest extends TestCase
         $parentPage       = new Route();
         $parentParentPage = new Route();
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
@@ -2974,21 +1889,15 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page);
         $parentParentPage->addPage($parentPage);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -2996,50 +1905,22 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame($parentPage, $helper->searchRevSection($page));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
     public function testSearchRelSubsectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3047,44 +1928,27 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('hasPages')
             ->willReturn(false);
@@ -3102,33 +1966,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSubsectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3141,21 +1984,15 @@ final class LinksTest extends TestCase
 
         $parentPage->addPage($page);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3163,20 +2000,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         assert(
             $page instanceof PageInterface,
@@ -3191,30 +2019,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSubsectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page                   = new Route();
         $parentPage             = new Route();
         $parentParentPage       = new Route();
@@ -3226,23 +2035,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3259,21 +2062,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3281,20 +2078,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -3306,30 +2094,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSubsectionWithDeepParent2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page1                  = new Route();
         $page2                  = new Route();
         $parentPage             = new Route();
@@ -3343,9 +2112,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(2);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -3365,15 +2132,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3390,21 +2153,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3412,20 +2169,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -3437,30 +2185,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSubsectionWithDeepParent3(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page1                  = new Route();
         $page2                  = new Route();
         $page3                  = new Route();
@@ -3476,9 +2205,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -3499,15 +2226,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3524,21 +2247,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3546,20 +2263,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -3569,32 +2277,13 @@ final class LinksTest extends TestCase
         self::assertSame([$page2, $page3], $helper->searchRelSubsection($parentPage));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     */
     public function testSearchRelSectionWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3602,44 +2291,27 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('hasPages')
             ->willReturn(false);
@@ -3657,33 +2329,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSectionWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3696,21 +2347,15 @@ final class LinksTest extends TestCase
 
         $parentPage->addPage($page);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3718,50 +2363,22 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame([], $helper->searchRelSection($parentPage));
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSectionWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page             = new Route();
         $parentPage       = new Route();
         $parentParentPage = new Route();
@@ -3771,23 +2388,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3804,21 +2415,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3826,20 +2431,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -3851,30 +2447,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSectionWithDeepParent2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page  = new Route();
         $page2 = new Route();
         $page2->setActive(false);
@@ -3888,9 +2465,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(2);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -3910,15 +2485,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -3935,21 +2506,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -3957,20 +2522,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -3982,30 +2538,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSectionWithDeepParent3(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page1            = new Route();
         $page2            = new Route();
         $parentPage       = new Route();
@@ -4017,9 +2554,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(2);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -4039,15 +2574,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4064,21 +2595,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -4086,20 +2611,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -4111,30 +2627,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSectionWithDeepParent4(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page1            = new Route();
         $page2            = new Route();
         $page3            = new Route();
@@ -4148,9 +2645,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -4171,15 +2666,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4196,21 +2687,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -4218,20 +2703,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -4243,30 +2719,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelSectionWithDeepParent5(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page             = new Route();
         $parentPage       = new Route();
         $parentParentPage = new Route();
@@ -4276,23 +2733,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page)
             ->willReturn(false);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4309,21 +2760,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -4331,20 +2776,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -4356,48 +2792,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelChapterWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page = new Route();
         $role = null;
         $auth = null;
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page, 'rel', 'start')
             ->willReturn([]);
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4414,21 +2826,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
@@ -4436,83 +2842,46 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertSame([], $helper->searchRelChapter($page));
     }
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelChapterWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page       = new Route();
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page)
             ->willReturn(true);
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($parentPage, 'rel', 'start')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4545,21 +2914,15 @@ final class LinksTest extends TestCase
 
         $parentPage->addPage($page);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
@@ -4567,20 +2930,11 @@ final class LinksTest extends TestCase
             ->with($parentPage)
             ->willReturn($parentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -4592,33 +2946,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelChapterWithDeepParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page             = new Route();
         $parentPage       = new Route();
         $parentParentPage = new Route();
@@ -4628,31 +2962,23 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($parentParentPage, 'rel', 'start')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4683,21 +3009,15 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
@@ -4705,20 +3025,11 @@ final class LinksTest extends TestCase
             ->with($parentParentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -4730,33 +3041,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelChapterWithDeepParent2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page        = new Route();
         $parentPage  = new Route();
         $parentPage2 = new Route();
@@ -4770,9 +3061,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(2);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -4792,23 +3081,17 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($parentParentPage, 'rel', 'start')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4839,21 +3122,15 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
@@ -4861,20 +3138,11 @@ final class LinksTest extends TestCase
             ->with($parentParentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -4886,33 +3154,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelChapterWithDeepParent3(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page        = new Route();
         $parentPage  = new Route();
         $parentPage2 = new Route();
@@ -4926,9 +3174,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(2);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -4945,23 +3191,17 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($parentParentPage, 'rel', 'start')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -4992,21 +3232,15 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
@@ -5014,20 +3248,11 @@ final class LinksTest extends TestCase
             ->with($parentParentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -5039,33 +3264,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelChapterWithDeepParent4(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $page        = new Route();
         $parentPage  = new Route();
         $parentPage2 = new Route();
@@ -5079,9 +3284,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(2);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -5098,23 +3301,17 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($parentParentPage, 'rel', 'start')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5145,21 +3342,15 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::exactly(2))
@@ -5167,20 +3358,11 @@ final class LinksTest extends TestCase
             ->with($parentParentPage)
             ->willReturn($parentParentPage);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -5192,33 +3374,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelPrevWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5228,21 +3389,15 @@ final class LinksTest extends TestCase
 
         $page = new Route();
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -5250,50 +3405,22 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelPrev($page));
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelPrevWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $parentPage->setId('fgh');
         $page1 = new Route();
@@ -5306,9 +3433,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
 
         $matcher = self::exactly(3);
         $acceptHelper->expects($matcher)
@@ -5334,15 +3459,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5359,21 +3480,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
 
@@ -5391,20 +3506,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -5417,30 +3523,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelPrevWithParent2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $parentPage->setId('fgh');
         $page1 = new Route();
@@ -5458,9 +3545,7 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(7);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -5493,15 +3578,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5518,21 +3599,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $matcher = self::exactly(3);
@@ -5550,20 +3625,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -5577,33 +3643,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelNextWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5613,21 +3658,15 @@ final class LinksTest extends TestCase
 
         $page = new Route();
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -5635,50 +3674,22 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelNext($page));
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelNextWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
@@ -5688,23 +3699,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::once())
             ->method('accept')
             ->with($page1)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5721,21 +3726,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $matcher = self::exactly(2);
@@ -5752,20 +3751,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -5778,33 +3768,12 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelStartWithoutParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5814,21 +3783,15 @@ final class LinksTest extends TestCase
 
         $page = new Route();
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::once())
@@ -5836,50 +3799,22 @@ final class LinksTest extends TestCase
             ->with($page)
             ->willReturn($page);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         self::assertNull($helper->searchRelStart($page));
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelStartWithParent(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
@@ -5889,23 +3824,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::exactly(2))
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -5922,21 +3851,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $matcher = self::exactly(2);
@@ -5953,20 +3876,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -5979,30 +3893,11 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testSearchRelStartWithParent2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
@@ -6010,9 +3905,7 @@ final class LinksTest extends TestCase
         $parentPage->addPage($page1);
         $parentPage->addPage($page2);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::exactly(2))
             ->method('rewind');
         $container->expects(self::exactly(2))
@@ -6021,23 +3914,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::exactly(2))
             ->method('accept')
             ->with($parentPage)
             ->willReturn(true);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6054,21 +3941,15 @@ final class LinksTest extends TestCase
             )
             ->willReturn($acceptHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $matcher = self::exactly(2);
@@ -6085,20 +3966,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6111,33 +3983,13 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindRelationWithError(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page1      = new Route();
         $page2      = new Route();
@@ -6147,15 +3999,11 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6163,40 +4011,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6216,40 +4049,18 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindNullRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -6266,23 +4077,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6299,40 +4104,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6346,40 +4136,18 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindPageRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
-        $page3 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page3 = $this->createMock(PageInterface::class);
         $page3->expects(self::never())
             ->method('isVisible');
         $page3->expects(self::never())
@@ -6391,9 +4159,7 @@ final class LinksTest extends TestCase
         $page3->expects(self::never())
             ->method('getRev');
 
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -6410,23 +4176,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([$page3]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6443,40 +4203,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6490,43 +4235,21 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     #[Group('Render2')]
     public function testFindContainerRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
         $container = new Navigation();
 
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -6545,23 +4268,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([$parentPage]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6578,40 +4295,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6625,42 +4327,20 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindStringRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
         $container = new Navigation();
 
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -6681,23 +4361,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([$page3]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6714,40 +4388,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6761,42 +4420,20 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindStringRelationFromPropertyWithError(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
         $container = new Navigation();
 
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -6815,23 +4452,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6848,40 +4479,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -6895,41 +4511,19 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindConfigRelationFromProperty(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
         $page3 = $this->createMock(PageInterface::class);
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -6946,23 +4540,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([$page3]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -6979,40 +4567,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -7026,40 +4599,18 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testFindConfigRelationFromPropertyWithError(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $parentPage = new Route();
         $page2      = new Route();
         $type       = 'test';
 
-        $page1 = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page1 = $this->createMock(PageInterface::class);
         $page1->expects(self::never())
             ->method('isVisible');
         $page1->expects(self::never())
@@ -7076,23 +4627,17 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $findFromPropertyHelper->expects(self::once())
             ->method('find')
             ->with($page1, 'rel', 'test')
             ->willReturn([]);
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7109,40 +4654,25 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findFromPropertyHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -7160,29 +4690,7 @@ final class LinksTest extends TestCase
      */
     public function testRenderLinkWithError(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -7210,15 +4718,11 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7226,40 +4730,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -7283,29 +4772,7 @@ final class LinksTest extends TestCase
      */
     public function testRenderLinkWithoutHref(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -7334,15 +4801,11 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7350,40 +4813,25 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -7401,32 +4849,10 @@ final class LinksTest extends TestCase
      */
     public function testRenderLinkWithHref(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $href  = '/test.html';
         $label = 'test-label';
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -7476,15 +4902,11 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7492,21 +4914,15 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
@@ -7524,9 +4940,7 @@ final class LinksTest extends TestCase
             'lang' => 'de',
         ];
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
         $headLink->expects(self::once())
@@ -7534,14 +4948,7 @@ final class LinksTest extends TestCase
             ->with($params)
             ->willReturn($expected);
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
@@ -7553,48 +4960,24 @@ final class LinksTest extends TestCase
 
     /**
      * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $maxDepth = null;
         $minDepth = 0;
 
         $container = $this->createMock(ContainerInterface::class);
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, $minDepth, $maxDepth)
             ->willReturn([]);
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7611,15 +4994,11 @@ final class LinksTest extends TestCase
             )
             ->willReturn($findActiveHelper);
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(3);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -7637,30 +5016,19 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($container);
 
@@ -7668,34 +5036,14 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws DomainException
-     * @throws ExceptionInterface
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testRender(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name      = 'Mezzio\Navigation\Top';
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -7715,9 +5063,7 @@ final class LinksTest extends TestCase
         $parentPage->setTitle('parent-title');
         $parentPage->setTextDomain('parent-text-domain');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -7753,15 +5099,11 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, 0, null)
@@ -7772,9 +5114,7 @@ final class LinksTest extends TestCase
                 ],
             );
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
         $matcher                = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
             ->method('find')
@@ -7812,9 +5152,7 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $matcher      = self::exactly(3);
         $acceptHelper->expects($matcher)
             ->method('accept')
@@ -7831,9 +5169,7 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -7866,15 +5202,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -7889,9 +5221,7 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $matcher    = self::exactly(2);
         $rootFinder->expects($matcher)
             ->method('setRoot')
@@ -7910,9 +5240,7 @@ final class LinksTest extends TestCase
 
         $expected = sprintf('<link rel="start" href="%s" title="%s" />', $parentUri, $parentLabel);
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
         $headLink->expects(self::once())
@@ -7920,23 +5248,14 @@ final class LinksTest extends TestCase
             ->with((object) ['rel' => 'start', 'href' => $parentUri, 'title' => $parentLabel])
             ->willReturn($expected);
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = $this->createMock(PhpRenderer::class);
         $view->expects(self::never())
             ->method('plugin');
         $view->expects(self::never())
@@ -7949,34 +5268,14 @@ final class LinksTest extends TestCase
     }
 
     /**
-     * @throws DomainException
-     * @throws ExceptionInterface
      * @throws Exception
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testRender2(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $name      = 'Mezzio\Navigation\Top';
         $resource  = 'testResource';
         $privilege = 'testPrivilege';
@@ -7997,9 +5296,7 @@ final class LinksTest extends TestCase
         $parentPage->setTitle('parent-title');
         $parentPage->setTextDomain('parent-text-domain');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -8035,15 +5332,11 @@ final class LinksTest extends TestCase
 
         $role = 'testRole';
 
-        $auth = $this->getMockBuilder(AuthorizationInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
             ->method('isGranted');
 
-        $findActiveHelper = $this->getMockBuilder(FindActiveInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
         $findActiveHelper->expects(self::once())
             ->method('find')
             ->with($container, 0, null)
@@ -8054,9 +5347,7 @@ final class LinksTest extends TestCase
                 ],
             );
 
-        $findFromPropertyHelper = $this->getMockBuilder(FindFromPropertyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
 
         $matcher = self::exactly(31);
         $findFromPropertyHelper->expects($matcher)
@@ -8095,17 +5386,13 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $acceptHelper = $this->getMockBuilder(AcceptHelperInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
         $acceptHelper->expects(self::exactly(2))
             ->method('accept')
             ->with($page)
             ->willReturn(true);
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -8138,15 +5425,11 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $matcher         = self::exactly(2);
         $containerParser->expects($matcher)
             ->method('parseContainer')
@@ -8161,9 +5444,7 @@ final class LinksTest extends TestCase
                 },
             );
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $matcher    = self::exactly(2);
         $rootFinder->expects($matcher)
             ->method('setRoot')
@@ -8182,31 +5463,20 @@ final class LinksTest extends TestCase
 
         $expected = '';
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setRole($role);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
 
-        $view = $this->getMockBuilder(PhpRenderer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = $this->createMock(PhpRenderer::class);
         $view->expects(self::never())
             ->method('plugin');
         $view->expects(self::never())
@@ -8224,9 +5494,7 @@ final class LinksTest extends TestCase
         $auth      = $this->createMock(AuthorizationInterface::class);
         $exception = new InvalidArgumentException('test');
 
-        $serviceLocator = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -8234,68 +5502,36 @@ final class LinksTest extends TestCase
         $serviceLocator->expects(self::never())
             ->method('build');
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::once())
-            ->method('error')
-            ->with($exception);
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
-        $htmlify = $this->getMockBuilder(HtmlifyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $containerParser = $this->getMockBuilder(ContainerParserInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with(null)
             ->willThrowException($exception);
 
-        $rootFinder = $this->getMockBuilder(FindRootInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rootFinder = $this->createMock(FindRootInterface::class);
         $rootFinder->expects(self::never())
             ->method('setRoot');
         $rootFinder->expects(self::never())
             ->method('find');
 
-        $headLink = $this->getMockBuilder(HeadLink::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $headLink = $this->createMock(HeadLink::class);
         $headLink->expects(self::never())
             ->method('__invoke');
         $headLink->expects(self::never())
             ->method('itemToString');
 
-        $helper = new Links(
-            $serviceLocator,
-            $logger,
-            $htmlify,
-            $containerParser,
-            $rootFinder,
-            $headLink,
-        );
+        $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
 
         self::assertSame('', (string) $helper);
     }

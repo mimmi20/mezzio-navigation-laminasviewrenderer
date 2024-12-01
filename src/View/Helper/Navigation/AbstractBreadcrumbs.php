@@ -25,7 +25,6 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use Psr\Log\LoggerInterface;
 
 use function array_merge;
 use function array_reverse;
@@ -65,14 +64,13 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
     /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly EscapeHtml $escaper,
         private readonly PartialRendererInterface $renderer,
         private readonly Translate | null $translator = null,
     ) {
-        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
+        parent::__construct($serviceLocator, $htmlify, $containerParser);
     }
 
     /**
@@ -87,8 +85,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
     #[Override]
     public function render(ContainerInterface | string | null $container = null): string
@@ -117,7 +113,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     * @throws InvalidArgumentException
      */
     #[Override]
     public function renderPartial(
@@ -145,7 +140,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     * @throws InvalidArgumentException
      */
     #[Override]
     public function renderPartialWithParams(
@@ -163,14 +157,17 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is
      *                                                  to render the container registered in the helper.
      *
-     * @throws InvalidArgumentException
      * @throws Exception\InvalidArgumentException
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function renderStraight(ContainerInterface | string | null $container = null): string
     {
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
@@ -198,8 +195,14 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
 
         // put the deepest active page last in breadcrumbs
         if ($this->getLinkLast()) {
+            try {
+                $entryHtml = $this->htmlify->toHtml(static::class, $active);
+            } catch (RuntimeException $e) {
+                throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
             $html[] = $this->renderBreadcrumbItem(
-                $this->htmlify->toHtml(static::class, $active),
+                $entryHtml,
                 $active->getLiClass() ?? '',
                 $active->isActive(),
             );
@@ -207,7 +210,12 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
             $label = (string) $active->getLabel();
 
             if ($this->translator !== null) {
-                $label = ($this->translator)($label, $active->getTextDomain());
+                try {
+                    $label = ($this->translator)($label, $active->getTextDomain());
+                } catch (RuntimeException $e) {
+                    throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+                }
+
                 assert(is_string($label));
             }
 
@@ -224,9 +232,15 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         // walk back to root
         while ($parent = $active->getParent()) {
             if ($parent instanceof PageInterface) {
+                try {
+                    $entryHtml = $this->htmlify->toHtml(static::class, $parent);
+                } catch (RuntimeException $e) {
+                    throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+                }
+
                 // prepend crumb to html
                 $entry = $this->renderBreadcrumbItem(
-                    $this->htmlify->toHtml(static::class, $parent),
+                    $entryHtml,
                     $parent->getLiClass() ?? '',
                     $parent->isActive(),
                 );
@@ -391,7 +405,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      *
      * @throws Exception\RuntimeException         if no partial provided
      * @throws Exception\InvalidArgumentException if partial is invalid array
-     * @throws InvalidArgumentException
      */
     private function renderPartialModel(
         array $params,
@@ -419,7 +432,11 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
             $partial = $partial[0];
         }
 
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();

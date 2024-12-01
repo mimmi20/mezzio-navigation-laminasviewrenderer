@@ -34,7 +34,6 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
 
 use function assert;
@@ -106,14 +105,13 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly BasePath $basePathHelper,
         private readonly EscapeHtml $escaper,
         private readonly ServerUrlHelper $serverUrlHelper,
     ) {
-        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
+        parent::__construct($serviceLocator, $htmlify, $containerParser);
 
         libxml_use_internal_errors(true);
 
@@ -141,19 +139,12 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
      *                                                  the container returned by {@link getContainer()}.
      *
      * @throws Exception\RuntimeException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      */
     #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
-        try {
-            $dom = $this->getDomSitemap($container);
-        } catch (DOMException $e) {
-            $this->logger->error($e);
-
-            return '';
-        }
+        $dom = $this->getDomSitemap($container);
 
         $xml = $this->getUseXmlDeclaration()
             ? $dom->saveXML()
@@ -190,9 +181,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
      *                                                            schema, or if sitemap
      *                                                            validators are used and the
      *                                                            loc element fails validation
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
      * @throws Exception\InvalidArgumentException
-     * @throws DOMException
      */
     #[Override]
     public function getDomSitemap(
@@ -203,7 +192,11 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
         // Reset the urls
         $this->urls = [];
 
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if ($container === null) {
             $container = $this->getContainer();
@@ -214,7 +207,12 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
         $dom->formatOutput = $this->getFormatOutput();
 
         // ...and urlset (root) element
-        $urlSet = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'urlset');
+        try {
+            $urlSet = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'urlset');
+        } catch (DOMException $e) {
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
+
         $dom->appendChild($urlSet);
 
         // create iterator
@@ -261,7 +259,12 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             }
 
             // create url node for this page
-            $urlNode = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'url');
+            try {
+                $urlNode = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'url');
+            } catch (DOMException $e) {
+                throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
             $urlSet->appendChild($urlNode);
 
             if ($this->getUseSitemapValidators()) {
@@ -291,7 +294,13 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             }
 
             // put url in 'loc' element
-            $urlNode->appendChild($dom->createElementNS(SitemapInterface::SITEMAP_NS, 'loc', $url));
+            try {
+                $locElement = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'loc', $url);
+            } catch (DOMException $e) {
+                throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            $urlNode->appendChild($locElement);
 
             // add 'lastmod' element if a valid lastmod is set in page
             if (isset($page->lastmod)) {
@@ -309,19 +318,23 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                     try {
                         $isValid = $lastmodValidator->isValid($lastmod);
                     } catch (RuntimeException $e) {
-                        $this->logger->error($e);
+                        throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
                     }
                 }
 
                 if (!$this->getUseSitemapValidators() || ($lastmod !== false && $isValid)) {
                     // Cast $lastmod to string in case no validation was used
-                    $urlNode->appendChild(
-                        $dom->createElementNS(
+                    try {
+                        $lastmodElement = $dom->createElementNS(
                             SitemapInterface::SITEMAP_NS,
                             'lastmod',
                             (string) $lastmod,
-                        ),
-                    );
+                        );
+                    } catch (DOMException $e) {
+                        throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+                    }
+
+                    $urlNode->appendChild($lastmodElement);
                 }
             }
 
@@ -333,15 +346,21 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                 try {
                     $isValid = $changefreqValidator->isValid($changefreq);
                 } catch (RuntimeException $e) {
-                    $this->logger->error($e);
-
-                    $isValid = false;
+                    throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
                 }
 
                 if (!$this->getUseSitemapValidators() || $isValid) {
-                    $urlNode->appendChild(
-                        $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'changefreq', $changefreq),
-                    );
+                    try {
+                        $changefreqElement = $dom->createElementNS(
+                            SitemapInterface::SITEMAP_NS,
+                            'changefreq',
+                            $changefreq,
+                        );
+                    } catch (DOMException $e) {
+                        throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+                    }
+
+                    $urlNode->appendChild($changefreqElement);
                 }
             }
 
@@ -358,9 +377,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                 try {
                     $isValid = $priorityValidator->isValid($priority);
                 } catch (RuntimeException $e) {
-                    $this->logger->error($e);
-
-                    continue;
+                    throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
                 }
 
                 if (!$isValid) {
@@ -368,9 +385,17 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                 }
             }
 
-            $urlNode->appendChild(
-                $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'priority', $priority),
-            );
+            try {
+                $priorityElement = $dom->createElementNS(
+                    SitemapInterface::SITEMAP_NS,
+                    'priority',
+                    $priority,
+                );
+            } catch (DOMException $e) {
+                throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            $urlNode->appendChild($priorityElement);
         }
 
         // validate using schema if specified

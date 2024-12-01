@@ -12,9 +12,9 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
-use Laminas\I18n\Exception\RuntimeException;
-use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
@@ -29,7 +29,6 @@ use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function get_debug_type;
@@ -59,7 +58,6 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
      */
@@ -93,18 +91,15 @@ final class BreadcrumbsTest extends AbstractTestCase
 
         $translator = null;
 
-        $logger          = $this->serviceManager->get(LoggerInterface::class);
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
 
-        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
         $this->helper = new Breadcrumbs(
             $this->serviceManager,
-            $logger,
             $htmlify,
             $containerParser,
             $escapeHelper,
@@ -118,7 +113,6 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
@@ -130,7 +124,6 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
@@ -143,7 +136,6 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testNullOutContainer(): void
@@ -157,9 +149,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetSeparator(): void
     {
@@ -173,9 +164,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetMaxDepth(): void
     {
@@ -189,9 +179,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetMinDepth(): void
     {
@@ -205,9 +194,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testLinkLastElement(): void
     {
@@ -221,9 +209,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetIndent(): void
     {
@@ -237,9 +224,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderSuppliedContainerWithoutInterfering(): void
     {
@@ -266,10 +252,9 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testUseAclResourceFromPages(): void
     {
@@ -285,9 +270,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderingPartial(): void
     {
@@ -299,9 +283,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderingPartialWithSeparator(): void
     {
@@ -313,9 +296,8 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderingPartialBySpecifyingAnArrayAsPartial(): void
     {
@@ -325,11 +307,7 @@ final class BreadcrumbsTest extends AbstractTestCase
         self::assertSame($expected, $this->helper->render());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
+    /** @throws Exception */
     public function testRenderingPartialShouldFailOnInvalidPartialArray(): void
     {
         $this->helper->setPartial(['bc.phtml']);
@@ -346,7 +324,7 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testRenderingPartialWithParams(): void
@@ -361,10 +339,9 @@ final class BreadcrumbsTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      */
     public function testLastBreadcrumbShouldBeEscaped(): void
     {

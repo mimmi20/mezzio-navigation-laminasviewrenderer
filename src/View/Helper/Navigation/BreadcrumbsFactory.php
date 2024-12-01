@@ -21,7 +21,6 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function get_debug_type;
@@ -56,13 +55,11 @@ final class BreadcrumbsFactory
             assert($translator instanceof Translate);
         }
 
-        $logger          = $container->get(LoggerInterface::class);
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
         $escapeHtml      = $plugin->get(EscapeHtml::class);
         $renderer        = $container->get(PartialRendererInterface::class);
 
-        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapeHtml instanceof EscapeHtml);
@@ -70,7 +67,6 @@ final class BreadcrumbsFactory
 
         return new Breadcrumbs(
             $container,
-            $logger,
             $htmlify,
             $containerParser,
             $escapeHtml,

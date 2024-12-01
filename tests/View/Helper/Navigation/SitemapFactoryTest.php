@@ -28,7 +28,6 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 final class SitemapFactoryTest extends TestCase
 {
@@ -47,35 +46,13 @@ final class SitemapFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $basePath        = $this->createMock(BasePath::class);
         $escaper         = $this->createMock(EscapeHtml::class);
         $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
 
-        $viewHelperPluginManager = $this->getMockBuilder(ViewHelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $matcher                 = self::exactly(3);
         $viewHelperPluginManager->expects($matcher)
             ->method('get')
@@ -97,25 +74,21 @@ final class SitemapFactoryTest extends TestCase
                 },
             );
 
-        $container = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $matcher   = self::exactly(4);
+        $container = $this->createMock(ServiceLocatorInterface::class);
+        $matcher   = self::exactly(3);
         $container->expects($matcher)
             ->method('get')
             ->willReturnCallback(
-                static function (string $id) use ($matcher, $viewHelperPluginManager, $logger, $htmlify, $containerParser): mixed {
+                static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser): mixed {
                     match ($matcher->numberOfInvocations()) {
                         1 => self::assertSame(ViewHelperPluginManager::class, $id),
-                        2 => self::assertSame(LoggerInterface::class, $id),
-                        3 => self::assertSame(HtmlifyInterface::class, $id),
+                        2 => self::assertSame(HtmlifyInterface::class, $id),
                         default => self::assertSame(ContainerParserInterface::class, $id),
                     };
 
                     return match ($matcher->numberOfInvocations()) {
                         1 => $viewHelperPluginManager,
-                        2 => $logger,
-                        3 => $htmlify,
+                        2 => $htmlify,
                         default => $containerParser,
                     };
                 },
@@ -132,9 +105,7 @@ final class SitemapFactoryTest extends TestCase
      */
     public function testInvocationWithAssertionError(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('get');
 

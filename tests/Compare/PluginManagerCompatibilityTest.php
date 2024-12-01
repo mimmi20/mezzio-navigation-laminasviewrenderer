@@ -377,10 +377,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function emergency(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement emergency() method.
-                    }
+                public function emergency(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement emergency() method.
+                }
 
                 /**
                  * Action must be taken immediately.
@@ -395,10 +395,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function alert(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement alert() method.
-                    }
+                public function alert(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement alert() method.
+                }
 
                 /**
                  * Critical conditions.
@@ -412,10 +412,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function critical(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement critical() method.
-                    }
+                public function critical(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement critical() method.
+                }
 
                 /**
                  * Runtime errors that do not require immediate action but should typically
@@ -428,10 +428,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function error(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement error() method.
-                    }
+                public function error(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement error() method.
+                }
 
                 /**
                  * Exceptional occurrences that are not errors.
@@ -446,10 +446,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function warning(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement warning() method.
-                    }
+                public function warning(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement warning() method.
+                }
 
                 /**
                  * Normal but significant events.
@@ -461,10 +461,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function notice(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement notice() method.
-                    }
+                public function notice(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement notice() method.
+                }
 
                 /**
                  * Interesting events.
@@ -478,10 +478,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function info(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement info() method.
-                    }
+                public function info(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement info() method.
+                }
 
                 /**
                  * Detailed debug information.
@@ -493,10 +493,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function debug(Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement debug() method.
-                    }
+                public function debug(Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement debug() method.
+                }
 
                 /**
                  * Logs with an arbitrary level.
@@ -508,10 +508,10 @@ final class PluginManagerCompatibilityTest extends TestCase
                  * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
                  */
                 #[Override]
-                    public function log(mixed $level, Stringable | string $message, array $context = []): void
-                    {
-                        // TODO: Implement log() method.
-                    }
+                public function log(mixed $level, Stringable | string $message, array $context = []): void
+                {
+                    // TODO: Implement log() method.
+                }
             },
         );
         $sm->setFactory(

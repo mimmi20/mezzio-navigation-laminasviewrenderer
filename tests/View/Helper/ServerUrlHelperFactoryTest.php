@@ -42,9 +42,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
      */
     public function testInvocationException(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('has')
             ->with(BaseServerUrlHelper::class)
@@ -71,9 +69,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
     {
         $baseHelper = $this->createMock(BaseServerUrlHelper::class);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('has')
             ->with(BaseServerUrlHelper::class)

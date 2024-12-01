@@ -24,7 +24,6 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 final class NavigationFactoryTest extends TestCase
 {
@@ -43,9 +42,7 @@ final class NavigationFactoryTest extends TestCase
      */
     public function testInvocationWithAssertionError(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('get');
 
@@ -62,49 +59,25 @@ final class NavigationFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $logger->expects(self::never())
-            ->method('emergency');
-        $logger->expects(self::never())
-            ->method('alert');
-        $logger->expects(self::never())
-            ->method('critical');
-        $logger->expects(self::never())
-            ->method('error');
-        $logger->expects(self::never())
-            ->method('warning');
-        $logger->expects(self::never())
-            ->method('notice');
-        $logger->expects(self::never())
-            ->method('info');
-        $logger->expects(self::never())
-            ->method('debug');
-
         $htmlify                 = $this->createMock(HtmlifyInterface::class);
         $containerParser         = $this->createMock(ContainerParserInterface::class);
         $navigationPluginManager = $this->createMock(ViewHelperPluginManager::class);
 
-        $container = $this->getMockBuilder(ServiceLocatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $matcher   = self::exactly(4);
+        $container = $this->createMock(ServiceLocatorInterface::class);
+        $matcher   = self::exactly(3);
         $container->expects($matcher)
             ->method('get')
             ->willReturnCallback(
-                static function (string $id) use ($matcher, $logger, $htmlify, $containerParser, $navigationPluginManager): mixed {
+                static function (string $id) use ($matcher, $htmlify, $containerParser, $navigationPluginManager): mixed {
                     match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame(LoggerInterface::class, $id),
-                        2 => self::assertSame(HtmlifyInterface::class, $id),
-                        3 => self::assertSame(ContainerParserInterface::class, $id),
+                        1 => self::assertSame(HtmlifyInterface::class, $id),
+                        2 => self::assertSame(ContainerParserInterface::class, $id),
                         default => self::assertSame(Navigation\PluginManager::class, $id),
                     };
 
                     return match ($matcher->numberOfInvocations()) {
-                        1 => $logger,
-                        2 => $htmlify,
-                        3 => $containerParser,
+                        1 => $htmlify,
+                        2 => $containerParser,
                         default => $navigationPluginManager,
                     };
                 },
