@@ -252,7 +252,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param PageInterface $page page to find links for
      *
      * @return array<string, array<int|string, array<int, PageInterface>>>
-     * @phpstan-return array<'rel'|'rev', array<int|string, non-empty-array<int, PageInterface>>>
+     * @phpstan-return array<'rel'|'rev', array<string, non-empty-array<int, PageInterface>>>
      *
      * @throws void
      */
@@ -271,6 +271,10 @@ final class Links extends AbstractHelper implements LinksInterface
             $types = array_merge($native, array_diff($page->{$meth}(), $native));
 
             foreach ($types as $type) {
+                if (!is_string($type)) {
+                    continue;
+                }
+
                 $relFlag = array_search($type, LinksInterface::RELATIONS, true);
 
                 if (!$relFlag) {
