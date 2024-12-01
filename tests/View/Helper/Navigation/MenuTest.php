@@ -756,8 +756,6 @@ final class MenuTest extends TestCase
     {
         $exception = new \Laminas\I18n\Exception\RuntimeException('test');
 
-        $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
-
         $container = $this->createMock(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
@@ -847,7 +845,7 @@ final class MenuTest extends TestCase
         $this->expectExceptionMessage('test');
         $this->expectExceptionCode(0);
 
-        self::assertSame($expected, $helper->htmlify($page));
+        $helper->htmlify($page);
     }
 
     /** @throws Exception */
@@ -5180,6 +5178,678 @@ final class MenuTest extends TestCase
                 $name,
                 ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false, 'minDepth' => 2],
             ),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testRenderMenu11(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('isActive');
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::never())
+            ->method('hasPages');
+        $page->expects(self::never())
+            ->method('getLiClass');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::never())
+            ->method('accept');
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->willThrowException($exception);
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->renderMenu(
+            $name,
+            ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => false, 'minDepth' => 2],
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testRenderMenu12(): void
+    {
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('isActive')
+            ->with(true)
+            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::once())
+            ->method('hasPages')
+            ->with(false)
+            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('getLiClass');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, 1, null)
+            ->willReturn(
+                ['depth' => 1],
+            );
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($page, true)
+            ->willReturn(true);
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
+            ->method('build')
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $expected = '';
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+            ),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testRenderMenu13(): void
+    {
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('isActive')
+            ->with(true)
+            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::once())
+            ->method('hasPages')
+            ->with(false)
+            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('getLiClass');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, 1, null)
+            ->willReturn(
+                [
+                    'page' => 42,
+                    'depth' => 1,
+                ],
+            );
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($page, true)
+            ->willReturn(true);
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
+            ->method('build')
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $expected = '';
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        self::assertSame(
+            $expected,
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+            ),
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testRenderMenu14(): void
+    {
+        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
+
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('isActive')
+            ->with(true)
+            ->willReturn(false);
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::once())
+            ->method('hasPages')
+            ->with(false)
+            ->willReturn(false);
+        $page->expects(self::once())
+            ->method('getLiClass')
+            ->willReturn(null);
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $findActiveHelper = $this->createMock(FindActiveInterface::class);
+        $findActiveHelper->expects(self::once())
+            ->method('find')
+            ->with($container, 1, null)
+            ->willReturn(
+                [
+                    'page' => $parentPage,
+                    'depth' => 1,
+                ],
+            );
+
+        $acceptHelper = $this->createMock(AcceptHelperInterface::class);
+        $acceptHelper->expects(self::once())
+            ->method('accept')
+            ->with($page, true)
+            ->willReturn(true);
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $matcher = self::exactly(2);
+        $serviceLocator->expects($matcher)
+            ->method('build')
+            ->willReturnCallback(
+                static function (string $name, array | null $options = null) use ($matcher, $auth, $role, $findActiveHelper, $acceptHelper): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(FindActiveInterface::class, $name),
+                        default => self::assertSame(AcceptHelperInterface::class, $name),
+                    };
+
+                    self::assertSame(
+                        [
+                            'authorization' => $auth,
+                            'renderInvisible' => false,
+                            'role' => $role,
+                        ],
+                        $options,
+                    );
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $findActiveHelper,
+                        default => $acceptHelper,
+                    };
+                },
+            );
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Menu::class, $page, true, false, [], false)
+            ->willThrowException($exception);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($name, $containerParam),
+                        default => self::assertSame($container, $containerParam),
+                    };
+
+                    return $container;
+                },
+            );
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $matcher      = self::exactly(2);
+        $escapePlugin->expects($matcher)
+            ->method('__invoke')
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher, $ulClass, $liClass): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($ulClass, $value),
+                        default => self::assertSame($liClass, $value),
+                    };
+
+                    self::assertSame(0, $recurse);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => 'ul-class-escaped',
+                        default => 'li-class-escaped',
+                    };
+                },
+            );
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
+
+        $helper->setRole($role);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->renderMenu(
+            $name,
+            ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
         );
     }
 }

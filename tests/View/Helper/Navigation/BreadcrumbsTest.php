@@ -896,6 +896,110 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame($expected, $helper->htmlify($page));
     }
 
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     */
+    public function testHtmlifyWithException(): void
+    {
+        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
+
+        $container = $this->createMock(ContainerInterface::class);
+        $name      = 'Mezzio\Navigation\Top';
+
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator->expects(self::never())
+            ->method('has');
+        $serviceLocator->expects(self::never())
+            ->method('get');
+        $serviceLocator->expects(self::never())
+            ->method('build');
+
+        $page = $this->createMock(PageInterface::class);
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::never())
+            ->method('getLabel');
+        $page->expects(self::never())
+            ->method('getTitle');
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::never())
+            ->method('getId');
+        $page->expects(self::never())
+            ->method('getClass');
+        $page->expects(self::never())
+            ->method('getHref');
+        $page->expects(self::never())
+            ->method('getTarget');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Breadcrumbs::class, $page)
+            ->willThrowException($exception);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willReturn($container);
+
+        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $translatePlugin = $this->createMock(Translate::class);
+        $translatePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $helper = new Breadcrumbs(
+            $serviceLocator,
+            $htmlify,
+            $containerParser,
+            $escapePlugin,
+            $renderer,
+            $translatePlugin,
+        );
+
+        $helper->setContainer($name);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        assert(
+            $page instanceof PageInterface,
+            sprintf(
+                '$page should be an Instance of %s, but was %s',
+                PageInterface::class,
+                $page::class,
+            ),
+        );
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->htmlify($page);
+    }
+
     /** @throws Exception */
     public function testSetIndent(): void
     {
