@@ -147,10 +147,6 @@ final class Links extends AbstractHelper implements LinksInterface
 
         foreach ($result as $attrib => $types) {
             foreach ($types as $relation => $pages) {
-                if (!is_string($relation)) {
-                    continue;
-                }
-
                 foreach ($pages as $page) {
                     $r = $this->renderLink($page, $attrib, $relation);
 
