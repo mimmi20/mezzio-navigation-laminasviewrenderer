@@ -50,7 +50,7 @@ final class PluginManager extends ViewHelperPluginManager implements ContainerIn
     /**
      * Default factories
      *
-     * @var array<string>
+     * @var array<class-string, class-string>
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      */
     protected $factories = [
@@ -68,8 +68,7 @@ final class PluginManager extends ViewHelperPluginManager implements ContainerIn
      * Adds initializers to inject the attached renderer and translator, if
      * any, to the currently requested helper.
      *
-     * @param array<mixed> $v3config if $configOrContainerInstance is a container, this
-     *                               value will be passed to the parent constructor
+     * @param array<string, mixed> $v3config if $configOrContainerInstance is a container, this value will be passed to the parent constructor
      *
      * @throws void
      */

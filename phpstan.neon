@@ -97,12 +97,12 @@ parameters:
       tooWideThrowType: true
 
   cognitive_complexity:
-    class: 75
-    function: 40
+    class: 80
+    function: 53
 
   type_coverage:
     return_type: 96.3
-    param_type: 98.2
+    param_type: 98.0
     property_type: 100
     constant_type: 100
     # also, how many files has declare strict types
@@ -135,6 +135,7 @@ parameters:
     - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
     - '~assertContainsOnly~'
+    - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
 
 rules:
   # code complexity

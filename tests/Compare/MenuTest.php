@@ -12,9 +12,9 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
-use Laminas\I18n\Exception\RuntimeException;
-use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
@@ -31,7 +31,6 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function get_debug_type;
@@ -60,7 +59,6 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
      */
@@ -102,18 +100,15 @@ final class MenuTest extends AbstractTestCase
             ),
         );
 
-        $logger          = $this->serviceManager->get(LoggerInterface::class);
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
 
-        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
         $this->helper = new Menu(
             $this->serviceManager,
-            $logger,
             $htmlify,
             $containerParser,
             $escapeHelper,
@@ -126,9 +121,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testCanRenderMenuFromServiceAlias(): void
     {
@@ -140,7 +134,7 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testCanRenderPartialFromServiceAlias(): void
@@ -155,7 +149,6 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
@@ -167,7 +160,6 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
@@ -179,7 +171,6 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testNullingOutContainerInHelper(): void
@@ -190,9 +181,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetIndentAndOverrideInRenderMenu(): void
     {
@@ -213,9 +203,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderSuppliedContainerWithoutInterfering(): void
     {
@@ -238,10 +227,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testUseAclRoleAsString(): void
     {
@@ -259,10 +247,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testFilterOutPagesBasedOnAcl(): void
     {
@@ -280,10 +267,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testDisablingAcl(): void
     {
@@ -302,9 +288,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetUlCssClass(): void
     {
@@ -318,9 +303,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetLiActiveCssClass(): void
     {
@@ -334,10 +318,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      */
     public function testOptionEscapeLabelsAsTrue(): void
     {
@@ -361,10 +344,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      */
     public function testOptionEscapeLabelsAsFalse(): void
     {
@@ -388,9 +370,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderingPartial(): void
     {
@@ -404,9 +385,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderingPartialBySpecifyingAnArrayAsPartial(): void
     {
@@ -420,7 +400,7 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testRenderingPartialWithParams(): void
@@ -433,27 +413,29 @@ final class MenuTest extends AbstractTestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @throws AssertionFailedError
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
+    /** @throws AssertionFailedError */
     public function testRenderingPartialShouldFailOnInvalidPartialArray(): void
     {
         $this->helper->setPartial(['menu.phtml']);
 
         try {
             $this->helper->render();
+
             self::fail('invalid $partial should throw Laminas\View\Exception\InvalidArgumentException');
-        } catch (ExceptionInterface) {
+        } catch (ExceptionInterface $e) {
+            self::assertSame(InvalidArgumentException::class, $e::class);
+            self::assertSame(
+                'Unable to render menu: A view partial supplied as an array must contain one value: the partial view script',
+                $e->getMessage(),
+            );
+            self::assertSame(0, $e->getCode());
         }
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetMaxDepth(): void
     {
@@ -467,9 +449,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetMinDepth(): void
     {
@@ -483,9 +464,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetBothDepts(): void
     {
@@ -499,9 +479,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetOnlyActiveBranch(): void
     {
@@ -515,9 +494,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetRenderParents(): void
     {
@@ -531,9 +509,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testSetOnlyActiveBranchAndMinDepth(): void
     {
@@ -547,9 +524,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOnlyActiveBranchAndMaxDepth(): void
     {
@@ -563,9 +539,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOnlyActiveBranchAndBothDepthsSpecified(): void
     {
@@ -579,9 +554,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOnlyActiveBranchNoParentsAndBothDepthsSpecified(): void
     {
@@ -598,9 +572,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOnlyActiveBranchNoParentsActiveOneBelowMinDepth(): void
     {
@@ -619,9 +592,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderSubMenuShouldOverrideOptions(): void
     {
@@ -638,9 +610,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionMaxDepth(): void
     {
@@ -654,9 +625,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionMinDepth(): void
     {
@@ -670,9 +640,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionBothDepts(): void
     {
@@ -689,9 +658,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionOnlyActiveBranch(): void
     {
@@ -705,9 +673,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionOnlyActiveBranchNoParents(): void
     {
@@ -724,9 +691,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionOnlyActiveBranchAndMinDepth(): void
     {
@@ -743,9 +709,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionOnlyActiveBranchAndMaxDepth(): void
     {
@@ -762,9 +727,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionOnlyActiveBranchAndBothDepthsSpecified(): void
     {
@@ -782,9 +746,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testOptionOnlyActiveBranchNoParentsAndBothDepthsSpecified(): void
     {
@@ -803,10 +766,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      */
     public function testRenderingWithoutPageClassToLi(): void
     {
@@ -829,10 +791,9 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      */
     public function testRenderingWithPageClassToLi(): void
     {
@@ -856,9 +817,8 @@ final class MenuTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function testRenderDeepestMenuWithPageClassToLi(): void
     {

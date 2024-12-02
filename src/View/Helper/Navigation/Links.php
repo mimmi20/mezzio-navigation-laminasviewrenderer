@@ -12,14 +12,11 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use ErrorException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\Stdlib\ErrorHandler;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\HeadLink;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
-use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
 use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
@@ -28,7 +25,6 @@ use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
 
 use function array_diff;
@@ -49,7 +45,6 @@ use function rtrim;
 use function sprintf;
 use function ucfirst;
 
-use const E_WARNING;
 use const PHP_EOL;
 
 /**
@@ -57,29 +52,6 @@ use const PHP_EOL;
  */
 final class Links extends AbstractHelper implements LinksInterface
 {
-    /**
-     * Maps render constants to W3C link types
-     *
-     * @var array<int, string>
-     */
-    private static array $RELATIONS = [
-        LinksInterface::RENDER_ALTERNATE => 'alternate',
-        LinksInterface::RENDER_STYLESHEET => 'stylesheet',
-        LinksInterface::RENDER_START => 'start',
-        LinksInterface::RENDER_NEXT => 'next',
-        LinksInterface::RENDER_PREV => 'prev',
-        LinksInterface::RENDER_CONTENTS => 'contents',
-        LinksInterface::RENDER_INDEX => 'index',
-        LinksInterface::RENDER_GLOSSARY => 'glossary',
-        LinksInterface::RENDER_COPYRIGHT => 'copyright',
-        LinksInterface::RENDER_CHAPTER => 'chapter',
-        LinksInterface::RENDER_SECTION => 'section',
-        LinksInterface::RENDER_SUBSECTION => 'subsection',
-        LinksInterface::RENDER_APPENDIX => 'appendix',
-        LinksInterface::RENDER_HELP => 'help',
-        LinksInterface::RENDER_BOOKMARK => 'bookmark',
-    ];
-
     /**
      * The helper's render flag
      *
@@ -91,13 +63,12 @@ final class Links extends AbstractHelper implements LinksInterface
     /** @throws void */
     public function __construct(
         ServiceLocatorInterface $serviceLocator,
-        LoggerInterface $logger,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly FindRootInterface $rootFinder,
         private readonly HeadLink $headLink,
     ) {
-        parent::__construct($serviceLocator, $logger, $htmlify, $containerParser);
+        parent::__construct($serviceLocator, $htmlify, $containerParser);
     }
 
     /**
@@ -111,20 +82,16 @@ final class Links extends AbstractHelper implements LinksInterface
      * $h->findRelFoo($page);     // $h->findRelation($page, 'rel', 'foo');
      * </code>
      *
-     * @param array<mixed> $arguments
+     * @param array<int, mixed> $arguments
      *
-     * @throws Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws ErrorException
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\DomainException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function __call(string $method, array $arguments = []): mixed
     {
-        ErrorHandler::start(E_WARNING);
         $result = preg_match('/find(Rel|Rev)(.+)/', $method, $match);
-        ErrorHandler::stop();
 
         if ($result && $arguments[0] instanceof PageInterface) {
             $rel  = mb_strtolower($match[1]);
@@ -143,19 +110,20 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * Implements {@link ViewHelperInterface::render()}.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
-     *                                                  Default is null, which indicates
-     *                                                  that the helper should render
-     *                                                  the container returned by {@link getContainer()}.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is null, which indicates that the helper should render the container returned by {@link getContainer()}.
      *
      * @throws Exception\DomainException
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if ($container === null) {
             $container = $this->getContainer();
@@ -175,24 +143,10 @@ final class Links extends AbstractHelper implements LinksInterface
 
         $this->rootFinder->setRoot($container);
 
-        try {
-            $result = $this->findAllRelations($active, $this->getRenderFlag());
-        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException $e) {
-            $this->logger->error($e);
-
-            return '';
-        }
+        $result = $this->findAllRelations($active, $this->getRenderFlag());
 
         foreach ($result as $attrib => $types) {
-            if (!is_string($attrib)) {
-                continue;
-            }
-
             foreach ($types as $relation => $pages) {
-                if (!is_string($relation)) {
-                    continue;
-                }
-
                 foreach ($pages as $page) {
                     $r = $this->renderLink($page, $attrib, $relation);
 
@@ -220,6 +174,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *                                alternate, appendix, bookmark, chapter, contents, copyright,
      *                                glossary, help, home, index, next, prev, section, start, stylesheet,
      *                                subsection
+     * @phpstan-param value-of<LinksInterface::RELATIONS> $relation
      *
      * @throws Exception\DomainException
      */
@@ -292,10 +247,10 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @param PageInterface $page page to find links for
      *
-     * @return array<string, array<int|string, array<int|string, PageInterface>>>
+     * @return array<string, array<int|string, array<int, PageInterface>>>
+     * @phpstan-return array<'rel'|'rev', array<string, non-empty-array<int, PageInterface>>>
      *
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws void
      */
     #[Override]
     public function findAllRelations(PageInterface $page, int | null $flag = null): array
@@ -305,14 +260,18 @@ final class Links extends AbstractHelper implements LinksInterface
         }
 
         $result = ['rel' => [], 'rev' => []];
-        $native = array_values(self::$RELATIONS);
+        $native = array_values(LinksInterface::RELATIONS);
 
         foreach (array_keys($result) as $rel) {
             $meth  = 'getDefined' . ucfirst($rel);
             $types = array_merge($native, array_diff($page->{$meth}(), $native));
 
             foreach ($types as $type) {
-                $relFlag = array_search($type, self::$RELATIONS, true);
+                if (!is_string($type)) {
+                    continue;
+                }
+
+                $relFlag = array_search($type, LinksInterface::RELATIONS, true);
 
                 if (!$relFlag) {
                     $relFlag = self::RENDER_CUSTOM;
@@ -324,7 +283,7 @@ final class Links extends AbstractHelper implements LinksInterface
 
                 try {
                     $found = $this->findRelation($page, $rel, $type);
-                } catch (Exception\DomainException) {
+                } catch (Exception\DomainException | Exception\RuntimeException | Exception\InvalidArgumentException) {
                     continue;
                 }
 
@@ -348,12 +307,13 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param PageInterface $page page to find relations for
      * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
      * @param string        $type link type, e.g. 'start', 'next'
+     * @phpstan-param value-of<LinksInterface::RELATIONS> $type
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
-     * @throws Exception\DomainException                          if $rel is not "rel" or "rev"
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\DomainException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function findRelation(PageInterface $page, string $rel, string $type): array
@@ -395,7 +355,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * tells search engines which document is considered by the author to be the
      * starting point of the collection.
      *
-     * @throws void
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function searchRelStart(PageInterface $page): PageInterface | null
@@ -423,7 +383,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * agents may choose to preload the "next" document, to reduce the perceived
      * load time.
      *
-     * @throws void
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function searchRelNext(PageInterface $page): PageInterface | null
@@ -465,7 +425,7 @@ final class Links extends AbstractHelper implements LinksInterface
      * Refers to the previous document in an ordered series of documents. Some
      * user agents also support the synonym "Previous".
      *
-     * @throws void
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function searchRelPrev(PageInterface $page): PageInterface | null
@@ -505,11 +465,11 @@ final class Links extends AbstractHelper implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a chapter in a collection of documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
      * @throws Exception\DomainException
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function searchRelChapter(PageInterface $page): array
@@ -541,9 +501,9 @@ final class Links extends AbstractHelper implements LinksInterface
      * From {@link http://www.w3.org/TR/html4/types.html#type-links}:
      * Refers to a document serving as a section in a collection of documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
-     * @throws void
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function searchRelSection(PageInterface $page): array
@@ -580,9 +540,9 @@ final class Links extends AbstractHelper implements LinksInterface
      * Refers to a document serving as a subsection in a collection of
      * documents.
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
-     * @throws void
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function searchRelSubsection(PageInterface $page): array
@@ -730,10 +690,10 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param 'rel'|'rev'   $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next'
      *
-     * @return array<PageInterface>
+     * @return array<int, PageInterface>
      *
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     private function findFromProperty(PageInterface $page, string $rel, string $type): array
     {
@@ -747,14 +707,16 @@ final class Links extends AbstractHelper implements LinksInterface
                 ],
             );
         } catch (ContainerExceptionInterface $e) {
-            $this->logger->error($e);
-
-            return [];
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
         assert($findFromPropertyHelper instanceof FindFromPropertyInterface);
 
-        return $findFromPropertyHelper->find($page, $rel, $type);
+        try {
+            return $findFromPropertyHelper->find($page, $rel, $type);
+        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException | DomainException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -765,9 +727,9 @@ final class Links extends AbstractHelper implements LinksInterface
      * @param 'rel'|'rev'   $rel  relation, 'rel' or 'rev'
      * @param string        $type link type, e.g. 'start', 'next', etc
      *
-     * @return array<PageInterface>|PageInterface|null
+     * @return array<int, PageInterface>|PageInterface|null
      *
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     private function findFromSearch(PageInterface $page, string $rel, string $type): array | PageInterface | null
     {

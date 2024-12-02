@@ -14,7 +14,6 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\Exception\RuntimeException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\Stdlib\Exception\DomainException;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
@@ -28,7 +27,6 @@ use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\LoggerInterface;
 use Stringable;
 
 use function assert;
@@ -102,10 +100,10 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /** @throws void */
     public function __construct(
         protected ServiceLocatorInterface $serviceLocator,
-        protected LoggerInterface $logger,
         protected HtmlifyInterface $htmlify,
         protected ContainerParserInterface $containerParser,
     ) {
+        // nothing to do here
     }
 
     /**
@@ -113,7 +111,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * @param Navigation\ContainerInterface<PageInterface>|string|null $container container to operate on
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function __invoke(ContainerInterface | string | null $container = null): static
     {
@@ -127,8 +125,8 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Magic overload: Proxy calls to the navigation container
      *
-     * @param string       $method    method name in container
-     * @param array<mixed> $arguments rguments to pass
+     * @param string            $method    method name in container
+     * @param array<int, mixed> $arguments arguments to pass
      *
      * @throws void
      */
@@ -145,18 +143,13 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * Implements {@link ViewHelperInterface::__toString()}.
      *
-     * @throws void
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function __toString(): string
     {
-        try {
-            return $this->render();
-        } catch (Exception\ExceptionInterface | InvalidArgumentException | DomainException | RuntimeException $e) {
-            $this->logger->error($e);
-
-            return '';
-        }
+        return $this->render();
     }
 
     /**
@@ -164,15 +157,10 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * Implements {@link ViewHelperInterface::render()}.
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render.
-     *                                                  Default is null, which indicates
-     *                                                  that the helper should render
-     *                                                  the container returned by {@link getContainer()}.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to render. Default is null, which indicates that the helper should render the container returned by {@link getContainer()}.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
     abstract public function render(ContainerInterface | string | null $container = null): string;
 
@@ -183,13 +171,17 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * @param Navigation\ContainerInterface<PageInterface>|string|null $container default is null, meaning container will be reset
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      *
      * @api
      */
     public function setContainer(ContainerInterface | string | null $container = null): static
     {
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if ($container instanceof ContainerInterface || $container === null) {
             $this->container = $container;
@@ -251,30 +243,25 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * Finds the deepest active page in the given container
      *
      * @param Navigation\ContainerInterface<PageInterface>|string|null $container to search
-     * @param int|null                                                 $minDepth  [optional] minimum depth
-     *                                                                            required for page to be
-     *                                                                            valid. Default is to use
-     *                                                                            {@link getMinDepth()}. A
-     *                                                                            null value means no minimum
-     *                                                                            depth required.
-     * @param int|null                                                 $maxDepth  [optional] maximum depth
-     *                                                                            a page can have to be
-     *                                                                            valid. Default is to use
-     *                                                                            {@link getMaxDepth()}. A
-     *                                                                            null value means no maximum
-     *                                                                            depth required.
+     * @param int|null                                                 $minDepth  [optional] minimum depth required for page to be valid. Default is to use {@link getMinDepth()}. A null value means no minimum depth required.
+     * @param int|null                                                 $maxDepth  [optional] maximum depth a page can have to be valid. Default is to use {@link getMaxDepth()}. A null value means no maximum depth required.
      *
      * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page', or an empty array if not found
      * @phpstan-return array{page?: PageInterface|null, depth?: int|null}
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function findActive(
         ContainerInterface | string | null $container,
         int | null $minDepth = null,
         int | null $maxDepth = -1,
     ): array {
-        $container = $this->containerParser->parseContainer($container);
+        try {
+            $container = $this->containerParser->parseContainer($container);
+        } catch (InvalidArgumentException $e) {
+            throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
 
         if ($container === null) {
             $container = $this->getContainer();
@@ -298,9 +285,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
                 ],
             );
         } catch (ContainerExceptionInterface $e) {
-            $this->logger->error($e);
-
-            return [];
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
         assert($findActiveHelper instanceof FindActiveInterface);
@@ -322,14 +307,11 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *   will not be accepted if it is the descendant of a non-accepted page
      *
      * @param PageInterface $page      page to check
-     * @param bool          $recursive [optional] if true, page will not be
-     *                                 accepted if it is the descendant of
-     *                                 a page that is not accepted. Default
-     *                                 is true
+     * @param bool          $recursive [optional] if true, page will not be accepted if it is the descendant of a page that is not accepted. Default is true
      *
      * @return bool Whether page should be accepted
      *
-     * @throws void
+     * @throws Exception\RuntimeException
      */
     public function accept(PageInterface $page, bool $recursive = true): bool
     {
@@ -343,9 +325,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
                 ],
             );
         } catch (ContainerExceptionInterface $e) {
-            $this->logger->error($e);
-
-            return false;
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
         assert(
@@ -368,13 +348,17 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * @return string HTML string (<a href="…">Label</a>)
      *
      * @throws Exception\InvalidArgumentException
-     * @throws RuntimeException
+     * @throws Exception\RuntimeException
      *
      * @api
      */
     public function htmlify(PageInterface $page): string
     {
-        return $this->htmlify->toHtml(static::class, $page);
+        try {
+            return $this->htmlify->toHtml(static::class, $page);
+        } catch (RuntimeException $e) {
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -655,8 +639,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Sets default Authorization to use if another Authorization is not explicitly set
      *
-     * @param AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which
-     *                                                   sets no Authorization object.
+     * @param AuthorizationInterface|null $authorization [optional] Authorization object. Default is null, which sets no Authorization object.
      *
      * @throws void
      *
@@ -671,8 +654,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * Sets default Authorization role(s) to use when iterating pages if not explicitly
      * set later with {@link setRole()}
      *
-     * @param string|null $role [optional] role to set. Expects null or string. Default is null, which
-     *                          sets no default role.
+     * @param string|null $role [optional] role to set. Expects null or string. Default is null, which sets no default role.
      *
      * @throws void
      *

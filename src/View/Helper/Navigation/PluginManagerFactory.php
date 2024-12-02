@@ -25,8 +25,8 @@ use function is_array;
 final class PluginManagerFactory implements FactoryInterface
 {
     /**
-     * @param string            $name
-     * @param array<mixed>|null $options
+     * @param string                    $requestedName
+     * @param array<string, mixed>|null $options
      *
      * @return PluginManager<covariant ViewHelperInterface>
      *
@@ -36,8 +36,11 @@ final class PluginManagerFactory implements FactoryInterface
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     #[Override]
-    public function __invoke(ContainerInterface $container, $name, array | null $options = null): PluginManager
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array | null $options = null,
+    ): PluginManager {
         /** @var PluginManager<covariant ViewHelperInterface> $pluginManager */
         $pluginManager = new PluginManager($container, $options ?? []);
 

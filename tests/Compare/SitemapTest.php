@@ -14,15 +14,16 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 
 use DOMDocument;
 use DOMElement;
-use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\Uri\Uri;
-use Laminas\View\Exception\ExceptionInterface;
+use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\ServerUrlHelper;
+use Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageFactory;
@@ -33,7 +34,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\UriInterface;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function date_default_timezone_get;
@@ -70,7 +70,6 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
      */
@@ -376,18 +375,15 @@ final class SitemapTest extends AbstractTestCase
 
         $basePathHelper->setBasePath('');
 
-        $logger          = $this->serviceManager->get(LoggerInterface::class);
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
 
-        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
         $this->helper = new Sitemap(
             $this->serviceManager,
-            $logger,
             $htmlify,
             $containerParser,
             $basePathHelper,
@@ -414,7 +410,6 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
@@ -426,7 +421,6 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
@@ -438,7 +432,6 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testNullingOutNavigation(): void
@@ -449,7 +442,7 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testSettingMaxDepth(): void
@@ -462,7 +455,7 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testSettingMinDepth(): void
@@ -475,7 +468,7 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testSettingBothDepths(): void
@@ -489,7 +482,7 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testDropXmlDeclaration(): void
@@ -502,9 +495,9 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testDisablingValidators(): void
     {
@@ -523,13 +516,11 @@ final class SitemapTest extends AbstractTestCase
 
         self::assertInstanceOf(DOMElement::class, $expectedDom->documentElement);
         self::assertInstanceOf(DOMElement::class, $receivedDom->documentElement);
-
-        // self::assertEqualXMLStructure($expectedDom->documentElement, $receivedDom->documentElement);
     }
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     public function testSetServerUrlWithSchemeAndHost(): void
@@ -542,7 +533,7 @@ final class SitemapTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
+     * @throws RuntimeException
      * @throws InvalidArgumentException
      */
     #[Group('test-123')]

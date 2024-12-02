@@ -15,8 +15,9 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Compare;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Role\GenericRole;
-use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception\DomainException;
+use Laminas\View\Exception\InvalidArgumentException;
+use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
@@ -35,7 +36,6 @@ use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\LoggerInterface;
 use RecursiveIteratorIterator;
 
 use function array_key_exists;
@@ -65,9 +65,8 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws ContainerExceptionInterface
+     * @throws ExceptionInterface
      * @throws InvalidArgumentException
      */
     #[Override]
@@ -102,12 +101,10 @@ final class LinksTest extends AbstractTestCase
 
         assert($headLinkHelper->getView() !== null, 'View was not set into Headlink Helper');
 
-        $logger          = $this->serviceManager->get(LoggerInterface::class);
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
         $findRoot        = $this->serviceManager->get(FindRootInterface::class);
 
-        assert($logger instanceof LoggerInterface);
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($findRoot instanceof FindRootInterface);
@@ -115,7 +112,6 @@ final class LinksTest extends AbstractTestCase
         // create helper
         $this->helper = new Navigation\Links(
             $this->serviceManager,
-            $logger,
             $htmlify,
             $containerParser,
             $findRoot,
@@ -133,7 +129,6 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithoutAnyParams(): void
@@ -145,7 +140,6 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws InvalidArgumentException
      */
     public function testHelperEntryPointWithContainerParam(): void
@@ -157,9 +151,9 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function testDoNotRenderIfNoPageIsActive(): void
     {
@@ -168,10 +162,10 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
      */
     public function testDetectRelationFromStringPropertyOfActivePage(): void
     {
@@ -203,7 +197,6 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
      * @throws ExceptionInterface
      */
     public function testDetectRelationFromPageInstancePropertyOfActivePage(): void
@@ -240,7 +233,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testDetectRelationFromArrayPropertyOfActivePage(): void
     {
@@ -275,10 +267,10 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
      */
     public function testExtractingRelationsFromPageProperties(): void
     {
@@ -335,7 +327,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindStartPageByTraversal(): void
     {
@@ -351,7 +342,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testDoNotFindStartWhenGivenPageIsTheFirstPage(): void
     {
@@ -366,7 +356,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindNextPageByTraversalShouldFindChildPage(): void
     {
@@ -382,7 +371,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindNextPageByTraversalShouldFindSiblingPage(): void
     {
@@ -398,7 +386,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindNextPageByTraversalShouldWrap(): void
     {
@@ -414,7 +401,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindPrevPageByTraversalShouldFindParentPage(): void
     {
@@ -430,7 +416,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindPrevPageByTraversalShouldFindSiblingPage(): void
     {
@@ -446,7 +431,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindPrevPageByTraversalShouldWrap(): void
     {
@@ -462,7 +446,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testShouldFindChaptersFromFirstLevelOfPagesInContainer(): void
     {
@@ -485,7 +468,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindingChaptersShouldExcludeSelfIfChapter(): void
     {
@@ -508,7 +490,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindSectionsWhenActiveChapterPage(): void
     {
@@ -530,7 +511,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testDoNotFindSectionsWhenActivePageIsASection(): void
     {
@@ -544,10 +524,10 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
      */
     public function testDoNotFindSectionsWhenActivePageIsASubsection(): void
     {
@@ -562,7 +542,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindSubsectionWhenActivePageIsSection(): void
     {
@@ -585,7 +564,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testDoNotFindSubsectionsWhenActivePageIsASubSubsection(): void
     {
@@ -601,7 +579,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testDoNotFindSubsectionsWhenActivePageIsAChapter(): void
     {
@@ -616,7 +593,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindRevSectionWhenPageIsSection(): void
     {
@@ -631,7 +607,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testFindRevSubsectionWhenPageIsSubsection(): void
     {
@@ -645,11 +620,11 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testAclFiltersAwayPagesFromPageProperty(): void
     {
@@ -712,11 +687,11 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
      */
     public function testAclFiltersAwayPagesFromContainerSearch(): void
     {
@@ -779,10 +754,9 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testFindRelationMustSpecifyRelOrRev(): void
     {
@@ -804,7 +778,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
      */
     public function testRenderLinkMustSpecifyRelOrRev(): void
     {
@@ -826,9 +799,6 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
-     * @throws InvalidArgumentException
      */
     public function testFindAllRelations(): void
     {
@@ -899,10 +869,10 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
      */
     public function testSingleRenderFlags(): void
     {
@@ -943,10 +913,10 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
      */
     public function testRenderFlagBitwiseOr(): void
     {
@@ -970,10 +940,10 @@ final class LinksTest extends AbstractTestCase
 
     /**
      * @throws Exception
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
+     * @throws ExceptionInterface
      */
     public function testIndenting(): void
     {
@@ -999,9 +969,9 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function testSetMaxDepth(): void
     {
@@ -1019,9 +989,9 @@ final class LinksTest extends AbstractTestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws \Laminas\View\Exception\ExceptionInterface
-     * @throws \Laminas\Stdlib\Exception\DomainException
+     * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function testSetMinDepth(): void
     {

@@ -14,10 +14,9 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\Exception\DomainException;
-use Laminas\View\Exception\InvalidArgumentException;
-use Laminas\View\Exception\RuntimeException;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
+use Laminas\View\Exception;
 use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
@@ -29,10 +28,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\ViewHelperInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
-use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use Psr\Log\LoggerInterface;
 
 use function assert;
 use function spl_object_hash;
@@ -68,19 +64,6 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     /** @var ViewHelperPluginManager<HelperInterface>|null */
     private ViewHelperPluginManager | null $pluginManager = null;
 
-    /** @throws void */
-    public function __construct(
-        ServiceLocatorInterface $serviceLocator,
-        LoggerInterface $logger,
-        HtmlifyInterface $htmlify,
-        ContainerParserInterface $containerParser,
-    ) {
-        $this->serviceLocator  = $serviceLocator;
-        $this->logger          = $logger;
-        $this->htmlify         = $htmlify;
-        $this->containerParser = $containerParser;
-    }
-
     /**
      * Magic overload: Proxy to other navigation helpers or the container
      *
@@ -96,25 +79,19 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * $blogPages = $this->navigation()->findAllByRoute('blog');
      * </code>
      *
-     * @param string                                               $method    helper name or method name in container
-     * @param array<ContainerInterface<PageInterface>|string|null> $arguments [optional] arguments to pass
+     * @param string                                                           $method    helper name or method name in container
+     * @param array<int|string, ContainerInterface<PageInterface>|string|null> $arguments [optional] arguments to pass
      *
      * @return mixed returns what the proxied call returns
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function __call(string $method, array $arguments = []): mixed
     {
         // check if call should proxy to another helper
-        try {
-            $helper = $this->findHelperStrict($method);
-        } catch (RuntimeException $e) {
-            $this->logger->error($e);
-
-            // default behaviour: proxy call to container
-            return parent::__call($method, $arguments);
-        }
+        $helper = $this->findHelperStrict($method);
 
         return $helper(...$arguments);
     }
@@ -124,23 +101,19 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      *
      * @param ContainerInterface<PageInterface>|string|null $container
      *
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     * @throws DomainException
-     * @throws \Laminas\Stdlib\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     #[Override]
     public function render(ContainerInterface | string | null $container = null): string
     {
+        $helper = $this->findHelperStrict($this->getDefaultProxy());
+
         try {
-            $helper = $this->findHelperStrict($this->getDefaultProxy());
-        } catch (RuntimeException $e) {
-            $this->logger->error($e);
-
-            return '';
+            return $helper->render($container);
+        } catch (InvalidArgumentException | DomainException $e) {
+            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
-
-        return $helper->render($container);
     }
 
     /**
@@ -150,14 +123,12 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * {@link \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation}.
      *
      * @param string $proxy  helper name
-     * @param bool   $strict [optional] whether exceptions should be
-     *                       thrown if something goes
-     *                       wrong. Default is true.
+     * @param bool   $strict [optional] whether exceptions should be thrown if something goes wrong. Default is true.
      *
      * @return ViewHelperInterface|null helper instance
      *
-     * @throws RuntimeException if $strict is true and helper cannot be found
-     * @throws InvalidArgumentException
+     * @throws Exception\RuntimeException if $strict is true and helper cannot be found
+     * @throws Exception\InvalidArgumentException
      *
      * @api
      */
@@ -275,7 +246,8 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      *
      * @return ViewHelperInterface|null helper instance
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     private function findHelperNonStrict(string $proxy): ViewHelperInterface | null
     {
@@ -290,9 +262,11 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
         try {
             $helper = $this->pluginManager->get($proxy);
         } catch (ServiceNotFoundException | InvalidServiceException $e) {
-            $this->logger->debug($e);
-
-            return null;
+            throw new Exception\RuntimeException(
+                sprintf('Failed to load plugin for %s', $proxy),
+                0,
+                $e,
+            );
         }
 
         assert($helper instanceof ViewHelperInterface);
@@ -312,19 +286,19 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      *
      * @return ViewHelperInterface helper instance
      *
-     * @throws RuntimeException if helper cannot be found
-     * @throws InvalidArgumentException
+     * @throws Exception\RuntimeException if helper cannot be found
+     * @throws Exception\InvalidArgumentException
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
         if ($this->pluginManager === null) {
-            throw new RuntimeException(
+            throw new Exception\RuntimeException(
                 sprintf('Failed to find plugin for %s, no PluginManager set', $proxy),
             );
         }
 
         if (!$this->pluginManager->has($proxy)) {
-            throw new RuntimeException(
+            throw new Exception\RuntimeException(
                 sprintf('Failed to find plugin for %s', $proxy),
             );
         }
@@ -332,7 +306,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
         try {
             $helper = $this->pluginManager->get($proxy);
         } catch (ServiceNotFoundException | InvalidServiceException $e) {
-            throw new RuntimeException(
+            throw new Exception\RuntimeException(
                 sprintf('Failed to load plugin for %s', $proxy),
                 0,
                 $e,
@@ -346,7 +320,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
         return $helper;
     }
 
-    /** @throws InvalidArgumentException */
+    /** @throws Exception\InvalidArgumentException */
     private function prepareHelper(ViewHelperInterface $helper): void
     {
         $container = $this->getContainer();

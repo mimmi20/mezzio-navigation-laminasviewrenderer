@@ -33,31 +33,13 @@ interface SitemapInterface extends ViewHelperInterface
     /**
      * Returns a DOMDocument containing the Sitemap XML for the given container
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to get
-     *                                                  sitemaps from, defaults
-     *                                                  to what is registered in the
-     *                                                  helper
-     * @param int|null                                      $minDepth  [optional] minimum depth
-     *                                                                 required for page to be
-     *                                                                 valid. Default is to use
-     *                                                                 {@link getMinDepth()}. A
-     *                                                                 null value means no minimum
-     *                                                                 depth required.
-     * @param int|null                                      $maxDepth  [optional] maximum depth
-     *                                                                 a page can have to be
-     *                                                                 valid. Default is to use
-     *                                                                 {@link getMaxDepth()}. A
-     *                                                                 null value means no maximum
-     *                                                                 depth required.
+     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to get sitemaps from, defaults to what is registered in the helper
+     * @param int|null                                      $minDepth  [optional] minimum depth required for page to be valid. Default is to use {@link getMinDepth()}. A null value means no minimum depth required.
+     * @param int|null                                      $maxDepth  [optional] maximum depth a page can have to be valid. Default is to use {@link getMaxDepth()}. A null value means no maximum depth required.
      *
      * @return DOMDocument DOM representation of the container
      *
-     * @throws Exception\RuntimeException         if schema validation is on
-     *                                            and the sitemap is invalid
-     *                                            according to the sitemap
-     *                                            schema, or if sitemap
-     *                                            validators are used and the
-     *                                            loc element fails validation
+     * @throws Exception\RuntimeException         if schema validation is on and the sitemap is invalid according to the sitemap schema, or if sitemap validators are used and the loc element fails validation
      * @throws Exception\InvalidArgumentException
      */
     public function getDomSitemap(

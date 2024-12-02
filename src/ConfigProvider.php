@@ -16,10 +16,6 @@ use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
 
 final class ConfigProvider
 {
@@ -51,8 +47,8 @@ final class ConfigProvider
     {
         return [
             'aliases' => [
-                'navigation' => Navigation::class,
-                'Navigation' => Navigation::class,
+                'navigation' => View\Helper\Navigation::class,
+                'Navigation' => View\Helper\Navigation::class,
                 BaseServerUrlHelper::class => ServerUrlHelper::class,
                 'serverurl' => ServerUrlHelper::class,
                 'serverUrl' => ServerUrlHelper::class,
@@ -62,9 +58,9 @@ final class ConfigProvider
                 'Url' => UrlHelper::class,
             ],
             'factories' => [
-                Navigation::class => NavigationFactory::class,
-                UrlHelper::class => UrlHelperFactory::class,
-                ServerUrlHelper::class => ServerUrlHelperFactory::class,
+                View\Helper\Navigation::class => View\Helper\NavigationFactory::class,
+                UrlHelper::class => View\Helper\UrlHelperFactory::class,
+                ServerUrlHelper::class => View\Helper\ServerUrlHelperFactory::class,
             ],
         ];
     }
@@ -81,7 +77,7 @@ final class ConfigProvider
     {
         return [
             'factories' => [
-                Navigation\PluginManager::class => Navigation\PluginManagerFactory::class,
+                View\Helper\Navigation\PluginManager::class => View\Helper\Navigation\PluginManagerFactory::class,
             ],
         ];
     }
