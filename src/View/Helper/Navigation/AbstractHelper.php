@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
@@ -45,7 +46,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * ContainerInterface to operate on by default
      *
-     * @var Navigation\ContainerInterface<PageInterface>|null
+     * @var ContainerInterface<PageInterface>|null
      */
     protected Navigation\ContainerInterface | null $container = null;
     protected string | null $navigation                       = null;
@@ -109,7 +110,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Helper entry point
      *
-     * @param Navigation\ContainerInterface<PageInterface>|string|null $container container to operate on
+     * @param ContainerInterface<PageInterface>|string|null $container container to operate on
      *
      * @throws Exception\InvalidArgumentException
      */
@@ -169,7 +170,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * Implements {@link ViewHelperInterface::setContainer()}.
      *
-     * @param Navigation\ContainerInterface<PageInterface>|string|null $container default is null, meaning container will be reset
+     * @param ContainerInterface<PageInterface>|string|null $container default is null, meaning container will be reset
      *
      * @throws Exception\InvalidArgumentException
      *
@@ -198,7 +199,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * If no container is set, a new container will be instantiated and
      * stored in the helper.
      *
-     * @return Navigation\ContainerInterface<PageInterface> navigation container
+     * @return ContainerInterface<PageInterface> navigation container
      *
      * @throws void
      *
@@ -242,7 +243,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Finds the deepest active page in the given container
      *
-     * @param Navigation\ContainerInterface<PageInterface>|string|null $container to search
+     * @param ContainerInterface<PageInterface>|string|null $container to search
      * @param int|null                                                 $minDepth  [optional] minimum depth required for page to be valid. Default is to use {@link getMinDepth()}. A null value means no minimum depth required.
      * @param int|null                                                 $maxDepth  [optional] maximum depth a page can have to be valid. Default is to use {@link getMaxDepth()}. A null value means no maximum depth required.
      *
