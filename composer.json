@@ -27,7 +27,7 @@
     "mimmi20/navigation-helper-acceptpage": "^3.0.1",
     "mimmi20/navigation-helper-containerparser": "^5.1.0",
     "mimmi20/navigation-helper-findactive": "^3.0.2",
-    "mimmi20/navigation-helper-findfromproperty": "^3.0.1",
+    "mimmi20/navigation-helper-findfromproperty": "^3.0.2",
     "mimmi20/navigation-helper-findroot": "^3.0.0",
     "mimmi20/navigation-helper-htmlify": "^5.0.0",
     "psr/container": "^1.1.2 || ^2.0.2"
