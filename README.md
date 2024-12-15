@@ -453,8 +453,8 @@ return [
 ];
 ```
 
-The setup of ACL can be done in a module class, e.g.
-`module/MyModule/Module.php`:
+The setup of ACL can be done in a ConfigProvider, e.g.
+`module/MyModule/ConfigProvider.php`:
 
 ```php
 namespace MyModule;
@@ -464,7 +464,7 @@ use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Role\GenericRole;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 
-class Module
+class ConfigProvider
 {
     /* ... */
     public function getViewHelperConfig()
