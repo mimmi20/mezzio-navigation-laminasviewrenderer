@@ -481,7 +481,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
 
         $pluginManager = $this->createMock(HelperPluginManager::class);
@@ -555,11 +555,11 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
-            ->method('setRole')
-            ->with($role);
+            ->method('setRoles')
+            ->with([$role]);
 
         $pluginManager = $this->createMock(HelperPluginManager::class);
         $pluginManager->expects(self::exactly(3))
@@ -573,7 +573,7 @@ final class NavigationTest extends TestCase
 
         assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         self::assertSame($menu, $helper->findHelper($proxy, false));
         self::assertSame($menu, $helper->findHelper($proxy, true));
@@ -681,7 +681,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('render')
@@ -756,7 +756,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('render')
@@ -835,7 +835,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('render')
@@ -955,7 +955,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('__invoke')
@@ -1112,18 +1112,18 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        self::assertNull($helper->getRole());
-        self::assertFalse($helper->hasRole());
+        self::assertSame([], $helper->getRoles());
+        self::assertFalse($helper->hasRoles());
 
         Navigation::setDefaultRole($defaultRole);
 
-        self::assertSame($defaultRole, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$defaultRole], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
-        self::assertSame($role, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$role], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
     }
 
     /** @throws Exception */
@@ -1443,7 +1443,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -1461,7 +1461,7 @@ final class NavigationTest extends TestCase
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
         $helper->setContainer($name);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1648,7 +1648,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1669,7 +1669,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1745,7 +1745,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1766,7 +1766,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1812,7 +1812,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1833,7 +1833,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1911,7 +1911,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1932,7 +1932,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1999,7 +1999,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2020,7 +2020,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2096,7 +2096,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2117,7 +2117,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2203,7 +2203,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2224,7 +2224,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2306,7 +2306,7 @@ final class NavigationTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2327,7 +2327,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation($serviceLocator, $htmlify, $containerParser);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2476,7 +2476,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with($auth);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('render')
@@ -2559,7 +2559,7 @@ final class NavigationTest extends TestCase
             ->method('setAuthorization')
             ->with($auth);
         $menu->expects(self::once())
-            ->method('hasRole')
+            ->method('hasRoles')
             ->willReturn(false);
         $menu->expects(self::once())
             ->method('render')

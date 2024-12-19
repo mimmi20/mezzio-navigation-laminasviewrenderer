@@ -212,18 +212,18 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        self::assertNull($helper->getRole());
-        self::assertFalse($helper->hasRole());
+        self::assertSame([], $helper->getRoles());
+        self::assertFalse($helper->hasRoles());
 
         Menu::setDefaultRole($defaultRole);
 
-        self::assertSame($defaultRole, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$defaultRole], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
-        self::assertSame($role, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$role], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
     }
 
     /** @throws Exception */
@@ -612,7 +612,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -638,7 +638,7 @@ final class MenuTest extends TestCase
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
         $helper->setContainer($name);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -991,7 +991,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1016,7 +1016,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1131,7 +1131,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1156,7 +1156,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1201,7 +1201,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1226,7 +1226,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1343,7 +1343,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1368,7 +1368,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1454,7 +1454,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1479,7 +1479,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1574,7 +1574,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1599,7 +1599,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1684,7 +1684,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1709,7 +1709,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1790,7 +1790,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1815,7 +1815,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1895,7 +1895,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willThrowException($exception);
@@ -1920,7 +1920,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2018,7 +2018,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2351,7 +2351,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => null,
                     'renderInvisible' => false,
-                    'role' => null,
+                    'roles' => [],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2429,7 +2429,7 @@ final class MenuTest extends TestCase
 
         $role = 'testRole';
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
@@ -2488,7 +2488,7 @@ final class MenuTest extends TestCase
 
         $role = 'testRole';
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
@@ -2608,7 +2608,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2710,7 +2710,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2832,7 +2832,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2967,7 +2967,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3108,7 +3108,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3219,7 +3219,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3268,7 +3268,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => null,
                     'renderInvisible' => false,
-                    'role' => null,
+                    'roles' => [],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3393,7 +3393,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3434,7 +3434,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3573,7 +3573,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3669,7 +3669,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3812,7 +3812,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3911,7 +3911,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4058,7 +4058,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -4154,7 +4154,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4291,7 +4291,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -4352,7 +4352,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4469,7 +4469,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4503,7 +4503,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4627,7 +4627,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4661,7 +4661,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4778,7 +4778,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4812,7 +4812,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4929,7 +4929,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4963,7 +4963,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5082,7 +5082,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5116,7 +5116,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5238,7 +5238,7 @@ final class MenuTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5272,7 +5272,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5400,7 +5400,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5531,7 +5531,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -5572,7 +5572,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5707,7 +5707,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -5748,7 +5748,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5886,7 +5886,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -5945,7 +5945,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6082,7 +6082,7 @@ final class MenuTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -6141,7 +6141,7 @@ final class MenuTest extends TestCase
 
         $helper = new Menu($serviceLocator, $htmlify, $containerParser, $escapePlugin, $renderer);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);

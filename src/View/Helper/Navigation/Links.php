@@ -704,7 +704,7 @@ final class Links extends AbstractHelper implements LinksInterface
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
                     'renderInvisible' => $this->getRenderInvisible(),
-                    'role' => $this->getRole(),
+                    'roles' => $this->getRoles(),
                 ],
             );
         } catch (ContainerExceptionInterface $e) {

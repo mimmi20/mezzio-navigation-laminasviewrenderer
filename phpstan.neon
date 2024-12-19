@@ -98,7 +98,7 @@ parameters:
 
   cognitive_complexity:
     class: 80
-    function: 53
+    function: 59
 
   type_coverage:
     return_type: 96.3

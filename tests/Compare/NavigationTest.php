@@ -126,7 +126,7 @@ final class NavigationTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $this->helper->setRoles([$acl['role']]);
 
         $accepted = $this->helper->accept(
             new Uri(
@@ -261,7 +261,7 @@ final class NavigationTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $this->helper->setRoles([$acl['role']]);
 
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();
@@ -282,7 +282,7 @@ final class NavigationTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $this->helper->setRoles([$acl['role']]);
         $this->helper->setInjectAuthorization(false);
 
         $expected = $this->getExpected('menu/default1.html');
@@ -357,10 +357,10 @@ final class NavigationTest extends AbstractTestCase
     }
 
     /** @throws Exception */
-    public function testSetRoleAcceptsString(): void
+    public function testSetRoleAcceptsArrays(): void
     {
-        $this->helper->setRole('member');
-        self::assertSame('member', $this->helper->getRole());
+        $this->helper->setRoles(['member']);
+        self::assertSame(['member'], $this->helper->getRoles());
     }
 
     /**

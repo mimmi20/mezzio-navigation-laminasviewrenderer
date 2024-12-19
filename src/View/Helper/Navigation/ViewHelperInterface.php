@@ -202,7 +202,7 @@ interface ViewHelperInterface extends HelperInterface, Stringable
     /**
      * Sets Authorization role to use when iterating pages
      *
-     * @param string $role [optional] role to set.  Expects a string or null. Default is null.
+     * @param array<string> $roles [optional] role to set.  Expects a string or null. Default is null.
      *
      * @return self
      *
@@ -210,21 +210,23 @@ interface ViewHelperInterface extends HelperInterface, Stringable
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
-    public function setRole(string $role);
+    public function setRoles(array $roles);
 
     /**
      * Returns Authorization role to use when iterating pages, or null if it isn't set
      *
+     * @return array<string>
+     *
      * @throws void
      */
-    public function getRole(): string | null;
+    public function getRoles(): array;
 
     /**
      * Checks if the helper has an Authorization role
      *
      * @throws void
      */
-    public function hasRole(): bool;
+    public function hasRoles(): bool;
 
     /**
      * Sets whether Authorization should be used
