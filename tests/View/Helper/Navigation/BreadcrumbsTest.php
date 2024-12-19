@@ -254,18 +254,18 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        self::assertNull($helper->getRole());
-        self::assertFalse($helper->hasRole());
+        self::assertSame([], $helper->getRoles());
+        self::assertFalse($helper->hasRoles());
 
         Breadcrumbs::setDefaultRole($defaultRole);
 
-        self::assertSame($defaultRole, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$defaultRole], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
-        self::assertSame($role, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$role], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
     }
 
     /** @throws Exception */
@@ -651,7 +651,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -688,7 +688,7 @@ final class BreadcrumbsTest extends TestCase
         );
 
         $helper->setContainer($name);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -740,7 +740,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willThrowException($exception);
@@ -777,7 +777,7 @@ final class BreadcrumbsTest extends TestCase
         );
 
         $helper->setContainer($name);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1115,7 +1115,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1151,7 +1151,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1227,7 +1227,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1263,7 +1263,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1309,7 +1309,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1345,7 +1345,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1406,7 +1406,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1442,7 +1442,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1506,7 +1506,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1542,7 +1542,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1618,7 +1618,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1654,7 +1654,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1740,7 +1740,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1776,7 +1776,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1858,7 +1858,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1894,7 +1894,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1975,7 +1975,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willThrowException($exception);
@@ -2011,7 +2011,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2223,7 +2223,7 @@ final class BreadcrumbsTest extends TestCase
 
         $role = 'testRole';
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
@@ -2297,7 +2297,7 @@ final class BreadcrumbsTest extends TestCase
 
         $role = 'testRole';
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
@@ -2392,7 +2392,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2446,7 +2446,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2530,7 +2530,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2587,7 +2587,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2687,7 +2687,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2744,7 +2744,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2817,7 +2817,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -2868,7 +2868,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2937,7 +2937,7 @@ final class BreadcrumbsTest extends TestCase
 
         $role = 'testRole';
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
@@ -3011,7 +3011,7 @@ final class BreadcrumbsTest extends TestCase
 
         $role = 'testRole';
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         $auth = $this->createMock(AuthorizationInterface::class);
         $auth->expects(self::never())
@@ -3106,7 +3106,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3157,7 +3157,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3227,7 +3227,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3278,7 +3278,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3362,7 +3362,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3416,7 +3416,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3513,7 +3513,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3567,7 +3567,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3664,7 +3664,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3724,7 +3724,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3829,7 +3829,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3903,7 +3903,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -3948,7 +3948,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4059,7 +4059,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4141,7 +4141,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4256,7 +4256,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4312,7 +4312,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
         $helper->setContainer($container);
 
         assert($auth instanceof AuthorizationInterface);
@@ -4430,7 +4430,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4486,7 +4486,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
         $helper->setContainer($container);
 
         assert($auth instanceof AuthorizationInterface);
@@ -4614,7 +4614,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4727,7 +4727,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4774,7 +4774,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4891,7 +4891,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -4938,7 +4938,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5060,7 +5060,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5111,7 +5111,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5224,7 +5224,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5306,7 +5306,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5378,7 +5378,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5429,7 +5429,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5499,7 +5499,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5554,7 +5554,7 @@ final class BreadcrumbsTest extends TestCase
             $translatePlugin,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
         $helper->setAuthorization($auth);
         $helper->setSeparator($seperator);
         $helper->setLinkLast(true);
@@ -5669,7 +5669,7 @@ final class BreadcrumbsTest extends TestCase
                 [
                     'authorization' => null,
                     'renderInvisible' => false,
-                    'role' => null,
+                    'roles' => [],
                 ],
             )
             ->willReturn($findActiveHelper);

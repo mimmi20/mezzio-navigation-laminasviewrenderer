@@ -263,7 +263,7 @@ final class BreadcrumbsTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $this->helper->setRoles([$acl['role']]);
 
         $expected = $this->getExpected('bc/acl.html');
         self::assertSame($expected, $this->helper->render());

@@ -78,8 +78,10 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 
     /**
      * Authorization role to use when iterating pages
+     *
+     * @var array<string>
      */
-    protected string | null $role = null;
+    protected array $roles = [];
 
     /**
      * Whether container should be injected when proxying
@@ -93,7 +95,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 
     /**
      * Default Authorization role to use when iterating pages if not explicitly set in the
-     * instance by calling {@link setRole()}
+     * instance by calling {@link setRoles()}
      */
     protected static string | null $defaultRole                          = null;
     protected static AuthorizationInterface | null $defaultAuthorization = null;
@@ -282,7 +284,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
                     'renderInvisible' => $this->getRenderInvisible(),
-                    'role' => $this->getRole(),
+                    'roles' => $this->getRoles(),
                 ],
             );
         } catch (ContainerExceptionInterface $e) {
@@ -322,7 +324,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
                 [
                     'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
                     'renderInvisible' => $this->getRenderInvisible(),
-                    'role' => $this->getRole(),
+                    'roles' => $this->getRoles(),
                 ],
             );
         } catch (ContainerExceptionInterface $e) {
@@ -550,50 +552,52 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * Implements {@link ViewHelperInterface::setRole()}.
      *
-     * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
+     * @param array<string> $roles [optional] role to set. Expects a string or null. Default is null, which will set no role.
      *
      * @throws void
      *
      * @api
      */
-    public function setRole(string $role): static
+    public function setRoles(array $roles): static
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
     }
 
     /**
      * Returns Authorization role to use when iterating pages, or null if it isn't set
-     * using {@link setRole()} or {@link setDefaultRole()}
+     * using {@link setRoles()} or {@link setDefaultRole()}
      *
      * Implements {@link ViewHelperInterface::getRole()}.
+     *
+     * @return array<string>
      *
      * @throws void
      *
      * @api
      */
-    public function getRole(): string | null
+    public function getRoles(): array
     {
-        if ($this->role === null && static::$defaultRole !== null) {
-            return static::$defaultRole;
+        if ($this->roles === [] && static::$defaultRole !== null) {
+            return [static::$defaultRole];
         }
 
-        return $this->role;
+        return $this->roles;
     }
 
     /**
      * Checks if the helper has an Authorization role
      *
-     * Implements {@link ViewHelperInterface::hasRole()}.
+     * Implements {@link ViewHelperInterface::hasRoles()}.
      *
      * @throws void
      *
      * @api
      */
-    public function hasRole(): bool
+    public function hasRoles(): bool
     {
-        return $this->role !== null
+        return $this->roles !== []
             || static::$defaultRole !== null;
     }
 
@@ -653,7 +657,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 
     /**
      * Sets default Authorization role(s) to use when iterating pages if not explicitly
-     * set later with {@link setRole()}
+     * set later with {@link setRoles()}
      *
      * @param string|null $role [optional] role to set. Expects null or string. Default is null, which sets no default role.
      *

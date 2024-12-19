@@ -265,18 +265,18 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        self::assertNull($helper->getRole());
-        self::assertFalse($helper->hasRole());
+        self::assertSame([], $helper->getRoles());
+        self::assertFalse($helper->hasRoles());
 
         Sitemap::setDefaultRole($defaultRole);
 
-        self::assertSame($defaultRole, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$defaultRole], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
-        self::assertSame($role, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$role], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
     }
 
     /** @throws Exception */
@@ -662,7 +662,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -699,7 +699,7 @@ final class SitemapTest extends TestCase
         );
 
         $helper->setContainer($name);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -928,7 +928,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -964,7 +964,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1040,7 +1040,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1076,7 +1076,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1122,7 +1122,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1158,7 +1158,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1236,7 +1236,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1272,7 +1272,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1339,7 +1339,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1375,7 +1375,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1451,7 +1451,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1487,7 +1487,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1573,7 +1573,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1609,7 +1609,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1691,7 +1691,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1727,7 +1727,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2842,7 +2842,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2896,7 +2896,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3023,7 +3023,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3077,7 +3077,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3230,7 +3230,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3284,7 +3284,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3420,7 +3420,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3474,7 +3474,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3620,7 +3620,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3674,7 +3674,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3825,7 +3825,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3879,7 +3879,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4095,7 +4095,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -4149,7 +4149,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4348,7 +4348,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -4402,7 +4402,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4597,7 +4597,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -4651,7 +4651,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4833,7 +4833,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -4887,7 +4887,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5083,7 +5083,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -5137,7 +5137,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5368,7 +5368,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5531,7 +5531,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5671,7 +5671,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -5725,7 +5725,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5895,7 +5895,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -5949,7 +5949,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6125,7 +6125,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -6179,7 +6179,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6355,7 +6355,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -6409,7 +6409,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6593,7 +6593,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -6647,7 +6647,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6842,7 +6842,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -6896,7 +6896,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -7094,7 +7094,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -7148,7 +7148,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -7350,7 +7350,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -7404,7 +7404,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -7623,7 +7623,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -7677,7 +7677,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -7912,7 +7912,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -8069,7 +8069,7 @@ final class SitemapTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -8123,7 +8123,7 @@ final class SitemapTest extends TestCase
             $serverUrlHelper,
         );
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);

@@ -223,18 +223,18 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        self::assertNull($helper->getRole());
-        self::assertFalse($helper->hasRole());
+        self::assertSame([], $helper->getRoles());
+        self::assertFalse($helper->hasRoles());
 
         Links::setDefaultRole($defaultRole);
 
-        self::assertSame($defaultRole, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$defaultRole], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
-        self::assertSame($role, $helper->getRole());
-        self::assertTrue($helper->hasRole());
+        self::assertSame([$role], $helper->getRoles());
+        self::assertTrue($helper->hasRoles());
     }
 
     /** @throws Exception */
@@ -566,7 +566,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -594,7 +594,7 @@ final class LinksTest extends TestCase
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
         $helper->setContainer($name);
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -807,7 +807,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -834,7 +834,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -910,7 +910,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -937,7 +937,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -983,7 +983,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1010,7 +1010,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1088,7 +1088,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1115,7 +1115,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1182,7 +1182,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1209,7 +1209,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1285,7 +1285,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1312,7 +1312,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1398,7 +1398,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1425,7 +1425,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -1507,7 +1507,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -1534,7 +1534,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2062,7 +2062,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2089,7 +2089,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2153,7 +2153,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2180,7 +2180,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2247,7 +2247,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2274,7 +2274,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2415,7 +2415,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2442,7 +2442,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2506,7 +2506,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2533,7 +2533,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2595,7 +2595,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2622,7 +2622,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2687,7 +2687,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2714,7 +2714,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2760,7 +2760,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -2787,7 +2787,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -2805,7 +2805,6 @@ final class LinksTest extends TestCase
     public function testSearchRelChapterWithoutParent(): void
     {
         $page = new Route();
-        $role = null;
         $auth = null;
 
         $findFromPropertyHelper = $this->createMock(FindFromPropertyInterface::class);
@@ -2826,7 +2825,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -2905,7 +2904,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -2941,7 +2940,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3002,7 +3001,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3036,7 +3035,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3115,7 +3114,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3149,7 +3148,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3225,7 +3224,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3259,7 +3258,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3335,7 +3334,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -3369,7 +3368,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3480,7 +3479,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3517,7 +3516,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3599,7 +3598,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3636,7 +3635,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3726,7 +3725,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3762,7 +3761,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3851,7 +3850,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3887,7 +3886,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -3941,7 +3940,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($acceptHelper);
@@ -3977,7 +3976,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4036,7 +4035,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4104,7 +4103,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4129,7 +4128,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4203,7 +4202,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4228,7 +4227,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4295,7 +4294,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4320,7 +4319,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4388,7 +4387,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4413,7 +4412,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4479,7 +4478,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4504,7 +4503,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4567,7 +4566,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4592,7 +4591,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4654,7 +4653,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => $auth,
                     'renderInvisible' => false,
-                    'role' => $role,
+                    'roles' => [$role],
                 ],
             )
             ->willReturn($findFromPropertyHelper);
@@ -4679,7 +4678,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4755,7 +4754,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4838,7 +4837,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4955,7 +4954,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -4994,7 +4993,7 @@ final class LinksTest extends TestCase
                 [
                     'authorization' => null,
                     'renderInvisible' => false,
-                    'role' => null,
+                    'roles' => [],
                 ],
             )
             ->willReturn($findActiveHelper);
@@ -5194,7 +5193,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -5255,7 +5254,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5416,7 +5415,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -5475,7 +5474,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5592,7 +5591,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -5763,7 +5762,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                     );
@@ -5822,7 +5821,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6023,7 +6022,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                         (string) $invocation,
@@ -6109,7 +6108,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6327,7 +6326,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                         (string) $invocation,
@@ -6373,7 +6372,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6482,7 +6481,7 @@ final class LinksTest extends TestCase
             ->with(FindFromPropertyInterface::class, [
                 'authorization' => $auth,
                 'renderInvisible' => false,
-                'role' => $role,
+                'roles' => [$role],
             ])
             ->willThrowException($exception);
 
@@ -6513,7 +6512,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6673,7 +6672,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                         (string) $invocation,
@@ -6712,7 +6711,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
@@ -6872,7 +6871,7 @@ final class LinksTest extends TestCase
                         [
                             'authorization' => $auth,
                             'renderInvisible' => false,
-                            'role' => $role,
+                            'roles' => [$role],
                         ],
                         $options,
                         (string) $invocation,
@@ -6911,7 +6910,7 @@ final class LinksTest extends TestCase
 
         $helper = new Links($serviceLocator, $htmlify, $containerParser, $rootFinder, $headLink);
 
-        $helper->setRole($role);
+        $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
