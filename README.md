@@ -257,34 +257,28 @@ $pages = [
     [
         'label'      => 'Home',
         'title'      => 'Go Home',
-        'module'     => 'default',
         'route'      => 'index',
         'order'      => -100, // make sure home is the first page
     ],
     [
         'label'      => 'Special offer this week only!',
-        'module'     => 'store',
         'route'      => 'amazing',
         'visible'    => false, // not visible
     ],
     [
         'label'      => 'Products',
-        'module'     => 'products',
         'route'      => 'index',
         'pages'      => [
             [
                 'label'      => 'Foo Server',
-                'module'     => 'products',
                 'route'      => 'index',
                 'pages'      => [
                     [
                         'label'      => 'FAQ',
-                        'module'     => 'products',
                         'route'      => 'faq',
                         'rel'        => [
                             'canonical' => 'http://www.example.com/?page=faq',
                             'alternate' => [
-                                'module'     => 'products',
                                 'route'      => 'faq',
                                 'params'     => ['format' => 'xml'],
                             ],
@@ -292,29 +286,24 @@ $pages = [
                     ],
                     [
                         'label'      => 'Editions',
-                        'module'     => 'products',
                         'route'      => 'editions',
                     ],
                     [
                         'label'      => 'System Requirements',
-                        'module'     => 'products',
                         'route'      => 'requirements',
                     ],
                 ],
             ],
             [
                 'label'      => 'Foo Studio',
-                'module'     => 'products',
                 'route'      => 'index',
                 'pages'      => [
                     [
                         'label'      => 'Customer Stories',
-                        'module'     => 'products',
                         'route'      => 'customers',
                     ],
                     [
                         'label'      => 'Support',
-                        'module'     => 'products',
                         'route '     => 'support',
                     ],
                 ],
@@ -324,29 +313,24 @@ $pages = [
     [
         'label'      => 'Company',
         'title'      => 'About us',
-        'module'     => 'company',
         'route'      => 'index',
         'pages'      => [
             [
                 'label'      => 'Investor Relations',
-                'module'     => 'company',
                 'route'      => 'investors',
             ],
             [
                 'label'      => 'News',
                 'class'      => 'rss', // class
-                'module'     => 'company',
                 'route'      => 'index',
                 'pages'      => [
                     [
                         'label'      => 'Press Releases',
-                        'module'     => 'company',
                         'route'      => 'press',
                     ],
                     [
                         'label'      => 'Archive',
                         'route'      => 'archive', // route
-                        'module'     => 'company',
                         'route'      => 'archive',
                     ],
                 ],
@@ -355,31 +339,27 @@ $pages = [
     ],
     [
         'label'      => 'Community',
-        'module'     => 'community',
         'route'      => 'index',
         'pages'      => [
             [
-                'label'      => 'My Account',
-                'module'     => 'community',
-                'route'      => 'index',
-                'resource'   => 'mvc:community.account', // resource
+                'label' => 'My Account',
+                'route' => 'index',
             ],
             [
-                'label' => 'Forums',
-                'uri'   => 'http://forums.example.com/',
-                'class' => 'external', // class,
+                'label'    => 'Forums',
+                'uri'      => 'http://forums.example.com/',
+                'class'    => 'external', // class,
+                'resource' => 'mvc:community.account', // resource
             ],
         ],
     ],
     [
         'label'      => 'Administration',
-        'module'     => 'admin',
         'route'      => 'index',
         'resource'   => 'mvc:admin', // resource
         'pages'      => [
             [
                 'label'      => 'Write new article',
-                'module'     => 'admin',
                 'route'     => 'write',
             ],
         ],
@@ -410,7 +390,6 @@ return [
                 'options' => [
                     'route'    => '/archive/:year',
                     'defaults' => [
-                        'module'     => 'company',
                         'route'      => 'archive',
                         'year'       => (int) date('Y') - 1,
                     ],
@@ -426,52 +405,6 @@ return [
 ];
 ```
 
-The setup of Authorization can be done in a ConfigProvider, e.g.
-`module/MyModule/ConfigProvider.php`:
-
-```php
-namespace MyModule;
-
-use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Laminas\Permissions\Acl\Acl;
-use Laminas\Permissions\Acl\Role\GenericRole;
-use Laminas\Permissions\Acl\Resource\GenericResource;
-
-class ConfigProvider
-{
-    /* ... */
-    public function getViewHelperConfig()
-    {
-        return [
-            'factories' => [
-                // This will overwrite the native navigation helper
-                'navigation' => function(ViewHelperPluginManager $pm) {
-                    // Setup ACL:
-                    $acl = new Acl();
-                    $acl->addRole(new GenericRole('member'));
-                    $acl->addRole(new GenericRole('admin'));
-                    $acl->addResource(new GenericResource('mvc:admin'));
-                    $acl->addResource(new GenericResource('mvc:community.account'));
-                    $acl->allow('member', 'mvc:community.account');
-                    $acl->allow('admin', null);
-
-                    // Get an instance of the proxy helper
-                    $navigation = $pm->get('Mezzio\Navigation\Helper\Navigation');
-
-                    // Store Authorization and role in the proxy helper:
-                    $navigation->setAuthorization(new \Mimmi20\Mezzio\GenericAuthorization\Acl\LaminasAcl($acl));
-                    $navigation->setRole('member');
-
-                    // Return the new navigation helper instance
-                    return $navigation;
-                }
-            ]
-        ];
-    }
-    /* ... */
-}
-```
-
 ## Navigation Proxy
 
 The `navigation()` helper is a proxy helper that relays calls to other
@@ -479,7 +412,7 @@ navigational helpers. It can be considered an entry point to all
 navigation-related view tasks.
 
 The `Navigation` helper finds other helpers that implement
-`Mezzio\Navigation\Helper\Navigation\HelperInterface`, which means custom view helpers
+`Mimmi20\Mezzio\Navigation\Helper\Navigation\HelperInterface`, which means custom view helpers
 can also be proxied.  This would, however, require that the custom helper path
 is added to the view.
 
@@ -712,23 +645,23 @@ See the example below for more information.
 
 The `LinksInterface` helper defines the following constants:
 
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_ALTERNATE`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_STYLESHEET`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_START`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_NEXT`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_PREV`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CONTENTS`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_INDEX`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_GLOSSARY`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_COPYRIGHT`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CHAPTER`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_SECTION`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_SUBSECTION`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_APPENDIX`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_HELP`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_BOOKMARK`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CUSTOM`
-- `Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_ALL`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_ALTERNATE`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_STYLESHEET`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_START`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_NEXT`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_PREV`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CONTENTS`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_INDEX`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_GLOSSARY`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_COPYRIGHT`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CHAPTER`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_SECTION`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_SUBSECTION`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_APPENDIX`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_HELP`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_BOOKMARK`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_CUSTOM`
+- `Mimmi20\Mezzio\Navigation\Helper\Navigation\LinksInterface::RENDER_ALL`
 
 The constants from `RENDER_ALTERNATE` to `RENDER_BOOKMARK` denote standard HTML
 link types.  `RENDER_CUSTOM` denotes non-standard relations specified in pages.
