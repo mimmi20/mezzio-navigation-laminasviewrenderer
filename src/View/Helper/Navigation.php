@@ -58,7 +58,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     private array $injected = [];
 
     /**
-     * Whether ACL should be injected when proxying
+     * Whether Authorization should be injected when proxying
      */
     private bool $injectAuthorization = true;
 
@@ -339,7 +339,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     }
 
     /**
-     * Injects container, ACL, and translator to the given $helper if this
+     * Injects container, and Authorization to the given $helper if this
      * helper is configured to do so
      *
      * @param ViewHelperInterface $helper helper instance

@@ -50,7 +50,7 @@ return [
 
     'navigation' => [
 
-        // Navigation with name default
+        // Navigation with name "default"
         'default' => [
             [
                 'label' => 'Home',
@@ -72,7 +72,7 @@ return [
             ],
         ],
 
-        // Navigation with name special
+        // Navigation with name "special"
         'special' => [
             [
                 'label' => 'Special',
@@ -84,7 +84,7 @@ return [
             ],
         ],
 
-        // Navigation with name sitemap
+        // Navigation with name "sitemap"
         'sitemap' => [
             [
                 'label' => 'Sitemap',
@@ -116,9 +116,9 @@ The following example demonstrates rendering the navigation menus for the named
 <body>
     <?= $this->navigation('Mimmi20\Mezzio\Navigation\Default')->menu() ?>
 
-    <?= $this->navigation('Mimmi20\Navigation\Special')->menu() ?>
+    <?= $this->navigation('Mimmi20\Mezzio\Navigation\Special')->menu() ?>
 
-    <?= $this->navigation('Mimmi20\Navigation\Sitemap')->menu() ?>
+    <?= $this->navigation('Mimmi20\Mezzio\Navigation\Sitemap')->menu() ?>
 </body>
 <!-- ... -->
 ```
@@ -146,26 +146,21 @@ adds integration with
 [laminas-i18n](https://docs.laminas.dev/laminas-i18n/). This interface `Mimmi20\Mezzio\Navigation\Helper\Navigation\HelperInterface`, which
 defines the following methods:
 
-| Method signature                                                          | Description                                                                                                                |
-|---------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| `getContainer() : null\|ContainerInterface`                               | Retrieve the current navigation container, if any.                                                                         |
-| `hasContainer() : bool`                                                   | Is any navigation container currently registered?                                                                          |
-| `setContainer(ContainerInterface $container) : self`                      | Set a navigation container.                                                                                                |
-| `getTranslator() : null\|Laminas\I18n\Translator\TranslatorInterface`     | Retrieve the current translator instance, if any.                                                                          |
-| `setTranslator(Laminas\I18n\Translator\TranslatorInterface`) : self`      | Set a translator instance to use with labels.                                                                              |
-| `hasTranslator() : bool`                                                  | Is a translator instance present?                                                                                          |
-| `isTranslatorEnabled() : bool`                                            | Should translation occur? To be `true`, both the flag enabling translation must be set, and a translator instance present. |
-| `setTranslatorEnabled(bool $flag) : self`                                 | Set the flag indicating whether or not translation should occur.                                                           |
-| `getAcl() : null\|Laminas\Permissions\Acl\AclInterface`                   | Retrieve the current ACL instance, if any.                                                                                 |
-| `setAcl(Laminas\Permissions\Acl\AclInterface $acl) : self`                | Set an ACL instance.                                                                                                       |
-| `hasAcl() : bool`                                                         | Whether or not an ACL instance is present.                                                                                 |
-| `getRole() : null\|string\|\Laminas\Permissions\Acl\Role\RoleInterface`   | Retrieve the current ACL role instance, if any.                                                                            |
-| `setRole(string\|Laminas\Permissions\Acl\Role\RoleInterface $acl) : self` | Set an ACL role instance.                                                                                                  |
-| `hasRole() : bool`                                                        | Whether or not an ACL role instance is present.                                                                            |
-| `getUseAcl() : bool`                                                      | Whether or not to use ACLs; both the flag must be enabled and an ACL instance present.                                     |
-| `setUseAcl(bool $flag) : self`                                            | Set the flag indicating whether or not to use ACLs.                                                                        |
-| `__toString()`                                                            | Cast the helper to a string value; relies on `render()`.                                                                   |
-| `render()`                                                                | Render the helper to a string.                                                                                             |
+| Method signature                                                                                     | Description                                                                                               |
+|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| `getContainer() : null\|ContainerInterface`                                                          | Retrieve the current navigation container, if any.                                                        |
+| `hasContainer() : bool`                                                                              | Is any navigation container currently registered?                                                         |
+| `setContainer(ContainerInterface $container) : self`                                                 | Set a navigation container.                                                                               |
+| `getAuthorization() : null\|Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface`              | Retrieve the current Authorization instance, if any.                                                      |
+| `setAuthorization(Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface $authorization) : self` | Set an Authorization instance.                                                                            |
+| `hasAuthorization() : bool`                                                                          | Whether or not an Authorization instance is present.                                                      |
+| `getRole() : null\|string`                                                                           | Retrieve the current Authorization role instance, if any.                                                 |
+| `setRole(string $role) : self`                                                                       | Set an Authorization role instance.                                                                       |
+| `hasRole() : bool`                                                                                   | Whether or not an Authorization role instance is present.                                                 |
+| `getUseAuthorization() : bool`                                                                       | Whether or not to use Authorization; both the flag must be enabled and an Authorization instance present. |
+| `setUseAuthorization(bool $flag) : self`                                                             | Set the flag indicating whether or not to use Authorization.                                              |
+| `__toString()`                                                                                       | Cast the helper to a string value; relies on `render()`.                                                  |
+| `render()`                                                                                           | Render the helper to a string.                                                                            |
 
 In addition to the method stubs from the interface, the abstract class also
 implements the following methods:
@@ -218,23 +213,22 @@ it proxies to if the proxied helper doesn't already have a translator.
 > There is no translation in the sitemap helper, since there are no page labels
 > or titles involved in an XML sitemap.
 
-## Integration with ACL
+## Integration with Authorization
 
-All navigational view helpers support ACLs.  An object implementing
-`Laminas\Permissions\Acl\AclInterface` can be assigned to a helper instance with
-`$helper->setAcl($acl)`, and role with `$helper->setRole('member')` or
-`$helper->setRole(new Laminas\Permissions\Acl\Role\GenericRole('member'))`. If an
-ACL is used in the helper, the role in the helper must be allowed by the ACL to
+All navigational view helpers support Authorization.  An object implementing
+`Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface` can be assigned to a helper instance with
+`$helper->setAuthorization($authorization)`, and role with `$helper->setRole('member')`. If an
+Authorization is used in the helper, the role in the helper must be allowed by the Authorization to
 access a page's `resource` and/or have the page's `privilege` for the page to be
 included when rendering.
 
-If a page is not accepted by ACL, any descendant page will also be excluded from
+If a page is not accepted by Authorization, any descendant page will also be excluded from
 rendering.
 
-The [proxy helper](navigation.md) will inject its own ACL and role to the helper
+The [proxy helper](navigation.md) will inject its own Authorization and role to the helper
 it proxies to if the proxied helper doesn't already have any.
 
-The examples below all show how ACL affects rendering.
+The examples below all show how Authorization affects rendering.
 
 ## Navigation setup used in examples
 
@@ -247,7 +241,7 @@ Notes on the setup:
 - Unless otherwise is stated in other examples, the user is requesting the URL
   `http://www.example.com/products/server/faq/`, which translates to the page
   labeled `FAQ` under "Foo Server".
-- The assumed ACL and router setup is shown below the container setup.
+- The assumed Authorization and router setup is shown below the container setup.
 
 ```php
 use Mimmi20\Mezzio\Navigation\Navigation;
@@ -264,40 +258,34 @@ $pages = [
         'label'      => 'Home',
         'title'      => 'Go Home',
         'module'     => 'default',
-        'controller' => 'index',
-        'action'     => 'index',
+        'route'      => 'index',
         'order'      => -100, // make sure home is the first page
     ],
     [
         'label'      => 'Special offer this week only!',
         'module'     => 'store',
-        'controller' => 'offer',
-        'action'     => 'amazing',
+        'route'      => 'amazing',
         'visible'    => false, // not visible
     ],
     [
         'label'      => 'Products',
         'module'     => 'products',
-        'controller' => 'index',
-        'action'     => 'index',
+        'route'      => 'index',
         'pages'      => [
             [
                 'label'      => 'Foo Server',
                 'module'     => 'products',
-                'controller' => 'server',
-                'action'     => 'index',
+                'route'      => 'index',
                 'pages'      => [
                     [
                         'label'      => 'FAQ',
                         'module'     => 'products',
-                        'controller' => 'server',
-                        'action'     => 'faq',
+                        'route'      => 'faq',
                         'rel'        => [
                             'canonical' => 'http://www.example.com/?page=faq',
                             'alternate' => [
                                 'module'     => 'products',
-                                'controller' => 'server',
-                                'action'     => 'faq',
+                                'route'      => 'faq',
                                 'params'     => ['format' => 'xml'],
                             ],
                         ],
@@ -305,34 +293,29 @@ $pages = [
                     [
                         'label'      => 'Editions',
                         'module'     => 'products',
-                        'controller' => 'server',
-                        'action'     => 'editions',
+                        'route'      => 'editions',
                     ],
                     [
                         'label'      => 'System Requirements',
                         'module'     => 'products',
-                        'controller' => 'server',
-                        'action'     => 'requirements',
+                        'route'      => 'requirements',
                     ],
                 ],
             ],
             [
                 'label'      => 'Foo Studio',
                 'module'     => 'products',
-                'controller' => 'studio',
-                'action'     => 'index',
+                'route'      => 'index',
                 'pages'      => [
                     [
                         'label'      => 'Customer Stories',
                         'module'     => 'products',
-                        'controller' => 'studio',
-                        'action'     => 'customers',
+                        'route'      => 'customers',
                     ],
                     [
                         'label'      => 'Support',
                         'module'     => 'products',
-                        'controller' => 'studio',
-                        'action'     => 'support',
+                        'route '     => 'support',
                     ],
                 ],
             ],
@@ -342,34 +325,29 @@ $pages = [
         'label'      => 'Company',
         'title'      => 'About us',
         'module'     => 'company',
-        'controller' => 'about',
-        'action'     => 'index',
+        'route'      => 'index',
         'pages'      => [
             [
                 'label'      => 'Investor Relations',
                 'module'     => 'company',
-                'controller' => 'about',
-                'action'     => 'investors',
+                'route'      => 'investors',
             ],
             [
                 'label'      => 'News',
                 'class'      => 'rss', // class
                 'module'     => 'company',
-                'controller' => 'news',
-                'action'     => 'index',
+                'route'      => 'index',
                 'pages'      => [
                     [
                         'label'      => 'Press Releases',
                         'module'     => 'company',
-                        'controller' => 'news',
-                        'action'     => 'press',
+                        'route'      => 'press',
                     ],
                     [
                         'label'      => 'Archive',
                         'route'      => 'archive', // route
                         'module'     => 'company',
-                        'controller' => 'news',
-                        'action'     => 'archive',
+                        'route'      => 'archive',
                     ],
                 ],
             ],
@@ -378,14 +356,12 @@ $pages = [
     [
         'label'      => 'Community',
         'module'     => 'community',
-        'controller' => 'index',
-        'action'     => 'index',
+        'route'      => 'index',
         'pages'      => [
             [
                 'label'      => 'My Account',
                 'module'     => 'community',
-                'controller' => 'account',
-                'action'     => 'index',
+                'route'      => 'index',
                 'resource'   => 'mvc:community.account', // resource
             ],
             [
@@ -398,15 +374,13 @@ $pages = [
     [
         'label'      => 'Administration',
         'module'     => 'admin',
-        'controller' => 'index',
-        'action'     => 'index',
+        'route'      => 'index',
         'resource'   => 'mvc:admin', // resource
         'pages'      => [
             [
                 'label'      => 'Write new article',
                 'module'     => 'admin',
-                'controller' => 'post',
-                'action'     => 'write',
+                'route'     => 'write',
             ],
         ],
     ],
@@ -437,8 +411,7 @@ return [
                     'route'    => '/archive/:year',
                     'defaults' => [
                         'module'     => 'company',
-                        'controller' => 'news',
-                        'action'     => 'archive',
+                        'route'      => 'archive',
                         'year'       => (int) date('Y') - 1,
                     ],
                     'constraints' => [
@@ -453,7 +426,7 @@ return [
 ];
 ```
 
-The setup of ACL can be done in a ConfigProvider, e.g.
+The setup of Authorization can be done in a ConfigProvider, e.g.
 `module/MyModule/ConfigProvider.php`:
 
 ```php
@@ -485,8 +458,8 @@ class ConfigProvider
                     // Get an instance of the proxy helper
                     $navigation = $pm->get('Mezzio\Navigation\Helper\Navigation');
 
-                    // Store ACL and role in the proxy helper:
-                    $navigation->setAcl($acl);
+                    // Store Authorization and role in the proxy helper:
+                    $navigation->setAuthorization(new \Mimmi20\Mezzio\GenericAuthorization\Acl\LaminasAcl($acl));
                     $navigation->setRole('member');
 
                     // Return the new navigation helper instance
@@ -511,24 +484,22 @@ can also be proxied.  This would, however, require that the custom helper path
 is added to the view.
 
 When proxying to other helpers, the `Navigation` helper can inject its
-container, ACL and optionally role, and a translator. This means that you won't
+container, Authorization and optionally role. This means that you won't
 have to explicitly set all three in all navigational helpers, nor resort to
 injecting by means of static methods.
 
 ### Methods
 
-| Method signature                                                               | Description                                                                                                                                                                                                                                               |
-|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `findHelper(string $helper, bool $strict = true) : Navigation\HelperInterface` | Finds the given helper, verifies that it is a navigational helper, and injects the current container, ACL and role instances,  and translator, if present. If `$strict` is `true`, the method will raise an exception when unable to find a valid helper. |
-| `getInjectContainer() : bool`                                                  | Retrieve the flag indicating whether or not to inject the current container into proxied helpers; default is `true`.                                                                                                                                      |
-| `setInjectContainer(bool $flag) : self`                                        | Set the flag indicating whether or not to inject the current container into proxied helpers.                                                                                                                                                              |
-| `getInjectAcl() : bool`                                                        | Retrieve the flag indicating whether or not to inject ACL and role instances into proxied helpers; default is `true`.                                                                                                                                     |
-| `setInjectAcl(bool $flag) : self`                                              | Set the flag indicating whether or not to inject ACL and role instances into proxied helpers.                                                                                                                                                             |
-| `getInjectTranslator() : bool`                                                 | Retrieve the flag indicating whether or not to inject the current translator instance into proxied helpers; default is `true`.                                                                                                                            |
-| `setInjectTranslator(bool $flag) : self`                                       | Set the flag indicating whether or not to inject the current translator instance into proxied helpers.                                                                                                                                                    |
-| `getDefaultProxy() : string`                                                   | Retrieve the default proxy helper to delegate to when rendering; defaults to `menu`.                                                                                                                                                                      |
-| `setDefaultProxy(string $helper) : self`                                       | Set the default proxy helper to delegate to when rendering.                                                                                                                                                                                               |
-| `render(ContainerInterface = null)`                                            | Proxies to the render method of the default proxy.                                                                                                                                                                                                        |
+| Method signature                                                               | Description                                                                                                                                                                                                                                                          |
+|--------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `findHelper(string $helper, bool $strict = true) : Navigation\HelperInterface` | Finds the given helper, verifies that it is a navigational helper, and injects the current container, Authorization and role instances,  and translator, if present. If `$strict` is `true`, the method will raise an exception when unable to find a valid helper.  |
+| `getInjectContainer() : bool`                                                  | Retrieve the flag indicating whether or not to inject the current container into proxied helpers; default is `true`.                                                                                                                                                 |
+| `setInjectContainer(bool $flag) : self`                                        | Set the flag indicating whether or not to inject the current container into proxied helpers.                                                                                                                                                                         |
+| `getInjectAuthorization() : bool`                                              | Retrieve the flag indicating whether or not to inject Authorization and role instances into proxied helpers; default is `true`.                                                                                                                                      |
+| `setInjectAuthorization(bool $flag) : self`                                    | Set the flag indicating whether or not to inject Authorization and role instances into proxied helpers.                                                                                                                                                              |
+| `getDefaultProxy() : string`                                                   | Retrieve the default proxy helper to delegate to when rendering; defaults to `menu`.                                                                                                                                                                                 |
+| `setDefaultProxy(string $helper) : self`                                       | Set the default proxy helper to delegate to when rendering.                                                                                                                                                                                                          |
+| `render(ContainerInterface = null)`                                            | Proxies to the render method of the default proxy.                                                                                                                                                                                                                   |
 
 ## Breadcrumbs
 
@@ -947,7 +918,7 @@ The following are options recognized by the `renderMenu()` method:
 ### Basic usage
 
 This example shows how to render a menu from a container registered/found in the
-view helper. Notice how pages are filtered out based on visibility and ACL.
+view helper. Notice how pages are filtered out based on visibility and Authorization.
 
 In a view script or layout:
 
@@ -1443,9 +1414,9 @@ Output:
 </div>
 ```
 
-#### Using ACLs with partial view scripts
+#### Using Authorization with partial view scripts
 
-If you want to use an ACL within your partial view script, then you will have to
+If you want to use an Authorization within your partial view script, then you will have to
 check the access to a page manually.
 
 In `module/MyModule/view/my-module/partials/menu.phtml`:
@@ -1524,7 +1495,7 @@ $this->navigation()
 echo $this->navigation()->sitemap();
 ```
 
-Notice how pages that are invisible or pages with ACL roles incompatible with
+Notice how pages that are invisible or pages with Authorization roles incompatible with
 the view helper are filtered out:
 
 ```xml
@@ -1584,9 +1555,9 @@ the view helper are filtered out:
 </urlset>
 ```
 
-### Rendering using no ACL role
+### Rendering using no Authorization role
 
-Render the sitemap using no ACL role (should filter out `/community/account`):
+Render the sitemap using no Authorization role (should filter out `/community/account`):
 
 ```php
 echo $this->navigation()->sitemap()

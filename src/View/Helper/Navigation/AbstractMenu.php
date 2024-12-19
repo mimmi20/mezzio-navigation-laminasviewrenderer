@@ -869,7 +869,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $depth = $iterator->getDepth();
 
             if ($depth < $minDepth || !$this->accept($page)) {
-                // page is below minDepth or not accepted by acl/visibility
+                // page is below minDepth or not accepted by Authorization/Visibility
                 continue;
             }
 
