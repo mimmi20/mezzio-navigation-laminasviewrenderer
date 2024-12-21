@@ -255,15 +255,15 @@ final class BreadcrumbsTest extends TestCase
             translator: $translatePlugin,
         );
 
-        self::assertTrue($helper->getUseAuthorization());
-
-        $helper->setUseAuthorization(false);
-
         self::assertFalse($helper->getUseAuthorization());
 
         $helper->setUseAuthorization();
 
         self::assertTrue($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization(false);
+
+        self::assertFalse($helper->getUseAuthorization());
     }
 
     /** @throws Exception */

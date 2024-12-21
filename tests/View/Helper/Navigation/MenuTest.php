@@ -230,15 +230,15 @@ final class MenuTest extends TestCase
             renderer: $renderer,
         );
 
-        self::assertTrue($helper->getUseAuthorization());
-
-        $helper->setUseAuthorization(false);
-
         self::assertFalse($helper->getUseAuthorization());
 
         $helper->setUseAuthorization();
 
         self::assertTrue($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization(false);
+
+        self::assertFalse($helper->getUseAuthorization());
     }
 
     /** @throws Exception */

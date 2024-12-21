@@ -640,6 +640,7 @@ final class LinksTest extends AbstractTestCase
 
         $this->helper->setAuthorization(new LaminasAcl($acl));
         $this->helper->setRoles(['member']);
+        $this->helper->setUseAuthorization();
 
         $samplePage = (new PageFactory())->factory([
             'label' => 'An example page',
@@ -707,6 +708,7 @@ final class LinksTest extends AbstractTestCase
 
         $this->helper->setAuthorization(new LaminasAcl($acl));
         $this->helper->setRoles(['member']);
+        $this->helper->setUseAuthorization();
 
         $container = $this->helper->getContainer();
         $iterator  = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);

@@ -266,15 +266,15 @@ final class SitemapTest extends TestCase
             serverUrlHelper: $serverUrlHelper,
         );
 
-        self::assertTrue($helper->getUseAuthorization());
-
-        $helper->setUseAuthorization(false);
-
         self::assertFalse($helper->getUseAuthorization());
 
         $helper->setUseAuthorization();
 
         self::assertTrue($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization(false);
+
+        self::assertFalse($helper->getUseAuthorization());
     }
 
     /** @throws Exception */
@@ -874,6 +874,7 @@ final class SitemapTest extends TestCase
         $helper->setMinDepth(0);
         $helper->setMaxDepth(42);
         $helper->setUseSchemaValidation(false);
+        $helper->setUseAuthorization();
 
         $urlLoc        = $this->createMock(DOMElement::class);
         $urlLastMod    = $this->createMock(DOMElement::class);

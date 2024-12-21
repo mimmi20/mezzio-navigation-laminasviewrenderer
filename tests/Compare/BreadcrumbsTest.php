@@ -263,8 +263,27 @@ final class BreadcrumbsTest extends AbstractTestCase
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
         $this->helper->setRoles([$acl['role']]);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('bc/acl.html');
+        self::assertSame($expected, $this->helper->render());
+    }
+
+    /**
+     * @throws Exception
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
+     * @throws \Laminas\Permissions\Acl\Exception\InvalidArgumentException
+     */
+    public function testUseAclResourceFromPages2(): void
+    {
+        $acl = $this->getAcl();
+        assert($acl['acl'] instanceof AuthorizationInterface);
+        $this->helper->setAuthorization($acl['acl']);
+        assert(is_string($acl['role']));
+        $this->helper->setRoles([$acl['role']]);
+
+        $expected = $this->getExpected('bc/acl2.html');
         self::assertSame($expected, $this->helper->render());
     }
 

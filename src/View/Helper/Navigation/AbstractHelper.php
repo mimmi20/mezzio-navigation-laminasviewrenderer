@@ -91,7 +91,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Whether Authorization should be used for filtering out pages
      */
-    protected bool $useAuthorization = true;
+    protected bool $useAuthorization = false;
 
     /**
      * Default Authorization role to use when iterating pages if not explicitly set in the

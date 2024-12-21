@@ -238,6 +238,7 @@ final class MenuTest extends AbstractTestCase
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
         $this->helper->setRoles(['member']);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('menu/acl_string.html');
         $actual   = $this->helper->render();
@@ -258,6 +259,7 @@ final class MenuTest extends AbstractTestCase
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
         $this->helper->setRoles([$acl['role']]);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();

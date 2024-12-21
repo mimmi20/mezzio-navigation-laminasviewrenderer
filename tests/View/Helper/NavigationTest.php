@@ -967,15 +967,15 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation(htmlify: $htmlify, containerParser: $containerParser);
 
-        self::assertTrue($helper->getUseAuthorization());
-
-        $helper->setUseAuthorization(false);
-
         self::assertFalse($helper->getUseAuthorization());
 
         $helper->setUseAuthorization();
 
         self::assertTrue($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization(false);
+
+        self::assertFalse($helper->getUseAuthorization());
     }
 
     /** @throws Exception */

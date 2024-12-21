@@ -127,6 +127,7 @@ final class NavigationTest extends AbstractTestCase
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
         $this->helper->setRoles([$acl['role']]);
+        $this->helper->setUseAuthorization();
 
         $accepted = $this->helper->accept(
             new Uri(
@@ -262,6 +263,7 @@ final class NavigationTest extends AbstractTestCase
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
         $this->helper->setRoles([$acl['role']]);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();

@@ -356,6 +356,8 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
             $helper->setAuthorization($this->getAuthorization());
         }
 
+        $helper->setUseAuthorization($this->getUseAuthorization());
+
         $roles = $this->getRoles();
 
         if ($helper->hasRoles() || $roles === []) {

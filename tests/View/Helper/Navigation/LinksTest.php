@@ -265,15 +265,15 @@ final class LinksTest extends TestCase
             headLink: $headLink,
         );
 
-        self::assertTrue($helper->getUseAuthorization());
-
-        $helper->setUseAuthorization(false);
-
         self::assertFalse($helper->getUseAuthorization());
 
         $helper->setUseAuthorization();
 
         self::assertTrue($helper->getUseAuthorization());
+
+        $helper->setUseAuthorization(false);
+
+        self::assertFalse($helper->getUseAuthorization());
     }
 
     /** @throws Exception */
