@@ -59,15 +59,17 @@ final class SitemapFactoryTest extends TestCase
             ->method('get')
             ->willReturnCallback(
                 static function (string $name, array | null $options = null) use ($matcher, $serverUrlHelper, $basePath, $escaper): HelperInterface {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame(ServerUrlHelper::class, $name),
-                        2 => self::assertSame(BasePath::class, $name),
-                        default => self::assertSame(EscapeHtml::class, $name),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame(ServerUrlHelper::class, $name, (string) $invocation),
+                        2 => self::assertSame(BasePath::class, $name, (string) $invocation),
+                        default => self::assertSame(EscapeHtml::class, $name, (string) $invocation),
                     };
 
-                    self::assertNull($options);
+                    self::assertNull($options, (string) $invocation);
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => $serverUrlHelper,
                         2 => $basePath,
                         default => $escaper,
@@ -81,13 +83,23 @@ final class SitemapFactoryTest extends TestCase
             ->method('get')
             ->willReturnCallback(
                 static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser): mixed {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame(ViewHelperPluginManager::class, $id),
-                        2 => self::assertSame(HtmlifyInterface::class, $id),
-                        default => self::assertSame(ContainerParserInterface::class, $id),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame(
+                            ViewHelperPluginManager::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        2 => self::assertSame(HtmlifyInterface::class, $id, (string) $invocation),
+                        default => self::assertSame(
+                            ContainerParserInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => $viewHelperPluginManager,
                         2 => $htmlify,
                         default => $containerParser,

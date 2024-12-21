@@ -67,12 +67,11 @@ final class BreadcrumbsFactory
         assert($renderer instanceof PartialRendererInterface);
 
         return new Breadcrumbs(
-            $container,
-            $htmlify,
-            $containerParser,
-            $escapeHtml,
-            $renderer,
-            $translator,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapeHtml,
+            renderer: $renderer,
+            translator: $translator,
         );
     }
 }

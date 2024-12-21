@@ -57,6 +57,11 @@ final class MenuFactory
         assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
         assert($renderer instanceof PartialRendererInterface);
 
-        return new Menu($container, $htmlify, $containerParser, $escapeHtmlAttr, $renderer);
+        return new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapeHtmlAttr,
+            renderer: $renderer,
+        );
     }
 }

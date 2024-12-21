@@ -31,6 +31,7 @@ use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
@@ -105,18 +106,20 @@ final class LinksTest extends AbstractTestCase
         $htmlify         = $this->serviceManager->get(HtmlifyInterface::class);
         $containerParser = $this->serviceManager->get(ContainerParserInterface::class);
         $findRoot        = $this->serviceManager->get(FindRootInterface::class);
+        $converter       = $this->serviceManager->get(ConvertToPagesInterface::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($findRoot instanceof FindRootInterface);
+        assert($converter instanceof ConvertToPagesInterface);
 
         // create helper
         $this->helper = new Navigation\Links(
-            $this->serviceManager,
-            $htmlify,
-            $containerParser,
-            $findRoot,
-            $headLinkHelper,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            convertToPages: $converter,
+            rootFinder: $findRoot,
+            headLink: $headLinkHelper,
         );
 
         // set nav1 in helper as default
@@ -636,7 +639,8 @@ final class LinksTest extends AbstractTestCase
         $acl->allow('admin', 'protected');
 
         $this->helper->setAuthorization(new LaminasAcl($acl));
-        $this->helper->setRole('member');
+        $this->helper->setRoles(['member']);
+        $this->helper->setUseAuthorization();
 
         $samplePage = (new PageFactory())->factory([
             'label' => 'An example page',
@@ -703,7 +707,8 @@ final class LinksTest extends AbstractTestCase
         $acl->allow('admin', 'protected');
 
         $this->helper->setAuthorization(new LaminasAcl($acl));
-        $this->helper->setRole('member');
+        $this->helper->setRoles(['member']);
+        $this->helper->setUseAuthorization();
 
         $container = $this->helper->getContainer();
         $iterator  = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);

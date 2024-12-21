@@ -384,12 +384,11 @@ final class SitemapTest extends AbstractTestCase
 
         // create helper
         $this->helper = new Sitemap(
-            $this->serviceManager,
-            $htmlify,
-            $containerParser,
-            $basePathHelper,
-            $escapeHelper,
-            $serverUrlHelper,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            basePathHelper: $basePathHelper,
+            escaper: $escapeHelper,
+            serverUrlHelper: $serverUrlHelper,
         );
 
         // set nav1 in helper as default

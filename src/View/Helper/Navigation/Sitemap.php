@@ -15,7 +15,6 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
 use DOMException;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Uri;
 use Laminas\Uri\Exception\InvalidArgumentException;
 use Laminas\Uri\Exception\InvalidUriException;
@@ -105,14 +104,13 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
 
     /** @throws void */
     public function __construct(
-        ServiceLocatorInterface $serviceLocator,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly BasePath $basePathHelper,
         private readonly EscapeHtml $escaper,
         private readonly ServerUrlHelper $serverUrlHelper,
     ) {
-        parent::__construct($serviceLocator, $htmlify, $containerParser);
+        parent::__construct($htmlify, $containerParser);
 
         libxml_use_internal_errors(true);
 
@@ -193,6 +191,10 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
+        if ($urlSet === false) {
+            throw new Exception\RuntimeException('Could not create urlset Element');
+        }
+
         $dom->appendChild($urlSet);
 
         // create iterator
@@ -245,6 +247,10 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                 throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
             }
 
+            if ($urlNode === false) {
+                throw new Exception\RuntimeException('Could not create url Element');
+            }
+
             $urlSet->appendChild($urlNode);
 
             if ($this->getUseSitemapValidators()) {
@@ -278,6 +284,10 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                 $locElement = $dom->createElementNS(SitemapInterface::SITEMAP_NS, 'loc', $url);
             } catch (DOMException $e) {
                 throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            if ($locElement === false) {
+                throw new Exception\RuntimeException('Could not create loc Element');
             }
 
             $urlNode->appendChild($locElement);
@@ -314,7 +324,9 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                         throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
                     }
 
-                    $urlNode->appendChild($lastmodElement);
+                    if ($lastmodElement !== false) {
+                        $urlNode->appendChild($lastmodElement);
+                    }
                 }
             }
 
@@ -340,7 +352,9 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                         throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
                     }
 
-                    $urlNode->appendChild($changefreqElement);
+                    if ($changefreqElement !== false) {
+                        $urlNode->appendChild($changefreqElement);
+                    }
                 }
             }
 
@@ -375,7 +389,9 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                 throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
             }
 
-            $urlNode->appendChild($priorityElement);
+            if ($priorityElement !== false) {
+                $urlNode->appendChild($priorityElement);
+            }
         }
 
         // validate using schema if specified

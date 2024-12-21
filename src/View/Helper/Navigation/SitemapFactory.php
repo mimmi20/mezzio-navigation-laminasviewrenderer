@@ -77,12 +77,11 @@ final class SitemapFactory
         assert($escapeHtml instanceof EscapeHtml);
 
         return new Sitemap(
-            $container,
-            $htmlify,
-            $containerParser,
-            $basePathHelper,
-            $escapeHtml,
-            $serverUrlHelper,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            basePathHelper: $basePathHelper,
+            escaper: $escapeHtml,
+            serverUrlHelper: $serverUrlHelper,
         );
     }
 }

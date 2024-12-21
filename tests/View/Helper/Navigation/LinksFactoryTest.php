@@ -20,6 +20,7 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
@@ -49,6 +50,7 @@ final class LinksFactoryTest extends TestCase
         $rootFinder      = $this->createMock(FindRootInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $headLink        = $this->createMock(HeadLink::class);
+        $converter       = $this->createMock(ConvertToPagesInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
@@ -57,22 +59,42 @@ final class LinksFactoryTest extends TestCase
             ->willReturn($headLink);
 
         $container = $this->createMock(ServiceLocatorInterface::class);
-        $matcher   = self::exactly(4);
+        $matcher   = self::exactly(5);
         $container->expects($matcher)
             ->method('get')
             ->willReturnCallback(
-                static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser, $rootFinder): mixed {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame(ViewHelperPluginManager::class, $id),
-                        2 => self::assertSame(HtmlifyInterface::class, $id),
-                        3 => self::assertSame(ContainerParserInterface::class, $id),
-                        default => self::assertSame(FindRootInterface::class, $id),
+                static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser, $rootFinder, $converter): mixed {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame(
+                            ViewHelperPluginManager::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        2 => self::assertSame(HtmlifyInterface::class, $id, (string) $invocation),
+                        3 => self::assertSame(
+                            ContainerParserInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        5 => self::assertSame(
+                            ConvertToPagesInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        default => self::assertSame(
+                            FindRootInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => $viewHelperPluginManager,
                         2 => $htmlify,
                         3 => $containerParser,
+                        5 => $converter,
                         default => $rootFinder,
                     };
                 },

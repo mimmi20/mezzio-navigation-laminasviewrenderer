@@ -44,16 +44,10 @@ use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\Mezzio\Navigation\Page\PageFactoryInterface;
 use Mimmi20\Mezzio\Navigation\Service\ConstructedNavigationFactory;
 use Mimmi20\Mezzio\Navigation\Service\DefaultNavigationFactory;
-use Mimmi20\NavigationHelper\Accept\AcceptHelperFactory;
-use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesFactory;
 use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
-use Mimmi20\NavigationHelper\FindActive\FindActiveFactory;
-use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
-use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyFactory;
-use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRoot;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
@@ -123,9 +117,6 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(ContainerParserInterface::class, ContainerParserFactory::class);
         $sm->setAlias(FindRootInterface::class, FindRoot::class);
         $sm->setFactory(FindRoot::class, InvokableFactory::class);
-        $sm->setFactory(AcceptHelperInterface::class, AcceptHelperFactory::class);
-        $sm->setFactory(FindActiveInterface::class, FindActiveFactory::class);
-        $sm->setFactory(FindFromPropertyInterface::class, FindFromPropertyFactory::class);
         $sm->setFactory(ConvertToPagesInterface::class, ConvertToPagesFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);
@@ -133,7 +124,6 @@ final class PluginManagerCompatibilityTest extends TestCase
 
         $helper = $helpers->get('breadcrumbs');
         self::assertInstanceOf(Breadcrumbs::class, $helper);
-        self::assertSame($sm, $helper->getServiceLocator());
     }
 
     /** @throws ContainerModificationsNotAllowedException */
@@ -197,9 +187,6 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(ContainerParserInterface::class, ContainerParserFactory::class);
         $sm->setAlias(FindRootInterface::class, FindRoot::class);
         $sm->setFactory(FindRoot::class, InvokableFactory::class);
-        $sm->setFactory(AcceptHelperInterface::class, AcceptHelperFactory::class);
-        $sm->setFactory(FindActiveInterface::class, FindActiveFactory::class);
-        $sm->setFactory(FindFromPropertyInterface::class, FindFromPropertyFactory::class);
         $sm->setFactory(ConvertToPagesInterface::class, ConvertToPagesFactory::class);
         $sm->setFactory(LaminasViewRenderer::class, LaminasViewRendererFactory::class);
         $sm->setFactory(BaseServerUrlHelper::class, InvokableFactory::class);

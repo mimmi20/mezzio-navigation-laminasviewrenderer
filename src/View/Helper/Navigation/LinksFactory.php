@@ -17,6 +17,7 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
+use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -51,12 +52,20 @@ final class LinksFactory
         $containerParser = $container->get(ContainerParserInterface::class);
         $findRoot        = $container->get(FindRootInterface::class);
         $headLink        = $plugin->get(HeadLink::class);
+        $converter       = $container->get(ConvertToPagesInterface::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($findRoot instanceof FindRootInterface);
         assert($headLink instanceof HeadLink);
+        assert($converter instanceof ConvertToPagesInterface);
 
-        return new Links($container, $htmlify, $containerParser, $findRoot, $headLink);
+        return new Links(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            convertToPages: $converter,
+            rootFinder: $findRoot,
+            headLink: $headLink,
+        );
     }
 }
