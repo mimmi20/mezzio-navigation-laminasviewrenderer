@@ -280,8 +280,13 @@ final class SitemapTest extends TestCase
     /** @throws Exception */
     public function testSetAuthorization(): void
     {
-        $auth        = $this->createMock(AuthorizationInterface::class);
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
         $defaultAuth = $this->createMock(AuthorizationInterface::class);
+        $defaultAuth->expects(self::never())
+            ->method('isGranted');
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -568,6 +573,8 @@ final class SitemapTest extends TestCase
             ->method('getLiClass');
 
         $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
 
         $role = 'testRole';
 

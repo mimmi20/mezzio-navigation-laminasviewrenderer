@@ -293,12 +293,21 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 
             $currDepth = $iterator->getDepth();
 
-            if ($currDepth < $minDepth || !$this->accept($page)) {
+            if ($currDepth < $minDepth) {
                 // page is not accepted
                 continue;
             }
 
-            if ($currDepth <= $foundDepth || !$page->isActive(false)) {
+            if (!$this->accept($page)) {
+                // page is not accepted
+                continue;
+            }
+
+            if ($currDepth <= $foundDepth) {
+                continue;
+            }
+
+            if (!$page->isActive(false)) {
                 continue;
             }
 
@@ -368,7 +377,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
             $authorization = $this->getUseAuthorization() ? $this->getAuthorization() : null;
 
             if ($authorization instanceof AuthorizationInterface) {
-                $roles  = $this->roles;
+                $roles  = $this->getRoles();
                 $accept = false;
 
                 if (count($roles)) {
