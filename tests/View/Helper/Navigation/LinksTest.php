@@ -394,12 +394,14 @@ final class LinksTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => null,
                         default => $container,
                     };

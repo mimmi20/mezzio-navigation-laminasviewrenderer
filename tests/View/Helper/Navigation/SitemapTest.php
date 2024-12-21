@@ -403,12 +403,14 @@ final class SitemapTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => null,
                         default => $container,
                     };
@@ -852,12 +854,14 @@ final class SitemapTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $containerParam) use ($matcher, $container): ContainerInterface | null {
-                    match ($matcher->numberOfInvocations()) {
-                        2 => self::assertNull($containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        2 => self::assertNull($containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         2 => null,
                         default => $container,
                     };
@@ -893,10 +897,12 @@ final class SitemapTest extends TestCase
             ->method('appendChild')
             ->willReturnCallback(
                 static function (DOMNode $node) use ($matcher, $urlLoc, $urlLastMod, $urlChangefreq): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($urlLoc, $node),
-                        2 => self::assertSame($urlLastMod, $node),
-                        default => self::assertSame($urlChangefreq, $node),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($urlLoc, $node, (string) $invocation),
+                        2 => self::assertSame($urlLastMod, $node, (string) $invocation),
+                        default => self::assertSame($urlChangefreq, $node, (string) $invocation),
                     };
                 },
             );
@@ -912,24 +918,30 @@ final class SitemapTest extends TestCase
             ->method('createElementNS')
             ->willReturnCallback(
                 static function (string | null $namespace, string $qualifiedName, string $value = '') use ($matcher, $serverUrl, $parentUri, $urlSet, $urlNode, $time, $changefreq, $urlLoc, $urlLastMod, $urlChangefreq): DOMElement {
-                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace);
+                    $invocation = $matcher->numberOfInvocations();
 
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame('urlset', $qualifiedName),
-                        2 => self::assertSame('url', $qualifiedName),
-                        3 => self::assertSame('loc', $qualifiedName),
-                        4 => self::assertSame('lastmod', $qualifiedName),
-                        default => self::assertSame('changefreq', $qualifiedName),
+                    self::assertSame(SitemapInterface::SITEMAP_NS, $namespace, (string) $invocation);
+
+                    match ($invocation) {
+                        1 => self::assertSame('urlset', $qualifiedName, (string) $invocation),
+                        2 => self::assertSame('url', $qualifiedName, (string) $invocation),
+                        3 => self::assertSame('loc', $qualifiedName, (string) $invocation),
+                        4 => self::assertSame('lastmod', $qualifiedName, (string) $invocation),
+                        default => self::assertSame('changefreq', $qualifiedName, (string) $invocation),
                     };
 
-                    match ($matcher->numberOfInvocations()) {
-                        3 => self::assertSame($serverUrl . '-test-' . $parentUri, $value),
-                        4 => self::assertSame(date('c', $time), $value),
-                        5 => self::assertSame($changefreq, $value),
-                        default => self::assertSame('', $value),
+                    match ($invocation) {
+                        3 => self::assertSame(
+                            $serverUrl . '-test-' . $parentUri,
+                            $value,
+                            (string) $invocation,
+                        ),
+                        4 => self::assertSame(date('c', $time), $value, (string) $invocation),
+                        5 => self::assertSame($changefreq, $value, (string) $invocation),
+                        default => self::assertSame('', $value, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => $urlSet,
                         2 => $urlNode,
                         3 => $urlLoc,

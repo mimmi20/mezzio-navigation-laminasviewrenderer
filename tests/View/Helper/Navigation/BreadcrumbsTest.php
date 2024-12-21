@@ -383,12 +383,14 @@ final class BreadcrumbsTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => null,
                         default => $container,
                     };
@@ -1294,9 +1296,11 @@ final class BreadcrumbsTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($name, $containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($name, $containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
                     return $container;
@@ -1412,19 +1416,21 @@ final class BreadcrumbsTest extends TestCase
                     $expected2,
                     $expected1,
                 ): string {
-                    self::assertSame(Breadcrumbs::class, $prefix);
+                    $invocation = $matcher->numberOfInvocations();
 
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($page, $pageParam),
-                        default => self::assertSame($parentPage, $pageParam),
+                    self::assertSame(Breadcrumbs::class, $prefix, (string) $invocation);
+
+                    match ($invocation) {
+                        1 => self::assertSame($page, $pageParam, (string) $invocation),
+                        default => self::assertSame($parentPage, $pageParam, (string) $invocation),
                     };
 
-                    self::assertTrue($escapeLabel);
-                    self::assertFalse($addClassToListItem);
-                    self::assertSame([], $attributes);
-                    self::assertFalse($convertToButton);
+                    self::assertTrue($escapeLabel, (string) $invocation);
+                    self::assertFalse($addClassToListItem, (string) $invocation);
+                    self::assertSame([], $attributes, (string) $invocation);
+                    self::assertFalse($convertToButton, (string) $invocation);
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => $expected2,
                         default => $expected1,
                     };
@@ -1437,9 +1443,11 @@ final class BreadcrumbsTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame($name, $containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($name, $containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
                     return $container;
@@ -1589,6 +1597,249 @@ final class BreadcrumbsTest extends TestCase
             self::fail('Exception expected');
         } catch (Throwable $e) {
             self::assertInstanceOf(InvalidArgumentException::class, $e);
+
+            self::assertSame('test', $e->getMessage());
+            self::assertSame(0, $e->getCode());
+            self::assertSame($exception, $e->getPrevious());
+        }
+    }
+
+    /**
+     * @throws Exception
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     */
+    public function testRenderStraightWithHtmlException(): void
+    {
+        $name      = 'Mezzio\Navigation\Top';
+        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $parentPage = new Uri();
+        $parentPage->setActive(true);
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = new Uri();
+        $page->setActive(true);
+        $page->setUri('###');
+        $page->setId('id');
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::exactly(2))
+            ->method('isGranted')
+            ->with($role, $resource, $privilege, null)
+            ->willReturn(true);
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Breadcrumbs::class, $page, true, false, [], false)
+            ->willThrowException($exception);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($name, $containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
+                    };
+
+                    return $container;
+                },
+            );
+
+        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $translatePlugin = $this->createMock(Translate::class);
+        $translatePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $helper = new Breadcrumbs(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+            translator: $translatePlugin,
+        );
+
+        $helper->setRoles([$role]);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $seperator = '/';
+
+        $helper->setSeparator($seperator);
+        $helper->setLinkLast(true);
+        $helper->setUseAuthorization();
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+        $helper->setMinDepth(0);
+
+        try {
+            $helper->renderStraight($name);
+
+            self::fail('Exception expected');
+        } catch (Throwable $e) {
+            self::assertInstanceOf(RuntimeException::class, $e);
+
+            self::assertSame('test', $e->getMessage());
+            self::assertSame(0, $e->getCode());
+            self::assertSame($exception, $e->getPrevious());
+        }
+    }
+
+    /**
+     * @throws Exception
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     */
+    public function testRenderStraightWithTranslatorException(): void
+    {
+        $name      = 'Mezzio\Navigation\Top';
+        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
+
+        $resource  = 'testResource';
+        $privilege = 'testPrivilege';
+
+        $label = 'test-label';
+
+        $parentPage = new Uri();
+        $parentPage->setActive(true);
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = new Uri();
+        $page->setActive(true);
+        $page->setUri('###');
+        $page->setId('id');
+        $page->setLabel($label);
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::exactly(2))
+            ->method('isGranted')
+            ->with($role, $resource, $privilege, null)
+            ->willReturn(true);
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($name, $containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
+                    };
+
+                    return $container;
+                },
+            );
+
+        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $translatePlugin = $this->createMock(Translate::class);
+        $translatePlugin->expects(self::once())
+            ->method('__invoke')
+            ->with($label, null, null)
+            ->willThrowException($exception);
+
+        $helper = new Breadcrumbs(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+            translator: $translatePlugin,
+        );
+
+        $helper->setRoles([$role]);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $seperator = '/';
+
+        $helper->setSeparator($seperator);
+        $helper->setLinkLast(false);
+        $helper->setUseAuthorization();
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+        $helper->setMinDepth(0);
+
+        try {
+            $helper->renderStraight($name);
+
+            self::fail('Exception expected');
+        } catch (Throwable $e) {
+            self::assertInstanceOf(RuntimeException::class, $e);
 
             self::assertSame('test', $e->getMessage());
             self::assertSame(0, $e->getCode());

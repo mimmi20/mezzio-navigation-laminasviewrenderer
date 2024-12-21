@@ -64,15 +64,33 @@ final class LinksFactoryTest extends TestCase
             ->method('get')
             ->willReturnCallback(
                 static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser, $rootFinder, $converter): mixed {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame(ViewHelperPluginManager::class, $id),
-                        2 => self::assertSame(HtmlifyInterface::class, $id),
-                        3 => self::assertSame(ContainerParserInterface::class, $id),
-                        5 => self::assertSame(ConvertToPagesInterface::class, $id),
-                        default => self::assertSame(FindRootInterface::class, $id),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame(
+                            ViewHelperPluginManager::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        2 => self::assertSame(HtmlifyInterface::class, $id, (string) $invocation),
+                        3 => self::assertSame(
+                            ContainerParserInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        5 => self::assertSame(
+                            ConvertToPagesInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        default => self::assertSame(
+                            FindRootInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => $viewHelperPluginManager,
                         2 => $htmlify,
                         3 => $containerParser,

@@ -380,9 +380,11 @@ final class NavigationTest extends TestCase
             ->method('setContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $container = null) use ($matcher, $container2): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($container),
-                        default => self::assertSame($container2, $container),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($container, (string) $invocation),
+                        default => self::assertSame($container2, $container, (string) $invocation),
                     };
                 },
             );
@@ -443,11 +445,14 @@ final class NavigationTest extends TestCase
             ->method('setContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $container = null) use ($matcher): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($container),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($container, (string) $invocation),
                         default => self::assertInstanceOf(
                             \Mimmi20\Mezzio\Navigation\Navigation::class,
                             $container,
+                            (string) $invocation,
                         ),
                     };
                 },
@@ -554,11 +559,14 @@ final class NavigationTest extends TestCase
             ->method('setContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $container = null) use ($matcher): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($container),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($container, (string) $invocation),
                         default => self::assertInstanceOf(
                             \Mimmi20\Mezzio\Navigation\Navigation::class,
                             $container,
+                            (string) $invocation,
                         ),
                     };
                 },
@@ -621,11 +629,14 @@ final class NavigationTest extends TestCase
             ->method('setContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $container = null) use ($matcher): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($container),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($container, (string) $invocation),
                         default => self::assertInstanceOf(
                             \Mimmi20\Mezzio\Navigation\Navigation::class,
                             $container,
+                            (string) $invocation,
                         ),
                     };
                 },
@@ -692,11 +703,14 @@ final class NavigationTest extends TestCase
             ->method('setContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $container = null) use ($matcher): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($container),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($container, (string) $invocation),
                         default => self::assertInstanceOf(
                             \Mimmi20\Mezzio\Navigation\Navigation::class,
                             $container,
+                            (string) $invocation,
                         ),
                     };
                 },
@@ -797,11 +811,14 @@ final class NavigationTest extends TestCase
             ->method('setContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | string | null $container = null) use ($matcher): void {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($container),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($container, (string) $invocation),
                         default => self::assertInstanceOf(
                             \Mimmi20\Mezzio\Navigation\Navigation::class,
                             $container,
+                            (string) $invocation,
                         ),
                     };
                 },
@@ -1060,12 +1077,14 @@ final class NavigationTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => null,
                         default => $container,
                     };

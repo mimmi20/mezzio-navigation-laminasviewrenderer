@@ -17,6 +17,7 @@ use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtmlAttr;
+use Laminas\View\Helper\Escaper\AbstractHelper;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
@@ -25,11 +26,13 @@ use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 use function assert;
 use function sprintf;
@@ -345,12 +348,14 @@ final class MenuTest extends TestCase
             ->method('parseContainer')
             ->willReturnCallback(
                 static function (ContainerInterface | null $containerParam) use ($matcher, $container): ContainerInterface | null {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertNull($containerParam),
-                        default => self::assertSame($container, $containerParam),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertNull($containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => null,
                         default => $container,
                     };
@@ -825,5 +830,505 @@ final class MenuTest extends TestCase
         $helper->setIndent('    ');
 
         self::assertSame('    ', $helper->getIndent());
+    }
+
+    /** @throws Exception */
+    public function testEscapeLabels(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertTrue($helper->getEscapeLabels());
+
+        $helper->escapeLabels(false);
+
+        self::assertFalse($helper->getEscapeLabels());
+    }
+
+    /** @throws Exception */
+    public function testSetAddClassToListItem(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertFalse($helper->getAddClassToListItem());
+
+        $helper->setAddClassToListItem(true);
+
+        self::assertTrue($helper->getAddClassToListItem());
+    }
+
+    /** @throws Exception */
+    public function testSetOnlyActiveBranch(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertFalse($helper->getOnlyActiveBranch());
+
+        $helper->setOnlyActiveBranch(true);
+
+        self::assertTrue($helper->getOnlyActiveBranch());
+    }
+
+    /** @throws Exception */
+    public function testSetPartial(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertNull($helper->getPartial());
+
+        $helper->setPartial('test');
+
+        self::assertSame('test', $helper->getPartial());
+
+        $helper->setPartial(1);
+
+        self::assertSame('test', $helper->getPartial());
+    }
+
+    /** @throws Exception */
+    public function testSetRenderParents(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertTrue($helper->getRenderParents());
+
+        $helper->setRenderParents(false);
+
+        self::assertFalse($helper->getRenderParents());
+    }
+
+    /** @throws Exception */
+    public function testSetUlClass(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertSame('navigation', $helper->getUlClass());
+
+        $helper->setUlClass('test');
+
+        self::assertSame('test', $helper->getUlClass());
+    }
+
+    /** @throws Exception */
+    public function testSetLiClass(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertSame('', $helper->getLiClass());
+
+        $helper->setLiClass('test');
+
+        self::assertSame('test', $helper->getLiClass());
+    }
+
+    /** @throws Exception */
+    public function testSetLiActiveClass(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertSame('active', $helper->getLiActiveClass());
+
+        $helper->setLiActiveClass('test');
+
+        self::assertSame('test', $helper->getLiActiveClass());
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testRenderMenuWithContainerException(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = new Uri();
+        $page->setActive(false);
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->with($name)
+            ->willThrowException($exception);
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        $helper->setRoles([$role]);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+        try {
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+            );
+
+            self::fail('Exception expected');
+        } catch (Throwable $e) {
+            self::assertInstanceOf(InvalidArgumentException::class, $e);
+
+            self::assertSame('test', $e->getMessage());
+            self::assertSame(0, $e->getCode());
+            self::assertSame($exception, $e->getPrevious());
+        }
+    }
+
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
+     */
+    public function testRenderMenuWithHtmlException(): void
+    {
+        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
+
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
+
+        $parentPage = new Uri();
+        $parentPage->setVisible(true);
+        $parentPage->setResource($resource);
+        $parentPage->setPrivilege($privilege);
+        $parentPage->setId('parent-id');
+        $parentPage->setClass('parent-class');
+        $parentPage->setUri('##');
+        $parentPage->setTarget('self');
+        $parentPage->setLabel('parent-label');
+        $parentPage->setTitle('parent-title');
+        $parentPage->setTextDomain('parent-text-domain');
+
+        $page = new Uri();
+        $page->setActive(true);
+
+        $parentPage->addPage($page);
+
+        $container = new Navigation();
+        $container->addPage($parentPage);
+
+        $role = 'testRole';
+
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::once())
+            ->method('toHtml')
+            ->with(Menu::class, $page, true, false, [], false)
+            ->willThrowException($exception);
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $matcher         = self::exactly(2);
+        $containerParser->expects($matcher)
+            ->method('parseContainer')
+            ->willReturnCallback(
+                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($name, $containerParam, (string) $invocation),
+                        default => self::assertSame($container, $containerParam, (string) $invocation),
+                    };
+
+                    return $container;
+                },
+            );
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $matcher      = self::exactly(2);
+        $escapePlugin->expects($matcher)
+            ->method('__invoke')
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher, $ulClass): string {
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame($ulClass, $value, (string) $invocation),
+                        default => self::assertSame('li-active li-class', $value, (string) $invocation),
+                    };
+
+                    self::assertSame(0, $recurse, (string) $invocation);
+
+                    return match ($invocation) {
+                        1 => 'ul-class-escaped',
+                        default => 'li-class-escaped',
+                    };
+                },
+            );
+
+        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        $helper->setRoles([$role]);
+
+        assert($auth instanceof AuthorizationInterface);
+        $helper->setAuthorization($auth);
+
+        $view = $this->createMock(PhpRenderer::class);
+        $view->expects(self::never())
+            ->method('plugin');
+        $view->expects(self::never())
+            ->method('getHelperPluginManager');
+
+        assert($view instanceof PhpRenderer);
+        $helper->setView($view);
+
+//        $helper->renderMenu(
+//            $name,
+//            ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+//        );
+
+        try {
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+            );
+
+            self::fail('Exception expected');
+        } catch (Throwable $e) {
+            self::assertInstanceOf(RuntimeException::class, $e);
+
+            self::assertSame('test', $e->getMessage());
+            self::assertSame(0, $e->getCode());
+            self::assertSame($exception, $e->getPrevious());
+        }
     }
 }
