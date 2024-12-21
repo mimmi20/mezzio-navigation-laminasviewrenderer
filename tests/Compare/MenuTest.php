@@ -109,11 +109,10 @@ final class MenuTest extends AbstractTestCase
 
         // create helper
         $this->helper = new Menu(
-            $this->serviceManager,
-            $htmlify,
-            $containerParser,
-            $escapeHelper,
-            $renderer,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapeHelper,
+            renderer: $renderer,
         );
 
         // set nav1 in helper as default

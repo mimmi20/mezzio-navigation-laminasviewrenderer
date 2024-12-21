@@ -14,7 +14,6 @@ declare(strict_types = 1);
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\Exception\RuntimeException;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtmlAttr;
@@ -94,13 +93,12 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
 
     /** @throws void */
     public function __construct(
-        ServiceLocatorInterface $serviceLocator,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         protected EscapeHtmlAttr $escaper,
         private readonly PartialRendererInterface $renderer,
     ) {
-        parent::__construct($serviceLocator, $htmlify, $containerParser);
+        parent::__construct($htmlify, $containerParser);
     }
 
     /**

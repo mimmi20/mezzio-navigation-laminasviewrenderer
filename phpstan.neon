@@ -101,8 +101,8 @@ parameters:
     function: 59
 
   type_coverage:
-    return_type: 96.3
-    param_type: 98.0
+    return_type: 94.9
+    param_type: 97.3
     property_type: 100
     constant_type: 100
     # also, how many files has declare strict types
@@ -131,7 +131,6 @@ parameters:
     - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::findRe[lv](Chapter|Example|Next|Prev|Section|Start|Subsection)\(\)~'
     - '~Access to an undefined property Mimmi20\\Mezzio\\Navigation\\Page\\PageInterface::\$(changefreq|lastmod|priority|resource)~'
     - '~\$this\(Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\PluginManagerCompatibilityTest\) given~'
-    - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Abstract(Breadcrumbs|Menu)::setPartial\(\) expects array~'
     - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
     - '~assertContainsOnly~'

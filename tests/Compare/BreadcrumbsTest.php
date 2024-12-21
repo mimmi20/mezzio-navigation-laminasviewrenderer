@@ -100,12 +100,11 @@ final class BreadcrumbsTest extends AbstractTestCase
 
         // create helper
         $this->helper = new Breadcrumbs(
-            $this->serviceManager,
-            $htmlify,
-            $containerParser,
-            $escapeHelper,
-            $renderer,
-            $translator,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapeHelper,
+            renderer: $renderer,
+            translator: $translator,
         );
 
         // set nav1 in helper as default

@@ -15,7 +15,6 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use DOMDocument;
 use DOMException;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Uri;
 use Laminas\Uri\Exception\InvalidArgumentException;
 use Laminas\Uri\Exception\InvalidUriException;
@@ -105,14 +104,13 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
 
     /** @throws void */
     public function __construct(
-        ServiceLocatorInterface $serviceLocator,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly BasePath $basePathHelper,
         private readonly EscapeHtml $escaper,
         private readonly ServerUrlHelper $serverUrlHelper,
     ) {
-        parent::__construct($serviceLocator, $htmlify, $containerParser);
+        parent::__construct($htmlify, $containerParser);
 
         libxml_use_internal_errors(true);
 

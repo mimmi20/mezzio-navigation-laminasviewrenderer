@@ -15,7 +15,6 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\Exception\RuntimeException;
 use Laminas\I18n\View\Helper\Translate;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtml;
@@ -64,14 +63,13 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
 
     /** @throws void */
     public function __construct(
-        ServiceLocatorInterface $serviceLocator,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly EscapeHtml $escaper,
         private readonly PartialRendererInterface $renderer,
         private readonly Translate | null $translator = null,
     ) {
-        parent::__construct($serviceLocator, $htmlify, $containerParser);
+        parent::__construct($htmlify, $containerParser);
     }
 
     /**

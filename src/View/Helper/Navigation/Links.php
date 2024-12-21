@@ -13,30 +13,30 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\Stdlib\Exception\DomainException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\HeadLink;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
-use Mimmi20\NavigationHelper\FindFromProperty\FindFromPropertyInterface;
+use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use Psr\Container\ContainerExceptionInterface;
 use RecursiveIteratorIterator;
 
 use function array_diff;
+use function array_filter;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
 use function array_search;
 use function array_values;
 use function assert;
+use function get_debug_type;
 use function in_array;
 use function is_array;
+use function is_iterable;
 use function is_string;
 use function mb_strlen;
 use function mb_strtolower;
@@ -63,13 +63,13 @@ final class Links extends AbstractHelper implements LinksInterface
 
     /** @throws void */
     public function __construct(
-        ServiceLocatorInterface $serviceLocator,
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
+        private readonly ConvertToPagesInterface $convertToPages,
         private readonly FindRootInterface $rootFinder,
         private readonly HeadLink $headLink,
     ) {
-        parent::__construct($serviceLocator, $htmlify, $containerParser);
+        parent::__construct($htmlify, $containerParser);
     }
 
     /**
@@ -695,29 +695,46 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
+     * @throws Exception\DomainException
      */
     private function findFromProperty(PageInterface $page, string $rel, string $type): array
     {
-        try {
-            $findFromPropertyHelper = $this->serviceLocator->build(
-                FindFromPropertyInterface::class,
-                [
-                    'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
-                    'renderInvisible' => $this->getRenderInvisible(),
-                    'roles' => $this->getRoles(),
-                ],
-            );
-        } catch (ContainerExceptionInterface $e) {
-            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+        $result = match ($rel) {
+            'rel' => $page->getRel($type),
+            'rev' => $page->getRev($type),
+            default => throw new Exception\DomainException(
+                sprintf(
+                    'Invalid relation attribute "%s", must be "rel" or "rev"',
+                    $rel,
+                ),
+            ),
+        };
+
+        if (!$result) {
+            return [];
         }
 
-        assert($findFromPropertyHelper instanceof FindFromPropertyInterface);
+        assert(
+            is_iterable($result)
+            || is_string($result),
+            get_debug_type($result),
+        );
 
         try {
-            return $findFromPropertyHelper->find($page, $rel, $type);
-        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException | DomainException $e) {
+            $convertedResult = $this->convertToPages->convert($result);
+        } catch (\Laminas\Stdlib\Exception\InvalidArgumentException $e) {
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
+
+        if ($convertedResult === []) {
+            return [];
+        }
+
+        return array_filter(
+            $convertedResult,
+            /** @throws void */
+            fn (PageInterface $page): bool => $this->accept($page),
+        );
     }
 
     /**

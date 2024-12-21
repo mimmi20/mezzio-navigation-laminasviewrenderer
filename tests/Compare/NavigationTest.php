@@ -76,7 +76,7 @@ final class NavigationTest extends AbstractTestCase
         assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
-        $this->helper = new Navigation($this->serviceManager, $htmlify, $containerParser);
+        $this->helper = new Navigation(htmlify: $htmlify, containerParser: $containerParser);
         $this->helper->setPluginManager(new Navigation\PluginManager($this->serviceManager));
 
         // set nav1 in helper as default
