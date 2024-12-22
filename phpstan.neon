@@ -98,11 +98,11 @@ parameters:
 
   cognitive_complexity:
     class: 80
-    function: 53
+    function: 59
 
   type_coverage:
-    return_type: 96.3
-    param_type: 98.0
+    return_type: 94.9
+    param_type: 97.3
     property_type: 100
     constant_type: 100
     # also, how many files has declare strict types

@@ -76,7 +76,7 @@ final class NavigationTest extends AbstractTestCase
         assert($containerParser instanceof ContainerParserInterface);
 
         // create helper
-        $this->helper = new Navigation($this->serviceManager, $htmlify, $containerParser);
+        $this->helper = new Navigation(htmlify: $htmlify, containerParser: $containerParser);
         $this->helper->setPluginManager(new Navigation\PluginManager($this->serviceManager));
 
         // set nav1 in helper as default
@@ -122,11 +122,12 @@ final class NavigationTest extends AbstractTestCase
     public function testAcceptAclShouldReturnGracefullyWithUnknownResource(): void
     {
         // setup
-        $acl = $this->getAcl();
-        assert($acl['acl'] instanceof AuthorizationInterface);
-        $this->helper->setAuthorization($acl['acl']);
-        assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $auth = $this->getAcl();
+        assert($auth['acl'] instanceof AuthorizationInterface);
+        $this->helper->setAuthorization($auth['acl']);
+        assert(is_string($auth['role']));
+        $this->helper->setRoles([$auth['role']]);
+        $this->helper->setUseAuthorization();
 
         $accepted = $this->helper->accept(
             new Uri(
@@ -257,11 +258,12 @@ final class NavigationTest extends AbstractTestCase
     public function testInjectingAuthorization(): void
     {
         // setup
-        $acl = $this->getAcl();
-        assert($acl['acl'] instanceof AuthorizationInterface);
-        $this->helper->setAuthorization($acl['acl']);
-        assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $auth = $this->getAcl();
+        assert($auth['acl'] instanceof AuthorizationInterface);
+        $this->helper->setAuthorization($auth['acl']);
+        assert(is_string($auth['role']));
+        $this->helper->setRoles([$auth['role']]);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();
@@ -278,11 +280,11 @@ final class NavigationTest extends AbstractTestCase
     public function testDisablingInjectAuthorization(): void
     {
         // setup
-        $acl = $this->getAcl();
-        assert($acl['acl'] instanceof AuthorizationInterface);
-        $this->helper->setAuthorization($acl['acl']);
-        assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $auth = $this->getAcl();
+        assert($auth['acl'] instanceof AuthorizationInterface);
+        $this->helper->setAuthorization($auth['acl']);
+        assert(is_string($auth['role']));
+        $this->helper->setRoles([$auth['role']]);
         $this->helper->setInjectAuthorization(false);
 
         $expected = $this->getExpected('menu/default1.html');
@@ -322,27 +324,36 @@ final class NavigationTest extends AbstractTestCase
     /** @throws Exception */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
-        $acl = $this->createMock(AuthorizationInterface::class);
-        assert($acl instanceof AuthorizationInterface);
-        $this->helper->setAuthorization($acl);
-        self::assertSame($acl, $this->helper->getAuthorization());
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        assert($auth instanceof AuthorizationInterface);
+        $this->helper->setAuthorization($auth);
+        self::assertSame($auth, $this->helper->getAuthorization());
     }
 
     /** @throws Exception */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetDefaultAuthorization(): void
     {
-        $acl = $this->createMock(AuthorizationInterface::class);
-        Navigation::setDefaultAuthorization($acl);
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        Navigation::setDefaultAuthorization($auth);
         $actual = $this->helper->getAuthorization();
         Navigation::setDefaultAuthorization(null);
-        self::assertSame($acl, $actual);
+        self::assertSame($auth, $actual);
     }
 
     /** @throws Exception */
     public function testsetDefaultAuthorizationAcceptsNull(): void
     {
-        $acl = $this->createMock(AuthorizationInterface::class);
-        Navigation::setDefaultAuthorization($acl);
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        Navigation::setDefaultAuthorization($auth);
         Navigation::setDefaultAuthorization(null);
         self::assertNull($this->helper->getAuthorization());
     }
@@ -350,17 +361,20 @@ final class NavigationTest extends AbstractTestCase
     /** @throws Exception */
     public function testsetDefaultAuthorizationAcceptsNoParam(): void
     {
-        $acl = $this->createMock(AuthorizationInterface::class);
-        Navigation::setDefaultAuthorization($acl);
+        $auth = $this->createMock(AuthorizationInterface::class);
+        $auth->expects(self::never())
+            ->method('isGranted');
+
+        Navigation::setDefaultAuthorization($auth);
         Navigation::setDefaultAuthorization();
         self::assertNull($this->helper->getAuthorization());
     }
 
     /** @throws Exception */
-    public function testSetRoleAcceptsString(): void
+    public function testSetRoleAcceptsArrays(): void
     {
-        $this->helper->setRole('member');
-        self::assertSame('member', $this->helper->getRole());
+        $this->helper->setRoles(['member']);
+        self::assertSame(['member'], $this->helper->getRoles());
     }
 
     /**

@@ -66,9 +66,11 @@ final class PluginManagerFactoryTest extends TestCase
             ->method('has')
             ->willReturnCallback(
                 static function (string $id) use ($matcher): bool {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame('ServiceListener', $id),
-                        default => self::assertSame('config', $id),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame('ServiceListener', $id, (string) $invocation),
+                        default => self::assertSame('config', $id, (string) $invocation),
                     };
 
                     return false;
@@ -95,12 +97,14 @@ final class PluginManagerFactoryTest extends TestCase
             ->method('has')
             ->willReturnCallback(
                 static function (string $id) use ($matcher): bool {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame('ServiceListener', $id),
-                        default => self::assertSame('config', $id),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame('ServiceListener', $id, (string) $invocation),
+                        default => self::assertSame('config', $id, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => false,
                         default => true,
                     };
@@ -129,12 +133,14 @@ final class PluginManagerFactoryTest extends TestCase
             ->method('has')
             ->willReturnCallback(
                 static function (string $id) use ($matcher): bool {
-                    match ($matcher->numberOfInvocations()) {
-                        1 => self::assertSame('ServiceListener', $id),
-                        default => self::assertSame('config', $id),
+                    $invocation = $matcher->numberOfInvocations();
+
+                    match ($invocation) {
+                        1 => self::assertSame('ServiceListener', $id, (string) $invocation),
+                        default => self::assertSame('config', $id, (string) $invocation),
                     };
 
-                    return match ($matcher->numberOfInvocations()) {
+                    return match ($invocation) {
                         1 => false,
                         default => true,
                     };

@@ -109,11 +109,10 @@ final class MenuTest extends AbstractTestCase
 
         // create helper
         $this->helper = new Menu(
-            $this->serviceManager,
-            $htmlify,
-            $containerParser,
-            $escapeHelper,
-            $renderer,
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapeHelper,
+            renderer: $renderer,
         );
 
         // set nav1 in helper as default
@@ -238,7 +237,8 @@ final class MenuTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole('member');
+        $this->helper->setRoles(['member']);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('menu/acl_string.html');
         $actual   = $this->helper->render();
@@ -258,7 +258,8 @@ final class MenuTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $this->helper->setRoles([$acl['role']]);
+        $this->helper->setUseAuthorization();
 
         $expected = $this->getExpected('menu/acl.html');
         $actual   = $this->helper->render();
@@ -278,7 +279,7 @@ final class MenuTest extends AbstractTestCase
         assert($acl['acl'] instanceof AuthorizationInterface);
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
-        $this->helper->setRole($acl['role']);
+        $this->helper->setRoles([$acl['role']]);
         $this->helper->setUseAuthorization(false);
 
         $expected = $this->getExpected('menu/default1.html');

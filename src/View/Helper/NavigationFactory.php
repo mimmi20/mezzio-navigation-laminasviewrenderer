@@ -41,7 +41,7 @@ final class NavigationFactory
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
 
-        $helper = new Navigation($container, $htmlify, $containerParser);
+        $helper = new Navigation(htmlify: $htmlify, containerParser: $containerParser);
 
         $plugin = $container->get(Navigation\PluginManager::class);
 

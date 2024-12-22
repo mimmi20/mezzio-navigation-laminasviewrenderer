@@ -14,7 +14,6 @@ declare(strict_types = 1);
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Laminas\I18n\Exception\RuntimeException;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\AbstractHtmlElement;
@@ -22,15 +21,14 @@ use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use Mimmi20\NavigationHelper\Accept\AcceptHelperInterface;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
-use Mimmi20\NavigationHelper\FindActive\FindActiveInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use Psr\Container\ContainerExceptionInterface;
+use RecursiveIteratorIterator;
 use Stringable;
 
 use function assert;
+use function count;
 use function get_debug_type;
 use function is_int;
 use function sprintf;
@@ -43,6 +41,8 @@ use function str_repeat;
  */
 abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 {
+    private const int START_DEPTH = -1;
+
     /**
      * ContainerInterface to operate on by default
      *
@@ -78,8 +78,10 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 
     /**
      * Authorization role to use when iterating pages
+     *
+     * @var array<string>
      */
-    protected string | null $role = null;
+    protected array $roles = [];
 
     /**
      * Whether container should be injected when proxying
@@ -89,18 +91,17 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     /**
      * Whether Authorization should be used for filtering out pages
      */
-    protected bool $useAuthorization = true;
+    protected bool $useAuthorization = false;
 
     /**
      * Default Authorization role to use when iterating pages if not explicitly set in the
-     * instance by calling {@link setRole()}
+     * instance by calling {@link setRoles()}
      */
     protected static string | null $defaultRole                          = null;
     protected static AuthorizationInterface | null $defaultAuthorization = null;
 
     /** @throws void */
     public function __construct(
-        protected ServiceLocatorInterface $serviceLocator,
         protected HtmlifyInterface $htmlify,
         protected ContainerParserInterface $containerParser,
     ) {
@@ -276,22 +277,70 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
             $maxDepth = $this->getMaxDepth();
         }
 
-        try {
-            $findActiveHelper = $this->serviceLocator->build(
-                FindActiveInterface::class,
-                [
-                    'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
-                    'renderInvisible' => $this->getRenderInvisible(),
-                    'role' => $this->getRole(),
-                ],
+        $found      = null;
+        $foundDepth = self::START_DEPTH;
+        $iterator   = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::CHILD_FIRST);
+
+        foreach ($iterator as $page) {
+            assert(
+                $page instanceof PageInterface,
+                sprintf(
+                    '$page should be an Instance of %s, but was %s',
+                    PageInterface::class,
+                    get_debug_type($page),
+                ),
             );
-        } catch (ContainerExceptionInterface $e) {
-            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+
+            $currDepth = $iterator->getDepth();
+
+            if ($currDepth < $minDepth) {
+                // page is not accepted
+                continue;
+            }
+
+            if (!$this->accept($page)) {
+                // page is not accepted
+                continue;
+            }
+
+            if ($currDepth <= $foundDepth) {
+                continue;
+            }
+
+            if (!$page->isActive(false)) {
+                continue;
+            }
+
+            // found an active page at a deeper level than before
+            $found      = $page;
+            $foundDepth = $currDepth;
         }
 
-        assert($findActiveHelper instanceof FindActiveInterface);
+        if (is_int($maxDepth) && $foundDepth > $maxDepth && $found instanceof PageInterface) {
+            while ($foundDepth > $maxDepth) {
+                assert($foundDepth >= $minDepth);
 
-        return $findActiveHelper->find($container, $minDepth, $maxDepth);
+                if (--$foundDepth < $minDepth) {
+                    $found = null;
+
+                    break;
+                }
+
+                $found = $found->getParent();
+
+                if (!$found instanceof PageInterface) {
+                    $found = null;
+
+                    break;
+                }
+            }
+        }
+
+        if ($found instanceof PageInterface) {
+            return ['page' => $found, 'depth' => $foundDepth];
+        }
+
+        return [];
     }
 
     // Iterator filter methods:
@@ -316,29 +365,46 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      */
     public function accept(PageInterface $page, bool $recursive = true): bool
     {
-        try {
-            $acceptHelper = $this->serviceLocator->build(
-                AcceptHelperInterface::class,
-                [
-                    'authorization' => $this->getUseAuthorization() ? $this->getAuthorization() : null,
-                    'renderInvisible' => $this->getRenderInvisible(),
-                    'role' => $this->getRole(),
-                ],
-            );
-        } catch (ContainerExceptionInterface $e) {
-            throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
+        if (!$page->isVisible(false) && !$this->renderInvisible) {
+            return false;
         }
 
-        assert(
-            $acceptHelper instanceof AcceptHelperInterface,
-            sprintf(
-                '$acceptHelper should be an Instance of %s, but was %s',
-                AcceptHelperInterface::class,
-                get_debug_type($acceptHelper),
-            ),
-        );
+        $accept    = true;
+        $resource  = $page->getResource();
+        $privilege = $page->getPrivilege();
 
-        return $acceptHelper->accept($page, $recursive);
+        if ($resource !== null || $privilege !== null) {
+            $authorization = $this->getUseAuthorization() ? $this->getAuthorization() : null;
+
+            if ($authorization instanceof AuthorizationInterface) {
+                $roles  = $this->getRoles();
+                $accept = false;
+
+                if (count($roles)) {
+                    foreach ($roles as $role) {
+                        if ($authorization->isGranted($role, $resource, $privilege)) {
+                            $accept = true;
+
+                            break;
+                        }
+                    }
+                } else {
+                    if ($authorization->isGranted(null, $resource, $privilege)) {
+                        $accept = true;
+                    }
+                }
+            }
+        }
+
+        if ($accept && $recursive) {
+            $parent = $page->getParent();
+
+            if ($parent instanceof PageInterface) {
+                $accept = $this->accept($parent, true);
+            }
+        }
+
+        return $accept;
     }
 
     /**
@@ -550,50 +616,52 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      *
      * Implements {@link ViewHelperInterface::setRole()}.
      *
-     * @param string $role [optional] role to set. Expects a string or null. Default is null, which will set no role.
+     * @param array<string> $roles [optional] role to set. Expects a string or null. Default is null, which will set no role.
      *
      * @throws void
      *
      * @api
      */
-    public function setRole(string $role): static
+    public function setRoles(array $roles): static
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
     }
 
     /**
      * Returns Authorization role to use when iterating pages, or null if it isn't set
-     * using {@link setRole()} or {@link setDefaultRole()}
+     * using {@link setRoles()} or {@link setDefaultRole()}
      *
      * Implements {@link ViewHelperInterface::getRole()}.
+     *
+     * @return array<string>
      *
      * @throws void
      *
      * @api
      */
-    public function getRole(): string | null
+    public function getRoles(): array
     {
-        if ($this->role === null && static::$defaultRole !== null) {
-            return static::$defaultRole;
+        if ($this->roles === [] && static::$defaultRole !== null) {
+            return [static::$defaultRole];
         }
 
-        return $this->role;
+        return $this->roles;
     }
 
     /**
      * Checks if the helper has an Authorization role
      *
-     * Implements {@link ViewHelperInterface::hasRole()}.
+     * Implements {@link ViewHelperInterface::hasRoles()}.
      *
      * @throws void
      *
      * @api
      */
-    public function hasRole(): bool
+    public function hasRoles(): bool
     {
-        return $this->role !== null
+        return $this->roles !== []
             || static::$defaultRole !== null;
     }
 
@@ -625,16 +693,6 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
         return $this->useAuthorization;
     }
 
-    /**
-     * @throws void
-     *
-     * @api
-     */
-    public function getServiceLocator(): ServiceLocatorInterface
-    {
-        return $this->serviceLocator;
-    }
-
     // Static methods:
 
     /**
@@ -653,7 +711,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
 
     /**
      * Sets default Authorization role(s) to use when iterating pages if not explicitly
-     * set later with {@link setRole()}
+     * set later with {@link setRoles()}
      *
      * @param string|null $role [optional] role to set. Expects null or string. Default is null, which sets no default role.
      *
