@@ -3,7 +3,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2024, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2025, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -225,6 +225,8 @@ final class LinksTest extends AbstractTestCase
             'label' => 'An example page',
         ];
 
+        assert($found[0] instanceof PageInterface);
+
         $actual = [
             'type' => $found[0]::class,
             'href' => $found[0]->getHref(),
@@ -259,6 +261,8 @@ final class LinksTest extends AbstractTestCase
             'href' => 'http://www.example.com/',
             'label' => 'An example page',
         ];
+
+        assert($found[0] instanceof PageInterface);
 
         $actual = [
             'type' => $found[0]::class,
