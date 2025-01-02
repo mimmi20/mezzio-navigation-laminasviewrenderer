@@ -3,7 +3,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2024, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2025, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -38,10 +38,10 @@ use function sprintf;
 /**
  * Proxy helper for retrieving navigational helpers and forwarding calls
  *
- * @method Breadcrumbs breadcrumbs(ContainerInterface|string|null $container = null)
- * @method Links       links(ContainerInterface|string|null $container = null)
- * @method Menu        menu(ContainerInterface|string|null $container = null)
- * @method Sitemap     sitemap(ContainerInterface|string|null $container = null)
+ * @method Breadcrumbs breadcrumbs(ContainerInterface<PageInterface>|string|null $container = null)
+ * @method Links       links(ContainerInterface<PageInterface>|string|null $container = null)
+ * @method Menu        menu(ContainerInterface<PageInterface>|string|null $container = null)
+ * @method Sitemap     sitemap(ContainerInterface<PageInterface>|string|null $container = null)
  */
 final class Navigation extends AbstractHelper implements ViewHelperInterface
 {

@@ -3,7 +3,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2024, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2025, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -749,8 +749,14 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $activePage = $active['page']->getParent();
         }
 
-        $ulClass = $ulClass ? ' class="' . ($this->escaper)($ulClass) . '"' : '';
-        $html    = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
+        if ($ulClass !== '') {
+            $ulClass = ($this->escaper)($ulClass);
+            assert(is_string($ulClass));
+
+            $ulClass = ' class="' . $ulClass . '"';
+        }
+
+        $html = $indent . '<ul' . $ulClass . '>' . PHP_EOL;
 
         assert(
             $activePage instanceof ContainerInterface,
@@ -787,10 +793,16 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
                 $liClasses[] = $subPage->getClass();
             }
 
-            $liClass = $liClasses === []
-                ? ''
-                : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
-            $html   .= $indent . '    <li' . $liClass . '>' . PHP_EOL;
+            $liClass = '';
+
+            if ($liClasses !== []) {
+                $liClass = ($this->escaper)(implode(' ', $liClasses));
+                assert(is_string($liClass));
+
+                $liClass = ' class="' . $liClass . '"';
+            }
+
+            $html .= $indent . '    <li' . $liClass . '>' . PHP_EOL;
 
             try {
                 $subPageHtml = $this->htmlify->toHtml(
@@ -888,7 +900,14 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
 
             if ($depth > $prevDepth) {
                 // start new ul tag
-                $ulClass = $ulClass && $depth === 0 ? ' class="' . ($this->escaper)($ulClass) . '"' : '';
+                if ($ulClass && $depth === 0) {
+                    $ulClass = ($this->escaper)($ulClass);
+                    assert(is_string($ulClass));
+
+                    $ulClass = ' class="' . $ulClass . '"';
+                } else {
+                    $ulClass = '';
+                }
 
                 $html .= $myIndent . '<ul' . $ulClass . '>' . PHP_EOL;
             } elseif ($prevDepth > $depth) {
@@ -927,9 +946,14 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
                 $liClasses[] = $page->getClass();
             }
 
-            $liClass = $liClasses === []
-                ? ''
-                : ' class="' . ($this->escaper)(implode(' ', $liClasses)) . '"';
+            $liClass = '';
+
+            if ($liClasses !== []) {
+                $liClass = ($this->escaper)(implode(' ', $liClasses));
+                assert(is_string($liClass));
+
+                $liClass = ' class="' . $liClass . '"';
+            }
 
             try {
                 $pageHtml = $this->htmlify->toHtml(

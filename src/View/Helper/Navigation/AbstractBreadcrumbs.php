@@ -3,7 +3,7 @@
 /**
  * This file is part of the mimmi20/mezzio-navigation-laminasviewrenderer package.
  *
- * Copyright (c) 2020-2024, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2020-2025, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -359,7 +359,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * @throws void
      *
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     protected function renderBreadcrumbItem(string $content, string $liClass = '', bool $active = false): string
     {
@@ -370,8 +369,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * @param array<int|string, string> $html
      *
      * @throws void
-     *
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     protected function combineRendered(array $html): string
     {
