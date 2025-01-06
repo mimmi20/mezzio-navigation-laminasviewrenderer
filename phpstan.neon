@@ -121,7 +121,6 @@ parameters:
     - '~Access to an undefined property Mimmi20\\Mezzio\\Navigation\\Page\\PageInterface::\$(changefreq|lastmod|priority|resource)~'
     - '~\$this\(Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\PluginManagerCompatibilityTest\) given~'
     - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Abstract(Breadcrumbs|Menu)::setPartial\(\) expects array~'
-    - '~Method Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\TestAsset\\ArrayTranslator::load\(\) should return~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
     - '~assertContainsOnly~'
     - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
