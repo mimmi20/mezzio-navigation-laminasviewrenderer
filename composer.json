@@ -59,7 +59,7 @@
     "phpunit/phpunit": "^11.5.3",
     "psr/http-message": "^2.0.0",
     "psr/http-server-middleware": "^1.0",
-    "rector/rector": "^2.0.6",
+    "rector/rector": "^2.0.7",
     "rector/type-perfect": "^2.0.2",
     "shipmonk/composer-dependency-analyser": "^1.8.2",
     "symfony/process": "^7.2.0",
