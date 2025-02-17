@@ -54,6 +54,7 @@ use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhpunit;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -63,6 +64,7 @@ use function method_exists;
 
 #[Group('Compare')]
 #[Group('Laminas_View')]
+#[RequiresPhpunit('< 12')]
 final class PluginManagerCompatibilityTest extends TestCase
 {
     use CommonPluginManagerTrait;

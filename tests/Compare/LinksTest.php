@@ -188,7 +188,7 @@ final class LinksTest extends AbstractTestCase
 
         self::assertIsArray($found);
         self::assertCount(1, $found);
-        self::assertContainsOnly(PageInterface::class, $found);
+        self::assertContainsOnlyInstancesOf(PageInterface::class, $found);
 
         $actual = [
             'type' => $found[0]::class,
@@ -217,7 +217,7 @@ final class LinksTest extends AbstractTestCase
 
         self::assertIsArray($found);
         self::assertCount(1, $found);
-        self::assertContainsOnly(PageInterface::class, $found);
+        self::assertContainsOnlyInstancesOf(PageInterface::class, $found);
 
         $expected = [
             'type' => Uri::class,
@@ -254,7 +254,7 @@ final class LinksTest extends AbstractTestCase
 
         self::assertIsArray($found);
         self::assertCount(1, $found);
-        self::assertContainsOnly(PageInterface::class, $found);
+        self::assertContainsOnlyInstancesOf(PageInterface::class, $found);
 
         $expected = [
             'type' => Uri::class,
@@ -321,7 +321,7 @@ final class LinksTest extends AbstractTestCase
 
             self::assertIsArray($found);
             self::assertCount(1, $found);
-            self::assertContainsOnly(PageInterface::class, $found);
+            self::assertContainsOnlyInstancesOf(PageInterface::class, $found);
 
             $expected[$type] = $samplePage->getLabel();
             $actual[$type]   = $found[0]->getLabel();
