@@ -122,7 +122,6 @@ parameters:
     - '~\$this\(Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\PluginManagerCompatibilityTest\) given~'
     - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Abstract(Breadcrumbs|Menu)::setPartial\(\) expects array~'
     - '~expects .rel.\|.rev.\, (.foo.|string) given~'
-    - '~assertContainsOnly~'
     - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
     - '~does not accept array<string, mixed>~'
     - '~array<mixed, mixed> given~'
