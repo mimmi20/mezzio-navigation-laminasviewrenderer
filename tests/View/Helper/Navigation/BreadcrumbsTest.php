@@ -30,6 +30,7 @@ use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -47,7 +48,11 @@ final class BreadcrumbsTest extends TestCase
         Breadcrumbs::setDefaultRole(null);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
@@ -87,7 +92,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetMinDepth(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -141,7 +150,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetRenderInvisible(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -179,7 +192,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetRole(): void
     {
         $role        = 'testRole';
@@ -227,7 +244,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertTrue($helper->hasRoles());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetUseAuthorization(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -269,7 +290,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertFalse($helper->getUseAuthorization());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -324,7 +349,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetView(): void
     {
         $view = $this->createMock(RendererInterface::class);
@@ -368,6 +397,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainer(): void
     {
@@ -436,6 +467,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -481,6 +514,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -526,6 +561,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testDoNotAccept(): void
     {
@@ -619,7 +656,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertFalse($helper->accept($page));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetPartial(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -661,7 +702,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame('test', $helper->getPartial());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetLinkLast(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -703,7 +748,11 @@ final class BreadcrumbsTest extends TestCase
         self::assertFalse($helper->getLinkLast());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetSeparator(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -745,6 +794,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlify(): void
     {
@@ -835,6 +886,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithException(): void
     {
@@ -926,7 +979,11 @@ final class BreadcrumbsTest extends TestCase
         $helper->htmlify($page);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testSetIndent(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -973,6 +1030,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws RuntimeException
      * @throws InvalidArgumentException
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindActiveNoActivePages(): void
     {
@@ -1033,6 +1092,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindActiveWithContainerException(): void
     {
@@ -1106,6 +1167,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws RuntimeException
      * @throws InvalidArgumentException
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindActiveNoActivePages2(): void
     {
@@ -1167,6 +1230,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testAcceptWithoutRoles(): void
     {
@@ -1269,6 +1334,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws RuntimeException
      * @throws InvalidArgumentException
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderStraightNoActivePage(): void
     {
@@ -1355,6 +1422,8 @@ final class BreadcrumbsTest extends TestCase
      * @throws RuntimeException
      * @throws InvalidArgumentException
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderStraight(): void
     {
@@ -1502,6 +1571,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderStraightWithContainerException(): void
     {
@@ -1607,6 +1678,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderStraightWithHtmlException(): void
     {
@@ -1727,6 +1800,8 @@ final class BreadcrumbsTest extends TestCase
     /**
      * @throws Exception
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderStraightWithTranslatorException(): void
     {

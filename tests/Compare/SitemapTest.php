@@ -67,12 +67,13 @@ final class SitemapTest extends AbstractTestCase
     /**
      * Stores the original set timezone
      */
-    private string $originalTimezone;
+    private string $originalTimezone = '';
 
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void

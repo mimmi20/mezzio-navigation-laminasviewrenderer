@@ -22,7 +22,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\MenuFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -30,18 +30,11 @@ use Psr\Container\ContainerInterface;
 
 final class MenuFactoryTest extends TestCase
 {
-    private MenuFactory $factory;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->factory = new MenuFactory();
-    }
-
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
@@ -92,7 +85,7 @@ final class MenuFactoryTest extends TestCase
                 },
             );
 
-        $helper = ($this->factory)($container);
+        $helper = (new MenuFactory())($container);
 
         self::assertInstanceOf(Menu::class, $helper);
     }
@@ -100,6 +93,8 @@ final class MenuFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {
@@ -111,6 +106,6 @@ final class MenuFactoryTest extends TestCase
         $this->expectExceptionCode(1);
         $this->expectExceptionMessage('assert($container instanceof ServiceLocatorInterface)');
 
-        ($this->factory)($container);
+        (new MenuFactory())($container);
     }
 }

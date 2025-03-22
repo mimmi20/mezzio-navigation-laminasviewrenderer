@@ -17,25 +17,15 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\ConfigProvider;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
-use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigProviderTest extends TestCase
 {
-    private ConfigProvider $provider;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->provider = new ConfigProvider();
-    }
-
     /** @throws Exception */
     public function testProviderDefinesExpectedFactoryServices(): void
     {
-        $viewHelperConfig = $this->provider->getViewHelperConfig();
+        $viewHelperConfig = (new ConfigProvider())->getViewHelperConfig();
         self::assertIsArray($viewHelperConfig);
         self::assertCount(2, $viewHelperConfig);
 
@@ -58,7 +48,7 @@ final class ConfigProviderTest extends TestCase
     /** @throws Exception */
     public function testProviderDefinesExpectedFactoryServices2(): void
     {
-        $dependencyConfig = $this->provider->getDependencyConfig();
+        $dependencyConfig = (new ConfigProvider())->getDependencyConfig();
         self::assertIsArray($dependencyConfig);
         self::assertCount(1, $dependencyConfig);
 
@@ -72,7 +62,7 @@ final class ConfigProviderTest extends TestCase
     /** @throws Exception */
     public function testInvocationReturnsArrayWithDependencies(): void
     {
-        $config = ($this->provider)();
+        $config = (new ConfigProvider())();
 
         self::assertIsArray($config);
         self::assertCount(2, $config);

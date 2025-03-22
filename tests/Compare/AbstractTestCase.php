@@ -97,6 +97,7 @@ abstract class AbstractTestCase extends TestCase
      *
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void

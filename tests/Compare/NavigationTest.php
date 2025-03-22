@@ -30,6 +30,7 @@ use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -60,6 +61,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
@@ -321,7 +323,11 @@ final class NavigationTest extends AbstractTestCase
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -333,7 +339,11 @@ final class NavigationTest extends AbstractTestCase
         self::assertSame($auth, $this->helper->getAuthorization());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetDefaultAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -346,7 +356,11 @@ final class NavigationTest extends AbstractTestCase
         self::assertSame($auth, $actual);
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testsetDefaultAuthorizationAcceptsNull(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -358,7 +372,11 @@ final class NavigationTest extends AbstractTestCase
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testsetDefaultAuthorizationAcceptsNoParam(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
