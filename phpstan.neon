@@ -128,12 +128,12 @@ parameters:
     -
       identifier: property.uninitialized
       paths:
-      	- tests/Compare/SitemapTest.php
-      	- tests/Compare/NavigationTest.php
-      	- tests/Compare/MenuTest.php
-      	- tests/Compare/LinksTest.php
-      	- tests/Compare/BreadcrumbsTest.php
-      	- tests/Compare/AbstractTestCase.php
+        - tests/Compare/SitemapTest.php
+        - tests/Compare/NavigationTest.php
+        - tests/Compare/MenuTest.php
+        - tests/Compare/LinksTest.php
+        - tests/Compare/BreadcrumbsTest.php
+        - tests/Compare/AbstractTestCase.php
 
 rules:
   # code complexity
