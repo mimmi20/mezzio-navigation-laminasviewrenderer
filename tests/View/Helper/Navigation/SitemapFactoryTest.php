@@ -24,7 +24,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -32,18 +32,11 @@ use Psr\Container\ContainerInterface;
 
 final class SitemapFactoryTest extends TestCase
 {
-    private SitemapFactory $factory;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->factory = new SitemapFactory();
-    }
-
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
@@ -107,7 +100,7 @@ final class SitemapFactoryTest extends TestCase
                 },
             );
 
-        $helper = ($this->factory)($container);
+        $helper = (new SitemapFactory())($container);
 
         self::assertInstanceOf(Sitemap::class, $helper);
     }
@@ -115,6 +108,8 @@ final class SitemapFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {
@@ -126,6 +121,6 @@ final class SitemapFactoryTest extends TestCase
         $this->expectExceptionCode(1);
         $this->expectExceptionMessage('assert($container instanceof ServiceLocatorInterface)');
 
-        ($this->factory)($container);
+        (new SitemapFactory())($container);
     }
 }

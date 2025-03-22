@@ -125,6 +125,15 @@ parameters:
     - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
     - '~does not accept array<string, mixed>~'
     - '~array<mixed, mixed> given~'
+    -
+      identifier: property.uninitialized
+      paths:
+      	- tests/Compare/SitemapTest.php
+      	- tests/Compare/NavigationTest.php
+      	- tests/Compare/MenuTest.php
+      	- tests/Compare/LinksTest.php
+      	- tests/Compare/BreadcrumbsTest.php
+      	- tests/Compare/AbstractTestCase.php
 
 rules:
   # code complexity

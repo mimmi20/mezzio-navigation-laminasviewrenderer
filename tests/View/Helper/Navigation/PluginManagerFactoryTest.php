@@ -15,7 +15,7 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\PluginManagerFactory;
-use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -25,18 +25,11 @@ use function assert;
 
 final class PluginManagerFactoryTest extends TestCase
 {
-    private PluginManagerFactory $factory;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->factory = new PluginManagerFactory();
-    }
-
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationHasServiceListener(): void
     {
@@ -49,7 +42,7 @@ final class PluginManagerFactoryTest extends TestCase
             ->method('get');
 
         assert($container instanceof ContainerInterface);
-        $result = ($this->factory)($container, '');
+        $result = (new PluginManagerFactory())($container, '');
 
         self::assertInstanceOf(PluginManager::class, $result);
     }
@@ -57,6 +50,8 @@ final class PluginManagerFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationHasNoServiceListenerAndNoConfig(): void
     {
@@ -80,7 +75,7 @@ final class PluginManagerFactoryTest extends TestCase
             ->method('get');
 
         assert($container instanceof ContainerInterface);
-        $result = ($this->factory)($container, '');
+        $result = (new PluginManagerFactory())($container, '');
 
         self::assertInstanceOf(PluginManager::class, $result);
     }
@@ -88,6 +83,8 @@ final class PluginManagerFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationHasNoServiceListenerButAnEmptyConfig(): void
     {
@@ -116,7 +113,7 @@ final class PluginManagerFactoryTest extends TestCase
             ->willReturn([]);
 
         assert($container instanceof ContainerInterface);
-        $result = ($this->factory)($container, '');
+        $result = (new PluginManagerFactory())($container, '');
 
         self::assertInstanceOf(PluginManager::class, $result);
     }
@@ -124,6 +121,8 @@ final class PluginManagerFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationHasNoServiceListenerButAConfig(): void
     {
@@ -152,7 +151,7 @@ final class PluginManagerFactoryTest extends TestCase
             ->willReturn(['navigation_helpers' => []]);
 
         assert($container instanceof ContainerInterface);
-        $result = ($this->factory)($container, '');
+        $result = (new PluginManagerFactory())($container, '');
 
         self::assertInstanceOf(PluginManager::class, $result);
     }

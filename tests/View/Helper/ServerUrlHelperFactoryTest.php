@@ -17,7 +17,7 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\ServerUrlHelperFactory;
-use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -28,18 +28,11 @@ use function sprintf;
 
 final class ServerUrlHelperFactoryTest extends TestCase
 {
-    private ServerUrlHelperFactory $factory;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->factory = new ServerUrlHelperFactory();
-    }
-
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationException(): void
     {
@@ -59,12 +52,14 @@ final class ServerUrlHelperFactoryTest extends TestCase
         $this->expectExceptionCode(0);
 
         assert($container instanceof ContainerInterface);
-        ($this->factory)($container);
+        (new ServerUrlHelperFactory())($container);
     }
 
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
@@ -81,7 +76,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
             ->willReturn($baseHelper);
 
         assert($container instanceof ContainerInterface);
-        $serverUrlHelper = ($this->factory)($container);
+        $serverUrlHelper = (new ServerUrlHelperFactory())($container);
 
         self::assertInstanceOf(ServerUrlHelper::class, $serverUrlHelper);
     }
