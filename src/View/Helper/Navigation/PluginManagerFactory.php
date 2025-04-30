@@ -13,7 +13,6 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 
-use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Override;
 use Psr\Container\ContainerExceptionInterface;
@@ -69,7 +68,7 @@ final class PluginManagerFactory implements FactoryInterface
         }
 
         // Wire service configuration for navigation helpers
-        (new Config($config['navigation_helpers']))->configureServiceManager($pluginManager);
+        $pluginManager->configure($config['navigation_helpers']);
 
         return $pluginManager;
     }

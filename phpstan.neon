@@ -112,7 +112,6 @@ parameters:
     - '~Laminas\\Navigation\\Page\\AbstractPage~'
     - '~Laminas\\Navigation\\AbstractContainer~'
     - '~has typehint with deprecated interface Laminas\\ServiceManager\\ConfigInterface~'
-    - '~Instantiation of deprecated class Laminas\\ServiceManager\\Config~'
     - '~Parameter #2 \$factory of method Laminas\\ServiceManager\\ServiceManager::setFactory\(\) expects~'
     - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::find(?:All|One)?By(Active|Label)\(\)~'
     - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\Navigation::find(?:All|One)?By(Active|Label)\(\)~'
