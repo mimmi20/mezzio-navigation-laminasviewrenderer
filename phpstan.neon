@@ -124,6 +124,7 @@ parameters:
     - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
     - '~does not accept array<string, mixed>~'
     - '~array<mixed, mixed> given~'
+    - '~extends @final class~'
     -
       identifier: property.uninitialized
       paths:
