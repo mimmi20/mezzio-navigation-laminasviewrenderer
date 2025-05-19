@@ -134,6 +134,8 @@ parameters:
         - tests/Compare/LinksTest.php
         - tests/Compare/BreadcrumbsTest.php
         - tests/Compare/AbstractTestCase.php
+    -
+      identifier: property.parentPropertyFinalByPhpDoc
 
 rules:
   # code complexity
