@@ -1394,11 +1394,6 @@ final class MenuTest extends TestCase
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
 
-//        $helper->renderMenu(
-//            $name,
-//            ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
-//        );
-
         try {
             $helper->renderMenu(
                 $name,
