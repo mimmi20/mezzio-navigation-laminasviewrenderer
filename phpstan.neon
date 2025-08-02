@@ -125,6 +125,10 @@ parameters:
     - '~does not accept array<string, mixed>~'
     - '~array<mixed, mixed> given~'
     - '~extends @final class~'
+    - '~of deprecated class~'
+    - '~Call to deprecated method~'
+    - '~extends deprecated class~'
+    - '~Access to deprecated property~'
     -
       identifier: property.uninitialized
       paths:
