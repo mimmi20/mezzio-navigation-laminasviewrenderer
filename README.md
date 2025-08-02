@@ -7,11 +7,13 @@
 ## Code Status
 
 [![codecov](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/mezzio-navigation-laminasviewrenderer)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/148c5e7f4f37a075773c/test_coverage)](https://codeclimate.com/github/mimmi20/mezzio-navigation-laminasviewrenderer/test_coverage)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](https://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Average time to resolve an issue")
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/mimmi20/mezzio-navigation-laminasviewrenderer.svg)](https://isitmaintained.com/project/mimmi20/mezzio-navigation-laminasviewrenderer "Percentage of issues still open")
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fmimmi20%2Fmezzio-navigation-laminasviewrenderer%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/mimmi20/mezzio-navigation-laminasviewrenderer/master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/148c5e7f4f37a075773c/maintainability)](https://codeclimate.com/github/mimmi20/mezzio-navigation-laminasviewrenderer/maintainability)
+
+## Introduction
+
+This component provides provides view helpers for Mezzio Navigation
 
 ## Installation
 
