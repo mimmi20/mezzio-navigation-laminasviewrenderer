@@ -747,7 +747,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @return array<int, PageInterface>|PageInterface|null
      *
-     * @throws Exception\InvalidArgumentException
+     * @throws void
      */
     private function findFromSearch(PageInterface $page, string $rel, string $type): array | PageInterface | null
     {

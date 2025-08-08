@@ -126,7 +126,6 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * @return ViewHelperInterface|null helper instance
      *
      * @throws Exception\RuntimeException if $strict is true and helper cannot be found
-     * @throws Exception\InvalidArgumentException
      *
      * @api
      */
@@ -241,7 +240,6 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * @return ViewHelperInterface|null helper instance
      *
      * @throws Exception\RuntimeException
-     * @throws Exception\InvalidArgumentException
      */
     private function findHelperNonStrict(string $proxy): ViewHelperInterface | null
     {
@@ -281,7 +279,6 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      * @return ViewHelperInterface helper instance
      *
      * @throws Exception\RuntimeException if helper cannot be found
-     * @throws Exception\InvalidArgumentException
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
@@ -314,7 +311,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
         return $helper;
     }
 
-    /** @throws Exception\InvalidArgumentException */
+    /** @throws void */
     private function prepareHelper(ViewHelperInterface $helper): void
     {
         $container = $this->getContainer();
