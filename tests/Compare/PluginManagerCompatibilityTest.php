@@ -20,7 +20,6 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\ServiceManager\Test\CommonPluginManagerTrait;
 use Laminas\View\Exception\InvalidHelperException;
-use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
@@ -165,11 +164,7 @@ final class PluginManagerCompatibilityTest extends TestCase
         $manager->get('test');
     }
 
-    /**
-     * @return PluginManager<HelperInterface>
-     *
-     * @throws ContainerModificationsNotAllowedException
-     */
+    /** @throws ContainerModificationsNotAllowedException */
     #[Override]
     protected static function getPluginManager(): PluginManager
     {

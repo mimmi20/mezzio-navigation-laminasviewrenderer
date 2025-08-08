@@ -18,7 +18,6 @@ use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\Stdlib\Exception\DomainException;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
-use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\RendererInterface as Renderer;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
@@ -60,9 +59,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     /**
      * Whether Authorization should be injected when proxying
      */
-    private bool $injectAuthorization = true;
-
-    /** @var ViewHelperPluginManager<HelperInterface>|null */
+    private bool $injectAuthorization                     = true;
     private ViewHelperPluginManager | null $pluginManager = null;
 
     /**
@@ -193,8 +190,6 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     /**
      * Set manager for retrieving navigation helpers
      *
-     * @param ViewHelperPluginManager<HelperInterface> $pluginManager
-     *
      * @throws void
      */
     public function setPluginManager(ViewHelperPluginManager $pluginManager): void
@@ -209,8 +204,6 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     }
 
     /**
-     * @return ViewHelperPluginManager<HelperInterface>|null
-     *
      * @throws void
      *
      * @api

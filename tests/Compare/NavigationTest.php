@@ -17,7 +17,6 @@ use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
-use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Mezzio\LaminasView\LaminasViewRenderer;
@@ -576,9 +575,9 @@ final class NavigationTest extends AbstractTestCase
     /** @throws Exception */
     public function testSetPluginManagerAndView(): void
     {
-        /** @var Navigation\PluginManager<HelperInterface> $pluginManager */
         $pluginManager = new Navigation\PluginManager(new ServiceManager());
-        $view          = new PhpRenderer();
+        assert($pluginManager instanceof Navigation\PluginManager);
+        $view = new PhpRenderer();
 
         $this->helper->setPluginManager($pluginManager);
         $this->helper->setView($view);

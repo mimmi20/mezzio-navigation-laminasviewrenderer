@@ -28,11 +28,8 @@ final class PluginManagerFactory implements FactoryInterface
      * @param string                    $requestedName
      * @param array<string, mixed>|null $options
      *
-     * @return PluginManager<covariant ViewHelperInterface>
-     *
      * @throws ContainerExceptionInterface
      *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     #[Override]
@@ -41,8 +38,8 @@ final class PluginManagerFactory implements FactoryInterface
         $requestedName,
         array | null $options = null,
     ): PluginManager {
-        /** @var PluginManager<covariant ViewHelperInterface> $pluginManager */
         $pluginManager = new PluginManager($container, $options ?? []);
+        assert($pluginManager instanceof PluginManager);
 
         // If this is in a zend-mvc application, the ServiceListener will inject
         // merged configuration during bootstrap.
