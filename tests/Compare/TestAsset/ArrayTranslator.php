@@ -40,7 +40,6 @@ final readonly class ArrayTranslator implements Translator\Loader\FileLoaderInte
      *
      * @throws void
      *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     #[Override]

@@ -279,8 +279,6 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
      * @param array<int, string>|ModelInterface|string|null $partial partial view script or null. If an array is given, the first value is used for the partial view script.
      *
      * @throws void
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     #[Override]
     public function setPartial($partial): static
