@@ -26,7 +26,7 @@
     "mimmi20/mezzio-navigation": "^4.0.3",
     "mimmi20/navigation-helper-containerparser": "^5.1.0",
     "mimmi20/navigation-helper-findroot": "^3.0.1",
-    "mimmi20/navigation-helper-htmlify": "^5.0.3",
+    "mimmi20/navigation-helper-htmlify": "^5.0.4",
     "psr/container": "^1.1.2 || ^2.0.2"
   },
   "require-dev": {
