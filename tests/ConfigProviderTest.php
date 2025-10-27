@@ -16,6 +16,12 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\ConfigProvider;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParser;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRoot;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\Htmlify;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
@@ -50,13 +56,24 @@ final class ConfigProviderTest extends TestCase
     {
         $dependencyConfig = (new ConfigProvider())->getDependencyConfig();
         self::assertIsArray($dependencyConfig);
-        self::assertCount(1, $dependencyConfig);
+        self::assertCount(2, $dependencyConfig);
 
         self::assertArrayHasKey('factories', $dependencyConfig);
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
-        self::assertCount(1, $factories);
+        self::assertCount(4, $factories);
         self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
+        self::assertArrayHasKey(ContainerParser::class, $factories);
+        self::assertArrayHasKey(FindRoot::class, $factories);
+        self::assertArrayHasKey(Htmlify::class, $factories);
+
+        self::assertArrayHasKey('aliases', $dependencyConfig);
+        $aliases = $dependencyConfig['aliases'];
+        self::assertIsArray($aliases);
+        self::assertCount(3, $aliases);
+        self::assertArrayHasKey(ContainerParserInterface::class, $aliases);
+        self::assertArrayHasKey(FindRootInterface::class, $aliases);
+        self::assertArrayHasKey(HtmlifyInterface::class, $aliases);
     }
 
     /** @throws Exception */
@@ -90,12 +107,23 @@ final class ConfigProviderTest extends TestCase
 
         $dependencyConfig = $config['dependencies'];
         self::assertIsArray($dependencyConfig);
-        self::assertCount(1, $dependencyConfig);
+        self::assertCount(2, $dependencyConfig);
 
         self::assertArrayHasKey('factories', $dependencyConfig);
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
-        self::assertCount(1, $factories);
+        self::assertCount(4, $factories);
         self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
+        self::assertArrayHasKey(ContainerParser::class, $factories);
+        self::assertArrayHasKey(FindRoot::class, $factories);
+        self::assertArrayHasKey(Htmlify::class, $factories);
+
+        self::assertArrayHasKey('aliases', $dependencyConfig);
+        $aliases = $dependencyConfig['aliases'];
+        self::assertIsArray($aliases);
+        self::assertCount(3, $aliases);
+        self::assertArrayHasKey(ContainerParserInterface::class, $aliases);
+        self::assertArrayHasKey(FindRootInterface::class, $aliases);
+        self::assertArrayHasKey(HtmlifyInterface::class, $aliases);
     }
 }

@@ -17,11 +17,11 @@ use Laminas\View\Exception;
 use Laminas\View\Helper\HeadLink;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
-use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
-use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
-use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use RecursiveIteratorIterator;
 
@@ -184,10 +184,7 @@ final class Links extends AbstractHelper implements LinksInterface
     {
         if (!in_array($attrib, ['rel', 'rev'], true)) {
             throw new Exception\DomainException(
-                sprintf(
-                    'Invalid relation attribute "%s", must be "rel" or "rev"',
-                    $attrib,
-                ),
+                sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $attrib),
             );
         }
 
@@ -321,10 +318,7 @@ final class Links extends AbstractHelper implements LinksInterface
     {
         if (!in_array($rel, ['rel', 'rev'], true)) {
             throw new Exception\DomainException(
-                sprintf(
-                    'Invalid argument: $rel must be "rel" or "rev"; "%s" given',
-                    $rel,
-                ),
+                sprintf('Invalid argument: $rel must be "rel" or "rev"; "%s" given', $rel),
             );
         }
 
@@ -703,10 +697,7 @@ final class Links extends AbstractHelper implements LinksInterface
             'rel' => $page->getRel($type),
             'rev' => $page->getRev($type),
             default => throw new Exception\DomainException(
-                sprintf(
-                    'Invalid relation attribute "%s", must be "rel" or "rev"',
-                    $rel,
-                ),
+                sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $rel),
             ),
         };
 
