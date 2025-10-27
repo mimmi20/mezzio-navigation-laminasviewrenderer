@@ -30,9 +30,9 @@ use Laminas\View\Helper\BasePath;
 use Laminas\View\Helper\EscapeHtml;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
-use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use RecursiveIteratorIterator;
 
@@ -260,10 +260,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                     $isValid = $locValidator->isValid($url);
                 } catch (RuntimeException $e) {
                     throw new Exception\RuntimeException(
-                        sprintf(
-                            'An error occured while validating an URL for Sitemap XML: "%s"',
-                            $url,
-                        ),
+                        sprintf('An error occured while validating an URL for Sitemap XML: "%s"', $url),
                         0,
                         $e,
                     );
@@ -271,10 +268,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
 
                 if (!$isValid) {
                     throw new Exception\RuntimeException(
-                        sprintf(
-                            'Encountered an invalid URL for Sitemap XML: "%s"',
-                            $url,
-                        ),
+                        sprintf('Encountered an invalid URL for Sitemap XML: "%s"', $url),
                     );
                 }
             }

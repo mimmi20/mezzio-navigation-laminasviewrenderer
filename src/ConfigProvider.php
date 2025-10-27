@@ -13,6 +13,7 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView;
 
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\ServerUrlHelper;
@@ -24,7 +25,7 @@ final class ConfigProvider
      * Return general-purpose laminas-navigation configuration.
      *
      * @return array<string, array<string, array<string, string>>>
-     * @phpstan-return array{view_helpers: array{aliases: array<string, class-string>, factories: array<class-string, class-string>}, dependencies: array{factories: array<class-string, class-string>}}
+     * @phpstan-return array{view_helpers: array{aliases: array<string, class-string>, factories: array<class-string, class-string>}, dependencies: array{factories: array<class-string, class-string>, aliases: array<class-string, class-string>}}
      *
      * @throws void
      */
@@ -70,7 +71,7 @@ final class ConfigProvider
      * Return application-level dependency configuration.
      *
      * @return array<string, array<string, string>>
-     * @phpstan-return array{factories: array<class-string, class-string>}
+     * @phpstan-return array{factories: array<class-string, class-string>, aliases: array<class-string, class-string>}
      *
      * @throws void
      */
@@ -79,6 +80,14 @@ final class ConfigProvider
         return [
             'factories' => [
                 View\Helper\Navigation\PluginManager::class => View\Helper\Navigation\PluginManagerFactory::class,
+                Helper\ContainerParser::class => Helper\ContainerParserFactory::class,
+                Helper\FindRoot::class => InvokableFactory::class,
+                Helper\Htmlify::class => Helper\HtmlifyFactory::class,
+            ],
+            'aliases' => [
+                Helper\ContainerParserInterface::class => Helper\ContainerParser::class,
+                Helper\FindRootInterface::class => Helper\FindRoot::class,
+                Helper\HtmlifyInterface::class => Helper\Htmlify::class,
             ],
         ];
     }

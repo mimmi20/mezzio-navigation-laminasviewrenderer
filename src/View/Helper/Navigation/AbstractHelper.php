@@ -20,9 +20,9 @@ use Laminas\View\Helper\AbstractHtmlElement;
 use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
-use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use RecursiveIteratorIterator;
 use Stringable;
@@ -185,9 +185,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container instanceof ContainerInterface || $container === null) {
-            $this->container = $container;
-        }
+        $this->container = $container;
 
         return $this;
     }

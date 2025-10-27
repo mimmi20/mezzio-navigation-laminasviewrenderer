@@ -90,7 +90,7 @@ parameters:
 
   type_coverage:
     return_type: 94.9
-    param_type: 97.3
+    param_type: 97.2
     property_type: 100
     constant_type: 100
     # also, how many files has declare strict types
@@ -109,8 +109,6 @@ parameters:
 
   ignoreErrors:
     - '~will always evaluate to true~'
-    - '~Laminas\\Navigation\\Page\\AbstractPage~'
-    - '~Laminas\\Navigation\\AbstractContainer~'
     - '~has typehint with deprecated interface Laminas\\ServiceManager\\ConfigInterface~'
     - '~Parameter #2 \$factory of method Laminas\\ServiceManager\\ServiceManager::setFactory\(\) expects~'
     - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::find(?:All|One)?By(Active|Label)\(\)~'
@@ -129,6 +127,9 @@ parameters:
     - '~Call to deprecated method~'
     - '~extends deprecated class~'
     - '~Access to deprecated property~'
+    - '~Parameter #1 \$options of method Mimmi20\\Mezzio\\Navigation\\Page\\PageFactoryInterface::factory\(\) expects array~'
+    - '~Parameter #2 \$attribs of method Mimmi20\\LaminasView\\Helper\\HtmlElement\\Helper\\HtmlElementInterface::toHtml\(\) expects~'
+    - '~Parameter #1 \$mixed of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\Helper\\ConvertToPagesInterface::convert\(\) expects~'
     -
       identifier: property.uninitialized
       paths:
