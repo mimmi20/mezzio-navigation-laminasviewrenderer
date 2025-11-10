@@ -426,7 +426,10 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         }
 
         /** @var array<string, array<mixed>> $model */
-        $model  = array_merge($params, ['pages' => []], ['separator' => $this->getSeparator()]);
+        $model  = array_merge(
+            $params,
+            ['pages' => [], 'separator' => $this->getSeparator(), 'layout' => false],
+        );
         $active = $this->findActive($container);
 
         if ($active !== []) {
