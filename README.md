@@ -250,7 +250,7 @@ use Mimmi20\Mezzio\Navigation\Navigation;
 
 /*
  * Navigation container
-
+ *
  * Each element in the array will be passed to
  * Mimmi20\Mezzio\Navigation\Page\(new PageFactory())->factory() when constructing
  * the navigation container below.

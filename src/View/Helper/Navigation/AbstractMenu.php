@@ -695,7 +695,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
 
         return $this->renderer->render(
             $partial,
-            array_merge($params, ['container' => $container]),
+            array_merge($params, ['container' => $container, 'layout' => false]),
         );
     }
 
