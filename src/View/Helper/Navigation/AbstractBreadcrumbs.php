@@ -19,7 +19,7 @@ use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Model\ModelInterface;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -66,7 +66,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         private readonly EscapeHtml $escaper,
-        private readonly PartialRendererInterface $renderer,
+        private readonly LaminasViewRenderer $renderer,
         private readonly Translate | null $translator = null,
     ) {
         parent::__construct($htmlify, $containerParser);
@@ -462,6 +462,13 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
             }
 
             $model['pages'] = array_reverse($model['pages']);
+        }
+
+        if ($partial instanceof ModelInterface) {
+            $partial->setVariables($model);
+
+            $model   = $partial;
+            $partial = $model->getTemplate();
         }
 
         return $this->renderer->render($partial, $model);

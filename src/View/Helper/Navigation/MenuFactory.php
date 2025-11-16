@@ -16,7 +16,7 @@ namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -50,12 +50,12 @@ final class MenuFactory
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
         $escapeHtmlAttr  = $plugin->get(EscapeHtmlAttr::class);
-        $renderer        = $container->get(PartialRendererInterface::class);
+        $renderer        = $container->get(LaminasViewRenderer::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
-        assert($renderer instanceof PartialRendererInterface);
+        assert($renderer instanceof LaminasViewRenderer);
 
         return new Menu(
             htmlify: $htmlify,

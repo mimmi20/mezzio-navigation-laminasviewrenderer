@@ -30,8 +30,6 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererFactory;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserFactory;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesFactory;
@@ -112,7 +110,6 @@ final class PluginManagerCompatibilityTest extends TestCase
             ],
         );
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
-        $sm->setFactory(PartialRendererInterface::class, PartialRendererFactory::class);
         $sm->setFactory(HtmlElementInterface::class, HtmlElementFactory::class);
         $sm->setFactory(HtmlifyInterface::class, HtmlifyFactory::class);
         $sm->setFactory(ContainerParserInterface::class, ContainerParserFactory::class);
@@ -178,7 +175,6 @@ final class PluginManagerCompatibilityTest extends TestCase
         $sm->setFactory(PageFactory::class, InvokableFactory::class);
         $sm->setAlias(PageFactoryInterface::class, PageFactory::class);
         $sm->setFactory(ViewHelperPluginManager::class, HelperPluginManagerFactory::class);
-        $sm->setFactory(PartialRendererInterface::class, PartialRendererFactory::class);
         $sm->setFactory(HtmlElementInterface::class, HtmlElementFactory::class);
         $sm->setFactory(HtmlifyInterface::class, HtmlifyFactory::class);
         $sm->setFactory(ContainerParserInterface::class, ContainerParserFactory::class);

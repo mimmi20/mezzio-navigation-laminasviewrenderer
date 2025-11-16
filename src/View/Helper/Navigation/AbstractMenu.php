@@ -18,7 +18,7 @@ use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Model\ModelInterface;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -96,7 +96,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
         protected EscapeHtmlAttr $escaper,
-        private readonly PartialRendererInterface $renderer,
+        private readonly LaminasViewRenderer $renderer,
     ) {
         parent::__construct($htmlify, $containerParser);
     }
@@ -160,7 +160,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * Any parameters provided will be passed to the partial via the view model.
      *
-     * @param array<int|string, mixed>                      $params
+     * @param array<string, mixed>                          $params
      * @param ContainerInterface<PageInterface>|string|null $container [optional] container to pass to view script. Default is to use the container registered in the helper.
      * @param array<int, string>|string|null                $partial   [optional] partial view script to use. Default is to use the partial registered in the helper. If an array is given, the first value is used for the partial view script.
      *
@@ -650,7 +650,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
     /**
      * Render a partial with the given "model".
      *
-     * @param array<int|string, mixed>                      $params
+     * @param array<string, mixed>                          $params
      * @param ContainerInterface<PageInterface>|string|null $container
      * @param array<int, string>|ModelInterface|string|null $partial
      *
@@ -693,10 +693,16 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $container = $this->getContainer();
         }
 
-        return $this->renderer->render(
-            $partial,
-            array_merge($params, ['container' => $container, 'layout' => false]),
-        );
+        $model = array_merge($params, ['container' => $container, 'layout' => false]);
+
+        if ($partial instanceof ModelInterface) {
+            $partial->setVariables($model);
+
+            $model   = $partial;
+            $partial = $model->getTemplate();
+        }
+
+        return $this->renderer->render($partial, $model);
     }
 
     /**

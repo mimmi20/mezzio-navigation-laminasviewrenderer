@@ -19,7 +19,7 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Helper\HelperInterface;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
@@ -44,7 +44,7 @@ final class BreadcrumbsFactoryTest extends TestCase
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $translatePlugin = $this->createMock(Translate::class);
         $escapePlugin    = $this->createMock(EscapeHtml::class);
-        $renderer        = $this->createMock(PartialRendererInterface::class);
+        $renderer        = $this->createMock(LaminasViewRenderer::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
@@ -93,7 +93,7 @@ final class BreadcrumbsFactoryTest extends TestCase
                             (string) $invocation,
                         ),
                         default => self::assertSame(
-                            PartialRendererInterface::class,
+                            LaminasViewRenderer::class,
                             $id,
                             (string) $invocation,
                         ),
@@ -124,7 +124,7 @@ final class BreadcrumbsFactoryTest extends TestCase
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $escapePlugin    = $this->createMock(EscapeHtml::class);
-        $renderer        = $this->createMock(PartialRendererInterface::class);
+        $renderer        = $this->createMock(LaminasViewRenderer::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
@@ -157,7 +157,7 @@ final class BreadcrumbsFactoryTest extends TestCase
                             (string) $invocation,
                         ),
                         default => self::assertSame(
-                            PartialRendererInterface::class,
+                            LaminasViewRenderer::class,
                             $id,
                             (string) $invocation,
                         ),

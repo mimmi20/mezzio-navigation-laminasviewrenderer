@@ -20,7 +20,7 @@ use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\Helper\Escaper\AbstractHelper;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
@@ -69,7 +69,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -106,7 +106,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -159,7 +159,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -199,7 +199,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -243,7 +243,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -292,7 +292,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -340,7 +340,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -397,7 +397,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -447,7 +447,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -493,7 +493,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -536,7 +536,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -617,7 +617,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -706,7 +706,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -800,7 +800,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -857,7 +857,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -898,7 +898,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -935,7 +935,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -972,7 +972,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1009,7 +1009,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1050,7 +1050,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1087,7 +1087,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1124,7 +1124,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1161,7 +1161,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1238,7 +1238,7 @@ final class MenuTest extends TestCase
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
@@ -1369,7 +1369,7 @@ final class MenuTest extends TestCase
                 },
             );
 
-        $renderer = $this->createMock(PartialRendererInterface::class);
+        $renderer = $this->createMock(LaminasViewRenderer::class);
         $renderer->expects(self::never())
             ->method('render');
 
