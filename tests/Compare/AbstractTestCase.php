@@ -33,8 +33,6 @@ use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererFactory;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
 use Mimmi20\Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mimmi20\Mezzio\Navigation\Config\NavigationConfig;
 use Mimmi20\Mezzio\Navigation\Config\NavigationConfigInterface;
@@ -143,7 +141,6 @@ abstract class AbstractTestCase extends TestCase
         );
         $sm->setFactory(PageFactory::class, InvokableFactory::class);
         $sm->setAlias(PageFactoryInterface::class, PageFactory::class);
-        $sm->setFactory(PartialRendererInterface::class, PartialRendererFactory::class);
         $sm->setFactory(HtmlElementInterface::class, HtmlElementFactory::class);
         $sm->setFactory(HtmlifyInterface::class, HtmlifyFactory::class);
         $sm->setFactory(ContainerParserInterface::class, ContainerParserFactory::class);

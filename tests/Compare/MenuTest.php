@@ -19,7 +19,7 @@ use Laminas\View\Exception\RuntimeException;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\Helper\ServerUrlHelper as BaseServerUrlHelper;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
@@ -72,12 +72,12 @@ final class MenuTest extends AbstractTestCase
         $plugin = $this->serviceManager->get(ViewHelperPluginManager::class);
         assert($plugin instanceof ViewHelperPluginManager);
 
-        $renderer = $this->serviceManager->get(PartialRendererInterface::class);
+        $renderer = $this->serviceManager->get(LaminasViewRenderer::class);
         assert(
-            $renderer instanceof PartialRendererInterface,
+            $renderer instanceof LaminasViewRenderer,
             sprintf(
                 '$renderer should be an Instance of %s, but was %s',
-                PartialRendererInterface::class,
+                LaminasViewRenderer::class,
                 get_debug_type($renderer),
             ),
         );

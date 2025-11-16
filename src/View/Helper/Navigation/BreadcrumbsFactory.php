@@ -17,7 +17,7 @@ use Laminas\I18n\View\Helper\Translate;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -59,12 +59,12 @@ final class BreadcrumbsFactory
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
         $escapeHtml      = $plugin->get(EscapeHtml::class);
-        $renderer        = $container->get(PartialRendererInterface::class);
+        $renderer        = $container->get(LaminasViewRenderer::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
         assert($escapeHtml instanceof EscapeHtml);
-        assert($renderer instanceof PartialRendererInterface);
+        assert($renderer instanceof LaminasViewRenderer);
 
         return new Breadcrumbs(
             htmlify: $htmlify,

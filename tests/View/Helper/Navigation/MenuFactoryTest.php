@@ -17,7 +17,7 @@ use AssertionError;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mimmi20\LaminasView\Helper\PartialRenderer\Helper\PartialRendererInterface;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
@@ -41,7 +41,7 @@ final class MenuFactoryTest extends TestCase
         $htmlify         = $this->createMock(HtmlifyInterface::class);
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $escapePlugin    = $this->createMock(EscapeHtmlAttr::class);
-        $renderer        = $this->createMock(PartialRendererInterface::class);
+        $renderer        = $this->createMock(LaminasViewRenderer::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
@@ -70,7 +70,7 @@ final class MenuFactoryTest extends TestCase
                             (string) $invocation,
                         ),
                         default => self::assertSame(
-                            PartialRendererInterface::class,
+                            LaminasViewRenderer::class,
                             $id,
                             (string) $invocation,
                         ),
