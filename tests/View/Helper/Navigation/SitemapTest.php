@@ -52,8 +52,8 @@ final class SitemapTest extends TestCase
     #[Override]
     protected function tearDown(): void
     {
-        Sitemap::setDefaultAuthorization(null);
-        Sitemap::setDefaultRole(null);
+        Sitemap::setDefaultAuthorization();
+        Sitemap::setDefaultRole();
     }
 
     /**
