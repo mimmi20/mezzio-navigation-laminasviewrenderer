@@ -41,8 +41,8 @@ final class LinksTest extends TestCase
     #[Override]
     protected function tearDown(): void
     {
-        Links::setDefaultAuthorization(null);
-        Links::setDefaultRole(null);
+        Links::setDefaultAuthorization();
+        Links::setDefaultRole();
     }
 
     /**
