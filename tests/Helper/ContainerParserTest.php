@@ -44,7 +44,7 @@ final class ContainerParserTest extends TestCase
 
         $helper = new ContainerParser($serviceLocator);
 
-        self::assertNull($helper->parseContainer(null));
+        self::assertNull($helper->parseContainer());
     }
 
     /**

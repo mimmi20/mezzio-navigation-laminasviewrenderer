@@ -88,8 +88,8 @@ final class NavigationTest extends AbstractTestCase
     #[Override]
     protected function tearDown(): void
     {
-        Navigation::setDefaultAuthorization(null);
-        Navigation::setDefaultRole(null);
+        Navigation::setDefaultAuthorization();
+        Navigation::setDefaultRole();
     }
 
     /**
@@ -165,7 +165,7 @@ final class NavigationTest extends AbstractTestCase
     public function testHasContainer(): void
     {
         $oldContainer = $this->helper->getContainer();
-        $this->helper->setContainer(null);
+        $this->helper->setContainer();
         self::assertFalse($this->helper->hasContainer());
         $this->helper->setContainer($oldContainer);
     }
@@ -202,8 +202,8 @@ final class NavigationTest extends AbstractTestCase
     {
         // setup
         $this->helper->setInjectContainer(false);
-        $this->helper->menu()->setContainer(null);
-        $this->helper->breadcrumbs()->setContainer(null);
+        $this->helper->menu()->setContainer();
+        $this->helper->breadcrumbs()->setContainer();
         $this->helper->setContainer($this->nav2);
 
         // result
@@ -351,7 +351,7 @@ final class NavigationTest extends AbstractTestCase
 
         Navigation::setDefaultAuthorization($auth);
         $actual = $this->helper->getAuthorization();
-        Navigation::setDefaultAuthorization(null);
+        Navigation::setDefaultAuthorization();
         self::assertSame($auth, $actual);
     }
 
@@ -367,7 +367,7 @@ final class NavigationTest extends AbstractTestCase
             ->method('isGranted');
 
         Navigation::setDefaultAuthorization($auth);
-        Navigation::setDefaultAuthorization(null);
+        Navigation::setDefaultAuthorization();
         self::assertNull($this->helper->getAuthorization());
     }
 
