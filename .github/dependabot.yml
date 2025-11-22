@@ -106,6 +106,86 @@ updates:
 
     versioning-strategy: "increase"
 
+    target-branch: "7.x"
+
+    commit-message:
+      include: "scope"
+      prefix: "composer (7.x)"
+
+    ignore:
+      - dependency-name: "psr/container"
+      - dependency-name: "laminas/laminas-servicemanager"
+        versions: [ ">=4.0.0" ]
+      - dependency-name: "laminas/laminas-view"
+        versions: [ ">=3.0.0" ]
+
+    # Disable rebasing for all pull requests
+    rebase-strategy: "disabled"
+
+  - package-ecosystem: "github-actions"
+
+    directory: "/"
+
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "04:00"
+      timezone: "Europe/Berlin"
+
+    cooldown:
+      default-days: 7
+
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+    assignees:
+      - "mimmi20"
+
+    labels:
+      - "dependencies"
+
+    target-branch: "7.x"
+
+    commit-message:
+      prefix: "github-actions (7.x)"
+
+    ignore:
+      - dependency-name: "mimmi20/ci"
+      - dependency-name: "release-drafter/release-drafter"
+
+    # Disable rebasing for all pull requests
+    rebase-strategy: "disabled"
+
+  - package-ecosystem: "composer"
+
+    directory: "/"
+
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "04:00"
+      timezone: "Europe/Berlin"
+
+    cooldown:
+      default-days: 7
+
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+    assignees:
+      - "mimmi20"
+
+    labels:
+      - "dependencies"
+
+    versioning-strategy: "increase"
+
     target-branch: "6.x"
 
     commit-message:
