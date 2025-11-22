@@ -41,8 +41,8 @@ final class NavigationTest extends TestCase
     #[Override]
     protected function tearDown(): void
     {
-        Navigation::setDefaultAuthorization(null);
-        Navigation::setDefaultRole(null);
+        Navigation::setDefaultAuthorization();
+        Navigation::setDefaultRole();
     }
 
     /**
