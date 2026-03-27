@@ -26,6 +26,7 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 
+use function array_key_exists;
 use function array_merge;
 use function array_reverse;
 use function array_unshift;
@@ -165,7 +166,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         // find deepest active
         $active = $this->findActive($container);
 
-        if (!$active) {
+        if (!$active || !array_key_exists('page', $active)) {
             return '';
         }
 
@@ -432,7 +433,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         );
         $active = $this->findActive($container);
 
-        if ($active !== []) {
+        if ($active !== [] && array_key_exists('page', $active)) {
             $active = $active['page'];
 
             assert(
