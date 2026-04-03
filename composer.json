@@ -16,7 +16,7 @@
     "source": "https://github.com/mimmi20/mezzio-navigation-laminasviewrenderer"
   },
   "require": {
-    "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+    "php": "~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0",
     "ext-mbstring": "*",
     "laminas/laminas-servicemanager": "^3.24.0",
     "laminas/laminas-stdlib": "^3.21.0",
