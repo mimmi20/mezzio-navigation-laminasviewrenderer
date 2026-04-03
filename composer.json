@@ -39,7 +39,9 @@
     "ext-tokenizer": "*",
     "ext-xml": "*",
     "ext-xmlwriter": "*",
+    "ergebnis/composer-normalize": "^2.50.0",
     "infection/infection": "^0.32.6",
+    "jbelien/phpstan-sarif-formatter": "^1.2.0",
     "laminas/laminas-i18n": "^2.32.1",
     "laminas/laminas-permissions-acl": "^2.18.0",
     "laminas/laminas-uri": "^2.14.0",
@@ -96,6 +98,7 @@
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true,
+      "ergebnis/composer-normalize": true,
       "infection/extension-installer": true,
       "phpstan/extension-installer": true
     },
@@ -104,6 +107,10 @@
     "sort-packages": true
   },
   "extra": {
+    "composer-normalize": {
+      "indent-size": 2,
+      "indent-style": "space"
+    },
     "laminas": {
       "config-provider": "Mimmi20\\Mezzio\\Navigation\\LaminasView\\ConfigProvider"
     }
