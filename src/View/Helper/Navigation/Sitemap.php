@@ -260,10 +260,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
                     $isValid = $locValidator->isValid($url);
                 } catch (RuntimeException $e) {
                     throw new Exception\RuntimeException(
-                        sprintf(
-                            'An error occured while validating an URL for Sitemap XML: "%s"',
-                            $url,
-                        ),
+                        sprintf('An error occured while validating an URL for Sitemap XML: "%s"', $url),
                         0,
                         $e,
                     );
@@ -271,10 +268,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
 
                 if (!$isValid) {
                     throw new Exception\RuntimeException(
-                        sprintf(
-                            'Encountered an invalid URL for Sitemap XML: "%s"',
-                            $url,
-                        ),
+                        sprintf('Encountered an invalid URL for Sitemap XML: "%s"', $url),
                     );
                 }
             }
