@@ -184,10 +184,7 @@ final class Links extends AbstractHelper implements LinksInterface
     {
         if (!in_array($attrib, ['rel', 'rev'], true)) {
             throw new Exception\DomainException(
-                sprintf(
-                    'Invalid relation attribute "%s", must be "rel" or "rev"',
-                    $attrib,
-                ),
+                sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $attrib),
             );
         }
 
@@ -321,10 +318,7 @@ final class Links extends AbstractHelper implements LinksInterface
     {
         if (!in_array($rel, ['rel', 'rev'], true)) {
             throw new Exception\DomainException(
-                sprintf(
-                    'Invalid argument: $rel must be "rel" or "rev"; "%s" given',
-                    $rel,
-                ),
+                sprintf('Invalid argument: $rel must be "rel" or "rev"; "%s" given', $rel),
             );
         }
 
@@ -703,10 +697,7 @@ final class Links extends AbstractHelper implements LinksInterface
             'rel' => $page->getRel($type),
             'rev' => $page->getRev($type),
             default => throw new Exception\DomainException(
-                sprintf(
-                    'Invalid relation attribute "%s", must be "rel" or "rev"',
-                    $rel,
-                ),
+                sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $rel),
             ),
         };
 
