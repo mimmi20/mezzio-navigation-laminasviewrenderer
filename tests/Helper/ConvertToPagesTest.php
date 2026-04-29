@@ -43,7 +43,7 @@ final class ConvertToPagesTest extends TestCase
 
         $helper = new ConvertToPages($pageFactory);
 
-        $page = $this->createMock(PageInterface::class);
+        $page = self::createStub(PageInterface::class);
 
         self::assertSame([$page], $helper->convert($page));
         self::assertSame([$page], $helper->convert($page, true));
@@ -86,7 +86,7 @@ final class ConvertToPagesTest extends TestCase
     public function testConvertFromString(): void
     {
         $uri  = 'test-uri';
-        $page = $this->createMock(PageInterface::class);
+        $page = self::createStub(PageInterface::class);
 
         $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
             ->disableOriginalConstructor()
@@ -149,7 +149,7 @@ final class ConvertToPagesTest extends TestCase
     public function testConvertFromConfig(): void
     {
         $uri  = 'test-uri';
-        $page = $this->createMock(PageInterface::class);
+        $page = self::createStub(PageInterface::class);
 
         $configArray = [
             'type' => 'uri',
@@ -233,7 +233,7 @@ final class ConvertToPagesTest extends TestCase
     public function testConvertFromArray(): void
     {
         $uri  = 'test-uri';
-        $page = $this->createMock(PageInterface::class);
+        $page = self::createStub(PageInterface::class);
 
         $config = [
             'type' => 'uri',
@@ -298,8 +298,8 @@ final class ConvertToPagesTest extends TestCase
     {
         $uri1  = 'test-uri1';
         $uri2  = 'test-uri2';
-        $page1 = $this->createMock(PageInterface::class);
-        $page2 = $this->createMock(PageInterface::class);
+        $page1 = self::createStub(PageInterface::class);
+        $page2 = self::createStub(PageInterface::class);
 
         $config1 = [
             'type' => 'uri',

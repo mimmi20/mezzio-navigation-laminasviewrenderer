@@ -55,9 +55,9 @@ final class NavigationFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $htmlify                 = $this->createMock(HtmlifyInterface::class);
-        $containerParser         = $this->createMock(ContainerParserInterface::class);
-        $navigationPluginManager = $this->createMock(ViewHelperPluginManager::class);
+        $htmlify                 = self::createStub(HtmlifyInterface::class);
+        $containerParser         = self::createStub(ContainerParserInterface::class);
+        $navigationPluginManager = self::createStub(ViewHelperPluginManager::class);
 
         $container = $this->createMock(ServiceLocatorInterface::class);
         $matcher   = self::exactly(3);

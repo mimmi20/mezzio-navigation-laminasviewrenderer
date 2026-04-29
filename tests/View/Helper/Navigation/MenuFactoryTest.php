@@ -38,10 +38,10 @@ final class MenuFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $escapePlugin    = $this->createMock(EscapeHtmlAttr::class);
-        $renderer        = $this->createMock(LaminasViewRenderer::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $escapePlugin    = self::createStub(EscapeHtmlAttr::class);
+        $renderer        = self::createStub(LaminasViewRenderer::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())

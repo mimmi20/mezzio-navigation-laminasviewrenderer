@@ -63,7 +63,7 @@ final class UrlHelperFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $baseHelper = $this->createMock(BaseUrlHelper::class);
+        $baseHelper = self::createStub(BaseUrlHelper::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())

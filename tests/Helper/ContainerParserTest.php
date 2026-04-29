@@ -114,7 +114,7 @@ final class ContainerParserTest extends TestCase
      */
     public function testParseContainerWithStringDefaultFound(): void
     {
-        $container = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
+        $container = self::createStub(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -142,7 +142,7 @@ final class ContainerParserTest extends TestCase
      */
     public function testParseContainerWithStringFound(): void
     {
-        $container = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
+        $container = self::createStub(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
@@ -169,7 +169,7 @@ final class ContainerParserTest extends TestCase
      */
     public function testParseContainerWithContainer(): void
     {
-        $container      = $this->createMock(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
+        $container      = self::createStub(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
         $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();

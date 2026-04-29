@@ -39,11 +39,11 @@ final class LinksFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $rootFinder      = $this->createMock(FindRootInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $headLink        = $this->createMock(HeadLink::class);
-        $converter       = $this->createMock(ConvertToPagesInterface::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $rootFinder      = self::createStub(FindRootInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $headLink        = self::createStub(HeadLink::class);
+        $converter       = self::createStub(ConvertToPagesInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
