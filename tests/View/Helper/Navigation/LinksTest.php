@@ -365,7 +365,7 @@ final class LinksTest extends TestCase
      */
     public function testSetView(): void
     {
-        $view = $this->createMock(RendererInterface::class);
+        $view = self::createStub(RendererInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -413,7 +413,7 @@ final class LinksTest extends TestCase
      */
     public function testSetContainer(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -534,7 +534,7 @@ final class LinksTest extends TestCase
      */
     public function testSetContainerWithStringFound(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -583,7 +583,7 @@ final class LinksTest extends TestCase
      */
     public function testDoNotAccept(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
@@ -686,7 +686,7 @@ final class LinksTest extends TestCase
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);

@@ -16,7 +16,7 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Helper;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager;
-use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\Htmlify;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyFactory;
 use PHPUnit\Event\NoPreviousThrowableException;
@@ -37,8 +37,8 @@ final class HtmlifyFactoryTest extends TestCase
      */
     public function testInvocationWithoutTranslator(): void
     {
-        $escapeHtml  = $this->createMock(EscapeHtml::class);
-        $htmlElement = $this->createMock(HtmlElementInterface::class);
+        $escapeHtml  = self::createStub(EscapeHtml::class);
+        $htmlElement = self::createStub(HtmlElementInterface::class);
 
         $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
@@ -86,9 +86,9 @@ final class HtmlifyFactoryTest extends TestCase
      */
     public function testInvocationWithTranslator(): void
     {
-        $escapeHtml      = $this->createMock(EscapeHtml::class);
-        $htmlElement     = $this->createMock(HtmlElementInterface::class);
-        $translatePlugin = $this->createMock(Translate::class);
+        $escapeHtml      = self::createStub(EscapeHtml::class);
+        $htmlElement     = self::createStub(HtmlElementInterface::class);
+        $translatePlugin = self::createStub(Translate::class);
 
         $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()

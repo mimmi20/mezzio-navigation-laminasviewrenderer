@@ -364,7 +364,7 @@ final class SitemapTest extends TestCase
      */
     public function testSetView(): void
     {
-        $view = $this->createMock(RendererInterface::class);
+        $view = self::createStub(RendererInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -410,7 +410,7 @@ final class SitemapTest extends TestCase
      */
     public function testSetContainer(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -527,7 +527,7 @@ final class SitemapTest extends TestCase
      */
     public function testSetContainerWithStringFound(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -574,7 +574,7 @@ final class SitemapTest extends TestCase
      */
     public function testDoNotAccept(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
@@ -675,7 +675,7 @@ final class SitemapTest extends TestCase
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
@@ -808,6 +808,7 @@ final class SitemapTest extends TestCase
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws NoPreviousThrowableException
      * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws RuntimeException
      */
     public function testToStringWithXmlDeclaration(): void
     {
@@ -932,9 +933,9 @@ final class SitemapTest extends TestCase
         $helper->setUseSchemaValidation(false);
         $helper->setUseAuthorization();
 
-        $urlLoc        = $this->createMock(DOMElement::class);
-        $urlLastMod    = $this->createMock(DOMElement::class);
-        $urlChangefreq = $this->createMock(DOMElement::class);
+        $urlLoc        = self::createStub(DOMElement::class);
+        $urlLastMod    = self::createStub(DOMElement::class);
+        $urlChangefreq = self::createStub(DOMElement::class);
 
         $urlNode = $this->createMock(DOMElement::class);
         $matcher = self::exactly(3);
@@ -1055,7 +1056,7 @@ final class SitemapTest extends TestCase
      */
     public function testInvoke(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())

@@ -56,7 +56,7 @@ final class ConvertToPagesFactoryTest extends TestCase
      */
     public function testInvocation2(): void
     {
-        $pageFactory = $this->createMock(PageFactoryInterface::class);
+        $pageFactory = self::createStub(PageFactoryInterface::class);
 
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
