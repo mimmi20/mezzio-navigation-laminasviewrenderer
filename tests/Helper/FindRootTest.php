@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Helper;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Helper;
 
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRoot;
@@ -31,7 +31,7 @@ final class FindRootTest extends TestCase
     {
         $helper = new FindRoot();
 
-        $root = $this->createMock(ContainerInterface::class);
+        $root = self::createStub(ContainerInterface::class);
 
         $page = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()
@@ -59,7 +59,7 @@ final class FindRootTest extends TestCase
     {
         $helper = new FindRoot();
 
-        $root = $this->createMock(ContainerInterface::class);
+        $root = self::createStub(ContainerInterface::class);
 
         $parentPage = $this->getMockBuilder(PageInterface::class)
             ->disableOriginalConstructor()

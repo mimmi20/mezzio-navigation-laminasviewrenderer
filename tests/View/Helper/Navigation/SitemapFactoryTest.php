@@ -40,11 +40,11 @@ final class SitemapFactoryTest extends TestCase
      */
     public function testInvocation(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $basePath        = $this->createMock(BasePath::class);
-        $escaper         = $this->createMock(EscapeHtml::class);
-        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $basePath        = self::createStub(BasePath::class);
+        $escaper         = self::createStub(EscapeHtml::class);
+        $serverUrlHelper = self::createStub(ServerUrlHelper::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $matcher                 = self::exactly(3);

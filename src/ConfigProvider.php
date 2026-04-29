@@ -83,11 +83,13 @@ final class ConfigProvider
                 Helper\ContainerParser::class => Helper\ContainerParserFactory::class,
                 Helper\FindRoot::class => InvokableFactory::class,
                 Helper\Htmlify::class => Helper\HtmlifyFactory::class,
+                Helper\HtmlElement::class => Helper\HtmlElementFactory::class,
             ],
             'aliases' => [
                 Helper\ContainerParserInterface::class => Helper\ContainerParser::class,
                 Helper\FindRootInterface::class => Helper\FindRoot::class,
                 Helper\HtmlifyInterface::class => Helper\Htmlify::class,
+                Helper\HtmlElementInterface::class => Helper\HtmlElement::class,
             ],
         ];
     }

@@ -52,7 +52,7 @@ final class NavigationTest extends TestCase
      */
     public function testSetPluginManager(): void
     {
-        $view = $this->createMock(RendererInterface::class);
+        $view = self::createStub(RendererInterface::class);
 
         $pluginManager = $this->createMock(HelperPluginManager::class);
         $pluginManager->expects(self::once())
@@ -87,7 +87,7 @@ final class NavigationTest extends TestCase
      */
     public function testSetPluginManager2(): void
     {
-        $view = $this->createMock(RendererInterface::class);
+        $view = self::createStub(RendererInterface::class);
 
         $pluginManager = $this->createMock(HelperPluginManager::class);
         $pluginManager->expects(self::once())
@@ -390,8 +390,8 @@ final class NavigationTest extends TestCase
         $htmlify->expects(self::never())
             ->method('toHtml');
 
-        $container1 = $this->createMock(ContainerInterface::class);
-        $container2 = $this->createMock(ContainerInterface::class);
+        $container1 = self::createStub(ContainerInterface::class);
+        $container2 = self::createStub(ContainerInterface::class);
 
         $containerParser = $this->createMock(ContainerParserInterface::class);
         $containerParser->expects(self::once())
@@ -1112,7 +1112,7 @@ final class NavigationTest extends TestCase
      */
     public function testSetView(): void
     {
-        $view = $this->createMock(RendererInterface::class);
+        $view = self::createStub(RendererInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -1142,7 +1142,7 @@ final class NavigationTest extends TestCase
      */
     public function testSetContainer(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -1260,7 +1260,7 @@ final class NavigationTest extends TestCase
      */
     public function testSetContainerWithStringFound(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1291,7 +1291,7 @@ final class NavigationTest extends TestCase
      */
     public function testDoNotAccept(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
@@ -1366,7 +1366,7 @@ final class NavigationTest extends TestCase
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
 
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
