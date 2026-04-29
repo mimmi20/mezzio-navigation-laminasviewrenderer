@@ -128,8 +128,9 @@ parameters:
     - '~extends deprecated class~'
     - '~Access to deprecated property~'
     - '~Parameter #1 \$options of method Mimmi20\\Mezzio\\Navigation\\Page\\PageFactoryInterface::factory\(\) expects array~'
-    - '~Parameter #2 \$attribs of method Mimmi20\\LaminasView\\Helper\\HtmlElement\\Helper\\HtmlElementInterface::toHtml\(\) expects~'
+    - '~Parameter #2 \$attribs of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\Helper\\HtmlElementInterface::toHtml\(\) expects~'
     - '~Parameter #1 \$mixed of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\Helper\\ConvertToPagesInterface::convert\(\) expects~'
+    - '~has JsonException in PHPDoc~'
     -
       identifier: property.uninitialized
       paths:

@@ -31,8 +31,6 @@ use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
-use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
-use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\GenericAuthorization\Acl\LaminasAcl;
 use Mimmi20\Mezzio\Navigation\Config\NavigationConfig;
 use Mimmi20\Mezzio\Navigation\Config\NavigationConfigInterface;
@@ -42,6 +40,8 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesFactory;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyFactory;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
@@ -120,7 +120,7 @@ abstract class AbstractTestCase extends TestCase
             function () use ($config): NavigationConfig {
                 $route = new Route(
                     '/test.html',
-                    $this->createMock(MiddlewareInterface::class),
+                    $this->createStub(MiddlewareInterface::class),
                 );
 
                 $pages            = $config;

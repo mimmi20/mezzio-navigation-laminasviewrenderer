@@ -28,14 +28,14 @@ use Mezzio\LaminasView\LaminasViewRenderer;
 use Mezzio\LaminasView\LaminasViewRendererFactory;
 use Mezzio\LaminasView\ServerUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
-use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementFactory;
-use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserFactory;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesFactory;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyFactory;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
@@ -61,7 +61,7 @@ use function method_exists;
 
 #[Group('Compare')]
 #[Group('Laminas_View')]
-#[RequiresPhpunit('< 12')]
+#[RequiresPhpunit('< 12.0.0')]
 final class PluginManagerCompatibilityTest extends TestCase
 {
     use CommonPluginManagerTrait;

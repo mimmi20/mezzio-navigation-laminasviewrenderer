@@ -61,7 +61,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('factories', $dependencyConfig);
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
-        self::assertCount(4, $factories);
+        self::assertCount(5, $factories);
         self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
         self::assertArrayHasKey(ContainerParser::class, $factories);
         self::assertArrayHasKey(FindRoot::class, $factories);
@@ -70,7 +70,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('aliases', $dependencyConfig);
         $aliases = $dependencyConfig['aliases'];
         self::assertIsArray($aliases);
-        self::assertCount(3, $aliases);
+        self::assertCount(4, $aliases);
         self::assertArrayHasKey(ContainerParserInterface::class, $aliases);
         self::assertArrayHasKey(FindRootInterface::class, $aliases);
         self::assertArrayHasKey(HtmlifyInterface::class, $aliases);
@@ -112,7 +112,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('factories', $dependencyConfig);
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
-        self::assertCount(4, $factories);
+        self::assertCount(5, $factories);
         self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
         self::assertArrayHasKey(ContainerParser::class, $factories);
         self::assertArrayHasKey(FindRoot::class, $factories);
@@ -121,7 +121,7 @@ final class ConfigProviderTest extends TestCase
         self::assertArrayHasKey('aliases', $dependencyConfig);
         $aliases = $dependencyConfig['aliases'];
         self::assertIsArray($aliases);
-        self::assertCount(3, $aliases);
+        self::assertCount(4, $aliases);
         self::assertArrayHasKey(ContainerParserInterface::class, $aliases);
         self::assertArrayHasKey(FindRootInterface::class, $aliases);
         self::assertArrayHasKey(HtmlifyInterface::class, $aliases);
