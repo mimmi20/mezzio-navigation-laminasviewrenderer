@@ -808,6 +808,7 @@ final class SitemapTest extends TestCase
      * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
      * @throws NoPreviousThrowableException
      * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws RuntimeException
      */
     public function testToStringWithXmlDeclaration(): void
     {
