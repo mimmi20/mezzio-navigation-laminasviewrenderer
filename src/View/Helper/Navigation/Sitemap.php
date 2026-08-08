@@ -630,8 +630,6 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     }
 
     /**
-     * @return $this
-     *
      * @throws void
      *
      * @api
@@ -654,8 +652,6 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     }
 
     /**
-     * @return $this
-     *
      * @throws void
      *
      * @api
@@ -678,8 +674,6 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     }
 
     /**
-     * @return $this
-     *
      * @throws void
      *
      * @api
@@ -702,8 +696,6 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     }
 
     /**
-     * @return $this
-     *
      * @throws void
      *
      * @api
@@ -726,8 +718,6 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     }
 
     /**
-     * @return $this
-     *
      * @throws void
      *
      * @api
