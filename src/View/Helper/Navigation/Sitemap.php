@@ -48,7 +48,6 @@ use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function mb_substr;
 use function preg_match;
-use function property_exists;
 use function rtrim;
 use function sprintf;
 use function strtotime;
@@ -288,7 +287,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             $urlNode->appendChild($locElement);
 
             // add 'lastmod' element if a valid lastmod is set in page
-            if (property_exists($page, 'lastmod') && $page->lastmod !== null) {
+            if (isset($page->lastmod)) {
                 $lastmod = strtotime((string) $page->lastmod);
 
                 // prevent 1970-01-01...
@@ -326,7 +325,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             }
 
             // add 'changefreq' element if a valid changefreq is set in page
-            if (property_exists($page, 'changefreq') && $page->changefreq !== null) {
+            if (isset($page->changefreq)) {
                 $changefreq          = $page->changefreq;
                 $changefreqValidator = $this->getChangefreqValidator();
 
@@ -354,7 +353,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             }
 
             // add 'priority' element if a valid priority is set in page
-            if (!property_exists($page, 'priority') || $page->priority === null) {
+            if (!isset($page->priority)) {
                 continue;
             }
 
