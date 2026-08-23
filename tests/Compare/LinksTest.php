@@ -53,9 +53,9 @@ use const PHP_EOL;
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links
  */
-#[Group('Compare')]
-#[Group('Laminas_View')]
-#[Group('Laminas_View_Helper')]
+#[Group(name: 'Compare')]
+#[Group(name: 'Laminas_View')]
+#[Group(name: 'Laminas_View_Helper')]
 final class LinksTest extends AbstractTestCase
 {
     /**
@@ -70,7 +70,6 @@ final class LinksTest extends AbstractTestCase
      * @throws ContainerExceptionInterface
      * @throws ExceptionInterface
      * @throws InvalidArgumentException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
@@ -891,7 +890,7 @@ final class LinksTest extends AbstractTestCase
 
         self::assertInstanceOf(PageInterface::class, $active);
 
-        $active->setActive(true);
+        $active->setActive(active: true);
 
         $expected = [];
         $actual   = [];
@@ -938,7 +937,7 @@ final class LinksTest extends AbstractTestCase
 
         self::assertInstanceOf(PageInterface::class, $active);
 
-        $active->setActive(true);
+        $active->setActive(active: true);
 
         // test data
         $expected = '<link href="page2" rel="next" title="Page&#x20;2">'
@@ -966,7 +965,7 @@ final class LinksTest extends AbstractTestCase
             | Navigation\Links::RENDER_PREV;
         $this->helper->setRenderFlag($newFlag);
         $this->helper->setIndent('  ');
-        $active->setActive(true);
+        $active->setActive(active: true);
 
         // build expected and actual result
         $expected = '  <link href="page2" rel="next" title="Page&#x20;2">'

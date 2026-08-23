@@ -48,6 +48,7 @@ use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function mb_substr;
 use function preg_match;
+use function property_exists;
 use function rtrim;
 use function sprintf;
 use function strtotime;
@@ -112,7 +113,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     ) {
         parent::__construct($htmlify, $containerParser);
 
-        libxml_use_internal_errors(true);
+        libxml_use_internal_errors(use_errors: true);
 
         $this->dom                 = new DOMDocument('1.0', 'UTF-8');
         $this->locValidator        = new Loc();
@@ -176,7 +177,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
         }
 
@@ -287,7 +288,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             $urlNode->appendChild($locElement);
 
             // add 'lastmod' element if a valid lastmod is set in page
-            if (isset($page->lastmod)) {
+            if (property_exists($page, 'lastmod') && $page->lastmod !== null) {
                 $lastmod = strtotime((string) $page->lastmod);
 
                 // prevent 1970-01-01...
@@ -325,7 +326,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             }
 
             // add 'changefreq' element if a valid changefreq is set in page
-            if (isset($page->changefreq)) {
+            if (property_exists($page, 'changefreq') && $page->changefreq !== null) {
                 $changefreq          = $page->changefreq;
                 $changefreqValidator = $this->getChangefreqValidator();
 
@@ -353,7 +354,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             }
 
             // add 'priority' element if a valid priority is set in page
-            if (!isset($page->priority)) {
+            if (!property_exists($page, 'priority') || $page->priority === null) {
                 continue;
             }
 
@@ -459,7 +460,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             ) . '/' . $curDoc . ($curDoc === '' ? '' : '/') . $href;
         }
 
-        if (!in_array($url, $this->urls, true)) {
+        if (!in_array($url, $this->urls, strict: true)) {
             $this->urls[] = $url;
 
             return $this->xmlEscape($url);

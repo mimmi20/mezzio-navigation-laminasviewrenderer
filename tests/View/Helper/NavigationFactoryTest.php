@@ -20,7 +20,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\NavigationFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -31,8 +30,6 @@ final class NavigationFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {
@@ -50,14 +47,12 @@ final class NavigationFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
-        $htmlify                 = $this->createMock(HtmlifyInterface::class);
-        $containerParser         = $this->createMock(ContainerParserInterface::class);
-        $navigationPluginManager = $this->createMock(ViewHelperPluginManager::class);
+        $htmlify                 = self::createStub(HtmlifyInterface::class);
+        $containerParser         = self::createStub(ContainerParserInterface::class);
+        $navigationPluginManager = self::createStub(ViewHelperPluginManager::class);
 
         $container = $this->createMock(ServiceLocatorInterface::class);
         $matcher   = self::exactly(3);

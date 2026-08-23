@@ -22,7 +22,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\MenuFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -33,15 +32,13 @@ final class MenuFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $escapePlugin    = $this->createMock(EscapeHtmlAttr::class);
-        $renderer        = $this->createMock(PartialRendererInterface::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $escapePlugin    = self::createStub(EscapeHtmlAttr::class);
+        $renderer        = self::createStub(PartialRendererInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
@@ -93,8 +90,6 @@ final class MenuFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

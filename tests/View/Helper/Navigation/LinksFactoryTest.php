@@ -23,7 +23,6 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\ConvertToPages\ConvertToPagesInterface;
 use Mimmi20\NavigationHelper\FindRoot\FindRootInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -34,16 +33,14 @@ final class LinksFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $rootFinder      = $this->createMock(FindRootInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $headLink        = $this->createMock(HeadLink::class);
-        $converter       = $this->createMock(ConvertToPagesInterface::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $rootFinder      = self::createStub(FindRootInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $headLink        = self::createStub(HeadLink::class);
+        $converter       = self::createStub(ConvertToPagesInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
@@ -101,8 +98,6 @@ final class LinksFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

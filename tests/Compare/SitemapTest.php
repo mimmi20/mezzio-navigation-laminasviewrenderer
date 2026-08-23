@@ -49,9 +49,9 @@ use function trim;
  * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
  * phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
  */
-#[Group('Compare')]
-#[Group('Laminas_View')]
-#[Group('Laminas_View_Helper')]
+#[Group(name: 'Compare')]
+#[Group(name: 'Laminas_View')]
+#[Group(name: 'Laminas_View_Helper')]
 final class SitemapTest extends AbstractTestCase
 {
     /**
@@ -73,7 +73,6 @@ final class SitemapTest extends AbstractTestCase
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
@@ -395,7 +394,7 @@ final class SitemapTest extends AbstractTestCase
         // set nav1 in helper as default
         $this->helper->setContainer($this->nav1);
 
-        $this->helper->setFormatOutput(true);
+        $this->helper->setFormatOutput(formatOutput: true);
     }
 
     /** @throws void */
@@ -488,7 +487,7 @@ final class SitemapTest extends AbstractTestCase
      */
     public function testDropXmlDeclaration(): void
     {
-        $this->helper->setUseXmlDeclaration(false);
+        $this->helper->setUseXmlDeclaration(useXmlDecl: false);
 
         $expected = $this->getExpected('sitemap/nodecl.xml');
         self::assertSame(trim($expected), $this->helper->render($this->nav2));
@@ -505,7 +504,7 @@ final class SitemapTest extends AbstractTestCase
         $page = (new PageFactory())->factory(['label' => 'Invalid', 'uri' => 'http://w.']);
         $nav  = clone $this->nav2;
         $nav->addPage($page);
-        $this->helper->setUseSitemapValidators(false);
+        $this->helper->setUseSitemapValidators(useSitemapValidators: false);
 
         $expected = $this->getExpected('sitemap/invalid.xml');
 
@@ -537,7 +536,7 @@ final class SitemapTest extends AbstractTestCase
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
-    #[Group('test-123')]
+    #[Group(name: 'test-123')]
     public function testSetServerUrlWithSchemeAndPortAndHostAndPath(): void
     {
         $this->helper->setServerUrl('http://sub.example.org:8080/foo/');
@@ -549,9 +548,9 @@ final class SitemapTest extends AbstractTestCase
     /** @throws Exception */
     public function testGetUserSchemaValidation(): void
     {
-        $this->helper->setUseSchemaValidation(true);
+        $this->helper->setUseSchemaValidation(schemaValidation: true);
         self::assertTrue($this->helper->getUseSchemaValidation());
-        $this->helper->setUseSchemaValidation(false);
+        $this->helper->setUseSchemaValidation(schemaValidation: false);
         self::assertFalse($this->helper->getUseSchemaValidation());
     }
 }
