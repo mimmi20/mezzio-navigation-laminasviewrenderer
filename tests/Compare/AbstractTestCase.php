@@ -220,7 +220,7 @@ abstract class AbstractTestCase extends TestCase
     {
         $content = file_get_contents($this->files . '/expected/' . $file);
 
-        self::assertIsString(
+        static::assertIsString(
             $content,
             sprintf('could not load file %s', $this->files . '/expected/' . $file),
         );

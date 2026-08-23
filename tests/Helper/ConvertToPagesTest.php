@@ -96,10 +96,7 @@ final class ConvertToPagesTest extends TestCase
         self::assertSame([$page], $helper->convert($uri, recursive: false));
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function testConvertFromStringWithException(): void
     {
         $exception = new InvalidArgumentException('test');

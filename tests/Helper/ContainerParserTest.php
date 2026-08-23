@@ -44,10 +44,7 @@ final class ContainerParserTest extends TestCase
         self::assertNull($helper->parseContainer());
     }
 
-    /**
-     * @throws InvalidArgumentException
-     * @throws Exception
-     */
+    /** @throws InvalidArgumentException */
     public function testParseContainerWithNumber(): void
     {
         $serviceLocator = $this->createMock(ContainerInterface::class);
@@ -71,10 +68,7 @@ final class ContainerParserTest extends TestCase
         $helper->parseContainer(1);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function testParseContainerWithStringDefaultNotFound(): void
     {
         $serviceLocator = $this->createMock(ContainerInterface::class);
@@ -165,10 +159,7 @@ final class ContainerParserTest extends TestCase
         self::assertSame($container, $helper->parseContainer($container));
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function testParseContainerWithStringDefaultNotFound3(): void
     {
         $serviceLocator = $this->createMock(ContainerInterface::class);

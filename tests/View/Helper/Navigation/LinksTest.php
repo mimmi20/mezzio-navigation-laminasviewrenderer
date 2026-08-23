@@ -446,10 +446,7 @@ final class LinksTest extends TestCase
         self::assertSame($container, $helper->getContainer());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';

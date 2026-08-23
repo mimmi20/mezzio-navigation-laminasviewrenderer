@@ -157,7 +157,6 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     public function testFindHelperWithoutPluginManager(): void
     {
@@ -189,7 +188,6 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     public function testFindHelperNotInPluginManager(): void
     {
@@ -228,7 +226,6 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     public function testFindHelperNotInPluginManager2(): void
     {
@@ -264,11 +261,7 @@ final class NavigationTest extends TestCase
         $helper->findHelper($proxy);
     }
 
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
+    /** @throws RuntimeException */
     public function testFindHelperExceptionInPluginManager(): void
     {
         $proxy     = 'menu';
@@ -306,11 +299,7 @@ final class NavigationTest extends TestCase
         $helper->findHelper($proxy, strict: false);
     }
 
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
+    /** @throws RuntimeException */
     public function testFindHelperExceptionInPluginManager4(): void
     {
         $proxy     = 'menu';
@@ -417,11 +406,7 @@ final class NavigationTest extends TestCase
         self::assertSame($menu, $helper->findHelper($proxy));
     }
 
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
+    /** @throws RuntimeException */
     public function testFindHelperWithRule(): void
     {
         $role  = 'test';
@@ -602,7 +587,6 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
@@ -676,7 +660,6 @@ final class NavigationTest extends TestCase
     }
 
     /**
-     * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
@@ -749,7 +732,7 @@ final class NavigationTest extends TestCase
         $helper->render($container);
     }
 
-    /** @throws Exception */
+    /** @throws void */
     public function testCallExceptionInPluginManager(): void
     {
         $proxy = 'menu';
@@ -1140,10 +1123,7 @@ final class NavigationTest extends TestCase
         self::assertTrue($helper->getInjectContainer());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';
