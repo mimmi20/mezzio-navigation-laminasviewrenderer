@@ -17,7 +17,6 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -31,8 +30,6 @@ final class UrlHelperFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationException(): void
     {
@@ -58,8 +55,6 @@ final class UrlHelperFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {

@@ -24,7 +24,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -35,8 +34,6 @@ final class SitemapFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
@@ -108,8 +105,6 @@ final class SitemapFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

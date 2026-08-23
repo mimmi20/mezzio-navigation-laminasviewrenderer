@@ -15,7 +15,6 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Helper;
 
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParser;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -24,11 +23,7 @@ use function assert;
 
 final class ContainerParserFactoryTest extends TestCase
 {
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testInvocation(): void
     {
         $container = $this->createMock(ContainerInterface::class);

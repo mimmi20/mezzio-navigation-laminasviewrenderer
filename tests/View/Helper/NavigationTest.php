@@ -28,7 +28,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -45,11 +44,7 @@ final class NavigationTest extends TestCase
         Navigation::setDefaultRole();
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetPluginManager(): void
     {
         $view = self::createStub(RendererInterface::class);
@@ -80,11 +75,7 @@ final class NavigationTest extends TestCase
         self::assertSame($view, $helper->getView());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetPluginManager2(): void
     {
         $view = self::createStub(RendererInterface::class);
@@ -115,11 +106,7 @@ final class NavigationTest extends TestCase
         self::assertSame($view, $helper->getView());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetInjectAuthorization(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -145,11 +132,7 @@ final class NavigationTest extends TestCase
         self::assertTrue($helper->getInjectAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetDefaultProxy(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -175,8 +158,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelperWithoutPluginManager(): void
     {
@@ -209,8 +190,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelperNotInPluginManager(): void
     {
@@ -250,8 +229,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelperNotInPluginManager2(): void
     {
@@ -291,8 +268,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelperExceptionInPluginManager(): void
     {
@@ -335,8 +310,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelperExceptionInPluginManager4(): void
     {
@@ -379,8 +352,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelper(): void
     {
@@ -450,8 +421,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testFindHelperWithRule(): void
     {
@@ -524,8 +493,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderExceptionInPluginManager(): void
     {
@@ -567,8 +534,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRender(): void
     {
@@ -640,8 +605,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderWithException(): void
     {
@@ -716,8 +679,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderWithException2(): void
     {
@@ -788,11 +749,7 @@ final class NavigationTest extends TestCase
         $helper->render($container);
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testCallExceptionInPluginManager(): void
     {
         $proxy = 'menu';
@@ -829,11 +786,7 @@ final class NavigationTest extends TestCase
         $helper->{$proxy}();
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testCall(): void
     {
         $proxy     = 'menu';
@@ -900,11 +853,7 @@ final class NavigationTest extends TestCase
         self::assertSame($rendered, $helper->{$proxy}($arguments));
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
@@ -928,11 +877,7 @@ final class NavigationTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetMinDepth(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -970,11 +915,7 @@ final class NavigationTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -996,11 +937,7 @@ final class NavigationTest extends TestCase
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRole(): void
     {
         $role        = 'testRole';
@@ -1032,11 +969,7 @@ final class NavigationTest extends TestCase
         self::assertTrue($helper->hasRoles());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1062,11 +995,7 @@ final class NavigationTest extends TestCase
         self::assertFalse($helper->getUseAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -1105,11 +1034,7 @@ final class NavigationTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetView(): void
     {
         $view = self::createStub(RendererInterface::class);
@@ -1137,8 +1062,6 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainer(): void
     {
@@ -1191,11 +1114,7 @@ final class NavigationTest extends TestCase
         self::assertTrue($helper->hasContainer());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetInjectContainer(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1224,8 +1143,6 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
@@ -1255,8 +1172,6 @@ final class NavigationTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -1286,8 +1201,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testDoNotAccept(): void
     {
@@ -1359,8 +1272,6 @@ final class NavigationTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlify(): void
     {
@@ -1431,11 +1342,7 @@ final class NavigationTest extends TestCase
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetIndent(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);

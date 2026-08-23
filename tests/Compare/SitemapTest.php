@@ -73,7 +73,6 @@ final class SitemapTest extends AbstractTestCase
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
