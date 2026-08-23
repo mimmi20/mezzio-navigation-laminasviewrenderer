@@ -56,7 +56,7 @@ final readonly class ContainerParser implements ContainerParserInterface
 
         if (is_string($container)) {
             // Fallback
-            if (in_array($container, ['default', 'navigation'], true)) {
+            if (in_array($container, ['default', 'navigation'], strict: true)) {
                 // Uses class name
                 if ($this->serviceLocator->has(MezzioNavigation::class)) {
                     try {

@@ -195,7 +195,7 @@ final class SitemapTest extends TestCase
 
         self::assertFalse($helper->getRenderInvisible());
 
-        $helper->setRenderInvisible(true);
+        $helper->setRenderInvisible(renderInvisible: true);
 
         self::assertTrue($helper->getRenderInvisible());
     }
@@ -293,7 +293,7 @@ final class SitemapTest extends TestCase
 
         self::assertTrue($helper->getUseAuthorization());
 
-        $helper->setUseAuthorization(false);
+        $helper->setUseAuthorization(useAuthorization: false);
 
         self::assertFalse($helper->getUseAuthorization());
     }
@@ -581,7 +581,7 @@ final class SitemapTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -823,7 +823,7 @@ final class SitemapTest extends TestCase
         $xml        = '<xml />';
 
         $parentPage = new Uri();
-        $parentPage->setVisible(true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setUri($parentUri);
@@ -834,11 +834,11 @@ final class SitemapTest extends TestCase
         $container = new Navigation();
 
         $page1 = new Uri();
-        $page1->setVisible(false);
+        $page1->setVisible(visible: false);
         $page1->setOrder(1);
 
         $page2 = new Uri();
-        $page2->setVisible(true);
+        $page2->setVisible(visible: true);
         $page2->setUri($parentUri);
         $page2->setOrder(2);
 
@@ -870,7 +870,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::exactly(2))
             ->method('isGranted')
             ->with($role, $resource, $privilege, null)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -927,10 +927,10 @@ final class SitemapTest extends TestCase
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
         $helper->setContainer($container);
-        $helper->setFormatOutput(true);
+        $helper->setFormatOutput(formatOutput: true);
         $helper->setMinDepth(0);
         $helper->setMaxDepth(42);
-        $helper->setUseSchemaValidation(false);
+        $helper->setUseSchemaValidation(schemaValidation: false);
         $helper->setUseAuthorization();
 
         $urlLoc        = self::createStub(DOMElement::class);
@@ -1013,7 +1013,7 @@ final class SitemapTest extends TestCase
         $locValidator->expects(self::once())
             ->method('isValid')
             ->with($serverUrl . '-test-' . $parentUri)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         assert($locValidator instanceof Loc);
         $helper->setLocValidator($locValidator);
@@ -1022,7 +1022,7 @@ final class SitemapTest extends TestCase
         $lastmodValidator->expects(self::once())
             ->method('isValid')
             ->with(date('c', $time))
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         assert($lastmodValidator instanceof Lastmod);
         $helper->setLastmodValidator($lastmodValidator);
@@ -1031,7 +1031,7 @@ final class SitemapTest extends TestCase
         $changefreqValidator->expects(self::once())
             ->method('isValid')
             ->with($changefreq)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         assert($changefreqValidator instanceof Changefreq);
         $helper->setChangefreqValidator($changefreqValidator);
@@ -1040,7 +1040,7 @@ final class SitemapTest extends TestCase
         $priorityValidator->expects(self::once())
             ->method('isValid')
             ->with($priority)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         assert($priorityValidator instanceof Priority);
         $helper->setPriorityValidator($priorityValidator);

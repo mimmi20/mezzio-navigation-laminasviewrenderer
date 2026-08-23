@@ -126,7 +126,7 @@ final class Links extends AbstractHelper implements LinksInterface
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
         }
 
@@ -160,7 +160,7 @@ final class Links extends AbstractHelper implements LinksInterface
             }
         }
 
-        $this->rootFinder->setRoot(null);
+        $this->rootFinder->setRoot(root: null);
 
         // return output (trim last newline by spec)
         return mb_strlen($output) ? rtrim($output, PHP_EOL) : '';
@@ -182,7 +182,7 @@ final class Links extends AbstractHelper implements LinksInterface
     #[Override]
     public function renderLink(PageInterface $page, string $attrib, string $relation): string
     {
-        if (!in_array($attrib, ['rel', 'rev'], true)) {
+        if (!in_array($attrib, ['rel', 'rev'], strict: true)) {
             throw new Exception\DomainException(
                 sprintf('Invalid relation attribute "%s", must be "rel" or "rev"', $attrib),
             );
@@ -204,9 +204,9 @@ final class Links extends AbstractHelper implements LinksInterface
 
         $otherAttributes = ['type', 'hreflang', 'charset', 'lang', 'media'];
 
-        foreach ($otherAttributes as $otherAttributeName) {
+        foreach ($otherAttributes as $otherAttribute) {
             try {
-                $otherAttributeValue = $page->get($otherAttributeName);
+                $otherAttributeValue = $page->get($otherAttribute);
             } catch (InvalidArgumentException) {
                 continue;
             }
@@ -215,7 +215,7 @@ final class Links extends AbstractHelper implements LinksInterface
                 continue;
             }
 
-            $attribs[$otherAttributeName] = $otherAttributeValue;
+            $attribs[$otherAttribute] = $otherAttributeValue;
         }
 
         return $this->headLink->itemToString((object) $attribs);
@@ -269,7 +269,7 @@ final class Links extends AbstractHelper implements LinksInterface
                     continue;
                 }
 
-                $relFlag = array_search($type, LinksInterface::RELATIONS, true);
+                $relFlag = array_search($type, LinksInterface::RELATIONS, strict: true);
 
                 if (!$relFlag) {
                     $relFlag = self::RENDER_CUSTOM;
@@ -285,7 +285,7 @@ final class Links extends AbstractHelper implements LinksInterface
                     continue;
                 }
 
-                if (!$found) {
+                if ($found === []) {
                     continue;
                 }
 
@@ -316,7 +316,7 @@ final class Links extends AbstractHelper implements LinksInterface
     #[Override]
     public function findRelation(PageInterface $page, string $rel, string $type): array
     {
-        if (!in_array($rel, ['rel', 'rev'], true)) {
+        if (!in_array($rel, ['rel', 'rev'], strict: true)) {
             throw new Exception\DomainException(
                 sprintf('Invalid argument: $rel must be "rel" or "rev"; "%s" given', $rel),
             );
@@ -324,7 +324,7 @@ final class Links extends AbstractHelper implements LinksInterface
 
         $result = $this->findFromProperty($page, $rel, $type);
 
-        if (!$result) {
+        if ($result === []) {
             $result = $this->findFromSearch($page, $rel, $type);
 
             if ($result === null) {
@@ -363,7 +363,7 @@ final class Links extends AbstractHelper implements LinksInterface
         }
 
         if ($found === $page || !$this->accept($found)) {
-            $found = null;
+            return null;
         }
 
         return $found;
@@ -479,7 +479,11 @@ final class Links extends AbstractHelper implements LinksInterface
 
         foreach ($root as $chapter) {
             // exclude self and start page from chapters
-            if ($chapter === $page || in_array($chapter, $start, true) || !$this->accept($chapter)) {
+            if (
+                $chapter === $page
+                || in_array($chapter, $start, strict: true)
+                || !$this->accept($chapter)
+            ) {
                 continue;
             }
 
@@ -586,14 +590,13 @@ final class Links extends AbstractHelper implements LinksInterface
             return null;
         }
 
-        $root  = $this->rootFinder->find($page);
-        $found = null;
+        $root = $this->rootFinder->find($page);
 
         if ($root->hasPage($parent)) {
-            $found = $parent;
+            return $parent;
         }
 
-        return $found;
+        return null;
     }
 
     /**
@@ -747,7 +750,7 @@ final class Links extends AbstractHelper implements LinksInterface
         $method = 'search' . ucfirst($rel) . ucfirst($type);
 
         if (method_exists($this, $method)) {
-            $found = $this->{$method}($page);
+            return $this->{$method}($page);
         }
 
         return $found;

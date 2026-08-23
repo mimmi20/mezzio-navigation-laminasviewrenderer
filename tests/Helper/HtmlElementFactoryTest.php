@@ -37,9 +37,7 @@ final class HtmlElementFactoryTest extends TestCase
     {
         $htmlAttributes = self::createStub(HtmlAttributes::class);
 
-        $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperPluginManager = $this->createMock(HelperPluginManager::class);
         $helperPluginManager->expects(self::once())
             ->method('get')
             ->with(HtmlAttributes::class, null)
@@ -47,9 +45,7 @@ final class HtmlElementFactoryTest extends TestCase
         $helperPluginManager->expects(self::never())
             ->method('has');
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('get')
             ->with(HelperPluginManager::class)

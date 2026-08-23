@@ -33,9 +33,7 @@ final class FindRootTest extends TestCase
 
         $root = self::createStub(ContainerInterface::class);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('getParent');
         $page->expects(self::never())
@@ -61,9 +59,7 @@ final class FindRootTest extends TestCase
 
         $root = self::createStub(ContainerInterface::class);
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::once())
             ->method('getParent')
             ->willReturn($root);
@@ -74,9 +70,7 @@ final class FindRootTest extends TestCase
         $parentPage->expects(self::never())
             ->method('setParent');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
@@ -90,17 +84,19 @@ final class FindRootTest extends TestCase
         self::assertSame($root, $helper->find($page));
     }
 
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testFindRootWithoutParent(): void
     {
         $helper = new FindRoot();
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('hashCode');
         $page->expects(self::never())

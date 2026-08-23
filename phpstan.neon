@@ -86,7 +86,7 @@ parameters:
 
   cognitive_complexity:
     class: 82
-    function: 59
+    function: 61
 
   type_coverage:
     return_type: 94.9
@@ -142,6 +142,8 @@ parameters:
         - tests/Compare/AbstractTestCase.php
     -
       identifier: property.parentPropertyFinalByPhpDoc
+    -
+      identifier: argument.named
 
 services:
   errorFormatter.sarif:

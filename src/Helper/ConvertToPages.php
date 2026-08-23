@@ -77,7 +77,7 @@ final readonly class ConvertToPages implements ConvertToPagesInterface
                 ],
             );
 
-            return $page === null ? [] : [$page];
+            return $page instanceof PageInterface ? [$page] : [];
         }
 
         if ($mixed instanceof Traversable) {
@@ -97,8 +97,8 @@ final readonly class ConvertToPages implements ConvertToPagesInterface
             // first key is numeric; assume several pages
             return array_map(
                 /** @return PageInterface */
-                function (iterable | ContainerInterface | int | PageInterface | string $value) {
-                    [$page] = $this->convert($value, false);
+                function (iterable | ContainerInterface | int | PageInterface | string $value): PageInterface {
+                    [$page] = $this->convert($value, recursive: false);
 
                     return $page;
                 },
@@ -109,6 +109,6 @@ final readonly class ConvertToPages implements ConvertToPagesInterface
         // pass array to factory directly
         $page = $this->pageFactory?->factory($mixed);
 
-        return $page === null ? [] : [$page];
+        return $page instanceof PageInterface ? [$page] : [];
     }
 }

@@ -187,7 +187,7 @@ final class BreadcrumbsTest extends TestCase
 
         self::assertFalse($helper->getRenderInvisible());
 
-        $helper->setRenderInvisible(true);
+        $helper->setRenderInvisible(renderInvisible: true);
 
         self::assertTrue($helper->getRenderInvisible());
     }
@@ -285,7 +285,7 @@ final class BreadcrumbsTest extends TestCase
 
         self::assertTrue($helper->getUseAuthorization());
 
-        $helper->setUseAuthorization(false);
+        $helper->setUseAuthorization(useAuthorization: false);
 
         self::assertFalse($helper->getUseAuthorization());
     }
@@ -573,7 +573,7 @@ final class BreadcrumbsTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -739,11 +739,11 @@ final class BreadcrumbsTest extends TestCase
 
         self::assertFalse($helper->getLinkLast());
 
-        $helper->setLinkLast(true);
+        $helper->setLinkLast(linkLast: true);
 
         self::assertTrue($helper->getLinkLast());
 
-        $helper->setLinkLast(false);
+        $helper->setLinkLast(linkLast: false);
 
         self::assertFalse($helper->getLinkLast());
     }
@@ -1038,7 +1038,7 @@ final class BreadcrumbsTest extends TestCase
         $name = 'Mezzio\Navigation\Top';
 
         $page = new Route();
-        $page->setActive(false);
+        $page->setActive(active: false);
 
         $container = new Navigation();
         $container->addPage($page);
@@ -1101,7 +1101,7 @@ final class BreadcrumbsTest extends TestCase
         $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
 
         $page = new Route();
-        $page->setActive(false);
+        $page->setActive(active: false);
 
         $container = new Navigation();
         $container->addPage($page);
@@ -1175,7 +1175,7 @@ final class BreadcrumbsTest extends TestCase
         $name = 'Mezzio\Navigation\Top';
 
         $page = new Route();
-        $page->setActive(false);
+        $page->setActive(active: false);
 
         $container = new Navigation();
         $container->addPage($page);
@@ -1196,7 +1196,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::once())
             ->method('parseContainer')
             ->with($name)
-            ->willReturn(null);
+            ->willReturn(value: null);
 
         $escapePlugin = $this->createMock(EscapeHtml::class);
         $escapePlugin->expects(self::never())
@@ -1244,13 +1244,13 @@ final class BreadcrumbsTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $page->expects(self::once())
             ->method('getResource')
             ->willReturn($resource);
         $page->expects(self::once())
             ->method('getPrivilege')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('getParent');
         $page->expects(self::never())
@@ -1280,7 +1280,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::once())
             ->method('isGranted')
             ->with(null, $resource, null, null)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -1342,7 +1342,7 @@ final class BreadcrumbsTest extends TestCase
         $name = 'Mezzio\Navigation\Top';
 
         $page = new Route();
-        $page->setVisible(false);
+        $page->setVisible(visible: false);
 
         $container = new Navigation();
         $container->addPage($page);
@@ -1404,7 +1404,7 @@ final class BreadcrumbsTest extends TestCase
         $seperator = '/';
 
         $helper->setSeparator($seperator);
-        $helper->setLinkLast(true);
+        $helper->setLinkLast(linkLast: true);
         $helper->setPartial($partial);
 
         $view = $this->createMock(PhpRenderer::class);
@@ -1433,8 +1433,8 @@ final class BreadcrumbsTest extends TestCase
         $privilege = 'testPrivilege';
 
         $parentPage = new Uri();
-        $parentPage->setActive(true);
-        $parentPage->setVisible(true);
+        $parentPage->setActive(active: true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1446,7 +1446,7 @@ final class BreadcrumbsTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(true);
+        $page->setActive(active: true);
         $page->setUri('###');
         $page->setId('id');
 
@@ -1461,7 +1461,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::exactly(2))
             ->method('isGranted')
             ->with($role, $resource, $privilege, null)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
         $expected2 = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
@@ -1552,7 +1552,7 @@ final class BreadcrumbsTest extends TestCase
         $seperator = '/';
 
         $helper->setSeparator($seperator);
-        $helper->setLinkLast(true);
+        $helper->setLinkLast(linkLast: true);
         $helper->setUseAuthorization();
 
         $view = $this->createMock(PhpRenderer::class);
@@ -1583,8 +1583,8 @@ final class BreadcrumbsTest extends TestCase
         $privilege = 'testPrivilege';
 
         $parentPage = new Uri();
-        $parentPage->setActive(true);
-        $parentPage->setVisible(true);
+        $parentPage->setActive(active: true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1596,7 +1596,7 @@ final class BreadcrumbsTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(true);
+        $page->setActive(active: true);
         $page->setUri('###');
         $page->setId('id');
 
@@ -1649,7 +1649,7 @@ final class BreadcrumbsTest extends TestCase
         $seperator = '/';
 
         $helper->setSeparator($seperator);
-        $helper->setLinkLast(true);
+        $helper->setLinkLast(linkLast: true);
         $helper->setUseAuthorization();
 
         $view = $this->createMock(PhpRenderer::class);
@@ -1690,8 +1690,8 @@ final class BreadcrumbsTest extends TestCase
         $privilege = 'testPrivilege';
 
         $parentPage = new Uri();
-        $parentPage->setActive(true);
-        $parentPage->setVisible(true);
+        $parentPage->setActive(active: true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1703,7 +1703,7 @@ final class BreadcrumbsTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(true);
+        $page->setActive(active: true);
         $page->setUri('###');
         $page->setId('id');
 
@@ -1718,7 +1718,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::exactly(2))
             ->method('isGranted')
             ->with($role, $resource, $privilege, null)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::once())
@@ -1771,7 +1771,7 @@ final class BreadcrumbsTest extends TestCase
         $seperator = '/';
 
         $helper->setSeparator($seperator);
-        $helper->setLinkLast(true);
+        $helper->setLinkLast(linkLast: true);
         $helper->setUseAuthorization();
 
         $view = $this->createMock(PhpRenderer::class);
@@ -1814,8 +1814,8 @@ final class BreadcrumbsTest extends TestCase
         $label = 'test-label';
 
         $parentPage = new Uri();
-        $parentPage->setActive(true);
-        $parentPage->setVisible(true);
+        $parentPage->setActive(active: true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1827,7 +1827,7 @@ final class BreadcrumbsTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(true);
+        $page->setActive(active: true);
         $page->setUri('###');
         $page->setId('id');
         $page->setLabel($label);
@@ -1843,7 +1843,7 @@ final class BreadcrumbsTest extends TestCase
         $auth->expects(self::exactly(2))
             ->method('isGranted')
             ->with($role, $resource, $privilege, null)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -1896,7 +1896,7 @@ final class BreadcrumbsTest extends TestCase
         $seperator = '/';
 
         $helper->setSeparator($seperator);
-        $helper->setLinkLast(false);
+        $helper->setLinkLast(linkLast: false);
         $helper->setUseAuthorization();
 
         $view = $this->createMock(PhpRenderer::class);

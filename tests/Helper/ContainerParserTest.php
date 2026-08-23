@@ -31,12 +31,12 @@ final class ContainerParserTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testParseContainerWithNull(): void
     {
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -50,12 +50,12 @@ final class ContainerParserTest extends TestCase
     /**
      * @throws InvalidArgumentException
      * @throws Exception
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testParseContainerWithNumber(): void
     {
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -79,16 +79,16 @@ final class ContainerParserTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testParseContainerWithStringDefaultNotFound(): void
     {
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::once())
             ->method('has')
             ->with(MezzioNavigation::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $serviceLocator->expects(self::once())
             ->method('get')
             ->with(MezzioNavigation::class)
@@ -116,13 +116,11 @@ final class ContainerParserTest extends TestCase
     {
         $container = self::createStub(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::once())
             ->method('has')
             ->with(MezzioNavigation::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $serviceLocator->expects(self::once())
             ->method('get')
             ->with(MezzioNavigation::class)
@@ -145,9 +143,7 @@ final class ContainerParserTest extends TestCase
         $container = self::createStub(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
         $name      = 'Mimmi20\Mezzio\Navigation\Top';
 
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::once())
@@ -170,9 +166,7 @@ final class ContainerParserTest extends TestCase
     public function testParseContainerWithContainer(): void
     {
         $container      = self::createStub(\Mimmi20\Mezzio\Navigation\ContainerInterface::class);
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::never())
             ->method('has');
         $serviceLocator->expects(self::never())
@@ -187,20 +181,20 @@ final class ContainerParserTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testParseContainerWithStringDefaultNotFound3(): void
     {
-        $serviceLocator = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $serviceLocator = $this->createMock(ContainerInterface::class);
         $serviceLocator->expects(self::once())
             ->method('has')
             ->with(MezzioNavigation::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $serviceLocator->expects(self::once())
             ->method('get')
             ->with(MezzioNavigation::class)
-            ->willReturn(null);
+            ->willReturn(value: null);
 
         assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);

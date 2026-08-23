@@ -40,9 +40,7 @@ final class HtmlifyFactoryTest extends TestCase
         $escapeHtml  = self::createStub(EscapeHtml::class);
         $htmlElement = self::createStub(HtmlElementInterface::class);
 
-        $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperPluginManager = $this->createMock(HelperPluginManager::class);
         $helperPluginManager->expects(self::once())
             ->method('get')
             ->with(EscapeHtml::class)
@@ -50,11 +48,9 @@ final class HtmlifyFactoryTest extends TestCase
         $helperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $matcher   = self::exactly(2);
         $container->expects($matcher)
             ->method('get')
@@ -90,9 +86,7 @@ final class HtmlifyFactoryTest extends TestCase
         $htmlElement     = self::createStub(HtmlElementInterface::class);
         $translatePlugin = self::createStub(Translate::class);
 
-        $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperPluginManager = $this->createMock(HelperPluginManager::class);
         $matcher             = self::exactly(2);
         $helperPluginManager->expects($matcher)
             ->method('get')
@@ -114,11 +108,9 @@ final class HtmlifyFactoryTest extends TestCase
         $helperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $matcher   = self::exactly(2);
         $container->expects($matcher)
             ->method('get')

@@ -35,9 +35,7 @@ final class ConvertToPagesTest extends TestCase
      */
     public function testConvertFromPage(): void
     {
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::never())
             ->method('factory');
 
@@ -46,20 +44,19 @@ final class ConvertToPagesTest extends TestCase
         $page = self::createStub(PageInterface::class);
 
         self::assertSame([$page], $helper->convert($page));
-        self::assertSame([$page], $helper->convert($page, true));
-        self::assertSame([$page], $helper->convert($page, false));
+        self::assertSame([$page], $helper->convert($page, recursive: true));
+        self::assertSame([$page], $helper->convert($page, recursive: false));
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConvertFromContainer(): void
     {
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::never())
             ->method('factory');
 
@@ -73,8 +70,8 @@ final class ConvertToPagesTest extends TestCase
         $container->addPage($page2);
 
         self::assertSame([$page1, $page2], $helper->convert($container));
-        self::assertSame([$page1, $page2], $helper->convert($container, true));
-        self::assertSame([$page1, $page2], $helper->convert($container, false));
+        self::assertSame([$page1, $page2], $helper->convert($container, recursive: true));
+        self::assertSame([$page1, $page2], $helper->convert($container, recursive: false));
     }
 
     /**
@@ -88,9 +85,7 @@ final class ConvertToPagesTest extends TestCase
         $uri  = 'test-uri';
         $page = self::createStub(PageInterface::class);
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::exactly(3))
             ->method('factory')
             ->with(
@@ -104,13 +99,15 @@ final class ConvertToPagesTest extends TestCase
         $helper = new ConvertToPages($pageFactory);
 
         self::assertSame([$page], $helper->convert($uri));
-        self::assertSame([$page], $helper->convert($uri, true));
-        self::assertSame([$page], $helper->convert($uri, false));
+        self::assertSame([$page], $helper->convert($uri, recursive: true));
+        self::assertSame([$page], $helper->convert($uri, recursive: false));
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConvertFromStringWithException(): void
     {
@@ -118,9 +115,7 @@ final class ConvertToPagesTest extends TestCase
 
         $uri = 'test-uri';
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::once())
             ->method('factory')
             ->with(
@@ -157,9 +152,7 @@ final class ConvertToPagesTest extends TestCase
         ];
         $config      = new ArrayObject($configArray);
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::exactly(3))
             ->method('factory')
             ->with($configArray)
@@ -168,13 +161,15 @@ final class ConvertToPagesTest extends TestCase
         $helper = new ConvertToPages($pageFactory);
 
         self::assertSame([$page], $helper->convert($config));
-        self::assertSame([$page], $helper->convert($config, true));
-        self::assertSame([$page], $helper->convert($config, false));
+        self::assertSame([$page], $helper->convert($config, recursive: true));
+        self::assertSame([$page], $helper->convert($config, recursive: false));
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConvertFromConfigWithException(): void
     {
@@ -188,9 +183,7 @@ final class ConvertToPagesTest extends TestCase
         ];
         $config      = new ArrayObject($configArray);
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::once())
             ->method('factory')
             ->with($configArray)
@@ -208,20 +201,20 @@ final class ConvertToPagesTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConvertFromInteger(): void
     {
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::never())
             ->method('factory');
 
         $helper = new ConvertToPages($pageFactory);
 
         self::assertSame([], $helper->convert(1));
-        self::assertSame([], $helper->convert(1, true));
-        self::assertSame([], $helper->convert(1, false));
+        self::assertSame([], $helper->convert(1, recursive: true));
+        self::assertSame([], $helper->convert(1, recursive: false));
     }
 
     /**
@@ -240,9 +233,7 @@ final class ConvertToPagesTest extends TestCase
             'uri' => $uri,
         ];
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::exactly(3))
             ->method('factory')
             ->with($config)
@@ -251,13 +242,15 @@ final class ConvertToPagesTest extends TestCase
         $helper = new ConvertToPages($pageFactory);
 
         self::assertSame([$page], $helper->convert($config));
-        self::assertSame([$page], $helper->convert($config, true));
-        self::assertSame([$page], $helper->convert($config, false));
+        self::assertSame([$page], $helper->convert($config, recursive: true));
+        self::assertSame([$page], $helper->convert($config, recursive: false));
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testConvertFromArrayWithException(): void
     {
@@ -270,9 +263,7 @@ final class ConvertToPagesTest extends TestCase
             'uri' => $uri,
         ];
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $pageFactory->expects(self::once())
             ->method('factory')
             ->with($config)
@@ -293,7 +284,7 @@ final class ConvertToPagesTest extends TestCase
      * @throws NoPreviousThrowableException
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    #[Group('Convert')]
+    #[Group(name: 'Convert')]
     public function testConvertFromRecursiveArray(): void
     {
         $uri1  = 'test-uri1';
@@ -312,9 +303,7 @@ final class ConvertToPagesTest extends TestCase
 
         $config = [$config1, $config2];
 
-        $pageFactory = $this->getMockBuilder(PageFactoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageFactory = $this->createMock(PageFactoryInterface::class);
         $matcher     = self::exactly(5);
         $pageFactory->expects($matcher)
             ->method('factory')
@@ -336,7 +325,7 @@ final class ConvertToPagesTest extends TestCase
         $helper = new ConvertToPages($pageFactory);
 
         self::assertSame([$page1, $page2], $helper->convert($config));
-        self::assertSame([$page1, $page2], $helper->convert($config, true));
-        self::assertSame([$page1], $helper->convert($config, false));
+        self::assertSame([$page1, $page2], $helper->convert($config, recursive: true));
+        self::assertSame([$page1], $helper->convert($config, recursive: false));
     }
 }

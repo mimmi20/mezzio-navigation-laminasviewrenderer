@@ -172,7 +172,7 @@ final class MenuTest extends TestCase
 
         self::assertFalse($helper->getRenderInvisible());
 
-        $helper->setRenderInvisible(true);
+        $helper->setRenderInvisible(renderInvisible: true);
 
         self::assertTrue($helper->getRenderInvisible());
     }
@@ -260,7 +260,7 @@ final class MenuTest extends TestCase
 
         self::assertTrue($helper->getUseAuthorization());
 
-        $helper->setUseAuthorization(false);
+        $helper->setUseAuthorization(useAuthorization: false);
 
         self::assertFalse($helper->getUseAuthorization());
     }
@@ -567,7 +567,7 @@ final class MenuTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -911,7 +911,7 @@ final class MenuTest extends TestCase
 
         self::assertTrue($helper->getEscapeLabels());
 
-        $helper->escapeLabels(false);
+        $helper->escapeLabels(flag: false);
 
         self::assertFalse($helper->getEscapeLabels());
     }
@@ -948,7 +948,7 @@ final class MenuTest extends TestCase
 
         self::assertFalse($helper->getAddClassToListItem());
 
-        $helper->setAddClassToListItem(true);
+        $helper->setAddClassToListItem(flag: true);
 
         self::assertTrue($helper->getAddClassToListItem());
     }
@@ -985,7 +985,7 @@ final class MenuTest extends TestCase
 
         self::assertFalse($helper->getOnlyActiveBranch());
 
-        $helper->setOnlyActiveBranch(true);
+        $helper->setOnlyActiveBranch(flag: true);
 
         self::assertTrue($helper->getOnlyActiveBranch());
     }
@@ -1063,7 +1063,7 @@ final class MenuTest extends TestCase
 
         self::assertTrue($helper->getRenderParents());
 
-        $helper->setRenderParents(false);
+        $helper->setRenderParents(flag: false);
 
         self::assertFalse($helper->getRenderParents());
     }
@@ -1199,7 +1199,7 @@ final class MenuTest extends TestCase
         $liActiveClass = 'li-active';
 
         $parentPage = new Uri();
-        $parentPage->setVisible(true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1211,7 +1211,7 @@ final class MenuTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(false);
+        $page->setActive(active: false);
 
         $parentPage->addPage($page);
 
@@ -1299,7 +1299,7 @@ final class MenuTest extends TestCase
         $liActiveClass = 'li-active';
 
         $parentPage = new Uri();
-        $parentPage->setVisible(true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1311,7 +1311,7 @@ final class MenuTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(true);
+        $page->setActive(active: true);
 
         $parentPage->addPage($page);
 

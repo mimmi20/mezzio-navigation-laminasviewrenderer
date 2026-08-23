@@ -136,7 +136,7 @@ final class NavigationTest extends TestCase
 
         self::assertTrue($helper->getInjectAuthorization());
 
-        $helper->setInjectAuthorization(false);
+        $helper->setInjectAuthorization(injectAuthorization: false);
 
         self::assertFalse($helper->getInjectAuthorization());
 
@@ -194,7 +194,7 @@ final class NavigationTest extends TestCase
         assert($containerParser instanceof ContainerParserInterface);
         $helper = new Navigation(htmlify: $htmlify, containerParser: $containerParser);
 
-        self::assertNull($helper->findHelper($proxy, false));
+        self::assertNull($helper->findHelper($proxy, strict: false));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
@@ -202,7 +202,7 @@ final class NavigationTest extends TestCase
         );
         $this->expectExceptionCode(0);
 
-        $helper->findHelper($proxy, true);
+        $helper->findHelper($proxy, strict: true);
     }
 
     /**
@@ -232,18 +232,18 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::exactly(2))
             ->method('has')
             ->with($proxy)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
-        self::assertNull($helper->findHelper($proxy, false));
+        self::assertNull($helper->findHelper($proxy, strict: false));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Failed to find plugin for %s', $proxy));
         $this->expectExceptionCode(0);
 
-        $helper->findHelper($proxy, true);
+        $helper->findHelper($proxy, strict: true);
     }
 
     /**
@@ -273,12 +273,12 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::exactly(2))
             ->method('has')
             ->with($proxy)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         assert($pluginManager instanceof HelperPluginManager);
         $helper->setPluginManager($pluginManager);
 
-        self::assertNull($helper->findHelper($proxy, false));
+        self::assertNull($helper->findHelper($proxy, strict: false));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Failed to find plugin for %s', $proxy));
@@ -315,7 +315,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -328,7 +328,7 @@ final class NavigationTest extends TestCase
         $this->expectExceptionMessage(sprintf('Failed to load plugin for %s', $proxy));
         $this->expectExceptionCode(0);
 
-        $helper->findHelper($proxy, false);
+        $helper->findHelper($proxy, strict: false);
     }
 
     /**
@@ -359,7 +359,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -419,19 +419,19 @@ final class NavigationTest extends TestCase
             );
         $menu->expects(self::once())
             ->method('hasAuthorization')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
             ->method('hasRoles')
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         $pluginManager = $this->createMock(HelperPluginManager::class);
         $pluginManager->expects(self::exactly(3))
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::exactly(3))
             ->method('get')
             ->with($proxy)
@@ -441,8 +441,8 @@ final class NavigationTest extends TestCase
         $helper->setPluginManager($pluginManager);
         $helper->setContainer($container1);
 
-        self::assertSame($menu, $helper->findHelper($proxy, false));
-        self::assertSame($menu, $helper->findHelper($proxy, true));
+        self::assertSame($menu, $helper->findHelper($proxy, strict: false));
+        self::assertSame($menu, $helper->findHelper($proxy, strict: true));
         self::assertSame($menu, $helper->findHelper($proxy));
     }
 
@@ -490,13 +490,13 @@ final class NavigationTest extends TestCase
             );
         $menu->expects(self::once())
             ->method('hasAuthorization')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
             ->method('hasRoles')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setRoles')
             ->with([$role]);
@@ -505,7 +505,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::exactly(3))
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::exactly(3))
             ->method('get')
             ->with($proxy)
@@ -515,8 +515,8 @@ final class NavigationTest extends TestCase
         $helper->setPluginManager($pluginManager);
         $helper->setRoles([$role]);
 
-        self::assertSame($menu, $helper->findHelper($proxy, false));
-        self::assertSame($menu, $helper->findHelper($proxy, true));
+        self::assertSame($menu, $helper->findHelper($proxy, strict: false));
+        self::assertSame($menu, $helper->findHelper($proxy, strict: true));
         self::assertSame($menu, $helper->findHelper($proxy));
     }
 
@@ -547,7 +547,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -608,13 +608,13 @@ final class NavigationTest extends TestCase
             );
         $menu->expects(self::once())
             ->method('hasAuthorization')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
             ->method('hasRoles')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('render')
             ->with($container)
@@ -624,7 +624,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -680,13 +680,13 @@ final class NavigationTest extends TestCase
             );
         $menu->expects(self::once())
             ->method('hasAuthorization')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
             ->method('hasRoles')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('render')
             ->with($container)
@@ -696,7 +696,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -756,13 +756,13 @@ final class NavigationTest extends TestCase
             );
         $menu->expects(self::once())
             ->method('hasAuthorization')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
             ->method('hasRoles')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('render')
             ->with($container)
@@ -772,7 +772,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -813,7 +813,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -872,13 +872,13 @@ final class NavigationTest extends TestCase
             );
         $menu->expects(self::once())
             ->method('hasAuthorization')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('setAuthorization')
             ->with(null);
         $menu->expects(self::once())
             ->method('hasRoles')
-            ->willReturn(false);
+            ->willReturn(value: false);
         $menu->expects(self::once())
             ->method('__invoke')
             ->with($arguments)
@@ -888,7 +888,7 @@ final class NavigationTest extends TestCase
         $pluginManager->expects(self::once())
             ->method('has')
             ->with($proxy)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $pluginManager->expects(self::once())
             ->method('get')
             ->with($proxy)
@@ -991,7 +991,7 @@ final class NavigationTest extends TestCase
 
         self::assertFalse($helper->getRenderInvisible());
 
-        $helper->setRenderInvisible(true);
+        $helper->setRenderInvisible(renderInvisible: true);
 
         self::assertTrue($helper->getRenderInvisible());
     }
@@ -1057,7 +1057,7 @@ final class NavigationTest extends TestCase
 
         self::assertTrue($helper->getUseAuthorization());
 
-        $helper->setUseAuthorization(false);
+        $helper->setUseAuthorization(useAuthorization: false);
 
         self::assertFalse($helper->getUseAuthorization());
     }
@@ -1212,7 +1212,7 @@ final class NavigationTest extends TestCase
 
         self::assertTrue($helper->getInjectContainer());
 
-        $helper->setInjectContainer(false);
+        $helper->setInjectContainer(injectContainer: false);
 
         self::assertFalse($helper->getInjectContainer());
 
@@ -1298,7 +1298,7 @@ final class NavigationTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
