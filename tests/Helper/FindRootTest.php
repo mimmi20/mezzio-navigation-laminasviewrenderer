@@ -16,26 +16,19 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Helper;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class FindRootTest extends TestCase
 {
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRoot(): void
     {
         $helper = new FindRoot();
 
         $root = self::createStub(ContainerInterface::class);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('getParent');
         $page->expects(self::never())
@@ -50,20 +43,14 @@ final class FindRootTest extends TestCase
         self::assertSame($root, $helper->find($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testFindRootRecursive(): void
     {
         $helper = new FindRoot();
 
         $root = self::createStub(ContainerInterface::class);
 
-        $parentPage = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parentPage = $this->createMock(PageInterface::class);
         $parentPage->expects(self::once())
             ->method('getParent')
             ->willReturn($root);
@@ -74,9 +61,7 @@ final class FindRootTest extends TestCase
         $parentPage->expects(self::never())
             ->method('setParent');
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
             ->willReturn($parentPage);
@@ -95,12 +80,10 @@ final class FindRootTest extends TestCase
     {
         $helper = new FindRoot();
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('hashCode');
         $page->expects(self::never())

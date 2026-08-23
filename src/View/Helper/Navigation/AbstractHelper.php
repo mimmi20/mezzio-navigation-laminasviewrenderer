@@ -206,7 +206,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      */
     public function getContainer(): ContainerInterface
     {
-        if ($this->container === null) {
+        if (!$this->container instanceof ContainerInterface) {
             $this->container = new Navigation\Navigation();
         }
 
@@ -263,7 +263,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
         }
 
@@ -305,7 +305,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
                 continue;
             }
 
-            if (!$page->isActive(false)) {
+            if (!$page->isActive(recursive: false)) {
                 continue;
             }
 
@@ -363,7 +363,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      */
     public function accept(PageInterface $page, bool $recursive = true): bool
     {
-        if (!$page->isVisible(false) && !$this->renderInvisible) {
+        if (!$page->isVisible(recursive: false) && !$this->renderInvisible) {
             return false;
         }
 
@@ -386,10 +386,8 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
                             break;
                         }
                     }
-                } else {
-                    if ($authorization->isGranted(null, $resource, $privilege)) {
-                        $accept = true;
-                    }
+                } elseif ($authorization->isGranted(resource: $resource, privilege: $privilege)) {
+                    $accept = true;
                 }
             }
         }
@@ -398,7 +396,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
             $parent = $page->getParent();
 
             if ($parent instanceof PageInterface) {
-                $accept = $this->accept($parent, true);
+                $accept = $this->accept($parent, recursive: true);
             }
         }
 
@@ -459,7 +457,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     {
         if (
             !$this->authorization instanceof AuthorizationInterface
-            && static::$defaultAuthorization !== null
+            && static::$defaultAuthorization instanceof AuthorizationInterface
         ) {
             return static::$defaultAuthorization;
         }
@@ -493,7 +491,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      */
     public function hasContainer(): bool
     {
-        return $this->container !== null;
+        return $this->container instanceof ContainerInterface;
     }
 
     /**
@@ -732,7 +730,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
     protected function getWhitespace(int | string $indent): string
     {
         if (is_int($indent)) {
-            $indent = str_repeat(' ', $indent);
+            return str_repeat(' ', $indent);
         }
 
         return $indent;

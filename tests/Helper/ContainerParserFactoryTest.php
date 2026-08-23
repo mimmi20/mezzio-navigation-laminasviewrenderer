@@ -26,9 +26,7 @@ final class ContainerParserFactoryTest extends TestCase
     /** @throws Exception */
     public function testInvocation(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('get');
 

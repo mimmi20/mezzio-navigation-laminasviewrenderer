@@ -112,7 +112,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     ) {
         parent::__construct($htmlify, $containerParser);
 
-        libxml_use_internal_errors(true);
+        libxml_use_internal_errors(use_errors: true);
 
         $this->dom                 = new DOMDocument('1.0', 'UTF-8');
         $this->locValidator        = new Loc();
@@ -176,7 +176,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
         }
 
@@ -459,7 +459,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
             ) . '/' . $curDoc . ($curDoc === '' ? '' : '/') . $href;
         }
 
-        if (!in_array($url, $this->urls, true)) {
+        if (!in_array($url, $this->urls, strict: true)) {
             $this->urls[] = $url;
 
             return $this->xmlEscape($url);

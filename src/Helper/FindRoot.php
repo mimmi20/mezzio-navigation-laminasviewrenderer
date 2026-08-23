@@ -56,7 +56,7 @@ final class FindRoot implements FindRootInterface
     #[Override]
     public function find(PageInterface $page): ContainerInterface
     {
-        if ($this->root) {
+        if ($this->root instanceof ContainerInterface) {
             return $this->root;
         }
 

@@ -17,7 +17,6 @@ use Laminas\View\Helper\HtmlAttributes;
 use Laminas\View\HelperPluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElement;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -30,16 +29,12 @@ final class HtmlElementFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
         $htmlAttributes = self::createStub(HtmlAttributes::class);
 
-        $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperPluginManager = $this->createMock(HelperPluginManager::class);
         $helperPluginManager->expects(self::once())
             ->method('get')
             ->with(HtmlAttributes::class, null)
@@ -47,9 +42,7 @@ final class HtmlElementFactoryTest extends TestCase
         $helperPluginManager->expects(self::never())
             ->method('has');
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('get')
             ->with(HelperPluginManager::class)

@@ -73,7 +73,7 @@ final readonly class Htmlify implements HtmlifyInterface
         $label = (string) $page->getLabel();
         $title = $page->getTitle();
 
-        if ($this->translator !== null) {
+        if ($this->translator instanceof Translate) {
             $textDomain = $page->getTextDomain();
             assert($textDomain === null || is_string($textDomain));
 
