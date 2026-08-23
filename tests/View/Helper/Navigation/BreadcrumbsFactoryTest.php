@@ -50,7 +50,7 @@ final class BreadcrumbsFactoryTest extends TestCase
         $viewHelperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $matcher = self::exactly(2);
         $viewHelperPluginManager->expects($matcher)
             ->method('get')
@@ -130,7 +130,7 @@ final class BreadcrumbsFactoryTest extends TestCase
         $viewHelperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $viewHelperPluginManager->expects(self::once())
             ->method('get')
             ->with(EscapeHtml::class)

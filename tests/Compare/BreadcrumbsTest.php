@@ -45,9 +45,9 @@ use const PHP_EOL;
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs.
  */
-#[Group('Compare')]
-#[Group('Laminas_View')]
-#[Group('Laminas_View_Helper')]
+#[Group(name: 'Compare')]
+#[Group(name: 'Laminas_View')]
+#[Group(name: 'Laminas_View_Helper')]
 final class BreadcrumbsTest extends AbstractTestCase
 {
     /**
@@ -200,7 +200,7 @@ final class BreadcrumbsTest extends AbstractTestCase
      */
     public function testLinkLastElement(): void
     {
-        $this->helper->setLinkLast(true);
+        $this->helper->setLinkLast(linkLast: true);
 
         $expected = $this->getExpected('bc/linklast.html');
         $actual   = $this->helper->render();

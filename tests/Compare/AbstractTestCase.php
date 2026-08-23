@@ -107,7 +107,7 @@ abstract class AbstractTestCase extends TestCase
         $config      = require $this->files . '/navigation.php';
 
         $sm = $this->serviceManager = new ServiceManager();
-        $sm->setAllowOverride(true);
+        $sm->setAllowOverride(flag: true);
 
         $sm->setFactory('Navigation', DefaultNavigationFactory::class);
         $sm->setFactory('navigation', DefaultNavigationFactory::class);
@@ -209,7 +209,7 @@ abstract class AbstractTestCase extends TestCase
         $sm->setService('nav1', $nav1);
         $sm->setService('nav2', $nav2);
 
-        $sm->setAllowOverride(false);
+        $sm->setAllowOverride(flag: false);
     }
 
     /**
@@ -221,7 +221,7 @@ abstract class AbstractTestCase extends TestCase
     {
         $content = file_get_contents($this->files . '/expected/' . $file);
 
-        static::assertIsString(
+        self::assertIsString(
             $content,
             sprintf('could not load file %s', $this->files . '/expected/' . $file),
         );

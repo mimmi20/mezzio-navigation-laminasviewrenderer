@@ -40,7 +40,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with(BaseServerUrlHelper::class)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         $this->expectException(MissingHelperException::class);
         $this->expectExceptionMessage(
@@ -69,7 +69,7 @@ final class ServerUrlHelperFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with(BaseServerUrlHelper::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $container->expects(self::once())
             ->method('get')
             ->with(BaseServerUrlHelper::class)

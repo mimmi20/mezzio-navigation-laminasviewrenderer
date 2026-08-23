@@ -34,6 +34,7 @@ use function assert;
 use function count;
 use function get_debug_type;
 use function implode;
+use function in_array;
 use function is_array;
 use function is_string;
 use function sprintf;
@@ -199,7 +200,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         } else {
             $label = (string) $active->getLabel();
 
-            if ($this->translator !== null) {
+            if ($this->translator instanceof Translate) {
                 try {
                     $label = ($this->translator)($label, $active->getTextDomain());
                 } catch (RuntimeException $e) {
@@ -399,7 +400,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
             $partial = $this->getPartial();
         }
 
-        if ($partial === null || $partial === '' || $partial === []) {
+        if (in_array($partial, [null, '', []], strict: true)) {
             throw new Exception\RuntimeException(
                 'Unable to render breadcrumbs: No partial view script provided',
             );

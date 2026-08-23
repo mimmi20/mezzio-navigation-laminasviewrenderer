@@ -29,18 +29,18 @@ final class ConvertToPagesFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())
             ->method('get');
         $container->expects(self::once())
             ->method('has')
             ->with(PageFactoryInterface::class)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         assert($container instanceof ContainerInterface);
         $helper = (new ConvertToPagesFactory())($container);
@@ -58,9 +58,7 @@ final class ConvertToPagesFactoryTest extends TestCase
     {
         $pageFactory = self::createStub(PageFactoryInterface::class);
 
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('get')
             ->with(PageFactoryInterface::class)
@@ -68,7 +66,7 @@ final class ConvertToPagesFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with(PageFactoryInterface::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
 
         assert($container instanceof ContainerInterface);
         $helper = (new ConvertToPagesFactory())($container);

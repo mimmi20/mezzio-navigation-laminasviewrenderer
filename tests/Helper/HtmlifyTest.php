@@ -20,6 +20,7 @@ use Laminas\View\Helper\EscapeHtml;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\Htmlify;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -31,6 +32,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlify(): void
     {
@@ -47,9 +50,7 @@ final class HtmlifyTest extends TestCase
         $href                   = '#';
         $target                 = '_blank';
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $translatePlugin = $this->createMock(Translate::class);
         $matcher         = self::exactly(2);
         $translatePlugin->expects($matcher)
             ->method('__invoke')
@@ -70,17 +71,13 @@ final class HtmlifyTest extends TestCase
                 },
             );
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($translatedLabel)
             ->willReturn($escapedTranslatedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -90,9 +87,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -145,6 +140,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslator(): void
     {
@@ -158,17 +155,13 @@ final class HtmlifyTest extends TestCase
         $href         = '#';
         $target       = null;
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($label)
             ->willReturn($escapedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -178,9 +171,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -231,6 +222,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutEscapingLabel(): void
     {
@@ -246,9 +239,7 @@ final class HtmlifyTest extends TestCase
         $href            = '#';
         $target          = '_blank';
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $translatePlugin = $this->createMock(Translate::class);
         $matcher         = self::exactly(2);
         $translatePlugin->expects($matcher)
             ->method('__invoke')
@@ -269,15 +260,11 @@ final class HtmlifyTest extends TestCase
                 },
             );
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -287,9 +274,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -335,13 +320,15 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, false));
+        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, escapeLabel: false));
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslatorAndEscapingLabel(): void
     {
@@ -354,15 +341,11 @@ final class HtmlifyTest extends TestCase
         $href   = '#';
         $target = null;
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -372,9 +355,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -418,13 +399,15 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, false));
+        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, escapeLabel: false));
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithClassOnListItem(): void
     {
@@ -440,9 +423,7 @@ final class HtmlifyTest extends TestCase
         $href                   = '#';
         $target                 = '_blank';
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $translatePlugin = $this->createMock(Translate::class);
         $matcher         = self::exactly(2);
         $translatePlugin->expects($matcher)
             ->method('__invoke')
@@ -463,17 +444,13 @@ final class HtmlifyTest extends TestCase
                 },
             );
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($translatedLabel)
             ->willReturn($escapedTranslatedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -483,9 +460,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -530,13 +505,18 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, true));
+        self::assertSame(
+            $expected,
+            $helper->toHtml('Breadcrumbs', $page, escapeLabel: true, addClassToListItem: true),
+        );
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslatorAndWithClassOnListItem(): void
     {
@@ -549,17 +529,13 @@ final class HtmlifyTest extends TestCase
         $href         = '#';
         $target       = null;
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($label)
             ->willReturn($escapedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -569,9 +545,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -614,13 +588,18 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, true));
+        self::assertSame(
+            $expected,
+            $helper->toHtml('Breadcrumbs', $page, escapeLabel: true, addClassToListItem: true),
+        );
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutHref(): void
     {
@@ -635,9 +614,7 @@ final class HtmlifyTest extends TestCase
         $id                     = 'testId';
         $class                  = 'test-class';
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $translatePlugin = $this->createMock(Translate::class);
         $matcher         = self::exactly(2);
         $translatePlugin->expects($matcher)
             ->method('__invoke')
@@ -658,17 +635,13 @@ final class HtmlifyTest extends TestCase
                 },
             );
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($translatedLabel)
             ->willReturn($escapedTranslatedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -678,9 +651,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -732,6 +703,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslatorAndHref(): void
     {
@@ -743,17 +716,13 @@ final class HtmlifyTest extends TestCase
         $id           = 'testId';
         $class        = 'test-class';
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($label)
             ->willReturn($escapedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -763,9 +732,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -815,6 +782,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClasses(): void
     {
@@ -833,9 +802,7 @@ final class HtmlifyTest extends TestCase
         $onclick                = (object) ['a' => 'b'];
         $testData               = ['test-class1', 'test-class2'];
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $translatePlugin = $this->createMock(Translate::class);
         $matcher         = self::exactly(2);
         $translatePlugin->expects($matcher)
             ->method('__invoke')
@@ -856,17 +823,13 @@ final class HtmlifyTest extends TestCase
                 },
             );
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::once())
             ->method('__invoke')
             ->with($translatedLabel)
             ->willReturn($escapedTranslatedLabel);
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -876,9 +839,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -931,6 +892,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClasses2(): void
     {
@@ -944,21 +907,15 @@ final class HtmlifyTest extends TestCase
         $testData   = ['test-class1', 'test-class2'];
         $textDomain = 'testDomain';
 
-        $translatePlugin = $this->getMockBuilder(Translate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $translatePlugin = $this->createMock(Translate::class);
         $translatePlugin->expects(self::never())
             ->method('__invoke');
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -968,9 +925,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -981,10 +936,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
@@ -1023,6 +978,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClasses3(): void
     {
@@ -1035,15 +992,11 @@ final class HtmlifyTest extends TestCase
         $onclick  = (object) ['a' => 'b'];
         $testData = ['test-class1', 'test-class2'];
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -1053,9 +1006,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1066,10 +1017,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1106,6 +1057,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes(): void
     {
@@ -1119,15 +1072,11 @@ final class HtmlifyTest extends TestCase
         $testData   = ['test-class1', 'test-class2'];
         $attributes = ['data-bs-toggle' => 'dropdown', 'role' => 'button', 'aria-expanded' => 'false'];
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -1137,9 +1086,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1150,10 +1097,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1183,13 +1130,24 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, false, $attributes));
+        self::assertSame(
+            $expected,
+            $helper->toHtml(
+                'Breadcrumbs',
+                $page,
+                escapeLabel: true,
+                addClassToListItem: false,
+                attributes: $attributes,
+            ),
+        );
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes2(): void
     {
@@ -1201,15 +1159,11 @@ final class HtmlifyTest extends TestCase
         $testData   = ['test-class1', 'test-class2'];
         $attributes = ['data-bs-toggle' => 'dropdown', 'role' => 'button', 'aria-expanded' => 'false'];
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -1219,9 +1173,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1232,10 +1184,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1265,7 +1217,14 @@ final class HtmlifyTest extends TestCase
         assert($page instanceof PageInterface);
         self::assertSame(
             $expected,
-            $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, true),
+            $helper->toHtml(
+                'Breadcrumbs',
+                $page,
+                escapeLabel: true,
+                addClassToListItem: false,
+                attributes: $attributes,
+                convertToButton: true,
+            ),
         );
     }
 
@@ -1273,6 +1232,8 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes3(): void
     {
@@ -1284,15 +1245,11 @@ final class HtmlifyTest extends TestCase
         $testData   = ['test-class1', 'test-class2'];
         $attributes = ['data-bs-toggle' => 'dropdown', 'role' => 'button', 'aria-expanded' => 'false'];
 
-        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $escapeHtml = $this->createMock(EscapeHtml::class);
         $escapeHtml->expects(self::never())
             ->method('__invoke');
 
-        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $htmlElement = $this->createMock(HtmlElementInterface::class);
         $htmlElement->expects(self::once())
             ->method('toHtml')
             ->with(
@@ -1302,9 +1259,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $page = $this->createMock(PageInterface::class);
         $page->expects(self::never())
             ->method('isVisible');
         $page->expects(self::never())
@@ -1315,10 +1270,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(null);
+            ->willReturn(value: null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1349,7 +1304,14 @@ final class HtmlifyTest extends TestCase
         assert($page instanceof PageInterface);
         self::assertSame(
             $expected,
-            $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false),
+            $helper->toHtml(
+                'Breadcrumbs',
+                $page,
+                escapeLabel: true,
+                addClassToListItem: false,
+                attributes: $attributes,
+                convertToButton: false,
+            ),
         );
     }
 }

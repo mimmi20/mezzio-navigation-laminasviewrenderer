@@ -37,7 +37,7 @@ final class PluginManagerFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with('ServiceListener')
-            ->willReturn(true);
+            ->willReturn(value: true);
         $container->expects(self::never())
             ->method('get');
 
