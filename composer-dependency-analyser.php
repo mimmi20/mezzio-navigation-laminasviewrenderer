@@ -11,6 +11,7 @@
 
 declare(strict_types = 1);
 
+use Laminas\Navigation\AbstractContainer;
 use ShipMonk\ComposerDependencyAnalyser\Config\Configuration;
 use ShipMonk\ComposerDependencyAnalyser\Config\ErrorType;
 
@@ -22,6 +23,8 @@ $config
     ->addPathToScan(__DIR__ . '/tests', isDev: true)
     // applies only to directory scanning, not directly listed files
     ->setFileExtensions(['php'])
+
+    ->ignoreUnknownClasses([AbstractContainer::class])
 
     // do not complain about some modules
     ->ignoreErrorsOnPackage('mimmi20/coding-standard', [ErrorType::UNUSED_DEPENDENCY])

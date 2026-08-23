@@ -48,7 +48,6 @@ use function libxml_get_errors;
 use function libxml_use_internal_errors;
 use function mb_substr;
 use function preg_match;
-use function property_exists;
 use function rtrim;
 use function sprintf;
 use function strtotime;
