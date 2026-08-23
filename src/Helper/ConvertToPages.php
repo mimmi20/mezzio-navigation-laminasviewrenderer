@@ -96,7 +96,6 @@ final readonly class ConvertToPages implements ConvertToPagesInterface
         if ($recursive && is_numeric(key($mixed))) {
             // first key is numeric; assume several pages
             return array_map(
-                /** @return PageInterface */
                 function (iterable | ContainerInterface | int | PageInterface | string $value): PageInterface {
                     [$page] = $this->convert($value, recursive: false);
 

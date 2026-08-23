@@ -436,10 +436,7 @@ final class MenuTest extends TestCase
         $helper->setContainer();
     }
 
-    /**
-     * @throws Exception
-     * @throws ExceptionInterface
-     */
+    /** @throws ExceptionInterface */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';
@@ -698,10 +695,7 @@ final class MenuTest extends TestCase
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws ExceptionInterface
-     */
+    /** @throws ExceptionInterface */
     public function testHtmlifyWithException(): void
     {
         $exception = new \Laminas\I18n\Exception\RuntimeException('test');
