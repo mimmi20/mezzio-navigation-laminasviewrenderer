@@ -11,6 +11,7 @@
 
 declare(strict_types = 1);
 
+use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
@@ -66,6 +67,7 @@ return RectorConfig::configure()
         RenameParamToMatchTypeRector::class,
         ExplicitBoolCompareRector::class,
         NoSetupWithParentCallOverrideRector::class,
+        ConvertStaticToSelfRector::class,
     ])
     ->withoutParallel()
     ->withMemoryLimit('2048M');
