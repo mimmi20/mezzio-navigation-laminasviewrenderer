@@ -23,7 +23,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\LinksFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -34,8 +33,6 @@ final class LinksFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
@@ -101,8 +98,6 @@ final class LinksFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

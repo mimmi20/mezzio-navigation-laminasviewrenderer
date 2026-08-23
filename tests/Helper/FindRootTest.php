@@ -16,17 +16,12 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Helper;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRoot;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class FindRootTest extends TestCase
 {
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRoot(): void
     {
         $helper = new FindRoot();
@@ -48,11 +43,7 @@ final class FindRootTest extends TestCase
         self::assertSame($root, $helper->find($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testFindRootRecursive(): void
     {
         $helper = new FindRoot();
@@ -84,11 +75,7 @@ final class FindRootTest extends TestCase
         self::assertSame($root, $helper->find($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testFindRootWithoutParent(): void
     {
         $helper = new FindRoot();

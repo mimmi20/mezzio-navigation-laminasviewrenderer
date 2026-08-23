@@ -20,7 +20,6 @@ use Laminas\View\Helper\EscapeHtml;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\Htmlify;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -32,8 +31,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlify(): void
     {
@@ -140,8 +137,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslator(): void
     {
@@ -222,8 +217,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutEscapingLabel(): void
     {
@@ -327,8 +320,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslatorAndEscapingLabel(): void
     {
@@ -406,8 +397,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithClassOnListItem(): void
     {
@@ -515,8 +504,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslatorAndWithClassOnListItem(): void
     {
@@ -598,8 +585,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutHref(): void
     {
@@ -703,8 +688,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithoutTranslatorAndHref(): void
     {
@@ -782,8 +765,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClasses(): void
     {
@@ -892,8 +873,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClasses2(): void
     {
@@ -978,8 +957,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClasses3(): void
     {
@@ -1057,8 +1034,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes(): void
     {
@@ -1146,8 +1121,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes2(): void
     {
@@ -1232,8 +1205,6 @@ final class HtmlifyTest extends TestCase
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes3(): void
     {

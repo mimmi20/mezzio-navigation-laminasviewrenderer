@@ -16,7 +16,6 @@ namespace Mimmi20Test\Mezzio\Navigation\LaminasView\Helper;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPages;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesFactory;
 use Mimmi20\Mezzio\Navigation\Page\PageFactoryInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -29,8 +28,6 @@ final class ConvertToPagesFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
@@ -51,8 +48,6 @@ final class ConvertToPagesFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation2(): void
     {

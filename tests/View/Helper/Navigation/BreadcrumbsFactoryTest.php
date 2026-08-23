@@ -24,7 +24,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\BreadcrumbsFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -35,8 +34,6 @@ final class BreadcrumbsFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithTranslator(): void
     {
@@ -116,8 +113,6 @@ final class BreadcrumbsFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithoutTranslator(): void
     {
@@ -180,8 +175,6 @@ final class BreadcrumbsFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

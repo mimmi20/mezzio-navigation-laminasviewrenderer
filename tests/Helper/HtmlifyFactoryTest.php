@@ -19,7 +19,6 @@ use Laminas\View\HelperPluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\Htmlify;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -32,8 +31,6 @@ final class HtmlifyFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithoutTranslator(): void
     {
@@ -77,8 +74,6 @@ final class HtmlifyFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithTranslator(): void
     {

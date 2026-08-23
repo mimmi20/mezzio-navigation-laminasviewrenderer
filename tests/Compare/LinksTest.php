@@ -70,7 +70,6 @@ final class LinksTest extends AbstractTestCase
      * @throws ContainerExceptionInterface
      * @throws ExceptionInterface
      * @throws InvalidArgumentException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
