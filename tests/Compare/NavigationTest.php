@@ -29,7 +29,6 @@ use Mimmi20\Mezzio\Navigation\Navigation as Container;
 use Mimmi20\Mezzio\Navigation\Page\PageFactory;
 use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Override;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -44,9 +43,9 @@ use const PHP_EOL;
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation
  */
-#[Group('Compare')]
-#[Group('Laminas_View')]
-#[Group('Laminas_View_Helper')]
+#[Group(name: 'Compare')]
+#[Group(name: 'Laminas_View')]
+#[Group(name: 'Laminas_View_Helper')]
 final class NavigationTest extends AbstractTestCase
 {
     /**
@@ -60,7 +59,6 @@ final class NavigationTest extends AbstractTestCase
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
@@ -201,7 +199,7 @@ final class NavigationTest extends AbstractTestCase
     public function testDisablingContainerInjection(): void
     {
         // setup
-        $this->helper->setInjectContainer(false);
+        $this->helper->setInjectContainer(injectContainer: false);
         $this->helper->menu()->setContainer();
         $this->helper->breadcrumbs()->setContainer();
         $this->helper->setContainer($this->nav2);
@@ -286,7 +284,7 @@ final class NavigationTest extends AbstractTestCase
         $this->helper->setAuthorization($auth['acl']);
         assert(is_string($auth['role']));
         $this->helper->setRoles([$auth['role']]);
-        $this->helper->setInjectAuthorization(false);
+        $this->helper->setInjectAuthorization(injectAuthorization: false);
 
         $expected = $this->getExpected('menu/default1.html');
         $actual   = $this->helper->render();
@@ -322,11 +320,7 @@ final class NavigationTest extends AbstractTestCase
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -338,11 +332,7 @@ final class NavigationTest extends AbstractTestCase
         self::assertSame($auth, $this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testgetAuthorizationReturnsAuthorizationInstanceSetWithsetDefaultAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -355,11 +345,7 @@ final class NavigationTest extends AbstractTestCase
         self::assertSame($auth, $actual);
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testsetDefaultAuthorizationAcceptsNull(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -371,11 +357,7 @@ final class NavigationTest extends AbstractTestCase
         self::assertNull($this->helper->getAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testsetDefaultAuthorizationAcceptsNoParam(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -446,7 +428,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws RuntimeException
      * @throws ExceptionInterface
      */
-    #[Group('Laminas-6854')]
+    #[Group(name: 'Laminas-6854')]
     public function testRenderInvisibleItem(): void
     {
         $pageFactory = new PageFactory();
@@ -508,7 +490,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    #[Group('#3859')]
+    #[Group(name: '#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndDifferentContainers(): void
     {
         $menu     = ($this->helper)('nav1')->menu();
@@ -531,7 +513,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    #[Group('#3859')]
+    #[Group(name: '#3859')]
     public function testMultipleNavigationsWithDifferentHelpersAndSameContainer(): void
     {
         // Tests
@@ -554,7 +536,7 @@ final class NavigationTest extends AbstractTestCase
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    #[Group('#3859')]
+    #[Group(name: '#3859')]
     public function testMultipleNavigationsWithSameHelperAndSameContainer(): void
     {
         // Test

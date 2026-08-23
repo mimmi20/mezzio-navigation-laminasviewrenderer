@@ -86,7 +86,7 @@ parameters:
 
   cognitive_complexity:
     class: 82
-    function: 59
+    function: 61
 
   type_coverage:
     return_type: 94.9
@@ -132,16 +132,9 @@ parameters:
     - '~Parameter #1 \$mixed of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\Helper\\ConvertToPagesInterface::convert\(\) expects~'
     - '~has JsonException in PHPDoc~'
     -
-      identifier: property.uninitialized
-      paths:
-        - tests/Compare/SitemapTest.php
-        - tests/Compare/NavigationTest.php
-        - tests/Compare/MenuTest.php
-        - tests/Compare/LinksTest.php
-        - tests/Compare/BreadcrumbsTest.php
-        - tests/Compare/AbstractTestCase.php
-    -
       identifier: property.parentPropertyFinalByPhpDoc
+    -
+      identifier: argument.named
 
 services:
   errorFormatter.sarif:

@@ -46,9 +46,9 @@ use const PHP_EOL;
 /**
  * Tests Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu.
  */
-#[Group('Compare')]
-#[Group('Laminas_View')]
-#[Group('Laminas_View_Helper')]
+#[Group(name: 'Compare')]
+#[Group(name: 'Laminas_View')]
+#[Group(name: 'Laminas_View_Helper')]
 final class MenuTest extends AbstractTestCase
 {
     /**
@@ -62,7 +62,6 @@ final class MenuTest extends AbstractTestCase
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     #[Override]
     protected function setUp(): void
@@ -195,7 +194,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $actual = [
-            'indent4' => rtrim($this->helper->renderMenu(null, ['indent' => 4]), PHP_EOL),
+            'indent4' => rtrim($this->helper->renderMenu(options: ['indent' => 4]), PHP_EOL),
             'indent8' => rtrim($this->helper->renderMenu(), PHP_EOL),
         ];
 
@@ -281,7 +280,7 @@ final class MenuTest extends AbstractTestCase
         $this->helper->setAuthorization($acl['acl']);
         assert(is_string($acl['role']));
         $this->helper->setRoles([$acl['role']]);
-        $this->helper->setUseAuthorization(false);
+        $this->helper->setUseAuthorization(useAuthorization: false);
 
         $expected = $this->getExpected('menu/default1.html');
         $actual   = $this->helper->render();
@@ -487,7 +486,7 @@ final class MenuTest extends AbstractTestCase
      */
     public function testSetOnlyActiveBranch(): void
     {
-        $this->helper->setOnlyActiveBranch(true);
+        $this->helper->setOnlyActiveBranch(flag: true);
 
         $expected = $this->getExpected('menu/onlyactivebranch.html');
         $actual   = $this->helper->renderMenu();
@@ -502,7 +501,7 @@ final class MenuTest extends AbstractTestCase
      */
     public function testSetRenderParents(): void
     {
-        $this->helper->setOnlyActiveBranch(true)->setRenderParents(false);
+        $this->helper->setOnlyActiveBranch(flag: true)->setRenderParents(flag: false);
 
         $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
         $actual   = $this->helper->renderMenu();
@@ -565,7 +564,7 @@ final class MenuTest extends AbstractTestCase
         $this->helper->setOnlyActiveBranch()
             ->setMinDepth(1)
             ->setMaxDepth(2)
-            ->setRenderParents(false);
+            ->setRenderParents(flag: false);
 
         $expected = $this->getExpected('menu/onlyactivebranch_np_bd.html');
         $actual   = $this->helper->renderMenu();
@@ -585,7 +584,7 @@ final class MenuTest extends AbstractTestCase
         $this->helper->setOnlyActiveBranch()
             ->setMinDepth(1)
             ->setMaxDepth(1)
-            ->setRenderParents(false);
+            ->setRenderParents(flag: false);
 
         $expected = $this->getExpected('menu/onlyactivebranch_np_bd2.html');
         $actual   = $this->helper->renderMenu();
@@ -600,10 +599,10 @@ final class MenuTest extends AbstractTestCase
      */
     public function testRenderSubMenuShouldOverrideOptions(): void
     {
-        $this->helper->setOnlyActiveBranch(false)
+        $this->helper->setOnlyActiveBranch(flag: false)
             ->setMinDepth(1)
             ->setMaxDepth(2)
-            ->setRenderParents(true);
+            ->setRenderParents(flag: true);
 
         $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
         $actual   = $this->helper->renderSubMenu();
@@ -621,7 +620,7 @@ final class MenuTest extends AbstractTestCase
         $options = ['maxDepth' => 1];
 
         $expected = $this->getExpected('menu/maxdepth.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -636,7 +635,7 @@ final class MenuTest extends AbstractTestCase
         $options = ['minDepth' => 1];
 
         $expected = $this->getExpected('menu/mindepth.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -654,7 +653,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $expected = $this->getExpected('menu/bothdepts.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -669,7 +668,7 @@ final class MenuTest extends AbstractTestCase
         $options = ['onlyActiveBranch' => true];
 
         $expected = $this->getExpected('menu/onlyactivebranch.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -687,7 +686,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $expected = $this->getExpected('menu/onlyactivebranch_noparents.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -705,7 +704,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $expected = $this->getExpected('menu/onlyactivebranch_mindepth.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -723,7 +722,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $expected = $this->getExpected('menu/onlyactivebranch_maxdepth.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -742,7 +741,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $expected = $this->getExpected('menu/onlyactivebranch_bothdepts.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }
@@ -762,7 +761,7 @@ final class MenuTest extends AbstractTestCase
         ];
 
         $expected = $this->getExpected('menu/onlyactivebranch_np_bd.html');
-        $actual   = $this->helper->renderMenu(null, $options);
+        $actual   = $this->helper->renderMenu(options: $options);
 
         self::assertSame($expected, $actual);
     }

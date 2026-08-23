@@ -32,6 +32,7 @@ use function assert;
 use function count;
 use function get_debug_type;
 use function implode;
+use function in_array;
 use function is_array;
 use function is_bool;
 use function is_int;
@@ -448,7 +449,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
         }
 
@@ -528,10 +529,10 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
         int | string | null $indent = null,
         string | null $liActiveClass = null,
     ): string {
-        $this->setMaxDepth(null);
-        $this->setMinDepth(null);
-        $this->setRenderParents(false);
-        $this->setAddClassToListItem(false);
+        $this->setMaxDepth(maxDepth: null);
+        $this->setMinDepth(minDepth: null);
+        $this->setRenderParents(flag: false);
+        $this->setAddClassToListItem(flag: false);
 
         return $this->renderMenu(
             $container,
@@ -629,22 +630,14 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             return true;
         }
 
-        if (
-            $foundPage->getParent() instanceof ContainerInterface
-            && $foundPage->getParent()->hasPage($page)
-        ) {
-            // page is a sibling of the active page...
-            if (
-                !$foundPage->hasPages(!$this->renderInvisible)
-                || is_int($maxDepth) && $foundDepth + 1 > $maxDepth
-            ) {
-                // accept if active page has no children, or the
-                // children are too deep to be rendered
-                return true;
-            }
-        }
-
-        return false;
+        // page is a sibling of the active page...
+        // accept if active page has no children, or the
+        // children are too deep to be rendered
+        return $foundPage->getParent() instanceof ContainerInterface && $foundPage->getParent()->hasPage(
+            $page,
+        ) && (!$foundPage->hasPages(
+            !$this->renderInvisible,
+        ) || is_int($maxDepth) && $foundDepth + 1 > $maxDepth);
     }
 
     /**
@@ -666,7 +659,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $partial = $this->getPartial();
         }
 
-        if ($partial === null || $partial === '' || $partial === []) {
+        if (in_array($partial, [null, '', []], strict: true)) {
             throw new Exception\RuntimeException(
                 'Unable to render menu: No partial view script provided',
             );
@@ -689,7 +682,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             throw new Exception\InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if ($container === null) {
+        if (!$container instanceof ContainerInterface) {
             $container = $this->getContainer();
         }
 
@@ -780,7 +773,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $liClasses = [];
 
             // Is page active?
-            if ($subPage->isActive(true)) {
+            if ($subPage->isActive(recursive: true)) {
                 $liClasses[] = $liActiveClass;
             }
 
@@ -887,7 +880,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
                 continue;
             }
 
-            $isActive = $page->isActive(true);
+            $isActive = $page->isActive(recursive: true);
 
             if ($onlyActive && !$isActive) {
                 // page is not active itself, but might be in the active branch

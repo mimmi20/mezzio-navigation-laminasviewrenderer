@@ -28,7 +28,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
 use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -45,11 +44,7 @@ final class LinksTest extends TestCase
         Links::setDefaultRole();
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
@@ -91,11 +86,7 @@ final class LinksTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetMinDepth(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -151,11 +142,7 @@ final class LinksTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -190,16 +177,12 @@ final class LinksTest extends TestCase
 
         self::assertFalse($helper->getRenderInvisible());
 
-        $helper->setRenderInvisible(true);
+        $helper->setRenderInvisible(renderInvisible: true);
 
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRole(): void
     {
         $role        = 'testRole';
@@ -249,11 +232,7 @@ final class LinksTest extends TestCase
         self::assertTrue($helper->hasRoles());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -292,16 +271,12 @@ final class LinksTest extends TestCase
 
         self::assertTrue($helper->getUseAuthorization());
 
-        $helper->setUseAuthorization(false);
+        $helper->setUseAuthorization(useAuthorization: false);
 
         self::assertFalse($helper->getUseAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -358,11 +333,7 @@ final class LinksTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetView(): void
     {
         $view = self::createStub(RendererInterface::class);
@@ -408,8 +379,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainer(): void
     {
@@ -477,12 +446,7 @@ final class LinksTest extends TestCase
         self::assertSame($container, $helper->getContainer());
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws InvalidArgumentException */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';
@@ -529,8 +493,6 @@ final class LinksTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -578,8 +540,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testDoNotAccept(): void
     {
@@ -590,7 +550,7 @@ final class LinksTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -679,8 +639,6 @@ final class LinksTest extends TestCase
      * @throws Exception
      * @throws RuntimeException
      * @throws InvalidArgumentException
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlify(): void
     {
@@ -771,11 +729,7 @@ final class LinksTest extends TestCase
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetIndent(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
