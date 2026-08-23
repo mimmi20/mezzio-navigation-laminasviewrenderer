@@ -222,7 +222,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
     {
         parent::setView($view);
 
-        if ($this->pluginManager) {
+        if ($this->pluginManager instanceof ViewHelperPluginManager) {
             $this->pluginManager->setRenderer($view);
         }
 
@@ -243,7 +243,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      */
     private function findHelperNonStrict(string $proxy): ViewHelperInterface | null
     {
-        if ($this->pluginManager === null) {
+        if (!$this->pluginManager instanceof ViewHelperPluginManager) {
             return null;
         }
 
@@ -282,7 +282,7 @@ final class Navigation extends AbstractHelper implements ViewHelperInterface
      */
     private function findHelperStrict(string $proxy): ViewHelperInterface
     {
-        if ($this->pluginManager === null) {
+        if (!$this->pluginManager instanceof ViewHelperPluginManager) {
             throw new Exception\RuntimeException(
                 sprintf('Failed to find plugin for %s, no PluginManager set', $proxy),
             );

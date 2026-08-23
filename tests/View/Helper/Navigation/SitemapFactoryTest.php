@@ -24,7 +24,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -35,16 +34,14 @@ final class SitemapFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $basePath        = $this->createMock(BasePath::class);
-        $escaper         = $this->createMock(EscapeHtml::class);
-        $serverUrlHelper = $this->createMock(ServerUrlHelper::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $basePath        = self::createStub(BasePath::class);
+        $escaper         = self::createStub(EscapeHtml::class);
+        $serverUrlHelper = self::createStub(ServerUrlHelper::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $matcher                 = self::exactly(3);
@@ -108,8 +105,6 @@ final class SitemapFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

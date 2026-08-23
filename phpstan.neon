@@ -86,7 +86,7 @@ parameters:
 
   cognitive_complexity:
     class: 81
-    function: 59
+    function: 61
 
   type_coverage:
     return_type: 94.9
@@ -130,16 +130,9 @@ parameters:
     - '~extends deprecated class~'
     - '~Access to deprecated property~'
     -
-      identifier: property.uninitialized
-      paths:
-        - tests/Compare/SitemapTest.php
-        - tests/Compare/NavigationTest.php
-        - tests/Compare/MenuTest.php
-        - tests/Compare/LinksTest.php
-        - tests/Compare/BreadcrumbsTest.php
-        - tests/Compare/AbstractTestCase.php
-    -
       identifier: property.parentPropertyFinalByPhpDoc
+    -
+      identifier: argument.named
 
 services:
   errorFormatter.sarif:

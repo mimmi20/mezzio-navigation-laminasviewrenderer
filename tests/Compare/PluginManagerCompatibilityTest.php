@@ -61,9 +61,9 @@ use Throwable;
 
 use function method_exists;
 
-#[Group('Compare')]
-#[Group('Laminas_View')]
-#[RequiresPhpunit('< 12')]
+#[Group(name: 'Compare')]
+#[Group(name: 'Laminas_View')]
+#[RequiresPhpunit(versionRequirement: '< 12.0.0')]
 final class PluginManagerCompatibilityTest extends TestCase
 {
     use CommonPluginManagerTrait;
@@ -77,7 +77,7 @@ final class PluginManagerCompatibilityTest extends TestCase
     public function testInjectsParentContainerIntoHelpers(): void
     {
         $sm = new ServiceManager();
-        $sm->setAllowOverride(true);
+        $sm->setAllowOverride(flag: true);
 
         $sm->setFactory('Navigation', DefaultNavigationFactory::class);
         $sm->setFactory('nav_test1', new ConstructedNavigationFactory('nav_test1'));
@@ -151,7 +151,7 @@ final class PluginManagerCompatibilityTest extends TestCase
              *
              * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
              */
-            static fn (ContainerInterface $container, $requestedName, array | null $options = null) => new self(
+            static fn (ContainerInterface $container, $requestedName, array | null $options = null): self => new self(
                 'test',
             ),
         );
@@ -169,7 +169,7 @@ final class PluginManagerCompatibilityTest extends TestCase
     protected static function getPluginManager(): PluginManager
     {
         $sm = new ServiceManager();
-        $sm->setAllowOverride(true);
+        $sm->setAllowOverride(flag: true);
 
         $sm->setFactory('Navigation', DefaultNavigationFactory::class);
         $sm->setFactory('nav_test1', new ConstructedNavigationFactory('nav_test1'));

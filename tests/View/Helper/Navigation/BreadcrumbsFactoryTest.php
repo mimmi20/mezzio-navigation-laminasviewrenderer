@@ -24,7 +24,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\BreadcrumbsFactory;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -35,22 +34,20 @@ final class BreadcrumbsFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithTranslator(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $translatePlugin = $this->createMock(Translate::class);
-        $escapePlugin    = $this->createMock(EscapeHtml::class);
-        $renderer        = $this->createMock(PartialRendererInterface::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $translatePlugin = self::createStub(Translate::class);
+        $escapePlugin    = self::createStub(EscapeHtml::class);
+        $renderer        = self::createStub(PartialRendererInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $matcher = self::exactly(2);
         $viewHelperPluginManager->expects($matcher)
             ->method('get')
@@ -116,21 +113,19 @@ final class BreadcrumbsFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithoutTranslator(): void
     {
-        $htmlify         = $this->createMock(HtmlifyInterface::class);
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $escapePlugin    = $this->createMock(EscapeHtml::class);
-        $renderer        = $this->createMock(PartialRendererInterface::class);
+        $htmlify         = self::createStub(HtmlifyInterface::class);
+        $containerParser = self::createStub(ContainerParserInterface::class);
+        $escapePlugin    = self::createStub(EscapeHtml::class);
+        $renderer        = self::createStub(PartialRendererInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
         $viewHelperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $viewHelperPluginManager->expects(self::once())
             ->method('get')
             ->with(EscapeHtml::class)
@@ -180,8 +175,6 @@ final class BreadcrumbsFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithAssertionError(): void
     {

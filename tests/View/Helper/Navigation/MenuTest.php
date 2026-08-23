@@ -30,7 +30,6 @@ use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -48,11 +47,7 @@ final class MenuTest extends TestCase
         Menu::setDefaultRole();
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetMaxDepth(): void
     {
         $maxDepth = 4;
@@ -87,11 +82,7 @@ final class MenuTest extends TestCase
         self::assertSame($maxDepth, $helper->getMaxDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetMinDepth(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -140,11 +131,7 @@ final class MenuTest extends TestCase
         self::assertSame(4, $helper->getMinDepth());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRenderInvisible(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -172,16 +159,12 @@ final class MenuTest extends TestCase
 
         self::assertFalse($helper->getRenderInvisible());
 
-        $helper->setRenderInvisible(true);
+        $helper->setRenderInvisible(renderInvisible: true);
 
         self::assertTrue($helper->getRenderInvisible());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRole(): void
     {
         $role        = 'testRole';
@@ -224,11 +207,7 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->hasRoles());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetUseAuthorization(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -260,16 +239,12 @@ final class MenuTest extends TestCase
 
         self::assertTrue($helper->getUseAuthorization());
 
-        $helper->setUseAuthorization(false);
+        $helper->setUseAuthorization(useAuthorization: false);
 
         self::assertFalse($helper->getUseAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetAuthorization(): void
     {
         $auth = $this->createMock(AuthorizationInterface::class);
@@ -319,14 +294,10 @@ final class MenuTest extends TestCase
         self::assertTrue($helper->hasAuthorization());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetView(): void
     {
-        $view = $this->createMock(RendererInterface::class);
+        $view = self::createStub(RendererInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -362,12 +333,10 @@ final class MenuTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainer(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
@@ -427,8 +396,6 @@ final class MenuTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithException(): void
     {
@@ -469,12 +436,7 @@ final class MenuTest extends TestCase
         $helper->setContainer();
     }
 
-    /**
-     * @throws Exception
-     * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws ExceptionInterface */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';
@@ -514,12 +476,10 @@ final class MenuTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSetContainerWithStringFound(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -555,19 +515,17 @@ final class MenuTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testDoNotAccept(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(false);
+            ->willReturn(value: false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -648,14 +606,12 @@ final class MenuTest extends TestCase
     /**
      * @throws Exception
      * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testHtmlify(): void
     {
         $expected = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped">testLabelTranslatedAndEscaped</a>';
 
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
@@ -739,17 +695,12 @@ final class MenuTest extends TestCase
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws Exception
-     * @throws ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws ExceptionInterface */
     public function testHtmlifyWithException(): void
     {
         $exception = new \Laminas\I18n\Exception\RuntimeException('test');
 
-        $container = $this->createMock(ContainerInterface::class);
+        $container = self::createStub(ContainerInterface::class);
         $name      = 'Mezzio\Navigation\Top';
 
         $page = $this->createMock(PageInterface::class);
@@ -838,11 +789,7 @@ final class MenuTest extends TestCase
         $helper->htmlify($page);
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetIndent(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -879,11 +826,7 @@ final class MenuTest extends TestCase
         self::assertSame('    ', $helper->getIndent());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testEscapeLabels(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -911,16 +854,12 @@ final class MenuTest extends TestCase
 
         self::assertTrue($helper->getEscapeLabels());
 
-        $helper->escapeLabels(false);
+        $helper->escapeLabels(flag: false);
 
         self::assertFalse($helper->getEscapeLabels());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetAddClassToListItem(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -948,16 +887,12 @@ final class MenuTest extends TestCase
 
         self::assertFalse($helper->getAddClassToListItem());
 
-        $helper->setAddClassToListItem(true);
+        $helper->setAddClassToListItem(flag: true);
 
         self::assertTrue($helper->getAddClassToListItem());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetOnlyActiveBranch(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -985,16 +920,12 @@ final class MenuTest extends TestCase
 
         self::assertFalse($helper->getOnlyActiveBranch());
 
-        $helper->setOnlyActiveBranch(true);
+        $helper->setOnlyActiveBranch(flag: true);
 
         self::assertTrue($helper->getOnlyActiveBranch());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetPartial(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1031,11 +962,7 @@ final class MenuTest extends TestCase
         self::assertSame('test', $helper->getPartial());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetRenderParents(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1063,16 +990,12 @@ final class MenuTest extends TestCase
 
         self::assertTrue($helper->getRenderParents());
 
-        $helper->setRenderParents(false);
+        $helper->setRenderParents(flag: false);
 
         self::assertFalse($helper->getRenderParents());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetUlClass(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1105,11 +1028,7 @@ final class MenuTest extends TestCase
         self::assertSame('test', $helper->getUlClass());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetLiClass(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1142,11 +1061,7 @@ final class MenuTest extends TestCase
         self::assertSame('test', $helper->getLiClass());
     }
 
-    /**
-     * @throws Exception
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
+    /** @throws Exception */
     public function testSetLiActiveClass(): void
     {
         $htmlify = $this->createMock(HtmlifyInterface::class);
@@ -1183,8 +1098,6 @@ final class MenuTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderMenuWithContainerException(): void
     {
@@ -1199,7 +1112,7 @@ final class MenuTest extends TestCase
         $liActiveClass = 'li-active';
 
         $parentPage = new Uri();
-        $parentPage->setVisible(true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1211,7 +1124,7 @@ final class MenuTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(false);
+        $page->setActive(active: false);
 
         $parentPage->addPage($page);
 
@@ -1283,8 +1196,6 @@ final class MenuTest extends TestCase
      * @throws Exception
      * @throws ExceptionInterface
      * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testRenderMenuWithHtmlException(): void
     {
@@ -1299,7 +1210,7 @@ final class MenuTest extends TestCase
         $liActiveClass = 'li-active';
 
         $parentPage = new Uri();
-        $parentPage->setVisible(true);
+        $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
         $parentPage->setId('parent-id');
@@ -1311,7 +1222,7 @@ final class MenuTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(true);
+        $page->setActive(active: true);
 
         $parentPage->addPage($page);
 

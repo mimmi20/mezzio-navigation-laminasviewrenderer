@@ -17,7 +17,6 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\UrlHelper as BaseUrlHelper;
 use Mezzio\LaminasView\UrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\UrlHelperFactory;
-use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -31,8 +30,6 @@ final class UrlHelperFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationException(): void
     {
@@ -40,7 +37,7 @@ final class UrlHelperFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with(BaseUrlHelper::class)
-            ->willReturn(false);
+            ->willReturn(value: false);
 
         $this->expectException(MissingHelperException::class);
         $this->expectExceptionMessage(
@@ -58,18 +55,16 @@ final class UrlHelperFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
-     * @throws NoPreviousThrowableException
-     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocation(): void
     {
-        $baseHelper = $this->createMock(BaseUrlHelper::class);
+        $baseHelper = self::createStub(BaseUrlHelper::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
             ->method('has')
             ->with(BaseUrlHelper::class)
-            ->willReturn(true);
+            ->willReturn(value: true);
         $container->expects(self::once())
             ->method('get')
             ->with(BaseUrlHelper::class)
