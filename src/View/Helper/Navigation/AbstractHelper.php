@@ -270,9 +270,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
             $container = $this->getContainer();
         }
 
-        if ($minDepth === null) {
-            $minDepth = $this->getMinDepth();
-        }
+        $minDepth ??= $this->getMinDepth();
 
         if ((!is_int($maxDepth) || 0 > $maxDepth) && $maxDepth !== null) {
             $maxDepth = $this->getMaxDepth();
