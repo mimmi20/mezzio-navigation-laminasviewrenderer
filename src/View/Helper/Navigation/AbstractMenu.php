@@ -655,9 +655,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
         ContainerInterface | string | null $container,
         array | ModelInterface | string | null $partial,
     ): string {
-        if ($partial === null) {
-            $partial = $this->getPartial();
-        }
+        $partial ??= $this->getPartial();
 
         if (in_array($partial, [null, '', []], strict: true)) {
             throw new Exception\RuntimeException(
