@@ -253,9 +253,7 @@ final class Links extends AbstractHelper implements LinksInterface
     #[Override]
     public function findAllRelations(PageInterface $page, int | null $flag = null): array
     {
-        if ($flag === null) {
-            $flag = self::RENDER_ALL;
-        }
+        $flag ??= self::RENDER_ALL;
 
         $result = ['rel' => [], 'rev' => []];
         $native = array_values(LinksInterface::RELATIONS);
