@@ -540,9 +540,7 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     #[Override]
     public function getServerUrl(): string
     {
-        if ($this->serverUrl === null) {
-            $this->serverUrl = ($this->serverUrlHelper)();
-        }
+        $this->serverUrl ??= ($this->serverUrlHelper)();
 
         return $this->serverUrl;
     }
