@@ -35,6 +35,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 use RecursiveIteratorIterator;
+use Throwable;
 
 use function assert;
 use function date;
@@ -142,9 +143,13 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
     {
         $dom = $this->getDomSitemap($container);
 
-        $xml = $this->getUseXmlDeclaration()
-            ? $dom->saveXML()
-            : $dom->saveXML($dom->documentElement);
+        try {
+            $xml = $this->getUseXmlDeclaration()
+                ? $dom->saveXML()
+                : $dom->saveXML($dom->documentElement);
+        } catch (DOMException) {
+            $xml = false;
+        }
 
         return rtrim((string) $xml, PHP_EOL);
     }
@@ -210,7 +215,11 @@ final class Sitemap extends AbstractHelper implements SitemapInterface
         }
 
         if (is_int($maxDepth)) {
-            $iterator->setMaxDepth($maxDepth);
+            try {
+                $iterator->setMaxDepth($maxDepth);
+            } catch (Throwable) {
+                // do nothing
+            }
         }
 
         // iterate container

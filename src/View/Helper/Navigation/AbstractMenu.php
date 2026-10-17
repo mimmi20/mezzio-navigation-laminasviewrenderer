@@ -25,6 +25,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 use RecursiveIteratorIterator;
+use Throwable;
 
 use function array_key_exists;
 use function array_merge;
@@ -435,7 +436,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * @param ContainerInterface<PageInterface>|string|null $container [optional] container to create menu from. Default is to use the container retrieved from {@link getContainer()}.
      * @param array<string, bool|int|string|null>           $options   [optional] options for controlling rendering
-     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
+     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int<-1, max>|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
      *
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
@@ -459,6 +460,10 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
         assert(is_string($options['liClass']));
         assert(is_string($options['indent']));
         assert(is_int($options['minDepth']));
+        assert(
+            (is_int($options['maxDepth']) && $options['maxDepth'] >= -1)
+            || $options['maxDepth'] === null,
+        );
         assert(is_bool($options['onlyActiveBranch']));
         assert(is_bool($options['renderParents']));
         assert(is_bool($options['escapeLabels']));
@@ -825,7 +830,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      * @param string                            $liCssClass         CSS class for all LI
      * @param string                            $indent             initial indentation
      * @param int|null                          $minDepth           minimum depth
-     * @param int|null                          $maxDepth           maximum depth
+     * @param int<-1, max>|null                 $maxDepth           maximum depth
      * @param bool                              $onlyActive         render only active branch?
      * @param bool                              $escapeLabels       Whether or not to escape the labels
      * @param bool                              $addClassToListItem Whether or not page class applied to <li> element
@@ -855,7 +860,11 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
         $iterator = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
 
         if (is_int($maxDepth)) {
-            $iterator->setMaxDepth($maxDepth);
+            try {
+                $iterator->setMaxDepth($maxDepth);
+            } catch (Throwable) {
+                // do nothing
+            }
         }
 
         // iterate container
