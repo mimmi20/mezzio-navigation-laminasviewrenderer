@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 
 use DOMDocument;
 use DOMElement;
@@ -31,8 +31,8 @@ use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Sitemap;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\SitemapInterface;
 use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\Mezzio\Navigation\Page\Uri;
@@ -541,7 +541,7 @@ final class SitemapTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(value: false);
+            ->willReturn(false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -822,7 +822,7 @@ final class SitemapTest extends TestCase
         $auth->expects(self::exactly(2))
             ->method('isGranted')
             ->with($role, $resource, $privilege, null)
-            ->willReturn(value: true);
+            ->willReturn(true);
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())

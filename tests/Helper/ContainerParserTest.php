@@ -75,7 +75,7 @@ final class ContainerParserTest extends TestCase
         $serviceLocator->expects(self::once())
             ->method('has')
             ->with(MezzioNavigation::class)
-            ->willReturn(value: true);
+            ->willReturn(true);
         $serviceLocator->expects(self::once())
             ->method('get')
             ->with(MezzioNavigation::class)
@@ -105,7 +105,7 @@ final class ContainerParserTest extends TestCase
         $serviceLocator->expects(self::once())
             ->method('has')
             ->with(MezzioNavigation::class)
-            ->willReturn(value: true);
+            ->willReturn(true);
         $serviceLocator->expects(self::once())
             ->method('get')
             ->with(MezzioNavigation::class)
@@ -166,11 +166,11 @@ final class ContainerParserTest extends TestCase
         $serviceLocator->expects(self::once())
             ->method('has')
             ->with(MezzioNavigation::class)
-            ->willReturn(value: true);
+            ->willReturn(true);
         $serviceLocator->expects(self::once())
             ->method('get')
             ->with(MezzioNavigation::class)
-            ->willReturn(value: null);
+            ->willReturn(null);
 
         assert($serviceLocator instanceof ContainerInterface);
         $helper = new ContainerParser($serviceLocator);

@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
@@ -24,7 +24,7 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Links;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Links;
 use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
@@ -550,7 +550,7 @@ final class LinksTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(value: false);
+            ->willReturn(false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())

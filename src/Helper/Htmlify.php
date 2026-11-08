@@ -13,8 +13,11 @@ declare(strict_types = 1);
 
 namespace Mimmi20\Mezzio\Navigation\LaminasView\Helper;
 
+use Laminas\Escaper\Escaper;
+use Laminas\Escaper\EscaperInterface;
 use Laminas\I18n\Exception\RuntimeException;
-use Laminas\I18n\View\Helper\Translate;
+use Laminas\I18n\Translator\Translator;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtml;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
@@ -39,9 +42,9 @@ final readonly class Htmlify implements HtmlifyInterface
 {
     /** @throws void */
     public function __construct(
-        private EscapeHtml $escaper,
+        private EscaperInterface $escaper,
         private HtmlElementInterface $htmlElement,
-        private Translate | null $translator = null,
+        private TranslatorInterface | null $translator = null,
     ) {
         // nothing to do
     }
@@ -58,7 +61,6 @@ final readonly class Htmlify implements HtmlifyInterface
      *
      * @return string HTML string
      *
-     * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     #[Override]
@@ -73,16 +75,16 @@ final readonly class Htmlify implements HtmlifyInterface
         $label = (string) $page->getLabel();
         $title = $page->getTitle();
 
-        if ($this->translator instanceof Translate) {
+        if ($this->translator instanceof Translator) {
             $textDomain = $page->getTextDomain();
             assert($textDomain === null || is_string($textDomain));
 
             if (!empty($label)) {
-                $label = ($this->translator)($label, $textDomain);
+                $label = $this->translator->translate($label, $textDomain ?? TranslatorInterface::DEFAULT_TEXT_DOMAIN);
             }
 
             if (!empty($title)) {
-                $title = ($this->translator)($title, $textDomain);
+                $title = $this->translator->translate($title, $textDomain ?? TranslatorInterface::DEFAULT_TEXT_DOMAIN);
             }
         }
 
@@ -112,13 +114,21 @@ final readonly class Htmlify implements HtmlifyInterface
         );
 
         if (!empty($label) && $escapeLabel) {
-            $label = ($this->escaper)($label);
+            $label = $this->escaper->escapeHtml($label);
 
             assert(is_string($label));
         }
 
         if (array_key_exists('id', $attributes) && is_string($attributes['id'])) {
-            $attributes['id'] = $this->normalizeId($prefix, $attributes['id']);
+            try {
+                $attributes['id'] = $this->normalizeId($prefix, $attributes['id']);
+            } catch (\ValueError $e) {
+                throw new RuntimeException(
+                    sprintf('normalizing the id %s with prefix %s failed', $attributes['id'], $prefix),
+                    0,
+                    $e
+                );
+            }
         }
 
         $attributes = array_filter(
@@ -136,11 +146,19 @@ final readonly class Htmlify implements HtmlifyInterface
     /**
      * Normalize an ID
      *
-     * @throws void
+     * @throws \ValueError
      */
     private function normalizeId(string $prefix, string $value): string
     {
-        $prefix = mb_strtolower(trim(mb_substr($prefix, (int) mb_strrpos($prefix, '\\')), '\\'));
+        $prefix = mb_strtolower(
+            trim(
+                mb_substr(
+                    $prefix,
+                    (int) mb_strrpos($prefix, '\\'),
+                ),
+                '\\',
+            ),
+        );
 
         return $prefix . '-' . $value;
     }

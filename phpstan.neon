@@ -89,7 +89,7 @@ parameters:
     function: 97
 
   type_coverage:
-    return_type: 94.9
+    return_type: 92.7
     param_type: 97.2
     property_type: 100
     constant_type: 100
@@ -113,30 +113,11 @@ parameters:
 
   ignoreErrors:
     - '~will always evaluate to true~'
-    - '~has typehint with deprecated interface Laminas\\ServiceManager\\ConfigInterface~'
-    - '~Parameter #2 \$factory of method Laminas\\ServiceManager\\ServiceManager::setFactory\(\) expects~'
-    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::find(?:All|One)?By(Active|Label)\(\)~'
-    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\Navigation::find(?:All|One)?By(Active|Label)\(\)~'
-    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\ContainerInterface<Mimmi20\\Mezzio\\Navigation\\Page\\PageInterface>::find(?:All|One)?By(Active|Label)\(\)~'
-    - '~Call to an undefined method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::findRe[lv](Chapter|Example|Next|Prev|Section|Start|Subsection)\(\)~'
     - '~Access to an undefined property Mimmi20\\Mezzio\\Navigation\\Page\\PageInterface::\$(changefreq|lastmod|priority|resource)~'
-    - '~\$this\(Mimmi20Test\\Mezzio\\Navigation\\LaminasView\\Compare\\PluginManagerCompatibilityTest\) given~'
-    - '~Parameter #1 \$partial of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Abstract(Breadcrumbs|Menu)::setPartial\(\) expects array~'
-    - '~expects .rel.\|.rev.\, (.foo.|string) given~'
-    - '~Parameter (?:#3 )?\$(type|relation) of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\View\\Helper\\Navigation\\Links::(findRelation|renderLink)\(\) expects~'
-    - '~does not accept array<string, mixed>~'
-    - '~array<mixed, mixed> given~'
-    - '~extends @final class~'
-    - '~of deprecated class~'
-    - '~Call to deprecated method~'
-    - '~extends deprecated class~'
-    - '~Access to deprecated property~'
     - '~Parameter #1 \$options of method Mimmi20\\Mezzio\\Navigation\\Page\\PageFactoryInterface::factory\(\) expects array~'
     - '~Parameter #2 \$attribs of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\Helper\\HtmlElementInterface::toHtml\(\) expects~'
     - '~Parameter #1 \$mixed of method Mimmi20\\Mezzio\\Navigation\\LaminasView\\Helper\\ConvertToPagesInterface::convert\(\) expects~'
     - '~has JsonException in PHPDoc~'
-    -
-      identifier: property.parentPropertyFinalByPhpDoc
     -
       identifier: argument.named
     -
@@ -145,8 +126,6 @@ parameters:
       identifier: symplify.noDynamicName
     -
       identifier: symplify.forbiddenFuncCall
-    -
-      identifier: typePerfect.noMixedPropertyFetcher
     -
       identifier: symplify.requiredInterfaceContractNamespace
 

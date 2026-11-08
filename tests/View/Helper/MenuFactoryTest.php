@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 
 use AssertionError;
 use Laminas\ServiceManager\ServiceLocatorInterface;
@@ -20,8 +20,8 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Menu;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\MenuFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Menu;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\MenuFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;

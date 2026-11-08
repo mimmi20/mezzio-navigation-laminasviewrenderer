@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use ErrorException;
 use Laminas\View\Exception;
@@ -154,7 +154,7 @@ interface LinksInterface extends ViewHelperInterface
      *
      * @param PageInterface $page page to find links for
      *
-     * @return array<string, array<int|string, array<int|string, PageInterface>>>
+     * @return array{rel: array<value-of<LinksInterface::RELATIONS>, array<PageInterface>>, rev: array<value-of<LinksInterface::RELATIONS>, array<PageInterface>>}
      *
      * @throws InvalidArgumentException
      */

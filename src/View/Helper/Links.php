@@ -11,9 +11,10 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\View\Exception;
+use Laminas\View\Helper\Doctype;
 use Laminas\View\Helper\HeadLink;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
@@ -24,7 +25,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 use RecursiveIteratorIterator;
-
 use function array_diff;
 use function array_filter;
 use function array_key_exists;
@@ -45,7 +45,6 @@ use function preg_match;
 use function rtrim;
 use function sprintf;
 use function ucfirst;
-
 use const PHP_EOL;
 
 /**
@@ -68,6 +67,7 @@ final class Links extends AbstractHelper implements LinksInterface
         private readonly ConvertToPagesInterface $convertToPages,
         private readonly FindRootInterface $rootFinder,
         private readonly HeadLink $headLink,
+        private readonly Doctype $doctype
     ) {
         parent::__construct($htmlify, $containerParser);
     }
@@ -194,7 +194,7 @@ final class Links extends AbstractHelper implements LinksInterface
         }
 
         // TODO: add more attribs
-        // http://www.w3.org/TR/html401/struct/links.html#h-12.2
+        // http://www.w3.org/TR/html401/struct/links.html#h-12.3
         $attribs = [
             $attrib => $relation,
             'href' => $href,
@@ -217,7 +217,9 @@ final class Links extends AbstractHelper implements LinksInterface
             $attribs[$otherAttribute] = $otherAttributeValue;
         }
 
-        return $this->headLink->itemToString((object) $attribs);
+        $headLink = clone $this->headLink;
+
+        return $headLink->set($attribs)->toString();
     }
 
     // Finder methods:
@@ -244,7 +246,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @param PageInterface $page page to find links for
      *
-     * @return array<'rel'|'rev', array<string, non-empty-array<int, PageInterface>>>
+     * @return array{rel: array<value-of<LinksInterface::RELATIONS>, PageInterface>, rev: array<value-of<LinksInterface::RELATIONS>, PageInterface>}
      *
      * @throws void
      */
@@ -257,8 +259,8 @@ final class Links extends AbstractHelper implements LinksInterface
         $native = array_values(LinksInterface::RELATIONS);
 
         foreach (array_keys($result) as $rel) {
-            $meth  = 'getDefined' . ucfirst($rel);
-            $types = array_merge($native, array_diff($page->{$meth}(), $native));
+            $method = 'getDefined' . ucfirst($rel);
+            $types  = array_merge($native, array_diff($page->{$method}(), $native));
 
             foreach ($types as $type) {
                 if (!is_string($type)) {

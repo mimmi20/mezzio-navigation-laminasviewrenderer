@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\I18n\Exception\RuntimeException;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
@@ -26,7 +26,6 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 use RecursiveIteratorIterator;
 use Stringable;
-
 use function assert;
 use function count;
 use function get_debug_type;
@@ -39,7 +38,7 @@ use function str_repeat;
  *
  * Duck-types against Laminas\I18n\Translator\TranslatorAwareInterface.
  */
-abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
+abstract class AbstractHelper implements Stringable
 {
     private const int START_DEPTH = -1;
 

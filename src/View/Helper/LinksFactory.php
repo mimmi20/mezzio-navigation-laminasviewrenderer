@@ -11,30 +11,30 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
-use Laminas\I18n\View\Helper\Translate;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\View\Helper\EscapeHtml;
+use Laminas\View\Helper\Doctype;
+use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-
 use function assert;
 use function get_debug_type;
 use function sprintf;
 
-final class BreadcrumbsFactory
+final class LinksFactory
 {
     /**
      * Create and return a navigation view helper instance.
      *
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): Breadcrumbs
+    public function __invoke(ContainerInterface $container): Links
     {
         assert($container instanceof ServiceLocatorInterface);
 
@@ -48,30 +48,26 @@ final class BreadcrumbsFactory
             ),
         );
 
-        $translator = null;
-
-        if ($plugin->has(Translate::class)) {
-            $translator = $plugin->get(Translate::class);
-
-            assert($translator instanceof Translate);
-        }
-
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
-        $escapeHtml      = $plugin->get(EscapeHtml::class);
-        $renderer        = $container->get(LaminasViewRenderer::class);
+        $findRoot        = $container->get(FindRootInterface::class);
+        $headLink        = $plugin->get(HeadLink::class);
+        $converter       = $container->get(ConvertToPagesInterface::class);
+        $doctype         = $plugin->get(Doctype::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
-        assert($escapeHtml instanceof EscapeHtml);
-        assert($renderer instanceof LaminasViewRenderer);
+        assert($findRoot instanceof FindRootInterface);
+        assert($headLink instanceof HeadLink);
+        assert($converter instanceof ConvertToPagesInterface);
 
-        return new Breadcrumbs(
+        return new Links(
             htmlify: $htmlify,
             containerParser: $containerParser,
-            escaper: $escapeHtml,
-            renderer: $renderer,
-            translator: $translator,
+            convertToPages: $converter,
+            rootFinder: $findRoot,
+            headLink: $headLink,
+            doctype: $doctype,
         );
     }
 }

@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use DOMDocument;
 use DOMException;
@@ -36,7 +36,6 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 use RecursiveIteratorIterator;
 use Throwable;
-
 use function assert;
 use function date;
 use function get_debug_type;
@@ -53,7 +52,6 @@ use function rtrim;
 use function sprintf;
 use function strtotime;
 use function trim;
-
 use const LIBXML_ERR_ERROR;
 use const LIBXML_ERR_FATAL;
 use const LIBXML_ERR_WARNING;

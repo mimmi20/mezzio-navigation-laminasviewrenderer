@@ -47,8 +47,10 @@ final class ConfigProvider
     {
         return [
             'aliases' => [
-                'navigation' => View\Helper\Navigation::class,
-                'Navigation' => View\Helper\Navigation::class,
+                'breadcrumbs' => View\Helper\Breadcrumbs::class,
+                'links' => View\Helper\Links::class,
+                'menu' => View\Helper\Menu::class,
+                'sitemap' => View\Helper\Sitemap::class,
                 BaseServerUrlHelper::class => ServerUrlHelper::class,
                 'serverurl' => ServerUrlHelper::class,
                 'serverUrl' => ServerUrlHelper::class,
@@ -58,7 +60,10 @@ final class ConfigProvider
                 'Url' => UrlHelper::class,
             ],
             'factories' => [
-                View\Helper\Navigation::class => View\Helper\NavigationFactory::class,
+                View\Helper\Breadcrumbs::class => View\Helper\BreadcrumbsFactory::class,
+                View\Helper\Links::class => View\Helper\LinksFactory::class,
+                View\Helper\Menu::class => View\Helper\MenuFactory::class,
+                View\Helper\Sitemap::class => View\Helper\SitemapFactory::class,
                 UrlHelper::class => View\Helper\UrlHelperFactory::class,
                 ServerUrlHelper::class => View\Helper\ServerUrlHelperFactory::class,
             ],
@@ -76,7 +81,6 @@ final class ConfigProvider
     {
         return [
             'factories' => [
-                View\Helper\Navigation\PluginManager::class => View\Helper\Navigation\PluginManagerFactory::class,
                 Helper\ContainerParser::class => Helper\ContainerParserFactory::class,
                 Helper\FindRoot::class => InvokableFactory::class,
                 Helper\Htmlify::class => Helper\HtmlifyFactory::class,
