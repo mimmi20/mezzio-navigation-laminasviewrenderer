@@ -25,6 +25,7 @@ use Mimmi20\NavigationHelper\ContainerParser\ContainerParserInterface;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
 use Override;
 use RecursiveIteratorIterator;
+use Throwable;
 
 use function array_key_exists;
 use function array_merge;
@@ -433,9 +434,8 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
      *
      * Available $options:
      *
-     * @param ContainerInterface<PageInterface>|string|null $container [optional] container to create menu from. Default is to use the container retrieved from {@link getContainer()}.
-     * @param array<string, bool|int|string|null>           $options   [optional] options for controlling rendering
-     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
+     * @param ContainerInterface<PageInterface>|string|null                                                                                                                                                                                                       $container [optional] container to create menu from. Default is to use the container retrieved from {@link getContainer()}.
+     * @param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options   [optional] options for controlling rendering
      *
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
@@ -550,11 +550,9 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
     /**
      * Normalizes given render options.
      *
-     * @param array<string, bool|int|string|null> $options [optional] options for controlling rendering
-     * @phpstan-param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options
+     * @param array{indent?: int|string|null, ulClass?: string|null, liClass?: string|null, minDepth?: int|null, maxDepth?: int|null, onlyActiveBranch?: bool, renderParents?: bool, escapeLabels?: bool, addClassToListItem?: bool, liActiveClass?: string|null} $options [optional] options for controlling rendering
      *
-     * @return array<string, bool|int|string|null>
-     * @phpstan-return array{indent: string, ulClass: string, liClass: string, minDepth: int|null, maxDepth: int|null, onlyActiveBranch: bool, renderParents: bool, escapeLabels: bool, addClassToListItem: bool, liActiveClass: string}
+     * @return array{indent: string, ulClass: string, liClass: string, minDepth: int|null, maxDepth: int|null, onlyActiveBranch: bool, renderParents: bool, escapeLabels: bool, addClassToListItem: bool, liActiveClass: string}
      *
      * @throws void
      */
@@ -611,8 +609,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
     }
 
     /**
-     * @param array<string, int|PageInterface|null> $found
-     * @phpstan-param array{page?: PageInterface|null, depth?: int|null} $found
+     * @param array{page?: PageInterface|null, depth?: int|null} $found
      *
      * @throws void
      */
@@ -849,7 +846,11 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
         $iterator = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
 
         if (is_int($maxDepth)) {
-            $iterator->setMaxDepth($maxDepth);
+            try {
+                $iterator->setMaxDepth($maxDepth);
+            } catch (Throwable) {
+                // do nothing
+            }
         }
 
         // iterate container

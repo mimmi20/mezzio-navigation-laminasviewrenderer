@@ -234,7 +234,7 @@ abstract class AbstractTestCase extends TestCase
     /**
      * Sets up ACL
      *
-     * @return array<string, LaminasAcl|string>
+     * @return array{acl: LaminasAcl, role: string}
      *
      * @throws InvalidArgumentException
      */

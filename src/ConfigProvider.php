@@ -23,8 +23,7 @@ final class ConfigProvider
     /**
      * Return general-purpose laminas-navigation configuration.
      *
-     * @return array<string, array<string, array<string, string>>>
-     * @phpstan-return array{view_helpers: array{aliases: array<string, class-string>, factories: array<class-string, class-string>}, dependencies: array{factories: array<class-string, class-string>}}
+     * @return array{view_helpers: array{aliases: array<string, class-string>, factories: array<class-string, class-string>}, dependencies: array{factories: array<class-string, class-string>}}
      *
      * @throws void
      */
@@ -39,8 +38,7 @@ final class ConfigProvider
     /**
      * Return application-level dependency configuration.
      *
-     * @return array<string, array<string, string>>
-     * @phpstan-return array{aliases: array<string, class-string>, factories: array<class-string, class-string>}
+     * @return array{aliases: array<string, class-string>, factories: array<class-string, class-string>}
      *
      * @throws void
      */
@@ -69,8 +67,7 @@ final class ConfigProvider
     /**
      * Return application-level dependency configuration.
      *
-     * @return array<string, array<string, string>>
-     * @phpstan-return array{factories: array<class-string, class-string>}
+     * @return array{factories: array<class-string, class-string>}
      *
      * @throws void
      */

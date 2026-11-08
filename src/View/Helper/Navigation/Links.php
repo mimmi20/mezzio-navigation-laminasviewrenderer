@@ -169,13 +169,12 @@ final class Links extends AbstractHelper implements LinksInterface
     /**
      * Renders the given $page as a link element, with $attrib = $relation
      *
-     * @param PageInterface $page     the page to render the link for
-     * @param 'rel'|'rev'   $attrib   the attribute to use for $type, either 'rel' or 'rev'
-     * @param string        $relation relation type, muse be one of;
+     * @param PageInterface                       $page     the page to render the link for
+     * @param 'rel'|'rev'                         $attrib   the attribute to use for $type, either 'rel' or 'rev'
+     * @param value-of<LinksInterface::RELATIONS> $relation relation type, muse be one of;
      *                                alternate, appendix, bookmark, chapter, contents, copyright,
      *                                glossary, help, home, index, next, prev, section, start, stylesheet,
      *                                subsection
-     * @phpstan-param value-of<LinksInterface::RELATIONS> $relation
      *
      * @throws Exception\DomainException
      */
@@ -245,8 +244,7 @@ final class Links extends AbstractHelper implements LinksInterface
      *
      * @param PageInterface $page page to find links for
      *
-     * @return array<string, array<int|string, array<int, PageInterface>>>
-     * @phpstan-return array<'rel'|'rev', array<string, non-empty-array<int, PageInterface>>>
+     * @return array<'rel'|'rev', array<string, non-empty-array<int, PageInterface>>>
      *
      * @throws void
      */
@@ -300,10 +298,9 @@ final class Links extends AbstractHelper implements LinksInterface
      * This method will first look for relations in the page instance, then
      * by searching the root container if nothing was found in the page.
      *
-     * @param PageInterface $page page to find relations for
-     * @param 'rel'|'rev'   $rel  relation, "rel" or "rev"
-     * @param string        $type link type, e.g. 'start', 'next'
-     * @phpstan-param value-of<LinksInterface::RELATIONS> $type
+     * @param PageInterface                       $page page to find relations for
+     * @param 'rel'|'rev'                         $rel  relation, "rel" or "rev"
+     * @param value-of<LinksInterface::RELATIONS> $type link type, e.g. 'start', 'next'
      *
      * @return array<int, PageInterface>
      *
