@@ -18,7 +18,7 @@ interface HtmlElementInterface
     /**
      * Returns an HTML string
      *
-     * @phpstan-param iterable<string, array<mixed>|bool|float|int|string|null> $attribs
+     * @param iterable<string, array<mixed>|bool|float|int|string|null> $attribs
      *
      * @return string HTML string
      *

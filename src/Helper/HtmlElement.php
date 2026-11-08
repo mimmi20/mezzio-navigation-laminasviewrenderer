@@ -30,7 +30,7 @@ final readonly class HtmlElement implements HtmlElementInterface
     /**
      * Returns an HTML string
      *
-     * @phpstan-param iterable<string, array<mixed>|bool|float|int|string|null> $attribs
+     * @param iterable<string, array<mixed>|bool|float|int|string|null> $attribs
      *
      * @return string HTML string
      *
@@ -45,7 +45,7 @@ final readonly class HtmlElement implements HtmlElementInterface
     /**
      * Generate an opening tag
      *
-     * @phpstan-param iterable<string, array<mixed>|bool|float|int|string|null> $attribs
+     * @param iterable<string, array<mixed>|bool|float|int|string|null> $attribs
      *
      * @throws JsonException
      */

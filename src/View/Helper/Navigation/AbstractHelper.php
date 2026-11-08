@@ -246,8 +246,7 @@ abstract class AbstractHelper extends AbstractHtmlElement implements Stringable
      * @param int|null                                      $minDepth  [optional] minimum depth required for page to be valid. Default is to use {@link getMinDepth()}. A null value means no minimum depth required.
      * @param int|null                                      $maxDepth  [optional] maximum depth a page can have to be valid. Default is to use {@link getMaxDepth()}. A null value means no maximum depth required.
      *
-     * @return array<string, int|PageInterface|null> an associative array with the values 'depth' and 'page', or an empty array if not found
-     * @phpstan-return array{page?: PageInterface|null, depth?: int|null}
+     * @return array{page?: PageInterface|null, depth?: int|null} an associative array with the values 'depth' and 'page', or an empty array if not found
      *
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
