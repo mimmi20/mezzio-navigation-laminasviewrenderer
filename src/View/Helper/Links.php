@@ -14,6 +14,7 @@ declare(strict_types = 1);
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\View\Exception;
+use Laminas\View\Helper\Doctype;
 use Laminas\View\Helper\HeadLink;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException;
@@ -66,6 +67,7 @@ final class Links extends AbstractHelper implements LinksInterface
         private readonly ConvertToPagesInterface $convertToPages,
         private readonly FindRootInterface $rootFinder,
         private readonly HeadLink $headLink,
+        private readonly Doctype $doctype
     ) {
         parent::__construct($htmlify, $containerParser);
     }
@@ -192,7 +194,7 @@ final class Links extends AbstractHelper implements LinksInterface
         }
 
         // TODO: add more attribs
-        // http://www.w3.org/TR/html401/struct/links.html#h-12.2
+        // http://www.w3.org/TR/html401/struct/links.html#h-12.3
         $attribs = [
             $attrib => $relation,
             'href' => $href,
@@ -215,7 +217,9 @@ final class Links extends AbstractHelper implements LinksInterface
             $attribs[$otherAttribute] = $otherAttributeValue;
         }
 
-        return $this->headLink->set($attribs)->toString();
+        $headLink = clone $this->headLink;
+
+        return $headLink->set($attribs)->toString();
     }
 
     // Finder methods:

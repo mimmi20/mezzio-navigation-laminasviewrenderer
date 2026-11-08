@@ -154,7 +154,7 @@ interface LinksInterface extends ViewHelperInterface
      *
      * @param PageInterface $page page to find links for
      *
-     * @return array{rel: array<value-of<LinksInterface::RELATIONS>, PageInterface>, rev: array<value-of<LinksInterface::RELATIONS>, PageInterface>}
+     * @return array{rel: array<value-of<LinksInterface::RELATIONS>, array<PageInterface>>, rev: array<value-of<LinksInterface::RELATIONS>, array<PageInterface>>}
      *
      * @throws InvalidArgumentException
      */

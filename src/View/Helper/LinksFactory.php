@@ -14,6 +14,7 @@ declare(strict_types = 1);
 namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\View\Helper\Doctype;
 use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
@@ -52,6 +53,7 @@ final class LinksFactory
         $findRoot        = $container->get(FindRootInterface::class);
         $headLink        = $plugin->get(HeadLink::class);
         $converter       = $container->get(ConvertToPagesInterface::class);
+        $doctype         = $plugin->get(Doctype::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
@@ -65,6 +67,7 @@ final class LinksFactory
             convertToPages: $converter,
             rootFinder: $findRoot,
             headLink: $headLink,
+            doctype: $doctype,
         );
     }
 }
