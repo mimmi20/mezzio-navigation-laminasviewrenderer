@@ -11,12 +11,13 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 
-use Laminas\I18n\View\Helper\Translate;
+use Laminas\View\Exception\ExceptionInterface;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Exception\RuntimeException;
-use Laminas\View\Helper\EscapeHtml;
+use Laminas\View\Helper\EscapeHtmlAttr;
+use Laminas\View\Helper\Escaper\AbstractHelper;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Renderer\RendererInterface;
 use Mezzio\LaminasView\LaminasViewRenderer;
@@ -24,10 +25,9 @@ use Mimmi20\Mezzio\GenericAuthorization\AuthorizationInterface;
 use Mimmi20\Mezzio\Navigation\ContainerInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Breadcrumbs;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Menu;
 use Mimmi20\Mezzio\Navigation\Navigation;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
-use Mimmi20\Mezzio\Navigation\Page\Route;
 use Mimmi20\Mezzio\Navigation\Page\Uri;
 use Override;
 use PHPUnit\Framework\Exception;
@@ -37,14 +37,14 @@ use Throwable;
 use function assert;
 use function sprintf;
 
-final class BreadcrumbsTest extends TestCase
+final class MenuTest extends TestCase
 {
     /** @throws void */
     #[Override]
     protected function tearDown(): void
     {
-        Breadcrumbs::setDefaultAuthorization();
-        Breadcrumbs::setDefaultRole();
+        Menu::setDefaultAuthorization();
+        Menu::setDefaultRole();
     }
 
     /** @throws Exception */
@@ -60,7 +60,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -68,16 +68,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertNull($helper->getMaxDepth());
@@ -98,7 +93,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -106,19 +101,14 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
-        self::assertSame(1, $helper->getMinDepth());
+        self::assertSame(0, $helper->getMinDepth());
 
         $helper->setMinDepth(4);
 
@@ -126,7 +116,7 @@ final class BreadcrumbsTest extends TestCase
 
         $helper->setMinDepth(-1);
 
-        self::assertSame(1, $helper->getMinDepth());
+        self::assertSame(0, $helper->getMinDepth());
 
         $helper->setMinDepth(0);
 
@@ -152,7 +142,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -160,16 +150,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertFalse($helper->getRenderInvisible());
@@ -193,7 +178,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -201,22 +186,17 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertSame([], $helper->getRoles());
         self::assertFalse($helper->hasRoles());
 
-        Breadcrumbs::setDefaultRole($defaultRole);
+        Menu::setDefaultRole($defaultRole);
 
         self::assertSame([$defaultRole], $helper->getRoles());
         self::assertTrue($helper->hasRoles());
@@ -238,7 +218,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -246,16 +226,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertFalse($helper->getUseAuthorization());
@@ -288,7 +263,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -296,23 +271,18 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertNull($helper->getAuthorization());
         self::assertFalse($helper->hasAuthorization());
 
         assert($defaultAuth instanceof AuthorizationInterface);
-        Breadcrumbs::setDefaultAuthorization($defaultAuth);
+        Menu::setDefaultAuthorization($defaultAuth);
 
         self::assertSame($defaultAuth, $helper->getAuthorization());
         self::assertTrue($helper->hasAuthorization());
@@ -337,7 +307,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -345,16 +315,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertNull($helper->getView());
@@ -367,7 +332,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetContainer(): void
     {
@@ -397,7 +362,7 @@ final class BreadcrumbsTest extends TestCase
                 },
             );
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -405,16 +370,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $container1 = $helper->getContainer();
@@ -433,7 +393,50 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame($container, $helper->getContainer());
     }
 
-    /** @throws InvalidArgumentException */
+    /**
+     * @throws Exception
+     * @throws ExceptionInterface
+     */
+    public function testSetContainerWithException(): void
+    {
+        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
+
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::once())
+            ->method('parseContainer')
+            ->willThrowException($exception);
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        $container1 = $helper->getContainer();
+
+        self::assertInstanceOf(Navigation::class, $container1);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('test');
+        $this->expectExceptionCode(0);
+
+        $helper->setContainer();
+    }
+
+    /** @throws ExceptionInterface */
     public function testSetContainerWithStringDefaultAndNavigationNotFound(): void
     {
         $name = 'default';
@@ -448,7 +451,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willThrowException(new InvalidArgumentException('test'));
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -456,16 +459,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $this->expectException(InvalidArgumentException::class);
@@ -477,7 +475,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testSetContainerWithStringFound(): void
     {
@@ -494,7 +492,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -502,16 +500,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $helper->setContainer($name);
@@ -521,8 +514,7 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testDoNotAccept(): void
     {
@@ -533,7 +525,7 @@ final class BreadcrumbsTest extends TestCase
         $page->expects(self::once())
             ->method('isVisible')
             ->with(false)
-            ->willReturn(value: false);
+            ->willReturn(false);
         $page->expects(self::never())
             ->method('getResource');
         $page->expects(self::never())
@@ -579,7 +571,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -587,16 +579,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $helper->setContainer($name);
@@ -616,132 +603,9 @@ final class BreadcrumbsTest extends TestCase
         self::assertFalse($helper->accept($page));
     }
 
-    /** @throws Exception */
-    public function testSetPartial(): void
-    {
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::never())
-            ->method('parseContainer');
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        self::assertNull($helper->getPartial());
-
-        $helper->setPartial('test');
-
-        self::assertSame('test', $helper->getPartial());
-
-        $helper->setPartial(1);
-
-        self::assertSame('test', $helper->getPartial());
-    }
-
-    /** @throws Exception */
-    public function testSetLinkLast(): void
-    {
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::never())
-            ->method('parseContainer');
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        self::assertFalse($helper->getLinkLast());
-
-        $helper->setLinkLast(linkLast: true);
-
-        self::assertTrue($helper->getLinkLast());
-
-        $helper->setLinkLast(linkLast: false);
-
-        self::assertFalse($helper->getLinkLast());
-    }
-
-    /** @throws Exception */
-    public function testSetSeparator(): void
-    {
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::never())
-            ->method('parseContainer');
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        self::assertSame(' &gt; ', $helper->getSeparator());
-
-        $helper->setSeparator('/');
-
-        self::assertSame('/', $helper->getSeparator());
-    }
-
     /**
      * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
+     * @throws ExceptionInterface
      */
     public function testHtmlify(): void
     {
@@ -773,11 +637,19 @@ final class BreadcrumbsTest extends TestCase
             ->method('getHref');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('isActive');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::never())
+            ->method('hasPages');
+        $page->expects(self::never())
+            ->method('getLiClass');
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::once())
             ->method('toHtml')
-            ->with(Breadcrumbs::class, $page)
+            ->with(Menu::class, $page)
             ->willReturn($expected);
 
         $containerParser = $this->createMock(ContainerParserInterface::class);
@@ -786,7 +658,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -794,16 +666,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $helper->setContainer($name);
@@ -828,10 +695,7 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame($expected, $helper->htmlify($page));
     }
 
-    /**
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
+    /** @throws ExceptionInterface */
     public function testHtmlifyWithException(): void
     {
         $exception = new \Laminas\I18n\Exception\RuntimeException('test');
@@ -862,11 +726,19 @@ final class BreadcrumbsTest extends TestCase
             ->method('getHref');
         $page->expects(self::never())
             ->method('getTarget');
+        $page->expects(self::never())
+            ->method('isActive');
+        $page->expects(self::never())
+            ->method('hasPage');
+        $page->expects(self::never())
+            ->method('hasPages');
+        $page->expects(self::never())
+            ->method('getLiClass');
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::once())
             ->method('toHtml')
-            ->with(Breadcrumbs::class, $page)
+            ->with(Menu::class, $page)
             ->willThrowException($exception);
 
         $containerParser = $this->createMock(ContainerParserInterface::class);
@@ -875,7 +747,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willReturn($container);
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -883,16 +755,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $helper->setContainer($name);
@@ -933,7 +800,7 @@ final class BreadcrumbsTest extends TestCase
         $containerParser->expects(self::never())
             ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -941,16 +808,11 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         self::assertSame('', $helper->getIndent());
@@ -964,41 +826,18 @@ final class BreadcrumbsTest extends TestCase
         self::assertSame('    ', $helper->getIndent());
     }
 
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     */
-    public function testFindActiveNoActivePages(): void
+    /** @throws Exception */
+    public function testEscapeLabels(): void
     {
-        $name = 'Mezzio\Navigation\Top';
-
-        $page = new Route();
-        $page->setActive(active: false);
-
-        $container = new Navigation();
-        $container->addPage($page);
-
-        $role     = 'testRole';
-        $maxDepth = 42;
-        $minDepth = 0;
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::never())
-            ->method('isGranted');
-
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::never())
             ->method('toHtml');
 
         $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::once())
-            ->method('parseContainer')
-            ->with($name)
-            ->willReturn($container);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -1006,361 +845,273 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
-        $helper->setRoles([$role]);
+        self::assertTrue($helper->getEscapeLabels());
 
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
+        $helper->escapeLabels(flag: false);
 
-        self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
+        self::assertFalse($helper->getEscapeLabels());
+    }
+
+    /** @throws Exception */
+    public function testSetAddClassToListItem(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertFalse($helper->getAddClassToListItem());
+
+        $helper->setAddClassToListItem(flag: true);
+
+        self::assertTrue($helper->getAddClassToListItem());
+    }
+
+    /** @throws Exception */
+    public function testSetOnlyActiveBranch(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertFalse($helper->getOnlyActiveBranch());
+
+        $helper->setOnlyActiveBranch(flag: true);
+
+        self::assertTrue($helper->getOnlyActiveBranch());
+    }
+
+    /** @throws Exception */
+    public function testSetPartial(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertNull($helper->getPartial());
+
+        $helper->setPartial('test');
+
+        self::assertSame('test', $helper->getPartial());
+
+        $helper->setPartial(1);
+
+        self::assertSame('test', $helper->getPartial());
+    }
+
+    /** @throws Exception */
+    public function testSetRenderParents(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertTrue($helper->getRenderParents());
+
+        $helper->setRenderParents(flag: false);
+
+        self::assertFalse($helper->getRenderParents());
+    }
+
+    /** @throws Exception */
+    public function testSetUlClass(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertSame('navigation', $helper->getUlClass());
+
+        $helper->setUlClass('test');
+
+        self::assertSame('test', $helper->getUlClass());
+    }
+
+    /** @throws Exception */
+    public function testSetLiClass(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertSame('', $helper->getLiClass());
+
+        $helper->setLiClass('test');
+
+        self::assertSame('test', $helper->getLiClass());
+    }
+
+    /** @throws Exception */
+    public function testSetLiActiveClass(): void
+    {
+        $htmlify = $this->createMock(HtmlifyInterface::class);
+        $htmlify->expects(self::never())
+            ->method('toHtml');
+
+        $containerParser = $this->createMock(ContainerParserInterface::class);
+        $containerParser->expects(self::never())
+            ->method('parseContainer');
+
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $escapePlugin->expects(self::never())
+            ->method('__invoke');
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
+            htmlify: $htmlify,
+            containerParser: $containerParser,
+            escaper: $escapePlugin,
+            renderer: $renderer,
+        );
+
+        self::assertSame('active', $helper->getLiActiveClass());
+
+        $helper->setLiActiveClass('test');
+
+        self::assertSame('test', $helper->getLiActiveClass());
     }
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      */
-    public function testFindActiveWithContainerException(): void
+    public function testRenderMenuWithContainerException(): void
     {
-        $name      = 'Mezzio\Navigation\Top';
         $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
 
-        $page = new Route();
-        $page->setActive(active: false);
-
-        $container = new Navigation();
-        $container->addPage($page);
-
-        $role     = 'testRole';
-        $maxDepth = 42;
-        $minDepth = 0;
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::never())
-            ->method('isGranted');
-
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::once())
-            ->method('parseContainer')
-            ->with($name)
-            ->willThrowException($exception);
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        $helper->setRoles([$role]);
-
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
-
-        try {
-            $helper->findActive($name, $minDepth, $maxDepth);
-
-            self::fail('Exception expected');
-        } catch (Throwable $e) {
-            self::assertInstanceOf(InvalidArgumentException::class, $e);
-
-            self::assertSame('test', $e->getMessage());
-            self::assertSame(0, $e->getCode());
-            self::assertSame($exception, $e->getPrevious());
-        }
-    }
-
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     */
-    public function testFindActiveNoActivePages2(): void
-    {
         $name = 'Mezzio\Navigation\Top';
 
-        $page = new Route();
-        $page->setActive(active: false);
-
-        $container = new Navigation();
-        $container->addPage($page);
-
-        $role     = 'testRole';
-        $maxDepth = 42;
-        $minDepth = 0;
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::never())
-            ->method('isGranted');
-
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::once())
-            ->method('parseContainer')
-            ->with($name)
-            ->willReturn(value: null);
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        $helper->setRoles([$role]);
-
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
-
-        self::assertSame([], $helper->findActive($name, $minDepth, $maxDepth));
-    }
-
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
-    public function testAcceptWithoutRoles(): void
-    {
-        $container = self::createStub(ContainerInterface::class);
-        $name      = 'Mezzio\Navigation\Top';
-
-        $resource = 'test-resource';
-
-        $page = $this->createMock(PageInterface::class);
-        $page->expects(self::once())
-            ->method('isVisible')
-            ->with(false)
-            ->willReturn(value: true);
-        $page->expects(self::once())
-            ->method('getResource')
-            ->willReturn($resource);
-        $page->expects(self::once())
-            ->method('getPrivilege')
-            ->willReturn(value: null);
-        $page->expects(self::never())
-            ->method('getParent');
-        $page->expects(self::never())
-            ->method('isActive');
-        $page->expects(self::never())
-            ->method('getLabel');
-        $page->expects(self::never())
-            ->method('getTextDomain');
-        $page->expects(self::never())
-            ->method('getTitle');
-        $page->expects(self::never())
-            ->method('getId');
-        $page->expects(self::never())
-            ->method('getClass');
-        $page->expects(self::never())
-            ->method('getHref');
-        $page->expects(self::never())
-            ->method('getTarget');
-        $page->expects(self::never())
-            ->method('hasPage');
-        $page->expects(self::never())
-            ->method('hasPages');
-        $page->expects(self::never())
-            ->method('getLiClass');
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::once())
-            ->method('isGranted')
-            ->with(null, $resource, null, null)
-            ->willReturn(value: false);
-
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $containerParser->expects(self::once())
-            ->method('parseContainer')
-            ->with($name)
-            ->willReturn($container);
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        $helper->setContainer($name);
-
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
-        $helper->setUseAuthorization();
-
-        assert(
-            $page instanceof PageInterface,
-            sprintf(
-                '$page should be an Instance of %s, but was %s',
-                PageInterface::class,
-                $page::class,
-            ),
-        );
-        self::assertFalse($helper->accept($page));
-    }
-
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     */
-    public function testRenderStraightNoActivePage(): void
-    {
-        $name = 'Mezzio\Navigation\Top';
-
-        $page = new Route();
-        $page->setVisible(visible: false);
-
-        $container = new Navigation();
-        $container->addPage($page);
-
-        $role = 'testRole';
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::never())
-            ->method('isGranted');
-
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $matcher         = self::exactly(2);
-        $containerParser->expects($matcher)
-            ->method('parseContainer')
-            ->willReturnCallback(
-                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
-                    $invocation = $matcher->numberOfInvocations();
-
-                    match ($invocation) {
-                        1 => self::assertSame($name, $containerParam, (string) $invocation),
-                        default => self::assertSame($container, $containerParam, (string) $invocation),
-                    };
-
-                    return $container;
-                },
-            );
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        $helper->setRoles([$role]);
-
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
-
-        $expected  = '';
-        $partial   = 'testPartial';
-        $seperator = '/';
-
-        $helper->setSeparator($seperator);
-        $helper->setLinkLast(linkLast: true);
-        $helper->setPartial($partial);
-
-        $view = $this->createMock(PhpRenderer::class);
-        $view->expects(self::never())
-            ->method('plugin');
-
-        assert($view instanceof PhpRenderer);
-        $helper->setView($view);
-
-        self::assertSame($expected, $helper->renderStraight($name));
-    }
-
-    /**
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     */
-    public function testRenderStraight(): void
-    {
-        $name = 'Mezzio\Navigation\Top';
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
 
         $parentPage = new Uri();
-        $parentPage->setActive(active: true);
         $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
@@ -1373,157 +1124,7 @@ final class BreadcrumbsTest extends TestCase
         $parentPage->setTextDomain('parent-text-domain');
 
         $page = new Uri();
-        $page->setActive(active: true);
-        $page->setUri('###');
-        $page->setId('id');
-
-        $parentPage->addPage($page);
-
-        $container = new Navigation();
-        $container->addPage($parentPage);
-
-        $role = 'testRole';
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::exactly(2))
-            ->method('isGranted')
-            ->with($role, $resource, $privilege, null)
-            ->willReturn(value: true);
-
-        $expected1 = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>';
-        $expected2 = '<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
-
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $matcher = self::exactly(2);
-        $htmlify->expects($matcher)
-            ->method('toHtml')
-            ->willReturnCallback(
-                static function (
-                    string $prefix,
-                    PageInterface $pageParam,
-                    bool $escapeLabel = true,
-                    bool $addClassToListItem = false,
-                    array $attributes = [],
-                    bool $convertToButton = false,
-                ) use (
-                    $matcher,
-                    $page,
-                    $parentPage,
-                    $expected2,
-                    $expected1,
-                ): string {
-                    $invocation = $matcher->numberOfInvocations();
-
-                    self::assertSame(Breadcrumbs::class, $prefix, (string) $invocation);
-
-                    match ($invocation) {
-                        1 => self::assertSame($page, $pageParam, (string) $invocation),
-                        default => self::assertSame($parentPage, $pageParam, (string) $invocation),
-                    };
-
-                    self::assertTrue($escapeLabel, (string) $invocation);
-                    self::assertFalse($addClassToListItem, (string) $invocation);
-                    self::assertSame([], $attributes, (string) $invocation);
-                    self::assertFalse($convertToButton, (string) $invocation);
-
-                    return match ($invocation) {
-                        1 => $expected2,
-                        default => $expected1,
-                    };
-                },
-            );
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $matcher         = self::exactly(2);
-        $containerParser->expects($matcher)
-            ->method('parseContainer')
-            ->willReturnCallback(
-                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
-                    $invocation = $matcher->numberOfInvocations();
-
-                    match ($invocation) {
-                        1 => self::assertSame($name, $containerParam, (string) $invocation),
-                        default => self::assertSame($container, $containerParam, (string) $invocation),
-                    };
-
-                    return $container;
-                },
-            );
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        $helper->setRoles([$role]);
-
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
-
-        $expected  = '<a parent-id-escaped="parent-id-escaped" parent-title-escaped="parent-title-escaped" parent-class-escaped="parent-class-escaped" parent-href-escaped="##-escaped" parent-target-escaped="self-escaped">parent-label-escaped</a>/<a idEscaped="testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped">testLabelTranslatedAndEscaped</a>';
-        $seperator = '/';
-
-        $helper->setSeparator($seperator);
-        $helper->setLinkLast(linkLast: true);
-        $helper->setUseAuthorization();
-
-        $view = $this->createMock(PhpRenderer::class);
-        $view->expects(self::never())
-            ->method('plugin');
-        $view->expects(self::never())
-            ->method('getHelperPluginManager');
-
-        assert($view instanceof PhpRenderer);
-        $helper->setView($view);
-        $helper->setMinDepth(0);
-
-        self::assertSame($expected, $helper->renderStraight($name));
-    }
-
-    /**
-     * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     */
-    public function testRenderStraightWithContainerException(): void
-    {
-        $name      = 'Mezzio\Navigation\Top';
-        $exception = new \Laminas\Stdlib\Exception\InvalidArgumentException('test');
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
-
-        $parentPage = new Uri();
-        $parentPage->setActive(active: true);
-        $parentPage->setVisible(visible: true);
-        $parentPage->setResource($resource);
-        $parentPage->setPrivilege($privilege);
-        $parentPage->setId('parent-id');
-        $parentPage->setClass('parent-class');
-        $parentPage->setUri('##');
-        $parentPage->setTarget('self');
-        $parentPage->setLabel('parent-label');
-        $parentPage->setTitle('parent-title');
-        $parentPage->setTextDomain('parent-text-domain');
-
-        $page = new Uri();
-        $page->setActive(active: true);
-        $page->setUri('###');
-        $page->setId('id');
+        $page->setActive(active: false);
 
         $parentPage->addPage($page);
 
@@ -1546,7 +1147,7 @@ final class BreadcrumbsTest extends TestCase
             ->with($name)
             ->willThrowException($exception);
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
         $escapePlugin->expects(self::never())
             ->method('__invoke');
 
@@ -1554,28 +1155,17 @@ final class BreadcrumbsTest extends TestCase
         $renderer->expects(self::never())
             ->method('render');
 
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
-
-        $seperator = '/';
-
-        $helper->setSeparator($seperator);
-        $helper->setLinkLast(linkLast: true);
-        $helper->setUseAuthorization();
 
         $view = $this->createMock(PhpRenderer::class);
         $view->expects(self::never())
@@ -1585,10 +1175,12 @@ final class BreadcrumbsTest extends TestCase
 
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
-        $helper->setMinDepth(0);
 
         try {
-            $helper->renderStraight($name);
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+            );
 
             self::fail('Exception expected');
         } catch (Throwable $e) {
@@ -1602,18 +1194,22 @@ final class BreadcrumbsTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
+     * @throws ExceptionInterface
+     * @throws \Mimmi20\Mezzio\Navigation\Exception\ExceptionInterface
      */
-    public function testRenderStraightWithHtmlException(): void
+    public function testRenderMenuWithHtmlException(): void
     {
-        $name      = 'Mezzio\Navigation\Top';
         $exception = new \Laminas\I18n\Exception\RuntimeException('test');
 
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
+        $name = 'Mezzio\Navigation\Top';
+
+        $resource      = 'testResource';
+        $privilege     = 'testPrivilege';
+        $ulClass       = 'ul-class';
+        $liClass       = 'li-class';
+        $liActiveClass = 'li-active';
 
         $parentPage = new Uri();
-        $parentPage->setActive(active: true);
         $parentPage->setVisible(visible: true);
         $parentPage->setResource($resource);
         $parentPage->setPrivilege($privilege);
@@ -1627,8 +1223,6 @@ final class BreadcrumbsTest extends TestCase
 
         $page = new Uri();
         $page->setActive(active: true);
-        $page->setUri('###');
-        $page->setId('id');
 
         $parentPage->addPage($page);
 
@@ -1638,15 +1232,13 @@ final class BreadcrumbsTest extends TestCase
         $role = 'testRole';
 
         $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::exactly(2))
-            ->method('isGranted')
-            ->with($role, $resource, $privilege, null)
-            ->willReturn(value: true);
+        $auth->expects(self::never())
+            ->method('isGranted');
 
         $htmlify = $this->createMock(HtmlifyInterface::class);
         $htmlify->expects(self::once())
             ->method('toHtml')
-            ->with(Breadcrumbs::class, $page, true, false, [], false)
+            ->with(Menu::class, $page, true, false, [], false)
             ->willThrowException($exception);
 
         $containerParser = $this->createMock(ContainerParserInterface::class);
@@ -1666,159 +1258,43 @@ final class BreadcrumbsTest extends TestCase
                 },
             );
 
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $helper = new Breadcrumbs(
-            htmlify: $htmlify,
-            containerParser: $containerParser,
-            escaper: $escapePlugin,
-            renderer: $renderer,
-            translator: $translatePlugin,
-        );
-
-        $helper->setRoles([$role]);
-
-        assert($auth instanceof AuthorizationInterface);
-        $helper->setAuthorization($auth);
-
-        $seperator = '/';
-
-        $helper->setSeparator($seperator);
-        $helper->setLinkLast(linkLast: true);
-        $helper->setUseAuthorization();
-
-        $view = $this->createMock(PhpRenderer::class);
-        $view->expects(self::never())
-            ->method('plugin');
-        $view->expects(self::never())
-            ->method('getHelperPluginManager');
-
-        assert($view instanceof PhpRenderer);
-        $helper->setView($view);
-        $helper->setMinDepth(0);
-
-        try {
-            $helper->renderStraight($name);
-
-            self::fail('Exception expected');
-        } catch (Throwable $e) {
-            self::assertInstanceOf(RuntimeException::class, $e);
-
-            self::assertSame('test', $e->getMessage());
-            self::assertSame(0, $e->getCode());
-            self::assertSame($exception, $e->getPrevious());
-        }
-    }
-
-    /**
-     * @throws Exception
-     * @throws \Mimmi20\Mezzio\Navigation\Exception\InvalidArgumentException
-     */
-    public function testRenderStraightWithTranslatorException(): void
-    {
-        $name      = 'Mezzio\Navigation\Top';
-        $exception = new \Laminas\I18n\Exception\RuntimeException('test');
-
-        $resource  = 'testResource';
-        $privilege = 'testPrivilege';
-
-        $label = 'test-label';
-
-        $parentPage = new Uri();
-        $parentPage->setActive(active: true);
-        $parentPage->setVisible(visible: true);
-        $parentPage->setResource($resource);
-        $parentPage->setPrivilege($privilege);
-        $parentPage->setId('parent-id');
-        $parentPage->setClass('parent-class');
-        $parentPage->setUri('##');
-        $parentPage->setTarget('self');
-        $parentPage->setLabel('parent-label');
-        $parentPage->setTitle('parent-title');
-        $parentPage->setTextDomain('parent-text-domain');
-
-        $page = new Uri();
-        $page->setActive(active: true);
-        $page->setUri('###');
-        $page->setId('id');
-        $page->setLabel($label);
-
-        $parentPage->addPage($page);
-
-        $container = new Navigation();
-        $container->addPage($parentPage);
-
-        $role = 'testRole';
-
-        $auth = $this->createMock(AuthorizationInterface::class);
-        $auth->expects(self::exactly(2))
-            ->method('isGranted')
-            ->with($role, $resource, $privilege, null)
-            ->willReturn(value: true);
-
-        $htmlify = $this->createMock(HtmlifyInterface::class);
-        $htmlify->expects(self::never())
-            ->method('toHtml');
-
-        $containerParser = $this->createMock(ContainerParserInterface::class);
-        $matcher         = self::exactly(2);
-        $containerParser->expects($matcher)
-            ->method('parseContainer')
-            ->willReturnCallback(
-                static function (ContainerInterface | string | null $containerParam) use ($matcher, $name, $container): ContainerInterface {
-                    $invocation = $matcher->numberOfInvocations();
-
-                    match ($invocation) {
-                        1 => self::assertSame($name, $containerParam, (string) $invocation),
-                        default => self::assertSame($container, $containerParam, (string) $invocation),
-                    };
-
-                    return $container;
-                },
-            );
-
-        $escapePlugin = $this->createMock(EscapeHtml::class);
-        $escapePlugin->expects(self::never())
-            ->method('__invoke');
-
-        $renderer = $this->createMock(LaminasViewRenderer::class);
-        $renderer->expects(self::never())
-            ->method('render');
-
-        $translatePlugin = $this->createMock(Translate::class);
-        $translatePlugin->expects(self::once())
+        $escapePlugin = $this->createMock(EscapeHtmlAttr::class);
+        $matcher      = self::exactly(2);
+        $escapePlugin->expects($matcher)
             ->method('__invoke')
-            ->with($label, null, null)
-            ->willThrowException($exception);
+            ->willReturnCallback(
+                static function (string $value, int $recurse = AbstractHelper::RECURSE_NONE) use ($matcher, $ulClass): string {
+                    $invocation = $matcher->numberOfInvocations();
 
-        $helper = new Breadcrumbs(
+                    match ($invocation) {
+                        1 => self::assertSame($ulClass, $value, (string) $invocation),
+                        default => self::assertSame('li-active li-class', $value, (string) $invocation),
+                    };
+
+                    self::assertSame(0, $recurse, (string) $invocation);
+
+                    return match ($invocation) {
+                        1 => 'ul-class-escaped',
+                        default => 'li-class-escaped',
+                    };
+                },
+            );
+
+        $renderer = $this->createMock(LaminasViewRenderer::class);
+        $renderer->expects(self::never())
+            ->method('render');
+
+        $helper = new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
             escaper: $escapePlugin,
             renderer: $renderer,
-            translator: $translatePlugin,
         );
 
         $helper->setRoles([$role]);
 
         assert($auth instanceof AuthorizationInterface);
         $helper->setAuthorization($auth);
-
-        $seperator = '/';
-
-        $helper->setSeparator($seperator);
-        $helper->setLinkLast(linkLast: false);
-        $helper->setUseAuthorization();
 
         $view = $this->createMock(PhpRenderer::class);
         $view->expects(self::never())
@@ -1828,10 +1304,12 @@ final class BreadcrumbsTest extends TestCase
 
         assert($view instanceof PhpRenderer);
         $helper->setView($view);
-        $helper->setMinDepth(0);
 
         try {
-            $helper->renderStraight($name);
+            $helper->renderMenu(
+                $name,
+                ['ulClass' => $ulClass, 'liClass' => $liClass, 'liActiveClass' => $liActiveClass, 'onlyActiveBranch' => true, 'renderParents' => true, 'minDepth' => 1],
+            );
 
             self::fail('Exception expected');
         } catch (Throwable $e) {

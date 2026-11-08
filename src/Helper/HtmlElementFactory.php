@@ -26,13 +26,14 @@ final class HtmlElementFactory implements FactoryInterface
 {
     /**
      * @param  string $requestedName
+     * @param array<mixed>|null $options
      *
      * @throws ContainerExceptionInterface
      *
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     #[Override]
-    public function __invoke(ContainerInterface $container, $requestedName, array | null $options = null): HtmlElement
+    public function __invoke(ContainerInterface $container, string $requestedName, array | null $options = null): HtmlElement
     {
         $plugin = $container->get(ViewHelperPluginManager::class);
 

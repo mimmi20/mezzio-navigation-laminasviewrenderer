@@ -37,7 +37,7 @@ final class ConvertToPagesFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with(PageFactoryInterface::class)
-            ->willReturn(value: false);
+            ->willReturn(false);
 
         assert($container instanceof ContainerInterface);
         $helper = (new ConvertToPagesFactory())($container);
@@ -61,7 +61,7 @@ final class ConvertToPagesFactoryTest extends TestCase
         $container->expects(self::once())
             ->method('has')
             ->with(PageFactoryInterface::class)
-            ->willReturn(value: true);
+            ->willReturn(true);
 
         assert($container instanceof ContainerInterface);
         $helper = (new ConvertToPagesFactory())($container);

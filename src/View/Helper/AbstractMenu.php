@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\I18n\Exception\RuntimeException;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
@@ -26,7 +26,6 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 use RecursiveIteratorIterator;
 use Throwable;
-
 use function array_key_exists;
 use function array_merge;
 use function assert;
@@ -41,7 +40,6 @@ use function is_string;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
-
 use const PHP_EOL;
 
 /**
@@ -685,6 +683,7 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
             $container = $this->getContainer();
         }
 
+        /** @var array<non-empty-string, array<mixed>> $model */
         $model = array_merge($params, ['container' => $container, 'layout' => false]);
 
         if ($partial instanceof ModelInterface) {
@@ -692,6 +691,10 @@ abstract class AbstractMenu extends AbstractHelper implements MenuInterface
 
             $model   = $partial;
             $partial = $model->getTemplate();
+        }
+
+        if ($partial === '') {
+            throw new Exception\InvalidArgumentException('the template name must not be empty');
         }
 
         return $this->renderer->render($partial, $model);

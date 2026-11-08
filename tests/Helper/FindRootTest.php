@@ -83,7 +83,7 @@ final class FindRootTest extends TestCase
         $page = $this->createMock(PageInterface::class);
         $page->expects(self::once())
             ->method('getParent')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::never())
             ->method('hashCode');
         $page->expects(self::never())

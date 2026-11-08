@@ -11,10 +11,12 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
+use Laminas\Escaper\EscaperInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mezzio\LaminasView\LaminasViewRenderer;
@@ -22,7 +24,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-
 use function assert;
 use function get_debug_type;
 use function sprintf;
@@ -38,32 +39,22 @@ final class BreadcrumbsFactory
     {
         assert($container instanceof ServiceLocatorInterface);
 
-        $plugin = $container->get(ViewHelperPluginManager::class);
-        assert(
-            $plugin instanceof ViewHelperPluginManager,
-            sprintf(
-                '$plugin should be an Instance of %s, but was %s',
-                ViewHelperPluginManager::class,
-                get_debug_type($plugin),
-            ),
-        );
-
         $translator = null;
 
-        if ($plugin->has(Translate::class)) {
-            $translator = $plugin->get(Translate::class);
+        if ($container->has(TranslatorInterface::class)) {
+            $translator = $container->get(TranslatorInterface::class);
 
-            assert($translator instanceof Translate);
+            assert($translator instanceof TranslatorInterface);
         }
 
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
-        $escapeHtml      = $plugin->get(EscapeHtml::class);
+        $escapeHtml      = $container->get(EscaperInterface::class);
         $renderer        = $container->get(LaminasViewRenderer::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
-        assert($escapeHtml instanceof EscapeHtml);
+        assert($escapeHtml instanceof EscaperInterface);
         assert($renderer instanceof LaminasViewRenderer);
 
         return new Breadcrumbs(

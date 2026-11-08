@@ -62,7 +62,7 @@ final class ConfigProviderTest extends TestCase
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
         self::assertCount(5, $factories);
-        self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
+        self::assertArrayHasKey(\Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\PluginManager::class, $factories);
         self::assertArrayHasKey(ContainerParser::class, $factories);
         self::assertArrayHasKey(FindRoot::class, $factories);
         self::assertArrayHasKey(Htmlify::class, $factories);
@@ -113,7 +113,7 @@ final class ConfigProviderTest extends TestCase
         $factories = $dependencyConfig['factories'];
         self::assertIsArray($factories);
         self::assertCount(5, $factories);
-        self::assertArrayHasKey(Navigation\PluginManager::class, $factories);
+        self::assertArrayHasKey(\Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\PluginManager::class, $factories);
         self::assertArrayHasKey(ContainerParser::class, $factories);
         self::assertArrayHasKey(FindRoot::class, $factories);
         self::assertArrayHasKey(Htmlify::class, $factories);

@@ -70,7 +70,7 @@ final class NavigationFactoryTest extends TestCase
                             (string) $invocation,
                         ),
                         default => self::assertSame(
-                            Navigation\PluginManager::class,
+                            \Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\PluginManager::class,
                             $id,
                             (string) $invocation,
                         ),

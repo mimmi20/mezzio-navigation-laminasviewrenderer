@@ -11,30 +11,28 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\View\Helper\BasePath;
-use Laminas\View\Helper\EscapeHtml;
+use Laminas\View\Helper\EscapeHtmlAttr;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\LaminasView\ServerUrlHelper;
+use Mezzio\LaminasView\LaminasViewRenderer;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-
 use function assert;
 use function get_debug_type;
 use function sprintf;
 
-final class SitemapFactory
+final class MenuFactory
 {
     /**
      * Create and return a navigation view helper instance.
      *
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): Sitemap
+    public function __invoke(ContainerInterface $container): Menu
     {
         assert($container instanceof ServiceLocatorInterface);
 
@@ -48,40 +46,21 @@ final class SitemapFactory
             ),
         );
 
-        $serverUrlHelper = $plugin->get(ServerUrlHelper::class);
-        assert(
-            $serverUrlHelper instanceof ServerUrlHelper,
-            sprintf(
-                '$serverUrlHelper should be an Instance of %s, but was %s',
-                ServerUrlHelper::class,
-                get_debug_type($serverUrlHelper),
-            ),
-        );
-
-        $basePathHelper = $plugin->get(BasePath::class);
-        assert(
-            $basePathHelper instanceof BasePath,
-            sprintf(
-                '$basePathHelper should be an Instance of %s, but was %s',
-                BasePath::class,
-                get_debug_type($basePathHelper),
-            ),
-        );
-
         $htmlify         = $container->get(HtmlifyInterface::class);
         $containerParser = $container->get(ContainerParserInterface::class);
-        $escapeHtml      = $plugin->get(EscapeHtml::class);
+        $escapeHtmlAttr  = $plugin->get(EscapeHtmlAttr::class);
+        $renderer        = $container->get(LaminasViewRenderer::class);
 
         assert($htmlify instanceof HtmlifyInterface);
         assert($containerParser instanceof ContainerParserInterface);
-        assert($escapeHtml instanceof EscapeHtml);
+        assert($escapeHtmlAttr instanceof EscapeHtmlAttr);
+        assert($renderer instanceof LaminasViewRenderer);
 
-        return new Sitemap(
+        return new Menu(
             htmlify: $htmlify,
             containerParser: $containerParser,
-            basePathHelper: $basePathHelper,
-            escaper: $escapeHtml,
-            serverUrlHelper: $serverUrlHelper,
+            escaper: $escapeHtmlAttr,
+            renderer: $renderer,
         );
     }
 }

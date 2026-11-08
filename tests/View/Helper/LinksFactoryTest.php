@@ -11,25 +11,24 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20Test\Mezzio\Navigation\LaminasView\View\Helper;
 
 use AssertionError;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\View\Helper\BasePath;
-use Laminas\View\Helper\EscapeHtml;
-use Laminas\View\Helper\HelperInterface;
+use Laminas\View\Helper\HeadLink;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
-use Mezzio\LaminasView\ServerUrlHelper;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ConvertToPagesInterface;
+use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\Sitemap;
-use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation\SitemapFactory;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Links;
+use Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\LinksFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
-final class SitemapFactoryTest extends TestCase
+final class LinksFactoryTest extends TestCase
 {
     /**
      * @throws Exception
@@ -38,41 +37,23 @@ final class SitemapFactoryTest extends TestCase
     public function testInvocation(): void
     {
         $htmlify         = self::createStub(HtmlifyInterface::class);
+        $rootFinder      = self::createStub(FindRootInterface::class);
         $containerParser = self::createStub(ContainerParserInterface::class);
-        $basePath        = self::createStub(BasePath::class);
-        $escaper         = self::createStub(EscapeHtml::class);
-        $serverUrlHelper = self::createStub(ServerUrlHelper::class);
+        $headLink        = self::createStub(HeadLink::class);
+        $converter       = self::createStub(ConvertToPagesInterface::class);
 
         $viewHelperPluginManager = $this->createMock(ViewHelperPluginManager::class);
-        $matcher                 = self::exactly(3);
-        $viewHelperPluginManager->expects($matcher)
+        $viewHelperPluginManager->expects(self::once())
             ->method('get')
-            ->willReturnCallback(
-                static function (string $name, array | null $options = null) use ($matcher, $serverUrlHelper, $basePath, $escaper): HelperInterface {
-                    $invocation = $matcher->numberOfInvocations();
-
-                    match ($invocation) {
-                        1 => self::assertSame(ServerUrlHelper::class, $name, (string) $invocation),
-                        2 => self::assertSame(BasePath::class, $name, (string) $invocation),
-                        default => self::assertSame(EscapeHtml::class, $name, (string) $invocation),
-                    };
-
-                    self::assertNull($options, (string) $invocation);
-
-                    return match ($invocation) {
-                        1 => $serverUrlHelper,
-                        2 => $basePath,
-                        default => $escaper,
-                    };
-                },
-            );
+            ->with(HeadLink::class)
+            ->willReturn($headLink);
 
         $container = $this->createMock(ServiceLocatorInterface::class);
-        $matcher   = self::exactly(3);
+        $matcher   = self::exactly(5);
         $container->expects($matcher)
             ->method('get')
             ->willReturnCallback(
-                static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser): mixed {
+                static function (string $id) use ($matcher, $viewHelperPluginManager, $htmlify, $containerParser, $rootFinder, $converter): mixed {
                     $invocation = $matcher->numberOfInvocations();
 
                     match ($invocation) {
@@ -82,8 +63,18 @@ final class SitemapFactoryTest extends TestCase
                             (string) $invocation,
                         ),
                         2 => self::assertSame(HtmlifyInterface::class, $id, (string) $invocation),
-                        default => self::assertSame(
+                        3 => self::assertSame(
                             ContainerParserInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        5 => self::assertSame(
+                            ConvertToPagesInterface::class,
+                            $id,
+                            (string) $invocation,
+                        ),
+                        default => self::assertSame(
+                            FindRootInterface::class,
                             $id,
                             (string) $invocation,
                         ),
@@ -92,14 +83,16 @@ final class SitemapFactoryTest extends TestCase
                     return match ($invocation) {
                         1 => $viewHelperPluginManager,
                         2 => $htmlify,
-                        default => $containerParser,
+                        3 => $containerParser,
+                        5 => $converter,
+                        default => $rootFinder,
                     };
                 },
             );
 
-        $helper = (new SitemapFactory())($container);
+        $helper = (new LinksFactory())($container);
 
-        self::assertInstanceOf(Sitemap::class, $helper);
+        self::assertInstanceOf(Links::class, $helper);
     }
 
     /**
@@ -116,6 +109,6 @@ final class SitemapFactoryTest extends TestCase
         $this->expectExceptionCode(1);
         $this->expectExceptionMessage('assert($container instanceof ServiceLocatorInterface)');
 
-        (new SitemapFactory())($container);
+        (new LinksFactory())($container);
     }
 }

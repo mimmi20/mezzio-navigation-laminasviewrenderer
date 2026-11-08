@@ -11,11 +11,13 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
+use Laminas\Escaper\EscaperInterface;
 use Laminas\I18n\Exception\RuntimeException;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
+use Laminas\Translator\TranslatorInterface;
 use Laminas\View\Exception;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\Model\ModelInterface;
@@ -25,7 +27,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\ContainerParserInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
-
 use function array_key_exists;
 use function array_merge;
 use function array_reverse;
@@ -67,9 +68,9 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
     public function __construct(
         HtmlifyInterface $htmlify,
         ContainerParserInterface $containerParser,
-        private readonly EscapeHtml $escaper,
+        private readonly EscaperInterface $escaper,
         private readonly LaminasViewRenderer $renderer,
-        private readonly Translate | null $translator = null,
+        private readonly TranslatorInterface | null $translator = null,
     ) {
         parent::__construct($htmlify, $containerParser);
     }
@@ -200,17 +201,11 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
         } else {
             $label = (string) $active->getLabel();
 
-            if ($this->translator instanceof Translate) {
-                try {
-                    $label = ($this->translator)($label, $active->getTextDomain());
-                } catch (RuntimeException $e) {
-                    throw new Exception\RuntimeException($e->getMessage(), $e->getCode(), $e);
-                }
-
-                assert(is_string($label));
+            if ($this->translator instanceof TranslatorInterface) {
+                $label = $this->translator->translate($label, $active->getTextDomain() ?? TranslatorInterface::DEFAULT_TEXT_DOMAIN);
             }
 
-            $label = ($this->escaper)($label);
+            $label = $this->escaper->escapeHtml($label);
             assert(is_string($label));
 
             $html[] = $this->renderBreadcrumbItem(
@@ -425,7 +420,7 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
             $container = $this->getContainer();
         }
 
-        /** @var array<string, array<mixed>> $model */
+        /** @var array<non-empty-string, array<mixed>> $model */
         $model  = array_merge(
             $params,
             ['pages' => [], 'separator' => $this->getSeparator(), 'layout' => false],
@@ -469,6 +464,10 @@ abstract class AbstractBreadcrumbs extends AbstractHelper implements Breadcrumbs
 
             $model   = $partial;
             $partial = $model->getTemplate();
+        }
+
+        if ($partial === '') {
+            throw new Exception\InvalidArgumentException('the template name must not be empty');
         }
 
         return $this->renderer->render($partial, $model);

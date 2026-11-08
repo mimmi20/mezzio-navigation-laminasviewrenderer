@@ -915,10 +915,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
@@ -994,10 +994,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1072,10 +1072,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1157,10 +1157,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())
@@ -1241,10 +1241,10 @@ final class HtmlifyTest extends TestCase
             ->method('getParent');
         $page->expects(self::once())
             ->method('getLabel')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::once())
             ->method('getTitle')
-            ->willReturn(value: null);
+            ->willReturn(null);
         $page->expects(self::never())
             ->method('getTextDomain');
         $page->expects(self::once())

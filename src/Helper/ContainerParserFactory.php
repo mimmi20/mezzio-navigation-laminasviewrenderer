@@ -32,7 +32,7 @@ final class ContainerParserFactory implements FactoryInterface
     #[Override]
     public function __invoke(
         ContainerInterface $container,
-        $requestedName,
+        string $requestedName,
         array | null $options = null,
     ): ContainerParser {
         return new ContainerParser($container);

@@ -11,7 +11,7 @@
 
 declare(strict_types = 1);
 
-namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper\Navigation;
+namespace Mimmi20\Mezzio\Navigation\LaminasView\View\Helper;
 
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\HeadLink;
@@ -22,7 +22,6 @@ use Mimmi20\Mezzio\Navigation\LaminasView\Helper\FindRootInterface;
 use Mimmi20\Mezzio\Navigation\LaminasView\Helper\HtmlifyInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-
 use function assert;
 use function get_debug_type;
 use function sprintf;
