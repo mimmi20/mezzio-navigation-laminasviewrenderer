@@ -79,12 +79,12 @@ final readonly class Htmlify implements HtmlifyInterface
             $textDomain = $page->getTextDomain();
             assert($textDomain === null || is_string($textDomain));
 
-            if (!empty($label) && !empty($textDomain)) {
-                $label = $this->translator->translate($label, $textDomain);
+            if (!empty($label)) {
+                $label = $this->translator->translate($label, $textDomain ?? TranslatorInterface::DEFAULT_TEXT_DOMAIN);
             }
 
-            if (!empty($title) && !empty($textDomain)) {
-                $title = $this->translator->translate($title, $textDomain);
+            if (!empty($title)) {
+                $title = $this->translator->translate($title, $textDomain ?? TranslatorInterface::DEFAULT_TEXT_DOMAIN);
             }
         }
 
